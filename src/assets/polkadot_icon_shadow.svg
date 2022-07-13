@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="76px" height="76px" viewBox="0 0 76 76" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>polkadot_icon_shadow</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="one-t-github-header" transform="translate(-922.000000, -307.000000)">
+            <g id="networks" transform="translate(819.000000, 307.000000)">
+                <g id="polkadot_icon_shadow" transform="translate(103.000000, 0.000000)">
+                    <circle id="Oval" fill="#021220" cx="38" cy="38" r="38"></circle>
+                    <g id="polkadot_icon" transform="translate(1.000000, 3.000000)">
+                        <circle id="Oval" fill="#FFFFFF" fill-rule="nonzero" cx="35" cy="35" r="35"></circle>
+                        <g id="Group" transform="translate(4.760563, 4.845070)">
+                            <g id="Polkadot_Token_PolkadotToken_Pink">
+                                <circle id="Oval" fill="#FFFFFF" cx="30" cy="30" r="30"></circle>
+                                <g id="Group-3" transform="translate(5.000000, 6.000000)" fill="#E6007A" fill-rule="nonzero">
+                                    <ellipse id="Oval" cx="26" cy="5.5125" rx="8.66666667" ry="5.5125"></ellipse>
+                                    <ellipse id="Oval" cx="26" cy="43.4875" rx="8.66666667" ry="5.5125"></ellipse>
+                                    <ellipse id="Oval" transform="translate(9.446674, 14.812120) rotate(-59.999272) translate(-9.446674, -14.812120) " cx="9.4466741" cy="14.8121201" rx="8.835597" ry="5.1476767"></ellipse>
+                                    <ellipse id="Oval" transform="translate(43.032189, 34.161512) rotate(-59.999272) translate(-43.032189, -34.161512) " cx="43.0321888" cy="34.1615116" rx="8.835597" ry="5.14419855"></ellipse>
+                                    <ellipse id="Oval" transform="translate(9.447906, 34.160334) rotate(-30.000728) translate(-9.447906, -34.160334) " cx="9.44790604" cy="34.1603344" rx="5.1476767" ry="8.835597"></ellipse>
+                                    <ellipse id="Oval" transform="translate(43.034273, 14.813245) rotate(-30.000728) translate(-43.034273, -14.813245) " cx="43.0342734" cy="14.8132452" rx="5.14419855" ry="8.835597"></ellipse>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

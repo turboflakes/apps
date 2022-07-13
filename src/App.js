@@ -1,25 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from "react-router-dom";
 
-function App() {
+import withTheme from './theme/withTheme'
+import { IndexPage } from './components/layout/IndexPage'
+import { LayoutPage } from './components/layout/LayoutPage'
+import {isNetworkSupported} from './constants'
+
+function LayoutRoute({
+  layout: Layout,  
+  page: Page,  
+  ...rest
+}) {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Route {...rest} render={props => {
+        if (isNetworkSupported(props.match.params.chainName) || typeof props.match.params.chainName === "undefined") {
+          return (
+            <Layout {...props} >
+              <Page {...props} />
+            </Layout>
+          )
+        }
+        return (
+          <Redirect
+            to={{
+              pathname: "/kusama",
+              state: { from: props.location }
+            }}
+          />  
+        )
+      }
+    } />
   );
 }
 
-export default App;
+function App() {
+  return (
+      <Router>
+        <Switch>
+          <LayoutRoute exact strict path="/:chainName/:page" layout={LayoutPage} page={IndexPage} />
+          <Redirect to="/kusama/val-groups" />
+        </Switch>
+      </Router>
+  );
+}
+
+export default withTheme(App);
