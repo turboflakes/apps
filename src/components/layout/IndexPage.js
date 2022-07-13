@@ -49,7 +49,7 @@ export const IndexPage = (props) => {
               <Dashboard api={api} /> : (
                 selectedPage === 'val-performance' ? 
                 <ValPerformancePage /> : (
-                  selectedPage === 'val-performance' ? 
+                  selectedPage === 'val-groups' ? 
                   <ValGroupsPage /> :
                 <Body api={api} />)
                 )

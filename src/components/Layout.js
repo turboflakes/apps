@@ -59,7 +59,7 @@ function useWeb3ChainInfo(api) {
   return [];
 }
 
-const drawerWidth = 240;
+const drawerWidth = 210;
 
 const AppBar = styled(MuiAppBar, {
 	shouldForwardProp: (prop) => prop !== 'open',
@@ -98,7 +98,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 		}),
 		width: theme.spacing(7),
 		[theme.breakpoints.up('sm')]: {
-		width: theme.spacing(9),
+		width: theme.spacing(8),
 		},
 	}),
 	},
@@ -196,6 +196,9 @@ export const Layout = ({children, api}) => {
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open} 
+      // sx={{
+      //   '.MuiDrawer-paper': open ? {width: 210} : {width: 64}
+      // }}
         >
             <Toolbar
               sx={{

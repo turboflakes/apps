@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  page: 'dashboard'
+  page: 'val-groups'
 };
 
 const layoutSlice = createSlice({
