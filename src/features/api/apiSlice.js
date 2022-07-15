@@ -21,8 +21,9 @@ const dynamicBaseQuery = async (args, api, extraOptions) => {
 
   // construct a dynamically generated portion of the url
   const adjustedUrl = `${getNetworkHost(chainName)}/api/v1`
+
   const adjustedArgs =
-    typeof args === 'string' ? `${adjustedUrl}${args}` : { ...args, url: adjustedUrl }
+    typeof args === 'string' ? `${adjustedUrl}${args}` : { ...args, url: `${adjustedUrl}${args.url}` }
 
   // provide the amended url and other params to the raw base query
   return rawBaseQuery(adjustedArgs, api, extraOptions)

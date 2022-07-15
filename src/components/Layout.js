@@ -108,6 +108,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export const Layout = ({children, api}) => {
 	const history = useHistory()
 	const dispatch = useDispatch();
+
 	const [open, setOpen] = React.useState(false);
 	const toggleDrawer = () => {
 		setOpen(!open);
@@ -157,7 +158,7 @@ export const Layout = ({children, api}) => {
             <MenuIcon />
           </IconButton>
           <Box sx={{ flexGrow: 1 }}>
-            <SearchSmall />
+            {selectedPage === 'val-performance' ? <SearchSmall /> : null}
           </Box>
           <ToggleButtonGroup
             // orientation="vertical"

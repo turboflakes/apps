@@ -2,7 +2,7 @@ import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
-import ValBackingPieChart from './ValBackingPieChart';
+import BackingPieChart from './BackingPieChart';
 
 export default function ValGroupPieCharts({data}) {
   return (
@@ -20,9 +20,9 @@ export default function ValGroupPieCharts({data}) {
           <Typography variant="h6">Attestations of validity</Typography>
         </Box>
       </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-around'}}>
         {data.map((o, i) => 
-          (<ValBackingPieChart key={i} data={o} />)
+          (<BackingPieChart key={i} data={o} showLegend />)
         )}
       </Box>
     </Paper>

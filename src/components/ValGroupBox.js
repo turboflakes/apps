@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { useTheme } from '@mui/material/styles';
+// import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -10,18 +10,19 @@ import ValGroupDataGrid from './ValGroupDataGrid';
 import ValGroupPointsChart from './ValGroupPointsChart';
 import ValGroupParachainsChart from './ValGroupParachainsChart';
 import { 
-  useGetValidatorByStashQuery,
+  useGetValidatorByAddressQuery,
   selectValidatorsAll
  } from '../features/api/validatorsSlice'
 import {
   selectChain
 } from '../features/chain/chainSlice';
-import { stashDisplay } from '../util/display'
+import { stashDisplay, nameDisplay } from '../util/display'
 import { isChainSupported, getChainName, getChainLogo } from '../constants'
+import { calculateMvr } from '../util/mvr'
 
 const codes = ['★', 'A', 'B', 'C', 'D']
 
-function createData(id, n, b, i, e, m, p) {
+function createDataGridRows(id, n, b, i, e, m, p) {
   return { id, n, b, i, e, m, p };
 }
 
@@ -29,32 +30,27 @@ function createParachainsData(x, y, a, m, p, z) {
   return { x, y, a, m, p, z };
 }
 
-const calculate_mvr = (e, i, m) => {
-  const total = e + i + m;
-  if (total === 0) {
-    return undefined
-  } 
-  return m / total
+function createBackingPieData(e, i, m, n) {
+  return { e, i, m, n };
 }
 
-export default function ValGroupDataBox({stash}) {
-  
-  const {data, isSuccess} = useGetValidatorByStashQuery(stash, {refetchOnMountOrArgChange: true});
+export default function ValGroupBox({address}) {
+  const {data, isSuccess} = useGetValidatorByAddressQuery(address, {refetchOnMountOrArgChange: true});
   const selectedChain = useSelector(selectChain);
   const allValidators = useSelector(selectValidatorsAll)
-  
+
   if (!isSuccess) {
     return null
   }
 
   if (!data.is_auth) {
-    return (<Typography>stashDisplay(stash) is not Authority for the current Era.</Typography>)
+    return (<Typography>stashDisplay(address) is not Authority for the current Era.</Typography>)
   }
 
   const principal = allValidators.find(o => data.auth.address === o.auth.address)
 
   if (!principal.is_para) {
-    return (<Typography>{stashDisplay(stash)} is not Para Validator for the current Session</Typography>)
+    return (<Typography>{stashDisplay(address)} is not Para Validator for the current Session</Typography>)
   }
 
   // Group is the selected validator and peers
@@ -66,21 +62,21 @@ export default function ValGroupDataBox({stash}) {
   const dataGridRows = group.map((v, i) => {
     if (v.is_auth) {
       const authored_blocks = v.auth.authored_blocks
-      const total_points = v.auth.end_points
+      const total_points = v.auth.end_points - v.auth.start_points
       const stats = Object.values(v.para.para_stats)
       const explicit_votes = stats.map(o => o.explicit_votes).reduce((prev, current) => prev + current, 0)
       const implicit_votes = stats.map(o => o.implicit_votes).reduce((prev, current) => prev + current, 0)
       const missed_votes = stats.map(o => o.missed_votes).reduce((prev, current) => prev + current, 0)
-      return createData(i+1, v.identity, authored_blocks, implicit_votes, explicit_votes, missed_votes, total_points)
+      return createDataGridRows(i+1, v.identity, authored_blocks, implicit_votes, explicit_votes, missed_votes, total_points)
     } else {
-      return createData(i+1, '-', 0, 0, 0, 0, 0)
+      return createDataGridRows(i+1, '-', 0, 0, 0, 0, 0)
     }
   })
 
   const stats = Object.values(principal.para.para_stats);
   const coreAssignments = stats.map(o => o.core_assignments).reduce((prev, current) => prev + current, 0)
   const backingStatements = stats.map(o => o.explicit_votes + o.implicit_votes + o.missed_votes).reduce((prev, current) => prev + current, 0)
-  const mvr = Math.round(calculate_mvr(
+  const mvr = Math.round(calculateMvr(
     dataGridRows.map(o => o.e).reduce((prev, current) => prev + current, 0),
     dataGridRows.map(o => o.i).reduce((prev, current) => prev + current, 0),
     dataGridRows.map(o => o.m).reduce((prev, current) => prev + current, 0)
@@ -88,19 +84,12 @@ export default function ValGroupDataBox({stash}) {
 
   const chainName = principal.para.para_id ? (isChainSupported(selectedChain, principal.para.para_id) ? getChainName(selectedChain, principal.para.para_id) : principal.para.para_id) : ''
 
-  const pieChartsData = dataGridRows.map(o => {
-    return {
-      e: o.e,
-      i: o.i,
-      m: o.m,
-      n: o.n
-    }
-  })
+  const pieChartsData = dataGridRows.map(o => createBackingPieData(o.e, o.i, o.m, o.n))
 
   const barChartsData = dataGridRows.map(o => {
     return {
       p: o.p,
-      n: o.n
+      n: nameDisplay(o.n, 15)
     }
   })
 
@@ -170,7 +159,7 @@ export default function ValGroupDataBox({stash}) {
               }}>
               <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 <Typography variant="h4" gutterBottom>{backingStatements}</Typography>
-                <Typography variant="caption">Total Statements</Typography>
+                <Typography variant="caption">Total Statements (Votes)</Typography>
               </Box>
             </Paper>
           </Grid>

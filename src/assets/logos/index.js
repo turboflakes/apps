@@ -467,7 +467,7 @@ export const nodeLogos = Object.entries({
   'Edgeware Node': nodeEdgeware,
   Efinity: nodeEfinity,
   'Efinity Node': nodeEfinity,
-  'Encointer collator': nodeEncointer,
+  'Encointer': nodeEncointer,
   'Encointer Node noTEE': nodeEncointer,
   'Fantour Node': nodeFantour,
   'Galital Parachain Collator': nodeGalital,

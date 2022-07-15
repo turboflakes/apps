@@ -72,7 +72,7 @@ export default function SessionPieChart() {
                 <Typography variant="h5">{isSessionSuccess ? session.session_index : '-'}</Typography>
               </Box>
             </Box>
-            <Typography variant="subtitle2">{isSuccess ? `${diff} blocks since #${start_block}` : `-`}</Typography>
+            <Typography variant="subtitle2">{isSuccess ? `${diff.format()} blocks since #${start_block.format()}` : `-`}</Typography>
           </Box>
         </Grid>
         <Grid item xs={12} sm={5} sx={{width: '100%', height: 84, display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>

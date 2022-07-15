@@ -14,9 +14,6 @@ export const extendedApi = apiSlice.injectEndpoints({
     getSessionByIndex: builder.query({
       query: (index) => `/sessions/${index}`,
       providesTags: (result, error, arg) => [{ type: 'Sessions', id: arg }],
-      transformResponse: responseData => {
-        return responseData.session
-      },
       async onQueryStarted(id, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled

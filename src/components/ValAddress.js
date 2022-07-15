@@ -11,14 +11,14 @@ import {
 import { stashDisplay } from '../util/display'
 import { chainAddress } from '../util/crypto'
 import { 
-  useGetValidatorByStashQuery,
+  useGetValidatorByAddressQuery,
  } from '../features/api/validatorsSlice'
  import {
   selectChainInfo
 } from '../features/chain/chainSlice';
 
 export default function ValAddress({address}) {
-  const {data, isSuccess, isFetching, isError} = useGetValidatorByStashQuery(address);
+  const {data, isSuccess, isFetching, isError} = useGetValidatorByAddressQuery(address);
   const chainInfo = useSelector(selectChainInfo)
   
   if (isFetching) {

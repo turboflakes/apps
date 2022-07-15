@@ -20,7 +20,7 @@ export const ValPerformancePage = ({api}) => {
 		<Box sx={{ m: 2 }}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={5}>
-          <ValAddress address={address} />
+          {!!address ? <ValAddress address={address} /> : null}
           </Grid>
           <Grid item xs={12} md={3}>
             <BestBlock />
@@ -29,7 +29,7 @@ export const ValPerformancePage = ({api}) => {
             <SessionPieChart />
         </Grid>
         <Grid item xs={12}>
-          <ValGroupBox stash={address} />
+          {!!address ? <ValGroupBox address={address} /> : null}
         </Grid>
       </Grid>
 		</Box>

@@ -1,14 +1,38 @@
 import { useSelector } from 'react-redux';
 import { socketActions } from './socketSlice'
 import { socketBlockReceived } from './blocksSlice'
-import { socketSessionReceived } from './sessionsSlice'
+import { selectSessionsAll, socketSessionReceived } from './sessionsSlice'
 import { 
   socketValidatorReceived,
+  socketValidatorsReceived,
   useGetValidatorByStashQuery,
   selectValidatorsAll } from './validatorsSlice'
-  import {
-    selectAddress
-  } from '../chain/chainSlice';
+import {
+  selectAddress
+} from '../chain/chainSlice';
+import {
+  selectPage
+} from '../layout/layoutSlice';
+
+
+const unsubscribeValidator = (store) => {
+  const previous_address = selectAddress(store.getState())
+  const allValidators = selectValidatorsAll(store.getState())
+  if (previous_address) {
+    const principal = allValidators.find(o => o.auth.address === previous_address)
+    if (!!principal && principal.is_para) {
+      const addresses = [
+        previous_address,
+        ...allValidators.filter(o => principal.para.peers.includes(o.auth.index)).map(o => o.auth.address)
+      ];
+      const msg = JSON.stringify({ method: "unsubscribe_validator", params: addresses });
+      store.dispatch(socketActions.submitMessage(msg))
+    } else {
+      const msg = JSON.stringify({ method: "unsubscribe_validator", params: [previous_address] });
+      store.dispatch(socketActions.submitMessage(msg))
+    }
+  }
+}
 
 const socketMiddleware = (store) => {
   if (window["WebSocket"]) {
@@ -47,11 +71,15 @@ const socketMiddleware = (store) => {
               break
             }
             case 'session': {
-              store.dispatch(socketSessionReceived(message.result.session))
+              store.dispatch(socketSessionReceived(message.result))
               break
             }
             case 'validator': {
-              store.dispatch(socketValidatorReceived(message.result.validator))
+              store.dispatch(socketValidatorReceived(message.result))
+              break
+            }
+            case 'validators': {
+              store.dispatch(socketValidatorsReceived(message.result))
               break
             }
             default:
@@ -72,21 +100,25 @@ const socketMiddleware = (store) => {
         }
         // unsubscribe to address and peers previously subscribed
         if (action.type === 'chain/addressChanged') {
-          const allValidators = selectValidatorsAll(store.getState())
-          const address = selectAddress(store.getState())
-          if (address) {
-            const previous = allValidators.find(o => o.auth.address === address)
-            if (!!previous && previous.is_para) {
-              const addresses = [
-                address,
-                ...allValidators.filter(o => previous.para.peers.includes(o.auth.index)).map(o => o.auth.address)
-              ];
-              const msg = JSON.stringify({ method: "unsubscribe_validator", params: addresses });
+          unsubscribeValidator(store)
+        }
+        // unsubscribe to address and peers previously subscribed
+        if (action.type === 'layout/pageChanged') {
+          const previous_page = selectPage(store.getState())
+          const sessions = selectSessionsAll(store.getState())
+          const session = sessions[sessions.length-1]
+          switch (previous_page) {
+            case 'val-groups': {
+              const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [session.session_index.toString()] });
               store.dispatch(socketActions.submitMessage(msg))
-            } else {
-              const msg = JSON.stringify({ method: "unsubscribe_validator", params: [address] });
-              store.dispatch(socketActions.submitMessage(msg))
+              break
             }
+            case 'val-performance': {
+              unsubscribeValidator(store)
+              break
+            }
+            default:
+              break
           }
         }
         const result = next(action);
