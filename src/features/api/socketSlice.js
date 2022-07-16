@@ -30,3 +30,6 @@ const socketSlice = createSlice({
 export const socketActions = socketSlice.actions;
  
 export default socketSlice;
+
+// Selectors
+export const selectIsSocketConnected = (state) => state.isConnected;

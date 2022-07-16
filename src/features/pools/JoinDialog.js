@@ -387,7 +387,7 @@ export const JoinDialog = ({poolId, poolMetadata, api}) => {
               <List sx={{ width: '100%', height: "100%", overflow: 'auto', bgcolor: 'background.paper' }}>
                 {accounts.map((account, index) => 
                   <ListItem alignItems="center" key={index} >
-                      <ListItemButton disableRipple key={index}
+                      <ListItemButton disableRipple={true} key={index}
                         onClick={() => handleListItemClick(account)}
                       >
                         <ListItemAvatar>

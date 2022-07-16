@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
+import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Identicon from '@polkadot/react-identicon';
-import {
-  selectChain
-} from '../features/chain/chainSlice';
 import { stashDisplay } from '../util/display'
 import { chainAddress } from '../util/crypto'
 import { 
@@ -18,11 +16,16 @@ import {
 } from '../features/chain/chainSlice';
 
 export default function ValAddress({address}) {
-  const {data, isSuccess, isFetching, isError} = useGetValidatorByAddressQuery(address);
+  const {data, isSuccess, isFetching} = useGetValidatorByAddressQuery(address);
   const chainInfo = useSelector(selectChainInfo)
+
+  if (isUndefined(chainInfo)) { 
+    return null
+  }
   
   if (isFetching) {
     return null
+
   } else if (isSuccess) {
     return (
       <Box

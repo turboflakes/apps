@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 import orderBy from 'lodash/orderBy'
+import isUndefined from 'lodash/isUndefined'
+import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -26,9 +28,10 @@ import {
 import { isChainSupported, getChainName, getChainLogo } from '../constants'
 import { calculateMvr } from '../util/mvr'
 import {nameDisplay} from '../util/display'
+import { grade } from '../util/grade';
 
-function createDataGridRows(id, n, b, i, e, m, p) {
-  return { id, n, b, i, e, m, p };
+function createDataGridRows(id, identity, address, b, i, e, m, p) {
+  return { id, identity, address, b, i, e, m, p };
 }
 
 function createBackingPieData(e, i, m, n) {
@@ -36,6 +39,7 @@ function createBackingPieData(e, i, m, n) {
 }
 
 export default function ValGroupCard({validators, groupId}) {
+  const theme = useTheme();
   const dispatch = useDispatch();
   const history = useHistory()
   const selectedChain = useSelector(selectChain);
@@ -49,9 +53,9 @@ export default function ValGroupCard({validators, groupId}) {
       const explicit_votes = stats.map(o => o.explicit_votes).reduce((prev, current) => prev + current, 0)
       const implicit_votes = stats.map(o => o.implicit_votes).reduce((prev, current) => prev + current, 0)
       const missed_votes = stats.map(o => o.missed_votes).reduce((prev, current) => prev + current, 0)
-      return createDataGridRows(i+1, v.identity, authored_blocks, implicit_votes, explicit_votes, missed_votes, total_points)
+      return createDataGridRows(i+1, v.identity, v.address, authored_blocks, implicit_votes, explicit_votes, missed_votes, total_points)
     } else {
-      return createDataGridRows(i+1, '-', 0, 0, 0, 0, 0)
+      return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0)
     }
   })
 
@@ -62,20 +66,16 @@ export default function ValGroupCard({validators, groupId}) {
   const principal = validators[0];
   const stats = Object.values(principal.para.para_stats);
   const coreAssignments = stats.map(o => o.core_assignments).reduce((prev, current) => prev + current, 0)
-  const backingStatements = stats.map(o => o.explicit_votes + o.implicit_votes + o.missed_votes).reduce((prev, current) => prev + current, 0)
-  const mvr = Math.round(calculateMvr(
+  const chainName = principal.para.para_id ? (isChainSupported(selectedChain, principal.para.para_id) ? getChainName(selectedChain, principal.para.para_id) : principal.para.para_id) : ''
+  const validityVotes = dataGridRows[0].e + dataGridRows[0].i + dataGridRows[0].m
+  const mvr = calculateMvr(
     dataGridRows.map(o => o.e).reduce((prev, current) => prev + current, 0),
     dataGridRows.map(o => o.i).reduce((prev, current) => prev + current, 0),
     dataGridRows.map(o => o.m).reduce((prev, current) => prev + current, 0)
-  ) * 10000) / 10000
-
-  
-  const chainName = principal.para.para_id ? (isChainSupported(selectedChain, principal.para.para_id) ? getChainName(selectedChain, principal.para.para_id) : principal.para.para_id) : ''
-
-  const validatorsOrderedByPoints = orderBy(validators, (o) => (o.auth.end_points - o.auth.start_points), "desc")
+  )
+  const validatorsOrderedByPoints = orderBy(dataGridRows, o => o.p, "desc")
 
   const handleAddressSelected = (address) => {
-    console.log("__", address);
     dispatch(addressChanged(address));
     const page = 'val-performance'
     dispatch(pageChanged(page));
@@ -109,10 +109,11 @@ export default function ValGroupCard({validators, groupId}) {
           <Box sx={{ display: 'flex', flexDirection: 'column'}}>
             <List dense >
               {validatorsOrderedByPoints.map((v, i) => (
-                <ListItemButton key={i} sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(v.auth.address)}>
-                  <ListItemIcon sx={{minWidth: 0, mr: 1}}>
+                <ListItemButton key={i} sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(v.address)}>
+                  <ListItemIcon sx={{minWidth: 0, mr: 1, display: 'flex', alignItems: 'center'}}>
+                    <span style={{ width: '4px', height: '4px', marginLeft: '-4px', marginRight: '8px', borderRadius: '50%', backgroundColor: theme.palette.grade[grade(1-calculateMvr(v.e, v.i, v.m))], display: "inline-block" }}></span>
                     <Identicon
-                      value={v.auth.address}
+                      value={v.address}
                       size={24}
                       theme={'polkadot'} />
                   </ListItemIcon>
@@ -133,20 +134,13 @@ export default function ValGroupCard({validators, groupId}) {
           <Typography variant="h5" align='center'>{coreAssignments}</Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', pb: 1}}>
-          <Typography variant="caption" align='center'>Statements (Votes)</Typography>
-          <Typography variant="h5" align='center'>{backingStatements}</Typography>
+          <Typography variant="caption" align='center'>Validity Votes</Typography>
+          <Typography variant="h5" align='center'>{validityVotes}</Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', pb: 1}}>
-          <Typography variant="caption" align='center'>MVR</Typography>
-          <Typography variant="h5" align='center'>{mvr}</Typography>
+          <Typography variant="caption" align='center'>Missed Vote Ratio</Typography>
+          <Typography variant="h5" align='center'>{!isUndefined(mvr) ? Math.round(mvr * 10000) / 10000 : '-'}</Typography>
         </Box>
-          {/* <Box sx={{ display: 'flex' }} >
-            <Box>
-              <img src={getChainLogo(selectedChain, principal.para.para_id)} style={{ width: 32, height: 32, marginRight: 8, marginBottom: 4, backgroundColor: '#F7F7FA', borderRadius: 16}} alt={"logo"}/>
-            </Box>
-            <Typography variant="h5" gutterBottom>{chainName}</Typography>
-          </Box>
-          <Typography variant="caption">{!!chainName ? 'Backing Parachain' : 'Not Backing'}</Typography> */}
       </Box>
     </Paper>
   );

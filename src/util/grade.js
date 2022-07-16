@@ -1,5 +1,8 @@
-
+import isUndefined from 'lodash/isUndefined'
 export const grade = (ratio) => {
+  if (isUndefined(ratio)) {
+    return "-"
+  }
   let p = Math.round(ratio * 10000);
   if (p >= 9901) {
     return "A+"

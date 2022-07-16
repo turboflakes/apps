@@ -21,7 +21,7 @@ export const extendedApi = apiSlice.injectEndpoints({
       },
       async onQueryStarted(params, { dispatch, queryFulfilled }) {
         try {
-          const { data } = await queryFulfilled
+          await queryFulfilled
           // `onSuccess` subscribe for updates
           if (params.role === "para_authority") {
             const msg1 = JSON.stringify({ method: 'subscribe_para_authorities', params: [params.session.toString()] });
@@ -68,7 +68,7 @@ export const extendedApi = apiSlice.injectEndpoints({
           const { data } = await queryFulfilled
           // `onSuccess` subscribe for updates
           if (data.is_auth) {
-            const msg = JSON.stringify({ method: "subscribe_validator", params: [data.auth.address] });
+            const msg = JSON.stringify({ method: "subscribe_validator", params: [data.address] });
             dispatch(socketActions.submitMessage(msg))
           }
         } catch (err) {
@@ -97,7 +97,7 @@ export const socketValidatorsReceived = createAction(
 
 // Slice
 const adapter = createEntityAdapter({
-  selectId: (data) => data.auth.address,
+  selectId: (data) => `${data.session}_${data.address}`,
 })
 
 const matchValidatorReceived = isAnyOf(
@@ -106,7 +106,7 @@ const matchValidatorReceived = isAnyOf(
   extendedApi.endpoints.getValidatorPeerByAuthority.matchFulfilled
 )
 
-const matchValidatorsReceived = isAnyOf(
+export const matchValidatorsReceived = isAnyOf(
   socketValidatorsReceived,
   extendedApi.endpoints.getValidators.matchFulfilled
 )

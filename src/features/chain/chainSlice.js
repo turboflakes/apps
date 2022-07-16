@@ -8,9 +8,6 @@ const validateChain = () => {
   if (document.location.pathname === '/' && chains.includes(chain)) {
     return chain
   }
-  // set default
-  document.location.hash = '#/kusama';
-  document.location.pathname = '/';
   return 'kusama'
 }
 

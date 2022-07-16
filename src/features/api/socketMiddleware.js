@@ -1,11 +1,9 @@
-import { useSelector } from 'react-redux';
-import { socketActions } from './socketSlice'
+import { socketActions, selectIsSocketConnected } from './socketSlice'
 import { socketBlockReceived } from './blocksSlice'
 import { selectSessionsAll, socketSessionReceived } from './sessionsSlice'
 import { 
   socketValidatorReceived,
   socketValidatorsReceived,
-  useGetValidatorByStashQuery,
   selectValidatorsAll } from './validatorsSlice'
 import {
   selectAddress
@@ -19,11 +17,11 @@ const unsubscribeValidator = (store) => {
   const previous_address = selectAddress(store.getState())
   const allValidators = selectValidatorsAll(store.getState())
   if (previous_address) {
-    const principal = allValidators.find(o => o.auth.address === previous_address)
+    const principal = allValidators.find(o => o.address === previous_address)
     if (!!principal && principal.is_para) {
       const addresses = [
         previous_address,
-        ...allValidators.filter(o => principal.para.peers.includes(o.auth.index)).map(o => o.auth.address)
+        ...allValidators.filter(o => principal.para.peers.includes(o.auth.index)).map(o => o.address)
       ];
       const msg = JSON.stringify({ method: "unsubscribe_validator", params: addresses });
       store.dispatch(socketActions.submitMessage(msg))
@@ -100,7 +98,10 @@ const socketMiddleware = (store) => {
         }
         // unsubscribe to address and peers previously subscribed
         if (action.type === 'chain/addressChanged') {
-          unsubscribeValidator(store)
+          const isConnected = selectIsSocketConnected(store.getState())
+          if (isConnected) {
+            unsubscribeValidator(store)
+          }
         }
         // unsubscribe to address and peers previously subscribed
         if (action.type === 'layout/pageChanged') {

@@ -65,7 +65,7 @@ export default function PointsByParachainsChart({data}) {
         >
           <CartesianGrid strokeDasharray="1 3" vertical={false} />
           <XAxis style={{ fontSize: '0.8rem' }} axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} type="number" />         
-          <YAxis style={{ fontSize: '0.8rem' }} dataKey="n" type="category" axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} />
+          <YAxis style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }} dataKey="n" type="category" axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} />
           {/* <Tooltip /> */}
           <Bar dataKey="p" fill="#45CDE9" barSize={8} />
           {/* <Bar dataKey="p" barSize={8} background={{ fill: '#eee' }}>

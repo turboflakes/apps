@@ -1,9 +1,12 @@
 import * as React from 'react';
+import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
+import Identicon from '@polkadot/react-identicon';
 import { grade } from '../util/grade'
+import { calculateMvr } from '../util/mvr'
 
 const codes = ['★', 'A', 'B', 'C', 'D']
 
@@ -19,13 +22,28 @@ const columns = [
     },
   },
   {
-    field: 'n',
+    field: 'identity',
     headerName: 'Identity',
     width: 256,
     disableColumnMenu: true,
     // valueGetter: (params) => {
-    //   return names[params.row.id-1].identity
+    //   return names[params.row.address-1].identity
+    //   // return (<div>teste</div>)
     // },
+    renderCell: (params) => {
+      if (params.row.address) {
+        return (
+          <span style={{ display: 'flex', justifyContent: 'center'}}>
+            <Identicon
+              value={params.row.address}
+              size={24}
+              theme={'polkadot'} />
+              <span style={{ marginLeft: '8px'}}>{params.row.identity}</span>
+          </span>
+          )
+      }
+      return (<div>teste</div>)  
+    }
   },
   {
     field: 'b',
@@ -63,8 +81,11 @@ const columns = [
     align: 'right',
     disableColumnMenu: true,
     valueGetter: (params) => {
-      const mvr = calculate_mvr(params.row.e, params.row.i, params.row.m)
-      return grade(1-mvr)
+      const mvr = calculateMvr(params.row.e, params.row.i, params.row.m)
+      if (!isUndefined(mvr)) {
+        return grade(1-mvr)
+      }
+      return '-'
     },
   },
   {
@@ -74,7 +95,7 @@ const columns = [
     width: 96,
     disableColumnMenu: true,
     valueGetter: (params) => {
-      return calculate_mvr(params.row.e, params.row.i, params.row.m)
+      return calculateMvr(params.row.e, params.row.i, params.row.m)
     },
   },
   {
@@ -98,14 +119,6 @@ const columns = [
     disableColumnMenu: true,
   },
 ];
-
-const calculate_mvr = (e, i, m) => {
-  const total = e + i + m;
-  if (total === 0) {
-    return undefined
-  } 
-  return m / total
-}
 
 export default function ValGroupDataGrid({rows}) {
   

@@ -25,7 +25,7 @@ export const Footer = (props) => {
 	}
 
 		return (
-			<Box sx={{ bgcolor: 'background.secondary', padding: 'spacing.unit', }} >
+			<Box sx={{ marginTop: 10, bgcolor: 'background.secondary', padding: 'spacing.unit'}} >
 				<Container>
 					<Grid container sx={{ padding: `48px 0` }}>
 						<Grid container item xs={12} sm={6}>

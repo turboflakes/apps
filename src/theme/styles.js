@@ -27,9 +27,21 @@ let theme = createTheme({
       contrastText: '#FFFFFF',
     },
     semantics: {
-      red: "#F19883",
-      amber: "#FFE29D",
-      green: "#8BDCAD",
+      red: "#E02020",
+      amber: "#FA6400",
+      green: "#44D7B6",
+    },
+    grade: {
+      "A+": "#6DD400", // Emerald
+      "A": "#44D7B6", // Amazonite
+      "B+": "#8BDCAD", // Apatite
+      "B": "#0091FF", // Sapphire
+      "C+": "#C8C9CC", // Gray
+      "C": "#EEEEEE", // Light Gray
+      "D+": "#F7B500", // Citrine
+      "D": "#FA6400", // Amber
+      "F": "#E02020", // Ruby
+      "-": "#FFF", // White
     },
     neutrals: {
       100: "#F1F1F0",
@@ -64,6 +76,7 @@ let theme = createTheme({
       secondary0: "linear-gradient(0deg,#85BCE4,#E86866)",
       secondary90: "linear-gradient(90deg,#85BCE4,#E86866)",
       secondary180: "linear-gradient(180deg,#85BCE4,#E86866)",
+      trend: "linear-gradient(180deg,#343434,#FFF)"
     },
     text: {
       primary: "#0B1317",
@@ -72,7 +85,6 @@ let theme = createTheme({
       hint: "rgba(0, 0, 0, 0.38)"
     },
     background: {
-      // paper: "#F7F7FA",
       paper: "#FFFFFF",
       primary: "#FFFFFF",
       secondary: "#0B1317",

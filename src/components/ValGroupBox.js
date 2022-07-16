@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 // import { useTheme } from '@mui/material/styles';
+import isUndefined from 'lodash/isUndefined'
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -22,8 +23,8 @@ import { calculateMvr } from '../util/mvr'
 
 const codes = ['★', 'A', 'B', 'C', 'D']
 
-function createDataGridRows(id, n, b, i, e, m, p) {
-  return { id, n, b, i, e, m, p };
+function createDataGridRows(id, identity, address, b, i, e, m, p) {
+  return { id, identity, address, b, i, e, m, p };
 }
 
 function createParachainsData(x, y, a, m, p, z) {
@@ -34,23 +35,32 @@ function createBackingPieData(e, i, m, n) {
   return { e, i, m, n };
 }
 
-export default function ValGroupBox({address}) {
-  const {data, isSuccess} = useGetValidatorByAddressQuery(address, {refetchOnMountOrArgChange: true});
+export default function ValGroupBox({address, sessionIndex}) {
+  const {data, isSuccess, isError, error} = useGetValidatorByAddressQuery(address, {refetchOnMountOrArgChange: true});
   const selectedChain = useSelector(selectChain);
   const allValidators = useSelector(selectValidatorsAll)
 
+  if (isError) {
+    return (<Typography>! {error.data.errors[0]}</Typography>)
+  }
+  
   if (!isSuccess) {
     return null
   }
 
-  if (!data.is_auth) {
-    return (<Typography>stashDisplay(address) is not Authority for the current Era.</Typography>)
+  // Filter validator by addresse and session
+  const principal = allValidators.find(o => data.address === o.address && o.session === sessionIndex)
+  
+  if (isUndefined(principal)) {
+    return (<Typography>At the current session the validator {stashDisplay(address)} is not found.</Typography>)
   }
 
-  const principal = allValidators.find(o => data.auth.address === o.auth.address)
+  if (!principal.is_auth) {
+    return (<Typography>At the current session the validator {stashDisplay(address)} is not Authority.</Typography>)
+  }
 
   if (!principal.is_para) {
-    return (<Typography>{stashDisplay(address)} is not Para Validator for the current Session</Typography>)
+    return (<Typography>At the current session the validator {stashDisplay(address)} is not Para Validator.</Typography>)
   }
 
   // Group is the selected validator and peers
@@ -67,29 +77,29 @@ export default function ValGroupBox({address}) {
       const explicit_votes = stats.map(o => o.explicit_votes).reduce((prev, current) => prev + current, 0)
       const implicit_votes = stats.map(o => o.implicit_votes).reduce((prev, current) => prev + current, 0)
       const missed_votes = stats.map(o => o.missed_votes).reduce((prev, current) => prev + current, 0)
-      return createDataGridRows(i+1, v.identity, authored_blocks, implicit_votes, explicit_votes, missed_votes, total_points)
+      return createDataGridRows(i+1, v.identity, v.address, authored_blocks, implicit_votes, explicit_votes, missed_votes, total_points)
     } else {
-      return createDataGridRows(i+1, '-', 0, 0, 0, 0, 0)
+      return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0)
     }
   })
 
   const stats = Object.values(principal.para.para_stats);
   const coreAssignments = stats.map(o => o.core_assignments).reduce((prev, current) => prev + current, 0)
-  const backingStatements = stats.map(o => o.explicit_votes + o.implicit_votes + o.missed_votes).reduce((prev, current) => prev + current, 0)
-  const mvr = Math.round(calculateMvr(
+  const validityVotes = dataGridRows[0].e + dataGridRows[0].i + dataGridRows[0].m
+  const mvr = calculateMvr(
     dataGridRows.map(o => o.e).reduce((prev, current) => prev + current, 0),
     dataGridRows.map(o => o.i).reduce((prev, current) => prev + current, 0),
     dataGridRows.map(o => o.m).reduce((prev, current) => prev + current, 0)
-  ) * 10000) / 10000
+  )
 
   const chainName = principal.para.para_id ? (isChainSupported(selectedChain, principal.para.para_id) ? getChainName(selectedChain, principal.para.para_id) : principal.para.para_id) : ''
 
-  const pieChartsData = dataGridRows.map(o => createBackingPieData(o.e, o.i, o.m, o.n))
+  const pieChartsData = dataGridRows.map(o => createBackingPieData(o.e, o.i, o.m, o.identity))
 
   const barChartsData = dataGridRows.map(o => {
     return {
       p: o.p,
-      n: nameDisplay(o.n, 15)
+      n: nameDisplay(o.identity, 15)
     }
   })
 
@@ -142,7 +152,7 @@ export default function ValGroupBox({address}) {
               }}>
               <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 <Typography variant="h4" gutterBottom>{coreAssignments}</Typography>
-                <Typography variant="caption">Total Core Assignments</Typography>
+                <Typography variant="caption">Core Assignments</Typography>
               </Box>
             </Paper>
           </Grid>
@@ -158,8 +168,8 @@ export default function ValGroupBox({address}) {
                 boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
               }}>
               <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Typography variant="h4" gutterBottom>{backingStatements}</Typography>
-                <Typography variant="caption">Total Statements (Votes)</Typography>
+                <Typography variant="h4" gutterBottom>{validityVotes}</Typography>
+                <Typography variant="caption">Validity Votes</Typography>
               </Box>
             </Paper>
           </Grid>
@@ -175,8 +185,8 @@ export default function ValGroupBox({address}) {
                 boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
               }}>
               <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Typography variant="h4" gutterBottom>{mvr}</Typography>
-                <Typography variant="caption">Val. Group Missed Vote Ratio</Typography>
+                <Typography variant="h4" gutterBottom>{!isUndefined(mvr) ? Math.round(mvr * 10000) / 10000 : '-'}</Typography>
+                <Typography variant="caption">Missed Vote Ratio</Typography>
               </Box>
             </Paper>
           </Grid>
