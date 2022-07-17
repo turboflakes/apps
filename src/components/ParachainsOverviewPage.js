@@ -11,7 +11,7 @@ import {
   selectSessionsAll,
  } from '../features/api/sessionsSlice'
 
-export const ValGroupsPage = () => {
+export const ParachainsOverviewPage = () => {
 	// const theme = useTheme();
   const sessions = useSelector(selectSessionsAll)
   const session = sessions[sessions.length-1]

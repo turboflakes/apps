@@ -1,7 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { validateChain } from '../chain/chainSlice';
+
+const initializePage = () => {
+  const chainName = validateChain()
+  let page = document.location.hash.replace(`#/${chainName}/`, '')
+  const indexOfSearchParams = page.indexOf('?');
+  if (indexOfSearchParams !== -1) {
+    page = page.substring(0, indexOfSearchParams)
+  }
+  return page
+}
 
 const initialState = {
-  page: 'val-groups'
+  page: initializePage()
 };
 
 const layoutSlice = createSlice({

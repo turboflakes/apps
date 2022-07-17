@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 import orderBy from 'lodash/orderBy'
 import isUndefined from 'lodash/isUndefined'
@@ -41,7 +41,7 @@ function createBackingPieData(e, i, m, n) {
 export default function ValGroupCard({validators, groupId}) {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const history = useHistory()
+  const navigate = useNavigate()
   const selectedChain = useSelector(selectChain);
   // const total = data.e + data.i + data.m;
    
@@ -77,9 +77,9 @@ export default function ValGroupCard({validators, groupId}) {
 
   const handleAddressSelected = (address) => {
     dispatch(addressChanged(address));
-    const page = 'val-performance'
-    dispatch(pageChanged(page));
-    history.push(`/${selectedChain}/${page}`)
+    dispatch(pageChanged('parachains/val-group'));
+    const path = `/${selectedChain}/parachains/val-group`
+    navigate(`${path}?address=${address}`)
   }
 
 

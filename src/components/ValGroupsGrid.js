@@ -37,7 +37,7 @@ export const ValGroupsGrid = ({sessionIndex}) => {
   })
   // filter A+ validators
   const gradeAplus = mvrs.filter(mvr => grade(1 - mvr) === "A+")
-  const averageMvrGradeAplus = Math.round((gradeAplus.reduce((p, c) => p + c, 0) / gradeAplus.length) * 10000) / 10000
+  // const averageMvrGradeAplus = Math.round((gradeAplus.reduce((p, c) => p + c, 0) / gradeAplus.length) * 10000) / 10000
   // filter F validators
   const gradeF = mvrs.filter(mvr => grade(1-mvr) === "F")
   const averageMvrGradeF = Math.round((gradeF.reduce((p, c) => p + c, 0) / gradeF.length) * 10000) / 10000
@@ -58,7 +58,8 @@ export const ValGroupsGrid = ({sessionIndex}) => {
         >
         <Typography variant="h4">Val. Groups</Typography>
         {!isUndefined(gradeAplus) && !isUndefined(gradeF) ? 
-          <Typography variant="subtitle2">In the current session <b>{gradeAplus.length}</b> validators ({(gradeAplus.length * 100) / filtered.length}%) have an exceptional performance (A+) with an average missed vote ratio of {averageMvrGradeAplus} and <b>{gradeF.length}</b> ({(gradeF.length * 100) / filtered.length}%) have a low performance (F) with an average missed vote ratio of {averageMvrGradeF}.</Typography> : null}
+          <Typography variant="subtitle2">{(gradeAplus.length * 100) / filtered.length}% of para validators in the current session have an exceptional performance (A+)</Typography> : null}
+          <Typography variant="subtitle2">{(gradeF.length * 100) / filtered.length}% have a low performance (F) with an average missed vote ratio of {averageMvrGradeF}</Typography>
       </Box>
       <Grid container spacing={2}>
           {Object.values(groups).map((g, i) => (

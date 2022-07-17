@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { useHistory } from 'react-router-dom'
+import { useNavigate, Outlet } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiAppBar from '@mui/material/AppBar';
 import MuiDrawer from '@mui/material/Drawer';
@@ -12,21 +12,19 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
+import ListSubheader from '@mui/material/ListSubheader';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import ListSubheader from '@mui/material/ListSubheader';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPeopleGroup, faLink, faBolt, faWaterLadder, faTable } from '@fortawesome/free-solid-svg-icons'
+import { faLink, faWaterLadder, faServer } from '@fortawesome/free-solid-svg-icons'
+import HubIcon from '@mui/icons-material/Hub';
+import SearchSmall from './SearchSmall'
 import { getNetworkIcon } from '../constants'
-import apiSlice from '../features/api/apiSlice'
-import SearchSmall from '../components/SearchSmall'
 import polkadotJsSVG from '../assets/polkadot_js_logo.svg';
-import iconOnetSVG from '../assets/onet.svg';
+import apiSlice from '../features/api/apiSlice'
 import {
   pageChanged,
   selectPage,
@@ -35,10 +33,12 @@ import {
   chainInfoChanged,
   chainChanged,
   selectChain,
+  selectAddress
 } from '../features/chain/chainSlice';
 import {
   selectAccount,
 } from '../features/web3/web3Slice';
+
 
 function useWeb3ChainInfo(api) {
   const dispatch = useDispatch();
@@ -96,25 +96,27 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 		easing: theme.transitions.easing.sharp,
 		duration: theme.transitions.duration.leavingScreen,
 		}),
-		width: theme.spacing(7),
+		width: theme.spacing(5),
 		[theme.breakpoints.up('sm')]: {
-		width: theme.spacing(8),
+		width: theme.spacing(7),
 		},
 	}),
 	},
 }),
 );
 
-export const Layout = ({children, api}) => {
-	const history = useHistory()
+export const LayoutPage = ({api}) => {
+  const theme = useTheme();
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
-
+  
 	const [open, setOpen] = React.useState(false);
 	const toggleDrawer = () => {
 		setOpen(!open);
 	};
 
 	const selectedChain = useSelector(selectChain);
+  const selectedAddress = useSelector(selectAddress);
   const selectedPage = useSelector(selectPage);
 	const web3Account = useSelector(selectAccount);
 	useWeb3ChainInfo(api);
@@ -126,12 +128,12 @@ export const Layout = ({children, api}) => {
 		dispatch(chainChanged(chain));
 		// Invalidate cached pools so it re-fetchs pools from selected chain
 		dispatch(apiSlice.util.invalidateTags(['Pool']));
-		history.replace(`/${chain}`)
+		navigate(`/${chain}`, {replace: true})
   };
 
   const handlePageSelection = (page) => {
     dispatch(pageChanged(page));
-    history.replace(`/${selectedChain}/${page}`)
+    navigate(`/${selectedChain}/${page}`)
   }
 
   return (
@@ -158,7 +160,7 @@ export const Layout = ({children, api}) => {
             <MenuIcon />
           </IconButton>
           <Box sx={{ flexGrow: 1 }}>
-            {selectedPage === 'val-performance' ? <SearchSmall /> : null}
+            {selectedPage === 'parachains/val-group' ? (!!selectedAddress ? <SearchSmall /> : null) : null}
           </Box>
           <ToggleButtonGroup
             // orientation="vertical"
@@ -175,7 +177,7 @@ export const Layout = ({children, api}) => {
                   width: 26,
                   height: 26 }} alt={web3Account.meta.name}/>
               </Box> : null}
-            <ToggleButton value="polkadot" aria-label="Polkadot Network" sx={{ mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16, pr: 2}, '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
+            <ToggleButton disabled value="polkadot" aria-label="Polkadot Network" sx={{ mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16, pr: 2}, '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
               <img src={getNetworkIcon("polkadot")}  style={{ 
                 width: 32,
                 height: 32 }} alt={"polkadot"}/>
@@ -213,48 +215,40 @@ export const Layout = ({children, api}) => {
                 <ChevronLeftIcon />
               </IconButton>
             </Toolbar>
-            <Divider />
-            <List component="nav">
-              <ListItemButton onClick={() => handlePageSelection('dashboard')} disabled>
+            <Divider sx={{ my: 1 }} />
+            <List component="nav" 
+              sx={{ '> .MuiListItemButton-root.Mui-selected': { bgcolor: "rgba(0, 0, 0, 0.12)"}, '> .MuiListItemButton-root.Mui-selected:hover': { bgcolor: "rgba(0, 0, 0, 0.18)"}}}>
+              <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
+                {open ? 'Validators' : 'Val..'}
+              </ListSubheader>
+              <ListItemButton selected={selectedPage === 'validators/insights'} disabled
+                onClick={() => handlePageSelection('validators/insights')}>
                 <ListItemIcon>
-                  <DashboardIcon />
+                  <FontAwesomeIcon icon={faServer} />
+                </ListItemIcon>
+                <ListItemText primary="Insights" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+              </ListItemButton>
+              <Divider sx={{ my: 1 }} />
+              <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
+                {open ? 'Parachains' : 'Par..'}
+              </ListSubheader>
+              <ListItemButton selected={selectedPage === 'parachains/overview'}
+                onClick={() => handlePageSelection('parachains/overview')}>
+                <ListItemIcon>
+                  <FontAwesomeIcon icon={faLink} />
                 </ListItemIcon>
                 <ListItemText primary="Overview" 
                   sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
-              {/* <ListSubheader component="div" sx={{ display: 'flex', alignItems: 'center', color: '#6F7072'}} inset>
-                Reports
-              </ListSubheader> */}
-              <ListItemButton selected={selectedPage === 'val-performance'} 
-                onClick={() => handlePageSelection('val-performance')}>
+              <ListItemButton selected={selectedPage === 'parachains/val-group'} 
+                onClick={() => handlePageSelection('parachains/val-group')}>
                 <ListItemIcon>
-                  <FontAwesomeIcon icon={faBolt} />
+                  <HubIcon />
                 </ListItemIcon>
-                <ListItemText primary="Val. Performance" 
+                <ListItemText primary="Val. Group" 
                 sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
-              <ListItemButton selected={selectedPage === 'val-groups'} 
-                onClick={() => handlePageSelection('val-groups')}>
-                <ListItemIcon>
-                  <FontAwesomeIcon icon={faPeopleGroup} />
-                </ListItemIcon>
-                <ListItemText primary="Val. Groups" 
-                sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-              </ListItemButton>
-              <ListItemButton  selected={selectedPage === 'parachains'}  disabled
-                onClick={() => handlePageSelection('parachains')}>
-                <ListItemIcon>
-                  <FontAwesomeIcon icon={faLink} />
-                </ListItemIcon>
-                <ListItemText primary="Parachains" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-              </ListItemButton>
-              <ListItemButton selected={selectedPage === 'insights'} disabled
-                onClick={() => handlePageSelection('insights')}>
-                <ListItemIcon>
-                  <FontAwesomeIcon icon={faTable} />
-                </ListItemIcon>
-                <ListItemText primary="Insights" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-              </ListItemButton>
+              
               <Divider sx={{ my: 1 }} />
               <ListItemButton  selected={selectedPage === 'pools'}  disabled
                 onClick={() => handlePageSelection('pools')}>
@@ -280,7 +274,7 @@ export const Layout = ({children, api}) => {
           >	
         {/*  hidden toolbar */}
         <Toolbar/>
-        {children}
+        <Outlet api={api} />
       </Box>
     </Box>
   );

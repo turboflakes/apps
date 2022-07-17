@@ -1,52 +1,75 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   HashRouter as Router,
-  Switch,
+  Routes,
   Route,
-  Redirect
+  Navigate,
+  Outlet,
+  useParams
 } from "react-router-dom";
-
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { getNetworkExternalWSS } from './constants';
+import { LayoutPage } from './components/LayoutPage'
+import { ParachainsOverviewPage } from './components/ParachainsOverviewPage'
+import { ValGroupPage } from './components/ValGroupPage'
 import withTheme from './theme/withTheme'
-import { IndexPage } from './components/layout/IndexPage'
-import { LayoutPage } from './components/layout/LayoutPage'
+import {
+  selectChain,
+} from './features/chain/chainSlice';
 import {isNetworkSupported} from './constants'
 
-function LayoutRoute({
-  layout: Layout,  
-  page: Page,  
-  ...rest
-}) {
+function useWeb3Api(chain) {
+  const [api, setApi] = React.useState(undefined);
+
+  React.useEffect(() => {
+    
+    const createWeb3Api = async (provider) => {
+      return await ApiPromise.create({ provider });
+    }
+
+    if (chain) {
+      const wsProvider = new WsProvider(getNetworkExternalWSS(chain));
+      createWeb3Api(wsProvider).then((api) => setApi(api));
+    }
+  }, [chain]);
+
+  return [api];
+}
+
+const ValidateChain = () => {
+  let { chainName } = useParams();
+  if (isNetworkSupported(chainName)) {
+    return (<Outlet />)
+  }
+  return (<Navigate to="/kusama/parachains/overview" />)
+}
+
+const App = () => {
+  const selectedChain = useSelector(selectChain);
+  const [api] = useWeb3Api(selectedChain);
+  
   return (
-    <Route {...rest} render={props => {
-        if (isNetworkSupported(props.match.params.chainName) || typeof props.match.params.chainName === "undefined") {
-          return (
-            <Layout {...props} >
-              <Page {...props} />
-            </Layout>
-          )
-        }
-        return (
-          <Redirect
-            to={{
-              pathname: "/kusama",
-              state: { from: props.location }
-            }}
-          />  
-        )
-      }
-    } />
+      <Router>
+        <Routes>
+          <Route path="/" element={<LayoutPage api={api} />}>
+            <Route index element={<Navigate to="/kusama/parachains/overview" />} />
+            <Route path=":chainName" element={<ValidateChain />}>
+              <Route path="parachains">
+                <Route path="overview" element={<ParachainsOverviewPage />} />
+                <Route path="val-group" element={<ValGroupPage />} />
+              </Route>
+            </Route>
+            <Route path="*" element={<Navigate to="/kusama/parachains/overview" />} />
+          </Route>
+        </Routes>
+      </Router>
   );
 }
 
-function App() {
-  return (
-      <Router>
-        <Switch>
-          <LayoutRoute exact strict path="/:chainName/:page" layout={LayoutPage} page={IndexPage} />
-          <Redirect to="/kusama/val-groups" />
-        </Switch>
-      </Router>
-  );
+function IndexPage() {
+  console.log("__IndexPage");
+  return (<div>Index</div>);
 }
 
 export default withTheme(App);

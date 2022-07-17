@@ -109,12 +109,12 @@ const socketMiddleware = (store) => {
           const sessions = selectSessionsAll(store.getState())
           const session = sessions[sessions.length-1]
           switch (previous_page) {
-            case 'val-groups': {
+            case 'parachains/overview': {
               const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [session.session_index.toString()] });
               store.dispatch(socketActions.submitMessage(msg))
               break
             }
-            case 'val-performance': {
+            case 'parachains/val-group': {
               unsubscribeValidator(store)
               break
             }

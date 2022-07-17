@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom'
+import { useParams, useSearchParams } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import SessionPieChart from './SessionPieChart';
@@ -17,52 +17,38 @@ import {
  } from '../features/api/sessionsSlice'
 
 
-
-export const ValPerformancePage = ({api}) => {
+export const ValGroupPage = () => {
 	// const theme = useTheme();
   const dispatch = useDispatch();
-  const history = useHistory();
-  const address = useSelector(selectAddress);
+  const currentSelected = useSelector(selectAddress);
   const sessions = useSelector(selectSessionsAll)
   const session = sessions[sessions.length-1]
+  let [searchParams, setSearchParams] = useSearchParams();
+  const searchAddress = searchParams.get("address");
 
-  const changeParams = (query, value) => {
-    query.set("a", value)
-		const location = {
-			search: `?${query.toString()}`
-		}
-		history.replace(location)
-	}
-
+  // TODO read address from query params here and handle it
   React.useEffect(() => {
-    let query = new URLSearchParams(history.location.search)
-    // for (const
-    if (!address) {
-      const address = query.get('a')
-      console.log("___useEffect 2", query, history.location);  
-      dispatch(addressChanged(address));
+    
+    if (searchAddress && searchAddress !== currentSelected) {
+      dispatch(addressChanged(searchAddress));
     }
-    // changeParams(query, address)
-    // dispatch(addressChanged(address));
-    // setAddress("");
-    // console.log("___useEffect", query, history.location);
-  }, [])
-  
+  }, [searchAddress, currentSelected]);
+
   return (
 		<Box sx={{ m: 2, minHeight: '100vh' }}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={5}>
-          {!!address ? <ValAddress address={address} /> : null}
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <BestBlock />
+          {!!currentSelected ? <ValAddress address={currentSelected} /> : null}
           </Grid>
           <Grid item xs={12} md={4}>
             <SessionPieChart />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <BestBlock />
         </Grid>
         <Grid item xs={12}>
-          {!!address && !!session ? 
-            <ValGroupBox address={address} sessionIndex={session.session_index} /> : 
+          {!!currentSelected && !!session ? 
+            <ValGroupBox address={currentSelected} sessionIndex={session.session_index} /> : 
             <Box sx={{ height: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <SearchSmall />
             </Box>

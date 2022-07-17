@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const chains = ['westend', 'kusama', 'polkadot'];
 
-const validateChain = () => {
+export const validateChain = () => {
   //example: hash= "#/polkadot"
   const chain = document.location.hash.substring(2, document.location.hash.length)
   if (document.location.pathname === '/' && chains.includes(chain)) {
