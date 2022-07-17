@@ -47,12 +47,12 @@ export default function ValGroupCard({validators, groupId}) {
    
   const dataGridRows = validators.map((v, i) => {
     if (v.is_auth) {
-      const authored_blocks = v.auth.authored_blocks
-      const total_points = v.auth.end_points
-      const stats = Object.values(v.para.para_stats)
-      const explicit_votes = stats.map(o => o.explicit_votes).reduce((prev, current) => prev + current, 0)
-      const implicit_votes = stats.map(o => o.implicit_votes).reduce((prev, current) => prev + current, 0)
-      const missed_votes = stats.map(o => o.missed_votes).reduce((prev, current) => prev + current, 0)
+      const authored_blocks = v.auth.ab
+      const total_points = v.auth.ep - v.auth.sp
+      const stats = Object.values(v.para.stats)
+      const explicit_votes = stats.map(o => o.ev).reduce((p, c) => p + c, 0)
+      const implicit_votes = stats.map(o => o.iv).reduce((p, c) => p + c, 0)
+      const missed_votes = stats.map(o => o.mv).reduce((p, c) => p + c, 0)
       return createDataGridRows(i+1, v.identity, v.address, authored_blocks, implicit_votes, explicit_votes, missed_votes, total_points)
     } else {
       return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0)
@@ -64,14 +64,14 @@ export default function ValGroupCard({validators, groupId}) {
     createBackingPieData(0,0,0, groupId));
 
   const principal = validators[0];
-  const stats = Object.values(principal.para.para_stats);
-  const coreAssignments = stats.map(o => o.core_assignments).reduce((prev, current) => prev + current, 0)
-  const chainName = principal.para.para_id ? (isChainSupported(selectedChain, principal.para.para_id) ? getChainName(selectedChain, principal.para.para_id) : principal.para.para_id) : ''
+  const stats = Object.values(principal.para.stats);
+  const coreAssignments = stats.map(o => o.ca).reduce((p, c) => p + c, 0)
+  const chainName = principal.para.pid ? (isChainSupported(selectedChain, principal.para.pid) ? getChainName(selectedChain, principal.para.pid) : principal.para.pid) : ''
   const validityVotes = dataGridRows[0].e + dataGridRows[0].i + dataGridRows[0].m
   const mvr = calculateMvr(
-    dataGridRows.map(o => o.e).reduce((prev, current) => prev + current, 0),
-    dataGridRows.map(o => o.i).reduce((prev, current) => prev + current, 0),
-    dataGridRows.map(o => o.m).reduce((prev, current) => prev + current, 0)
+    dataGridRows.map(o => o.e).reduce((p, c) => p + c, 0),
+    dataGridRows.map(o => o.i).reduce((p, c) => p + c, 0),
+    dataGridRows.map(o => o.m).reduce((p, c) => p + c, 0)
   )
   const validatorsOrderedByPoints = orderBy(dataGridRows, o => o.p, "desc")
 
@@ -101,7 +101,7 @@ export default function ValGroupCard({validators, groupId}) {
           </Box>
           {!!chainName ?
           <Box sx={{ p: `4px 8px`, display: 'flex', alignItems: 'center', borderRadius: 30, backgroundColor: '#EEEEEE' }} >
-            <img src={getChainLogo(selectedChain, principal.para.para_id)} style={{ width: 32, height: 32, marginRight: 8, backgroundColor: '#F7F7FA', borderRadius: 16}} alt={"logo"}/>
+            <img src={getChainLogo(selectedChain, principal.para.pid)} style={{ width: 32, height: 32, marginRight: 8, backgroundColor: '#F7F7FA', borderRadius: 16}} alt={"logo"}/>
             <Typography variant="h6">{chainName}</Typography>
           </Box> : null}
         </Box>

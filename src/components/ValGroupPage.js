@@ -26,7 +26,6 @@ export const ValGroupPage = () => {
   let [searchParams, setSearchParams] = useSearchParams();
   const searchAddress = searchParams.get("address");
 
-  // TODO read address from query params here and handle it
   React.useEffect(() => {
     
     if (searchAddress && searchAddress !== currentSelected) {
@@ -48,7 +47,7 @@ export const ValGroupPage = () => {
         </Grid>
         <Grid item xs={12}>
           {!!currentSelected && !!session ? 
-            <ValGroupBox address={currentSelected} sessionIndex={session.session_index} /> : 
+            <ValGroupBox address={currentSelected} sessionIndex={session.six} /> : 
             <Box sx={{ height: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <SearchSmall />
             </Box>

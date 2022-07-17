@@ -33,9 +33,7 @@ export default function SessionPieChart() {
 
   const session = sessions[sessions.length-1]
   const block = blocks[blocks.length-1]
-  const start_block = session.start_block
-
-  const diff = block.block_number - start_block
+  const diff = block.bix - session.sbix
   const pieData = [
     createData('done', Math.round((diff * 100)/600)),
     createData('progress', Math.round(((600-diff) * 100)/600)),
@@ -64,15 +62,15 @@ export default function SessionPieChart() {
             <Box sx={{ display: 'flex', alignItems: 'flex-end'}}>
               <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
                 <Typography variant="caption">era</Typography>
-                <Typography variant="h5">{isSessionSuccess ? session.era_index : '-'}</Typography>
+                <Typography variant="h5">{isSessionSuccess ? session.eix : '-'}</Typography>
               </Box>
               <Typography sx={{ml: 1, mr: 1}} variant="h5">{'//'}</Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
                 <Typography variant="caption">session</Typography>
-                <Typography variant="h5">{isSessionSuccess ? session.session_index : '-'}</Typography>
+                <Typography variant="h5">{isSessionSuccess ? session.six : '-'}</Typography>
               </Box>
             </Box>
-            <Typography variant="subtitle2">{isSuccess ? `${diff.format()} blocks since #${start_block.format()}` : `-`}</Typography>
+            <Typography variant="subtitle2">{isSuccess ? `${diff.format()} blocks since #${session.sbix.format()}` : `-`}</Typography>
           </Box>
         </Grid>
         <Grid item xs={12} sm={5} sx={{width: '100%', height: 84, display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>

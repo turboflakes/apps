@@ -29,10 +29,10 @@ export const ValGroupsGrid = ({sessionIndex}) => {
 
   
   const mvrs = filtered.map(o => {
-    const stats = Object.values(o.para.para_stats)
-    const e = stats.map(o => o.explicit_votes).reduce((p, c) => p + c, 0)
-    const i = stats.map(o => o.implicit_votes).reduce((p, c) => p + c, 0)
-    const m = stats.map(o => o.missed_votes).reduce((p, c) => p + c, 0)
+    const stats = Object.values(o.para.stats)
+    const e = stats.map(o => o.ev).reduce((p, c) => p + c, 0)
+    const i = stats.map(o => o.iv).reduce((p, c) => p + c, 0)
+    const m = stats.map(o => o.mv).reduce((p, c) => p + c, 0)
     return calculateMvr(e, i, m)
   })
   // filter A+ validators

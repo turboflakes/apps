@@ -42,7 +42,7 @@ export const socketBlockReceived = createAction(
 
 // Slice
 const blocksAdapter = createEntityAdapter({
-  selectId: (data) => data.block_number,
+  selectId: (data) => data.bix,
 })
 
 const matchBlockReceived = isAnyOf(
@@ -76,10 +76,10 @@ const blocksSlice = createSlice({
       const latest_block = s.ids[s.ids.length-1]
       // calculate mvr based on latest validators received data
       const data = action.payload.map(o => { if (o.is_auth && o.is_para) { 
-          const stats = Object.values(o.para.para_stats)
-          const explicit_votes = stats.map(o => o.explicit_votes).reduce((p, c) => p + c, 0)
-          const implicit_votes = stats.map(o => o.implicit_votes).reduce((p, c) => p + c, 0)
-          const missed_votes = stats.map(o => o.missed_votes).reduce((p, c) => p + c, 0)
+          const stats = Object.values(o.para.stats)
+          const explicit_votes = stats.map(o => o.ev).reduce((p, c) => p + c, 0)
+          const implicit_votes = stats.map(o => o.iv).reduce((p, c) => p + c, 0)
+          const missed_votes = stats.map(o => o.mv).reduce((p, c) => p + c, 0)
           return createValidityData(explicit_votes, implicit_votes, missed_votes)
         } else {
           return createValidityData(0, 0, 0)
@@ -90,7 +90,7 @@ const blocksSlice = createSlice({
         data.map(o => o.i).reduce((p, c) => p + c, 0),
         data.map(o => o.m).reduce((p, c) => p + c, 0),
       )
-      blocksAdapter.upsertOne(state, { block_number: latest_block, _mvr: mvr})
+      blocksAdapter.upsertOne(state, { bix: latest_block, _mvr: mvr})
     })
   }
 })

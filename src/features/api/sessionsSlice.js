@@ -40,7 +40,7 @@ export const socketSessionReceived = createAction(
 
 // Slice
 const sessionsAdapter = createEntityAdapter({
-  selectId: (data) => data.session_index,
+  selectId: (data) => data.six,
 })
 
 const matchSessionReceived = isAnyOf(

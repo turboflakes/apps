@@ -62,7 +62,7 @@ export default function BestBlock() {
             <Typography variant="h4" sx={{mr: 2}}>#</Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
               <Typography variant="caption">best block</Typography>
-              <Typography variant="h4">{isSuccess ? `${block.block_number.format()}` : `# -`}</Typography>
+              <Typography variant="h4">{isSuccess ? `${block.bix.format()}` : `# -`}</Typography>
             </Box>
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>

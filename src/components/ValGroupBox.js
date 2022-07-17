@@ -66,33 +66,33 @@ export default function ValGroupBox({address, sessionIndex}) {
   // Group is the selected validator and peers
   const group = [
     principal,
-    ...allValidators.filter(o => principal.para.peers.includes(o.auth.index))
+    ...allValidators.filter(o => principal.para.peers.includes(o.auth.aix))
   ];
   
   const dataGridRows = group.map((v, i) => {
     if (v.is_auth) {
-      const authored_blocks = v.auth.authored_blocks
-      const total_points = v.auth.end_points - v.auth.start_points
-      const stats = Object.values(v.para.para_stats)
-      const explicit_votes = stats.map(o => o.explicit_votes).reduce((prev, current) => prev + current, 0)
-      const implicit_votes = stats.map(o => o.implicit_votes).reduce((prev, current) => prev + current, 0)
-      const missed_votes = stats.map(o => o.missed_votes).reduce((prev, current) => prev + current, 0)
+      const authored_blocks = v.auth.ab
+      const total_points = v.auth.ep - v.auth.sp
+      const stats = Object.values(v.para.stats)
+      const explicit_votes = stats.map(o => o.ev).reduce((p, c) => p + c, 0)
+      const implicit_votes = stats.map(o => o.iv).reduce((p, c) => p + c, 0)
+      const missed_votes = stats.map(o => o.mv).reduce((p, c) => p + c, 0)
       return createDataGridRows(i+1, v.identity, v.address, authored_blocks, implicit_votes, explicit_votes, missed_votes, total_points)
     } else {
       return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0)
     }
   })
 
-  const stats = Object.values(principal.para.para_stats);
-  const coreAssignments = stats.map(o => o.core_assignments).reduce((prev, current) => prev + current, 0)
+  const stats = Object.values(principal.para.stats);
+  const coreAssignments = stats.map(o => o.ca).reduce((p, c) => p + c, 0)
   const validityVotes = dataGridRows[0].e + dataGridRows[0].i + dataGridRows[0].m
   const mvr = calculateMvr(
-    dataGridRows.map(o => o.e).reduce((prev, current) => prev + current, 0),
-    dataGridRows.map(o => o.i).reduce((prev, current) => prev + current, 0),
-    dataGridRows.map(o => o.m).reduce((prev, current) => prev + current, 0)
+    dataGridRows.map(o => o.e).reduce((p, c) => p + c, 0),
+    dataGridRows.map(o => o.i).reduce((p, c) => p + c, 0),
+    dataGridRows.map(o => o.m).reduce((p, c) => p + c, 0)
   )
 
-  const chainName = principal.para.para_id ? (isChainSupported(selectedChain, principal.para.para_id) ? getChainName(selectedChain, principal.para.para_id) : principal.para.para_id) : ''
+  const chainName = principal.para.pid ? (isChainSupported(selectedChain, principal.para.pid) ? getChainName(selectedChain, principal.para.pid) : principal.para.pid) : ''
 
   const pieChartsData = dataGridRows.map(o => createBackingPieData(o.e, o.i, o.m, o.identity))
 
@@ -103,12 +103,12 @@ export default function ValGroupBox({address, sessionIndex}) {
     }
   })
 
-  const parachainIds = Object.keys(principal.para.para_stats);
+  const parachainIds = Object.keys(principal.para.stats);
   const parachainsData = parachainIds.map((p, i) => {
     return group.map((v, j) => {
-      if (v.para.para_stats[p]) {
-        const total = v.para.para_stats[p].explicit_votes + v.para.para_stats[p].implicit_votes + v.para.para_stats[p].missed_votes
-        return createParachainsData(j+1, 1, v.para.para_stats[p].explicit_votes + v.para.para_stats[p].implicit_votes, v.para.para_stats[p].missed_votes, v.para.para_stats[p].points, total)
+      if (v.para.stats[p]) {
+        const total = v.para.stats[p].ev + v.para.stats[p].iv + v.para.stats[p].mv
+        return createParachainsData(j+1, 1, v.para.stats[p].ev + v.para.stats[p].iv, v.para.stats[p].mv, v.para.stats[p].pt, total)
       }
       return createParachainsData(j+1, 1, 0, 0, 0, 0)
     })
@@ -204,7 +204,7 @@ export default function ValGroupBox({address, sessionIndex}) {
               <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 <Box sx={{ display: 'flex' }} >
                   <Box>
-                    <img src={getChainLogo(selectedChain, principal.para.para_id)} style={{ width: 32, height: 32, marginRight: 8, marginBottom: 4, backgroundColor: '#F7F7FA', borderRadius: 16}} alt={"logo"}/>
+                    <img src={getChainLogo(selectedChain, principal.para.pid)} style={{ width: 32, height: 32, marginRight: 8, marginBottom: 4, backgroundColor: '#F7F7FA', borderRadius: 16}} alt={"logo"}/>
                   </Box>
                   <Typography variant="h5" gutterBottom>{chainName}</Typography>
                 </Box>

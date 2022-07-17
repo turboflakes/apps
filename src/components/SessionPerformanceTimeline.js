@@ -29,7 +29,7 @@ export default function SessionPerformanceTimeline() {
   
   const filtered = blocks.slice(0, blocks.length-1)
   const timelineData = filtered.map(o => ({
-    block: o.block_number.format(),
+    block: o.bix.format(),
     mvr: 1 - o._mvr
   }))
 

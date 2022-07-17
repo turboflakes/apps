@@ -21,7 +21,7 @@ const unsubscribeValidator = (store) => {
     if (!!principal && principal.is_para) {
       const addresses = [
         previous_address,
-        ...allValidators.filter(o => principal.para.peers.includes(o.auth.index)).map(o => o.address)
+        ...allValidators.filter(o => principal.para.peers.includes(o.auth.aix)).map(o => o.address)
       ];
       const msg = JSON.stringify({ method: "unsubscribe_validator", params: addresses });
       store.dispatch(socketActions.submitMessage(msg))
@@ -110,7 +110,7 @@ const socketMiddleware = (store) => {
           const session = sessions[sessions.length-1]
           switch (previous_page) {
             case 'parachains/overview': {
-              const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [session.session_index.toString()] });
+              const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [session.six.toString()] });
               store.dispatch(socketActions.submitMessage(msg))
               break
             }
