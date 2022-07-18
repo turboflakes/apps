@@ -143,7 +143,7 @@ export const LayoutPage = ({api}) => {
     <Box sx={{ display: 'flex' }}>
       <AppBar position="absolute" open={open} color="transparent" sx={{ }} elevation={0} >
         <Toolbar sx={{ 
-          bgcolor: 'transparent',
+          // bgcolor: 'transparent',
           display: 'flex', 
           justifyContent: 'flex-end', 
           alignItems: 'center', 
