@@ -42,7 +42,7 @@ const ValidateChain = () => {
   if (isNetworkSupported(chainName)) {
     return (<Outlet />)
   }
-  return (<Navigate to="/kusama/parachains/overview" />)
+  return (<Navigate to="/one-t/kusama/parachains/overview" />)
 }
 
 const App = () => {
@@ -53,23 +53,22 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<LayoutPage api={api} />}>
-            <Route index element={<Navigate to="/kusama/parachains/overview" />} />
-            <Route path=":chainName" element={<ValidateChain />}>
-              <Route path="parachains">
-                <Route path="overview" element={<ParachainsOverviewPage />} />
-                <Route path="val-group" element={<ValGroupPage />} />
+            <Route index element={<Navigate to="/one-t/kusama/parachains/overview" />} />
+            <Route path="one-t">
+              <Route index element={<Navigate to="/one-t/kusama/parachains/overview" />} />
+              <Route path=":chainName" element={<ValidateChain />}>
+              <Route index element={<Navigate to="/one-t/kusama/parachains/overview" />} />
+                <Route path="parachains">
+                  <Route path="overview" element={<ParachainsOverviewPage />} />
+                  <Route path="val-group" element={<ValGroupPage />} />
+                </Route>
               </Route>
             </Route>
-            <Route path="*" element={<Navigate to="/kusama/parachains/overview" />} />
+            <Route path="*" element={<Navigate to="/one-t/kusama/parachains/overview" />} />
           </Route>
         </Routes>
       </Router>
   );
-}
-
-function IndexPage() {
-  console.log("__IndexPage");
-  return (<div>Index</div>);
 }
 
 export default withTheme(App);

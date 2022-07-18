@@ -136,7 +136,7 @@ export const LayoutPage = ({api}) => {
 
   const handlePageSelection = (page) => {
     dispatch(pageChanged(page));
-    navigate(`/${selectedChain}/${page}`)
+    navigate(`/one-t/${selectedChain}/${page}`)
   }
 
   return (

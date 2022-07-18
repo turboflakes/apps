@@ -78,7 +78,7 @@ export default function ValGroupCard({validators, groupId}) {
   const handleAddressSelected = (address) => {
     dispatch(addressChanged(address));
     dispatch(pageChanged('parachains/val-group'));
-    const path = `/${selectedChain}/parachains/val-group`
+    const path = `/one-t/${selectedChain}/parachains/val-group`
     navigate(`${path}?address=${address}`)
   }
 
