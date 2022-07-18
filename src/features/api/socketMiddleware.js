@@ -38,7 +38,7 @@ const socketMiddleware = (store) => {
   if (window["WebSocket"]) {
     // TODO get connected chain from store
     const chainName = selectChain(store.getState())
-    const adjustedUrl = `ws://${getNetworkHost(chainName)}/api/v1/ws`
+    const adjustedUrl = `wss://${getNetworkHost(chainName)}/api/v1/ws`
     let socket = new WebSocket(adjustedUrl)
 
     // listen to onopen event
