@@ -6,7 +6,7 @@ import SessionPieChart from './SessionPieChart';
 import BestBlock from './BestBlock';
 import SessionPerformancePieChart from './SessionPerformancePieChart';
 import SessionPerformanceTimeline from './SessionPerformanceTimeline';
-import { ValGroupsGrid } from './ValGroupsGrid';
+import ParachainsOverviewTabs from './ParachainsOverviewTabs';
 import { 
   selectSessionsAll,
  } from '../features/api/sessionsSlice'
@@ -32,7 +32,7 @@ export const ParachainsOverviewPage = () => {
           <BestBlock />
         </Grid>
         <Grid item xs={12}>
-          {!!session ? <ValGroupsGrid sessionIndex={session.six} /> : null}
+          {!!session ? <ParachainsOverviewTabs sessionIndex={session.six} /> : null}
         </Grid>
       </Grid>
 		</Box>

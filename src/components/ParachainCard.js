@@ -38,42 +38,22 @@ function createBackingPieData(e, i, m, n) {
   return { e, i, m, n };
 }
 
-export default function ValGroupCard({validators, groupId}) {
+export default function ParachainCard({validators, paraId, stats, groupId}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const selectedChain = useSelector(selectChain);
   // const total = data.e + data.i + data.m;
    
-  const dataGridRows = validators.map((v, i) => {
-    if (v.is_auth) {
-      const authored_blocks = v.auth.ab
-      const total_points = v.auth.ep - v.auth.sp
-      const stats = Object.values(v.para.stats)
-      const explicit_votes = stats.map(o => o.ev).reduce((p, c) => p + c, 0)
-      const implicit_votes = stats.map(o => o.iv).reduce((p, c) => p + c, 0)
-      const missed_votes = stats.map(o => o.mv).reduce((p, c) => p + c, 0)
-      return createDataGridRows(i+1, v.identity, v.address, authored_blocks, implicit_votes, explicit_votes, missed_votes, total_points)
-    } else {
-      return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0)
-    }
-  })
+  const pieChartsData = createBackingPieData(stats.ev, stats.iv, stats.mv, paraId)
 
-  const pieChartsData = dataGridRows.map(o => createBackingPieData(o.e, o.i, o.m, o.n)).reduce((prev, current) => 
-    createBackingPieData(prev.e + current.e, prev.i + current.i, prev.m + current.m, prev.n), 
-    createBackingPieData(0,0,0, groupId));
-
-  const principal = validators[0];
-  const stats = Object.values(principal.para.stats);
-  const coreAssignments = stats.map(o => o.ca).reduce((p, c) => p + c, 0)
-  const chainName = principal.para.pid ? (isChainSupported(selectedChain, principal.para.pid) ? getChainName(selectedChain, principal.para.pid) : principal.para.pid) : ''
-  const validityVotes = dataGridRows[0].e + dataGridRows[0].i + dataGridRows[0].m
-  const mvr = calculateMvr(
-    dataGridRows.map(o => o.e).reduce((p, c) => p + c, 0),
-    dataGridRows.map(o => o.i).reduce((p, c) => p + c, 0),
-    dataGridRows.map(o => o.m).reduce((p, c) => p + c, 0)
-  )
-  const validatorsOrderedByPoints = orderBy(dataGridRows, o => o.p, "desc")
+  // const principal = validators[0];
+  // const stats = Object.values(principal.para.stats);
+  const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : ''
+  const coreAssignments = validators.length > 0 ? stats.ca / validators.length : 0
+  const validityVotes = validators.length > 0 ? ((stats.ev + stats.iv + stats.mv) / validators.length) : 0
+  const mvr = calculateMvr(stats.ev, stats.iv, stats.mv)
+  const validatorsOrderedByPoints = orderBy(validators, o => o.p, "desc")
 
   const handleAddressSelected = (address) => {
     dispatch(addressChanged(address));
@@ -81,7 +61,6 @@ export default function ValGroupCard({validators, groupId}) {
     const path = `/${selectedChain}/parachains/val-group`
     navigate(`${path}?address=${address}`)
   }
-
 
   return (
     <Paper sx={{ 
@@ -95,30 +74,35 @@ export default function ValGroupCard({validators, groupId}) {
       borderRadius: 3,
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
       <Box sx={{p: 2}}>
-        <Box>
-          <Typography variant="h6">Val. Group {groupId}</Typography>
-          <Typography variant="caption"><i>{!!chainName ? `Currently backing ${chainName}` : 'Not backing'}</i></Typography>
+        <Box sx={{ mb:1, height: 40,  display: 'flex', justifyContent: 'space-between' }}>
+          {!!chainName ?
+          <Box sx={{ p: `4px 8px`, display: 'flex', alignItems: 'center', borderRadius: 3, backgroundColor: '#EEE' }} >
+            <img src={getChainLogo(selectedChain, paraId)} style={{ width: 32, height: 32, marginRight: 8, backgroundColor: '#F7F7FA', borderRadius: 16}} alt={"logo"}/>
+            <Typography variant="h6">{chainName}</Typography>
+          </Box> : null}
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+          <BackingPieChart data={pieChartsData} size="md" />
           <Box sx={{ display: 'flex', flexDirection: 'column'}}>
-            <List dense >
+            <Typography variant="caption" align='right' sx={{ mr: 2 }}>Val. Group {groupId}</Typography>
+            <List dense sx={{ mr: -1}} >
               {validatorsOrderedByPoints.map((v, i) => (
-                <ListItemButton key={i} sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(v.address)}>
-                  <ListItemIcon sx={{minWidth: 0, mr: 1, display: 'flex', alignItems: 'center'}}>
-                    <span style={{ width: '4px', height: '4px', marginLeft: '-4px', marginRight: '8px', borderRadius: '50%', backgroundColor: theme.palette.grade[grade(1-calculateMvr(v.e, v.i, v.m))], display: "inline-block" }}></span>
+                <ListItemButton key={i} sx={{ borderRadius: 30}} disableRipple 
+                  onClick={() => handleAddressSelected(v.address)}>
+                  <ListItemText align="right" sx={{whiteSpace: "nowrap", }}
+                    primary={nameDisplay(v.identity, 12)}
+                  />
+                  <ListItemIcon sx={{minWidth: 0, ml: 1, display: 'flex', alignItems: 'center'}}>
                     <Identicon
                       value={v.address}
                       size={24}
                       theme={'polkadot'} />
+                    <span style={{ width: '4px', height: '4px', marginLeft: '8px', marginRight: '-4px', borderRadius: '50%', backgroundColor: theme.palette.grade[grade(1-calculateMvr(v.e, v.i, v.m))], display: "inline-block" }}></span>
                   </ListItemIcon>
-                  <ListItemText sx={{whiteSpace: "nowrap"}}
-                    primary={nameDisplay(v.identity, 12)}
-                  />
                 </ListItemButton>
               ))}
             </List>
           </Box>
-          <BackingPieChart data={pieChartsData} size="md" />
         </Box>
       </Box>
       <Divider />

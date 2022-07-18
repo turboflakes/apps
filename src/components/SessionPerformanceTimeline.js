@@ -51,7 +51,7 @@ export default function SessionPerformanceTimeline() {
       >
       <Box sx={{ p:`16px 24px`, display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption">Backing Subsystem trend in the last {blocks.length} blocks</Typography>
+          <Typography variant="caption">Backing Subsystem trend from the last {blocks.length} blocks</Typography>
         </Box>
       </Box>
         <ResponsiveContainer width="100%" height="100%" sx={{borderRadius: 30}}>

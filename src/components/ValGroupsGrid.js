@@ -1,33 +1,28 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import groupBy from 'lodash/groupBy'
+import isNumber from 'lodash/isNumber'
 import isUndefined from 'lodash/isUndefined'
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ValGroupCard from './ValGroupCard';
 import { 
-  useGetValidatorsQuery,
   selectValidatorsAll
  } from '../features/api/validatorsSlice'
 import { calculateMvr } from '../util/mvr'
 import { grade } from '../util/grade'
 
-export const ValGroupsGrid = ({sessionIndex}) => {
+export default function ValGroupsGrid({sessionIndex}) {
 	// const theme = useTheme();
-  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority"}, {refetchOnMountOrArgChange: true});
   const allValidators = useSelector(selectValidatorsAll)
-
-  if (!isSuccess) {
-    return null
-  }
 
   // Filter validators by authority, p/v and session
   const filtered = allValidators.filter(o => o.is_auth && o.is_para && o.session === sessionIndex);
   // Group validators by groupID
   const groups = groupBy(filtered, (o) => o.para.group)
 
-  
+  // Calculate mvr to get number of validators A+ and F
   const mvrs = filtered.map(o => {
     const stats = Object.values(o.para.stats)
     const e = stats.map(o => o.ev).reduce((p, c) => p + c, 0)
