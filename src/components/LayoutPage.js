@@ -18,12 +18,15 @@ import ListSubheader from '@mui/material/ListSubheader';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import Chip from '@mui/material/Chip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink, faWaterLadder, faServer } from '@fortawesome/free-solid-svg-icons'
 import HubIcon from '@mui/icons-material/Hub';
 import SearchSmall from './SearchSmall'
+import Footer from './Footer'
 import { getNetworkIcon } from '../constants'
 import polkadotJsSVG from '../assets/polkadot_js_logo.svg';
+import onetSVG from '../assets/onet.svg';
 import apiSlice from '../features/api/apiSlice'
 import {
   pageChanged,
@@ -138,15 +141,17 @@ export const LayoutPage = ({api}) => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar position="absolute" open={open} color="transparent" sx={{ bgcolor: "rgba(255, 255, 255, 0.5)", backdropFilter: 'blur(8px)'}} elevation={0} >
+      <AppBar position="absolute" open={open} color="transparent" sx={{ }} elevation={0} >
         <Toolbar sx={{ 
           bgcolor: 'transparent',
           display: 'flex', 
           justifyContent: 'flex-end', 
           alignItems: 'center', 
           pr: '24px', // keep right padding when drawer closed
-          mt: 1 
+          // mt: 1,
+          bgcolor: "rgba(255, 255, 255, 0.5)", backdropFilter: 'blur(8px)'
           }} id="top-toolbar">
+          
           <IconButton
             edge="start"
             color="inherit"
@@ -154,11 +159,18 @@ export const LayoutPage = ({api}) => {
             onClick={toggleDrawer}
             sx={{
               marginRight: '36px',
+              color: 'rgba(0, 0, 0, 0.54)',
               ...(open && { display: 'none' }),
             }}
             >
             <MenuIcon />
           </IconButton>
+
+          { open ? 
+            <IconButton onClick={toggleDrawer}>
+              <ChevronLeftIcon />
+            </IconButton> : null }
+          
           <Box sx={{ flexGrow: 1 }}>
             {selectedPage === 'parachains/val-group' ? (!!selectedAddress ? <SearchSmall /> : null) : null}
           </Box>
@@ -206,16 +218,32 @@ export const LayoutPage = ({api}) => {
             <Toolbar
               sx={{
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'flex-end',
+                justifyContent: open ? 'space-around' : 'flex-end',
                 px: [1],
+                height: 232
               }}
             >
-              <IconButton onClick={toggleDrawer}>
-                <ChevronLeftIcon />
-              </IconButton>
+              <Box sx={{display: open ? 'contents': 'none'}}>
+                {/* <Box sx={{ m: 2, p: 2, width: 96, height: 96, visibility: open ? 'visible': 'hidden', borderRadius: 30 }}> */}
+                  <img src={onetSVG} style={{ 
+                    width: 96,
+                    height: 96 }} alt={"github"}/>
+                {/* </Box> */}
+                <Typography sx={{visibility: open ? 'visible': 'hidden'}} variant="h4">ONE-T</Typography>
+                <Typography sx={{visibility: open ? 'visible': 'hidden'}} variant="caption">{`${selectedChain[0].toUpperCase()}${selectedChain.slice(1)} Performance Bot`}</Typography>
+                <Chip sx={{ my: 1 }} label="alpha version" color='primary'/>
+              </Box>
+              <Box sx={{display: !open ? 'contents': 'none'}}>
+                <Typography variant="h5">O</Typography>
+                <Typography variant="h5">N</Typography>
+                <Typography variant="h5">E</Typography>
+                <Typography variant="h5">·</Typography>
+                <Typography variant="h5" gutterBottom>T</Typography>
+              </Box>
             </Toolbar>
-            <Divider sx={{ my: 1 }} />
+            <Divider sx={{ mb: 1 }} />
             <List component="nav" 
               sx={{ '> .MuiListItemButton-root.Mui-selected': { bgcolor: "rgba(0, 0, 0, 0.12)"}, '> .MuiListItemButton-root.Mui-selected:hover': { bgcolor: "rgba(0, 0, 0, 0.18)"}}}>
               <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
@@ -275,6 +303,7 @@ export const LayoutPage = ({api}) => {
         {/*  hidden toolbar */}
         <Toolbar/>
         <Outlet api={api} />
+        <Footer />
       </Box>
     </Box>
   );

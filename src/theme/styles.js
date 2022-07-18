@@ -76,7 +76,8 @@ let theme = createTheme({
       secondary0: "linear-gradient(0deg,#85BCE4,#E86866)",
       secondary90: "linear-gradient(90deg,#85BCE4,#E86866)",
       secondary180: "linear-gradient(180deg,#85BCE4,#E86866)",
-      trend: "linear-gradient(180deg,#343434,#FFF)"
+      trend: "linear-gradient(180deg,#343434,#FFF)",
+      onet: "linear-gradient(90deg,#45CDE9,#7A8FD3)",
     },
     text: {
       primary: "#0B1317",
