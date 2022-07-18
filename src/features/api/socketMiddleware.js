@@ -6,11 +6,13 @@ import {
   socketValidatorsReceived,
   selectValidatorsAll } from './validatorsSlice'
 import {
-  selectAddress
+  selectAddress,
+  selectChain
 } from '../chain/chainSlice';
 import {
   selectPage
 } from '../layout/layoutSlice';
+import { getNetworkHost } from '../../constants'
 
 
 const unsubscribeValidator = (store) => {
@@ -35,7 +37,9 @@ const unsubscribeValidator = (store) => {
 const socketMiddleware = (store) => {
   if (window["WebSocket"]) {
     // TODO get connected chain from store
-    let socket = new WebSocket('ws://localhost:5010/api/v1/ws')
+    const chainName = selectChain(store.getState())
+    const adjustedUrl = `ws://${getNetworkHost(chainName)}/api/v1/ws`
+    let socket = new WebSocket(adjustedUrl)
 
     // listen to onopen event
     socket.onopen = () => {
