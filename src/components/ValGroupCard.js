@@ -10,13 +10,9 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Identicon from '@polkadot/react-identicon';
-import Avatar from '@mui/material/Avatar';
-import FolderIcon from '@mui/icons-material/Folder';
 import BackingPieChart from './BackingPieChart';
 import {
   selectChain,
@@ -25,7 +21,7 @@ import {
 import {
   pageChanged
 } from '../features/layout/layoutSlice';
-import { isChainSupported, getChainName, getChainLogo } from '../constants'
+import { isChainSupported, getChainName } from '../constants'
 import { calculateMvr } from '../util/mvr'
 import {nameDisplay} from '../util/display'
 import { grade } from '../util/grade';
