@@ -70,7 +70,7 @@ export default function ValGroupBox({address, sessionIndex}) {
   ];
   
   const dataGridRows = group.map((v, i) => {
-    if (v.is_auth) {
+    if (v.is_auth && v.is_para) {
       const authored_blocks = v.auth.ab
       const total_points = v.auth.ep - v.auth.sp
       const stats = Object.values(v.para.stats)

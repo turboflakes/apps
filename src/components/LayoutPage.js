@@ -171,7 +171,7 @@ export const LayoutPage = ({api}) => {
               <ChevronLeftIcon />
             </IconButton> : null }
           
-          <Box sx={{ flexGrow: 1 }}>
+          <Box sx={{ ml: 2, flexGrow: 1 }}>
             {selectedPage === 'parachains/val-group' ? (!!selectedAddress ? <SearchSmall /> : null) : null}
           </Box>
           <ToggleButtonGroup
