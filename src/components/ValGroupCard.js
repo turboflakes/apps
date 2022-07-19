@@ -87,10 +87,10 @@ export default function ValGroupCard({validators, groupId}) {
       // justifyContent: 'center',
       // alignItems: 'center',
       width: '100%',
-      height: 358,
+      height: 376,
       borderRadius: 3,
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
-      <Box sx={{p: 2}}>
+      <Box sx={{p: 2, height: 302}}>
         <Box>
           <Typography variant="h6">Val. Group {groupId}</Typography>
           <Typography variant="caption"><i>{!!chainName ? `Currently backing ${chainName}` : 'Not backing'}</i></Typography>
@@ -118,7 +118,7 @@ export default function ValGroupCard({validators, groupId}) {
         </Box>
       </Box>
       <Divider />
-      <Box sx={{ p: 2, height: "100%", display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
+      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', pb: 1}}>
           <Typography variant="caption" align='center'>Core Assignments</Typography>
           <Typography variant="h5" align='center'>{coreAssignments}</Typography>

@@ -62,10 +62,10 @@ export default function ParachainCard({validators, paraId, stats, groupId}) {
       // justifyContent: 'center',
       // alignItems: 'center',
       width: '100%',
-      height: 358,
+      height: 376,
       borderRadius: 3,
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
-      <Box sx={{p: 2}}>
+      <Box sx={{p: 2, height: 302}}>
         <Box sx={{ mb:1, height: 40,  display: 'flex', justifyContent: 'space-between' }}>
           {!!chainName ?
           <Box sx={{ p: `4px 8px`, display: 'flex', alignItems: 'center', borderRadius: 3, backgroundColor: '#EEE' }} >
@@ -98,7 +98,7 @@ export default function ParachainCard({validators, paraId, stats, groupId}) {
         </Box>
       </Box>
       <Divider />
-      <Box sx={{ p: 2, height: "100%", display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
+      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', pb: 1}}>
           <Typography variant="caption" align='center'>Core Assignments</Typography>
           <Typography variant="h5" align='center'>{coreAssignments}</Typography>
