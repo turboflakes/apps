@@ -19,10 +19,10 @@ export const extendedApi = apiSlice.injectEndpoints({
           await queryFulfilled
           // `onSuccess` subscribe for updates
           const msg = JSON.stringify({ method: "subscribe_session", params: [id] });
-          dispatch(socketActions.submitMessage(msg))
+          dispatch(socketActions.messageQueued(msg))
         } catch (err) {
           // `onError` side-effect
-          // dispatch(socketActions.submitMessage(msg))
+          // dispatch(socketActions.messageQueued(msg))
         }
       },
     }),

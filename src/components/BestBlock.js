@@ -11,9 +11,9 @@ import {
  } from '../features/api/blocksSlice'
 
 export default function BestBlock() {
-  const {isSuccess} = useGetBlockQuery("best");
+  const {isSuccess} = useGetBlockQuery("best", {refetchOnMountOrArgChange: true});
   const [timer, setTimer] = React.useState(0);
-  const blocks = useSelector(selectAll)
+  const blocks = useSelector(selectAll);
   const updateTimer = React.useRef(null);
 
   const block = blocks[blocks.length-1]

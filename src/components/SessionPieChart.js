@@ -23,7 +23,7 @@ const COLORS = ['#343434', '#C8C9CC'];
 
 export default function SessionPieChart() {
   const {isSuccess} = useGetBlockQuery("best");
-  const {isSuccess: isSessionSuccess } = useGetSessionByIndexQuery("current");
+  const {isSuccess: isSessionSuccess } = useGetSessionByIndexQuery("current", {refetchOnMountOrArgChange: true});
 
   const blocks = useSelector(selectAll)
   const sessions = useSelector(selectSessionsAll)

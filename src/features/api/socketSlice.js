@@ -1,7 +1,10 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { 
+  createSlice,
+  current } from '@reduxjs/toolkit';
  
 const initialState = {
-  isConnected: false
+  isConnected: false,
+  messages: [],
 };
  
 const socketSlice = createSlice({
@@ -11,18 +14,19 @@ const socketSlice = createSlice({
     connectionEstablished: (state => {
       state.isConnected = true;
     }),
-    // receiveAllMessages: ((state, action: PayloadAction<{
-    //   messages: ChatMessage[]
-    // }>) => {
-    //   state.messages = action.payload.messages;
-    // }),
-    // receiveMessage: ((state, action: PayloadAction<{
-    //   message: ChatMessage
-    // }>) => {
-    //   state.messages.push(action.payload.message);
-    // }),
-    submitMessage: ((state, action) => {
-      return;
+    connectionClosed: (state => {
+      state.isConnected = false;
+    }),
+    messageQueued: ((state, action) => {
+      state.messages.push(action)
+    }),
+    messagesDispatched: ((state, action) => {
+      const socket = action.payload;
+      if (socket.readyState === WebSocket.OPEN) {
+        const _state = current(state)
+        _state.messages.forEach((m) => socket.send(m.payload));
+        state.messages = []
+      }
     })
   },
 });
@@ -32,4 +36,5 @@ export const socketActions = socketSlice.actions;
 export default socketSlice;
 
 // Selectors
-export const selectIsSocketConnected = (state) => state.isConnected;
+export const selectIsSocketConnected = (state) => state.socket.isConnected;
+export const selectMessagesInQueue = (state) => state.socket.messages.length > 0;

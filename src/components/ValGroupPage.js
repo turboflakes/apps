@@ -15,11 +15,14 @@ import {
 import { 
   selectSessionsAll,
  } from '../features/api/sessionsSlice'
-
+import { 
+  selectIsSocketConnected,
+} from '../features/api/socketSlice'
 
 export const ValGroupPage = () => {
 	// const theme = useTheme();
   const dispatch = useDispatch();
+  const isSocketConnected = useSelector(selectIsSocketConnected);
   const currentSelected = useSelector(selectAddress);
   const sessions = useSelector(selectSessionsAll)
   const session = sessions[sessions.length-1]
@@ -33,6 +36,11 @@ export const ValGroupPage = () => {
     }
   }, [searchAddress, currentSelected]);
 
+  if (!isSocketConnected) {
+    // TODO websocket/network disconnected page
+    return (<Box sx={{ m: 2, minHeight: '100vh' }}></Box>)
+  }
+
   return (
 		<Box sx={{ m: 2, minHeight: '100vh' }}>
       <Grid container spacing={2}>
@@ -40,10 +48,10 @@ export const ValGroupPage = () => {
           {!!currentSelected ? <ValAddress address={currentSelected} /> : null}
           </Grid>
           <Grid item xs={12} md={4}>
-            <SessionPieChart />
+          <SessionPieChart />
           </Grid>
           <Grid item xs={12} md={3}>
-            <BestBlock />
+          <BestBlock />
         </Grid>
         <Grid item xs={12}>
           {!!currentSelected && !!session ? 

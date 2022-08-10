@@ -10,11 +10,20 @@ import ParachainsOverviewTabs from './ParachainsOverviewTabs';
 import { 
   selectSessionsAll,
  } from '../features/api/sessionsSlice'
+import { 
+  selectIsSocketConnected,
+} from '../features/api/socketSlice'
 
 export const ParachainsOverviewPage = () => {
 	// const theme = useTheme();
+  const isSocketConnected = useSelector(selectIsSocketConnected);
   const sessions = useSelector(selectSessionsAll)
   const session = sessions[sessions.length-1]
+
+  if (!isSocketConnected) {
+    // TODO websocket/network disconnected page
+    return (<Box sx={{ m: 2, minHeight: '100vh' }}></Box>)
+  }
 
   return (
 		<Box sx={{ m: 2, minHeight: '100vh' }}>

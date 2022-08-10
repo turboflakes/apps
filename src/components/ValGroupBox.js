@@ -41,7 +41,7 @@ export default function ValGroupBox({address, sessionIndex}) {
   const allValidators = useSelector(selectValidatorsAll)
 
   if (isError) {
-    return (<Typography>! {error.data.errors[0]}</Typography>)
+    return (<Typography>! {error}</Typography>)
   }
   
   if (!isSuccess) {

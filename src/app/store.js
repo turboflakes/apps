@@ -21,7 +21,12 @@ export const store = configureStore({
     socket: socketSlice.reducer
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([apiSlice.middleware, socketMiddleware]),
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Ignore these action types
+        ignoredActions: ['socket/messagesDispatched'],
+      },
+    }).concat([apiSlice.middleware, socketMiddleware]),
   // middleware: (getDefaultMiddleware) =>
   //   getDefaultMiddleware({immutableCheck: false, serializableCheck: false,}).concat([apiSlice.middleware, socketMiddleware]),
 });

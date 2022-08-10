@@ -25,18 +25,18 @@ export const extendedApi = apiSlice.injectEndpoints({
           // `onSuccess` subscribe for updates
           if (params.role === "para_authority") {
             const msg1 = JSON.stringify({ method: 'subscribe_para_authorities', params: [params.session.toString()] });
-            dispatch(socketActions.submitMessage(msg1))
+            dispatch(socketActions.messageQueued(msg1))
             // TODO see how to better unsubscribe previous session.. for now just be explicit here
-            // NOTE: wait for at least one block so that is_para returns to false for validators no lonegr in session
+            // NOTE: wait for at least one block so that is_para returns to false for validators no longer in session
             setTimeout(() => {
               const msg2 = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [(params.session - 1).toString()] });
-              dispatch(socketActions.submitMessage(msg2))
-            }, 30000)
+              dispatch(socketActions.messageQueued(msg2))
+            }, 12000)
             
           }
         } catch (err) {
           // `onError` side-effect
-          // dispatch(socketActions.submitMessage(msg))
+          // dispatch(socketActions.messageQueued(msg))
         }
       },
     }),
@@ -48,7 +48,7 @@ export const extendedApi = apiSlice.injectEndpoints({
           const { data } = await queryFulfilled
           // `onSuccess` subscribe for updates
           const msg = JSON.stringify({ method: "subscribe_validator", params: [address] });
-          dispatch(socketActions.submitMessage(msg))
+          dispatch(socketActions.messageQueued(msg))
           if (data.is_para) {
             data.para.peers.forEach((peer) => {
               dispatch(extendedApi.endpoints.getValidatorPeerByAuthority.initiate({address, peer}, {forceRefetch: true}))
@@ -56,7 +56,7 @@ export const extendedApi = apiSlice.injectEndpoints({
           }
         } catch (err) {
           // `onError` side-effect
-          // dispatch(socketActions.submitMessage(msg))
+          // dispatch(socketActions.messageQueued(msg))
         }
       },
     }),
@@ -69,11 +69,11 @@ export const extendedApi = apiSlice.injectEndpoints({
           // `onSuccess` subscribe for updates
           if (data.is_auth) {
             const msg = JSON.stringify({ method: "subscribe_validator", params: [data.address] });
-            dispatch(socketActions.submitMessage(msg))
+            dispatch(socketActions.messageQueued(msg))
           }
         } catch (err) {
           // `onError` side-effect
-          // dispatch(socketActions.submitMessage(msg))
+          // dispatch(socketActions.messageQueued(msg))
         }
       },
     }),
