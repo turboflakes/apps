@@ -8,8 +8,12 @@ import SessionPerformancePieChart from './SessionPerformancePieChart';
 import SessionPerformanceTimeline from './SessionPerformanceTimeline';
 import ParachainsOverviewTabs from './ParachainsOverviewTabs';
 import { 
-  selectSessionsAll,
+  selectSessionHistory,
+  selectSessionCurrent,
  } from '../features/api/sessionsSlice'
+import { 
+  selectIsLiveMode,
+} from '../features/layout/layoutSlice'
 import { 
   selectIsSocketConnected,
 } from '../features/api/socketSlice'
@@ -17,8 +21,11 @@ import {
 export const ParachainsOverviewPage = () => {
 	// const theme = useTheme();
   const isSocketConnected = useSelector(selectIsSocketConnected);
-  const sessions = useSelector(selectSessionsAll)
-  const session = sessions[sessions.length-1]
+  const isLiveMode = useSelector(selectIsLiveMode);
+  const historySession = useSelector(selectSessionHistory);
+  const currentSession = useSelector(selectSessionCurrent);
+  
+  const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
 
   if (!isSocketConnected) {
     // TODO websocket/network disconnected page
@@ -26,22 +33,26 @@ export const ParachainsOverviewPage = () => {
   }
 
   return (
-		<Box sx={{ m: 2, minHeight: '100vh' }}>
+		<Box sx={{ m: 2, minHeight: '100vh', mt: isLiveMode ? '16px' : '112px' }}>
       <Grid container spacing={2}>
-        <Grid item xs={3}>
+        <Grid item xs={3} md={isLiveMode ? 3 : 8}>
           <SessionPerformanceTimeline />
         </Grid>
-        <Grid item xs={12} md={2}>
-          <SessionPerformancePieChart />
-        </Grid>
+        {isLiveMode ?
+          <Grid item xs={12} md={2}>
+            <SessionPerformancePieChart /> : null}
+          </Grid>
+        : null}
         <Grid item xs={12} md={4}>
-          <SessionPieChart />
+          <SessionPieChart sessionIndex={sessionIndex} />
         </Grid>
-        <Grid item xs={12} md={3}>
-          <BestBlock />
-        </Grid>
+        {isLiveMode ? 
+          <Grid item xs={12} md={3}>
+            <BestBlock />
+          </Grid>
+        : null}
         <Grid item xs={12}>
-          {!!session ? <ParachainsOverviewTabs sessionIndex={session.six} /> : null}
+          {!!sessionIndex ? <ParachainsOverviewTabs sessionIndex={sessionIndex} /> : null}
         </Grid>
       </Grid>
 		</Box>

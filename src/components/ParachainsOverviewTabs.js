@@ -18,7 +18,7 @@ function a11yProps(index) {
 
 export default function ParachainsOverviewTabs({sessionIndex}) {
 	// const theme = useTheme();
-  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority"}, {refetchOnMountOrArgChange: true});
+  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority"});
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);

@@ -6,6 +6,8 @@ import {
 } from '@reduxjs/toolkit'
 import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
+import { 
+  selectSessionByIndex } from './sessionsSlice'
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Validators'],
@@ -19,21 +21,20 @@ export const extendedApi = apiSlice.injectEndpoints({
       transformResponse: responseData => {
         return responseData.data
       },
-      async onQueryStarted(params, { dispatch, queryFulfilled }) {
+      async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
           // `onSuccess` subscribe for updates
-          if (params.role === "para_authority") {
-            const msg1 = JSON.stringify({ method: 'subscribe_para_authorities', params: [params.session.toString()] });
-            dispatch(socketActions.messageQueued(msg1))
-            // TODO see how to better unsubscribe previous session.. for now just be explicit here
-            // NOTE: wait for at least one block so that is_para returns to false for validators no longer in session
-            setTimeout(() => {
-              const msg2 = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [(params.session - 1).toString()] });
-              dispatch(socketActions.messageQueued(msg2))
-            }, 12000)
-            
-          }
+          const session = selectSessionByIndex(getState(), params.session)
+          if (params.role === "para_authority" && session.is_current) {
+            const msg = JSON.stringify({ method: 'subscribe_para_authorities', params: [params.session.toString()] });
+            dispatch(socketActions.messageQueued(msg))
+            // unsubscribe previous session if session is new
+            if (session.is_new) {
+              const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [(params.session - 1).toString()] });
+              dispatch(socketActions.messageQueued(msg))
+            }
+          }         
         } catch (err) {
           // `onError` side-effect
           // dispatch(socketActions.messageQueued(msg))

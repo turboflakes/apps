@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import SessionPieChart from './SessionPieChart';
@@ -13,7 +13,7 @@ import {
   addressChanged
 } from '../features/chain/chainSlice';
 import { 
-  selectSessionsAll,
+  selectSessionCurrent,
  } from '../features/api/sessionsSlice'
 import { 
   selectIsSocketConnected,
@@ -24,9 +24,8 @@ export const ValGroupPage = () => {
   const dispatch = useDispatch();
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const currentSelected = useSelector(selectAddress);
-  const sessions = useSelector(selectSessionsAll)
-  const session = sessions[sessions.length-1]
-  let [searchParams, setSearchParams] = useSearchParams();
+  const currentSession = useSelector(selectSessionCurrent);
+  let [searchParams] = useSearchParams();
   const searchAddress = searchParams.get("address");
 
   React.useEffect(() => {
@@ -48,14 +47,14 @@ export const ValGroupPage = () => {
           {!!currentSelected ? <ValAddress address={currentSelected} /> : null}
           </Grid>
           <Grid item xs={12} md={4}>
-          <SessionPieChart />
+          <SessionPieChart sessionIndex={currentSession} />
           </Grid>
           <Grid item xs={12} md={3}>
           <BestBlock />
         </Grid>
         <Grid item xs={12}>
-          {!!currentSelected && !!session ? 
-            <ValGroupBox address={currentSelected} sessionIndex={session.six} /> : 
+          {!!currentSelected ? 
+            <ValGroupBox address={currentSelected} sessionIndex={currentSession} /> : 
             <Box sx={{ height: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <SearchSmall />
             </Box>

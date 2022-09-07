@@ -1,6 +1,8 @@
 import { socketActions, selectIsSocketConnected, selectMessagesInQueue } from './socketSlice'
 import { socketBlockReceived } from './blocksSlice'
-import { selectSessionsAll, socketSessionReceived } from './sessionsSlice'
+import { 
+  selectSessionCurrent,
+  socketSessionReceived } from './sessionsSlice'
 import { 
   socketValidatorReceived,
   socketValidatorsReceived,
@@ -127,11 +129,10 @@ const socketMiddleware = (store) => {
         // unsubscribe to address and peers previously subscribed
         if (action.type === 'layout/pageChanged') {
           const previous_page = selectPage(store.getState())
-          const sessions = selectSessionsAll(store.getState())
-          const session = sessions[sessions.length-1]
+          const currentSession = selectSessionCurrent(store.getState());
           switch (previous_page) {
             case 'parachains/overview': {
-              const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [session.six.toString()] });
+              const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [currentSession.toString()] });
               store.dispatch(socketActions.messageQueued(msg))
               break
             }
@@ -143,6 +144,27 @@ const socketMiddleware = (store) => {
               break
           }
         }
+        // subscribe/unsubscribe all subscriptions
+        if (action.type === 'layout/modeChanged') {
+          const currentSession = selectSessionCurrent(store.getState());
+          if (action.payload === 'History') {
+            const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [currentSession.toString()] });
+            store.dispatch(socketActions.messageQueued(msg));
+          } else if (action.payload === 'Live') {
+            const msg = JSON.stringify({ method: 'subscribe_para_authorities', params: [currentSession.toString()] });
+            store.dispatch(socketActions.messageQueued(msg));
+          }
+          
+        }
+        // unsubscribe to address and peers previously subscribed
+        // if (action.type === 'sessions/sessionChanged') {
+        //   const sessionSelected = selectSessionSelected(store.getState())
+        //   const session_index = !!sessionSelected ? sessionSelected : "current"
+        //   const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [session_index.toString()] });
+        //   store.dispatch(socketActions.messageQueued(msg))
+        // }
+
+
         const result = next(action);
         // console.log('next state', store.getState());
         return result;

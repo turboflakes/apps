@@ -13,11 +13,6 @@ import {
   selectAll,
  } from '../features/api/blocksSlice'
 
-import { 
-  useGetSessionByIndexQuery,
-  selectSessionsAll,
- } from '../features/api/sessionsSlice'
-
 function createData(name, value) {
   return { name, value };
 }

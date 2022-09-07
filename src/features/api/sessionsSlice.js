@@ -3,7 +3,6 @@ import {
   createSlice,
   createEntityAdapter,
   isAnyOf,
-  current
 } from '@reduxjs/toolkit'
 import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
@@ -11,6 +10,16 @@ import { socketActions } from './socketSlice'
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Sessions'],
   endpoints: (builder) => ({
+    getSessions: builder.query({
+      query: ({max}) => ({
+        url: `/sessions`,
+        params: { max }
+      }),
+      providesTags: (result, error, arg) => [{ type: 'Sessions', id: arg }],
+      transformResponse: responseData => {
+        return responseData.data
+      },
+    }),
     getSessionByIndex: builder.query({
       query: (index) => `/sessions/${index}`,
       providesTags: (result, error, arg) => [{ type: 'Sessions', id: arg }],
@@ -18,8 +27,10 @@ export const extendedApi = apiSlice.injectEndpoints({
         try {
           await queryFulfilled
           // `onSuccess` subscribe for updates
-          const msg = JSON.stringify({ method: "subscribe_session", params: [id] });
-          dispatch(socketActions.messageQueued(msg))
+          if (id === "current") {
+            const msg = JSON.stringify({ method: "subscribe_session", params: ["new"] });
+            dispatch(socketActions.messageQueued(msg))
+          }
         } catch (err) {
           // `onError` side-effect
           // dispatch(socketActions.messageQueued(msg))
@@ -30,6 +41,7 @@ export const extendedApi = apiSlice.injectEndpoints({
 })
 
 export const {
+  useGetSessionsQuery,
   useGetSessionByIndexQuery,
 } = extendedApi
 
@@ -38,8 +50,12 @@ export const socketSessionReceived = createAction(
   'sessions/sessionReceived'
 )
 
+export const socketSessionsReceived = createAction(
+  'sessions/sessionsReceived'
+)
+
 // Slice
-const sessionsAdapter = createEntityAdapter({
+const adapter = createEntityAdapter({
   selectId: (data) => data.six,
 })
 
@@ -48,28 +64,54 @@ const matchSessionReceived = isAnyOf(
   extendedApi.endpoints.getSessionByIndex.matchFulfilled
 )
 
+export const matchSessionsReceived = isAnyOf(
+  socketSessionsReceived,
+  extendedApi.endpoints.getSessions.matchFulfilled
+)
+
 const sessionsSlice = createSlice({
   name: 'sessions',
-  initialState: sessionsAdapter.getInitialState(),
+  initialState: {
+    current: "current",
+    ...adapter.getInitialState()
+  },
   reducers: {
-
+    sessionHistoryChanged: (state, action) => {
+      state.history = action.payload;
+    },
+    sessionChanged: (state, action) => {
+      state.current = action.payload;
+    },
   },
   extraReducers(builder) {
-    builder.addMatcher(matchSessionReceived, (state, action) => {
-      // Only kept the last 6 sessions in the store
-      let currentState = current(state);
-      if (currentState.ids.length >= 8) {
-        sessionsAdapter.removeOne(state, currentState.ids[0])
+    builder
+    .addMatcher(matchSessionReceived, (state, action) => {
+      // update session current from sessionReceived (needed when new session is received)
+      if (action.payload.is_current) {
+        state.current = action.payload.six
       }
-      sessionsAdapter.addOne(state, { ...action.payload, _ts: + new Date()})
+      // update session with timestamp
+      adapter.upsertOne(state, { ...action.payload, _ts: + new Date()})
+    })
+    .addMatcher(matchSessionsReceived, (state, action) => {
+      const sessions = action.payload.map(session => ({
+        ...session,
+        _ts: + new Date()
+      }))
+      adapter.upsertMany(state, sessions)
     })
   }
 })
-
-export default sessionsSlice;
 
 // Selectors
 export const { 
   selectAll: selectSessionsAll,
   selectById: selectSessionByIndex
-} = sessionsAdapter.getSelectors(state => state.sessions)
+} = adapter.getSelectors(state => state.sessions)
+
+export const selectSessionHistory = (state) => state.sessions.history;
+export const selectSessionCurrent = (state) => state.sessions.current;
+
+export const { sessionHistoryChanged } = sessionsSlice.actions;
+
+export default sessionsSlice;

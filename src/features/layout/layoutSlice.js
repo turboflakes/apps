@@ -3,7 +3,7 @@ import { validateChain } from '../chain/chainSlice';
 
 const initializePage = () => {
   const chainName = validateChain()
-  let page = document.location.hash.replace(`#/${chainName}/`, '')
+  let page = document.location.hash.replace(`#/one-t/${chainName}/`, '')
   const indexOfSearchParams = page.indexOf('?');
   if (indexOfSearchParams !== -1) {
     page = page.substring(0, indexOfSearchParams)
@@ -12,7 +12,8 @@ const initializePage = () => {
 }
 
 const initialState = {
-  page: initializePage()
+  page: initializePage(),
+  mode: 'Live'
 };
 
 const layoutSlice = createSlice({
@@ -22,11 +23,17 @@ const layoutSlice = createSlice({
     pageChanged: (state, action) => {
       state.page = action.payload;
     },
+    modeChanged: (state, action) => {
+      state.mode = action.payload;
+    },
   },
 });
 
 export const selectPage = (state) => state.layout.page;
+export const selectMode = (state) => state.layout.mode;
+export const selectIsLiveMode = (state) => state.layout.mode === 'Live';
+export const selectIsHistoryMode = (state) => state.layout.mode === 'History';
 
-export const { pageChanged } = layoutSlice.actions;
+export const { pageChanged, modeChanged } = layoutSlice.actions;
 
 export default layoutSlice;
