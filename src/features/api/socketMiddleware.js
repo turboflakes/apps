@@ -128,9 +128,9 @@ const socketMiddleware = (store) => {
         }
         // unsubscribe to address and peers previously subscribed
         if (action.type === 'layout/pageChanged') {
-          const previous_page = selectPage(store.getState())
+          const previousPage = selectPage(store.getState())
           const currentSession = selectSessionCurrent(store.getState());
-          switch (previous_page) {
+          switch (previousPage) {
             case 'parachains/overview': {
               const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [currentSession.toString()] });
               store.dispatch(socketActions.messageQueued(msg))
@@ -147,14 +147,21 @@ const socketMiddleware = (store) => {
         // subscribe/unsubscribe all subscriptions
         if (action.type === 'layout/modeChanged') {
           const currentSession = selectSessionCurrent(store.getState());
-          if (action.payload === 'History') {
-            const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [currentSession.toString()] });
-            store.dispatch(socketActions.messageQueued(msg));
-          } else if (action.payload === 'Live') {
-            const msg = JSON.stringify({ method: 'subscribe_para_authorities', params: [currentSession.toString()] });
-            store.dispatch(socketActions.messageQueued(msg));
+          const currentPage = selectPage(store.getState())
+          switch (currentPage) {
+            case 'parachains/overview': {
+              if (action.payload === 'History') {
+                const msg = JSON.stringify({ method: 'unsubscribe_para_authorities_summary', params: [currentSession.toString()] });
+                store.dispatch(socketActions.messageQueued(msg))
+              } else if (action.payload === 'Live') {
+                const msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [currentSession.toString()] });
+                store.dispatch(socketActions.messageQueued(msg));
+              }
+              break
+            }
+            default:
+              break
           }
-          
         }
         // unsubscribe to address and peers previously subscribed
         // if (action.type === 'sessions/sessionChanged') {

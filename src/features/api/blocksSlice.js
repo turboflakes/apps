@@ -63,7 +63,7 @@ const blocksSlice = createSlice({
   extraReducers(builder) {
     builder
     .addMatcher(matchBlockReceived, (state, action) => {
-      // Only kept the last 8 blocks in the store
+      // Only kept the last 32 blocks in the store
       let currentState = current(state);
       if (currentState.ids.length >= 32) {
         blocksAdapter.removeOne(state, currentState.ids[0])
@@ -76,11 +76,7 @@ const blocksSlice = createSlice({
       const latest_block = s.ids[s.ids.length-1]
       // calculate mvr based on latest validators received data
       const data = action.payload.map(o => { if (o.is_auth && o.is_para) { 
-          const stats = Object.values(o.para.stats)
-          const explicit_votes = stats.map(o => o.ev).reduce((p, c) => p + c, 0)
-          const implicit_votes = stats.map(o => o.iv).reduce((p, c) => p + c, 0)
-          const missed_votes = stats.map(o => o.mv).reduce((p, c) => p + c, 0)
-          return createValidityData(explicit_votes, implicit_votes, missed_votes)
+          return createValidityData(o.para_summary.ev, o.para_summary.iv, o.para_summary.mv)
         } else {
           return createValidityData(0, 0, 0)
         }

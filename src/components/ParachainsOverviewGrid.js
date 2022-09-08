@@ -26,45 +26,25 @@ export default function ParachainsOverviewGrid({sessionIndex}) {
   
   // Group validators by paraID
   const groupedByParaId = groupBy(filtered, (o) => o.para.pid)
-  const parachains = Object.values(groupedByParaId).map((o) => {
-    const pid = o[0].para.pid
-    const gid = o[0].para.group
-    let stats = {
-      ca: 0,
-      ev: 0,
-      iv: 0,
-      mv: 0,
-      pt: 0,
-    }
-    filtered.forEach(f => {
-      if (isNumber(pid)) {
-        if (!isUndefined(f.para.stats[pid])) {
-          stats.ca += f.para.stats[pid].ca
-          stats.ev += f.para.stats[pid].ev
-          stats.iv += f.para.stats[pid].iv
-          stats.mv += f.para.stats[pid].mv
-          stats.pt += f.para.stats[pid].pt
-        }
-      }
-    })
-    const vals = o.map(v => { if (v.is_auth && v.is_para) { 
-        const stats = Object.values(v.para.stats)
-        const ev = stats.map(z => z.ev).reduce((p, c) => p + c, 0)
-        const iv = stats.map(z => z.iv).reduce((p, c) => p + c, 0)
-        const mv = stats.map(z => z.mv).reduce((p, c) => p + c, 0)
+
+  const parachains = Object.values(groupedByParaId).map(o => {
+    const paraId = o[0].para.pid
+    const groupId = o[0].para.group
+    const coreAssignments = o[0].para_summary.ca
+    const validators = o.map(v => { if (v.is_auth && v.is_para) { 
         const pt = v.ep - v.sp
-        return createValidatorData(v.address, v.identity, ev, iv, mv, pt)
+        return createValidatorData(v.address, v.identity, v.para_summary.ev, v.para_summary.iv, v.para_summary.mv, pt)
       } else {
         return createValidatorData('', '', 0, 0, 0, 0)
       }
     });
     return {
-      pid,
-      vals,
-      stats,
-      gid
+      paraId,
+      groupId,
+      coreAssignments,
+      validators,
     }
-  }).filter(o => !isNull(o.pid))
+  }).filter(o => !isNull(o.paraId))
   
   return (
 		<Box sx={{ m: 0 }}>
@@ -99,7 +79,7 @@ export default function ParachainsOverviewGrid({sessionIndex}) {
       <Grid container spacing={2}>
           {Object.values(parachains).map((p, i) => (
             <Grid item xs={12} md={3} key={i}>
-              <ParachainCard paraId={p.pid} validators={p.vals} stats={p.stats} groupId={p.gid} />
+              <ParachainCard paraId={p.paraId} validators={p.validators} groupId={p.groupId} coreAssignments={p.coreAssignments} />
             </Grid>
           ))}
       </Grid>

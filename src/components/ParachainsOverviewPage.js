@@ -40,7 +40,7 @@ export const ParachainsOverviewPage = () => {
         </Grid>
         {isLiveMode ?
           <Grid item xs={12} md={2}>
-            <SessionPerformancePieChart /> : null}
+            <SessionPerformancePieChart />
           </Grid>
         : null}
         <Grid item xs={12} md={4}>

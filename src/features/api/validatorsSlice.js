@@ -13,9 +13,9 @@ export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Validators'],
   endpoints: (builder) => ({
     getValidators: builder.query({
-      query: ({session, role}) => ({
+      query: ({session, role, show_summary, show_stats}) => ({
         url: `/validators`,
-        params: { session, role }
+        params: { session, role, show_summary, show_stats }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
       transformResponse: responseData => {
@@ -27,12 +27,20 @@ export const extendedApi = apiSlice.injectEndpoints({
           // `onSuccess` subscribe for updates
           const session = selectSessionByIndex(getState(), params.session)
           if (params.role === "para_authority" && session.is_current) {
-            const msg = JSON.stringify({ method: 'subscribe_para_authorities', params: [params.session.toString()] });
-            dispatch(socketActions.messageQueued(msg))
+            if (params.show_summary) {
+              const msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [params.session.toString()] });
+              dispatch(socketActions.messageQueued(msg))
+            } else if (params.show_stats) {
+              const msg = JSON.stringify({ method: 'subscribe_para_authorities_stats', params: [params.session.toString()] });
+              dispatch(socketActions.messageQueued(msg))
+            }
+            
             // unsubscribe previous session if session is new
             if (session.is_new) {
-              const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [(params.session - 1).toString()] });
-              dispatch(socketActions.messageQueued(msg))
+              const msg1 = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [(params.session - 1).toString()] });
+              dispatch(socketActions.messageQueued(msg1))
+              const msg2 = JSON.stringify({ method: 'subscribe_para_authorities_stats', params: [(params.session - 1).toString()] });
+              dispatch(socketActions.messageQueued(msg2))
             }
           }         
         } catch (err) {

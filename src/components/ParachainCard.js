@@ -23,28 +23,31 @@ import {
 } from '../features/layout/layoutSlice';
 import { isChainSupported, getChainName, getChainLogo } from '../constants'
 import { calculateMvr } from '../util/mvr'
-import {nameDisplay} from '../util/display'
+import { stashDisplay, nameDisplay } from '../util/display'
 import { grade } from '../util/grade';
 
 function createBackingPieData(e, i, m, n) {
   return { e, i, m, n };
 }
 
-export default function ParachainCard({validators, paraId, stats, groupId}) {
+export default function ParachainCard({validators, paraId, groupId, coreAssignments}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const selectedChain = useSelector(selectChain);
   // const total = data.e + data.i + data.m;
    
-  const pieChartsData = createBackingPieData(stats.ev, stats.iv, stats.mv, paraId)
+  const e = validators.map(v => v.e).reduce((a, b) => a + b, 0);
+  const i = validators.map(v => v.i).reduce((a, b) => a + b, 0);
+  const m = validators.map(v => v.m).reduce((a, b) => a + b, 0);
+
+  const pieChartsData = createBackingPieData(e, i, m, paraId)
 
   // const principal = validators[0];
   // const stats = Object.values(principal.para.stats);
   const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : ''
-  const coreAssignments = validators.length > 0 ? stats.ca / validators.length : 0
-  const validityVotes = validators.length > 0 ? ((stats.ev + stats.iv + stats.mv) / validators.length) : 0
-  const mvr = calculateMvr(stats.ev, stats.iv, stats.mv)
+  const validityVotes = validators.length > 0 ? ((e + i + m) / validators.length) : 0
+  const mvr = calculateMvr(e, i, m)
   const validatorsOrderedByPoints = orderBy(validators, o => o.p, "desc")
 
   const handleAddressSelected = (address) => {
@@ -82,7 +85,7 @@ export default function ParachainCard({validators, paraId, stats, groupId}) {
                 <ListItemButton key={i} sx={{ borderRadius: 30}} disableRipple 
                   onClick={() => handleAddressSelected(v.address)}>
                   <ListItemText align="right" sx={{whiteSpace: "nowrap", }}
-                    primary={nameDisplay(v.identity, 12)}
+                    primary={nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address), 12)}
                   />
                   <ListItemIcon sx={{minWidth: 0, ml: 1, display: 'flex', alignItems: 'center'}}>
                     <Identicon
