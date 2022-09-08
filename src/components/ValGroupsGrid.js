@@ -19,22 +19,17 @@ export default function ValGroupsGrid({sessionIndex}) {
 
   // Filter validators by authority, p/v and session
   const filtered = allValidators.filter(o => o.is_auth && o.is_para && o.session === sessionIndex);
+
   // Group validators by groupID
-  const groups = groupBy(filtered, (o) => o.para.group)
+  const groupedByValGroupId = groupBy(filtered, o => o.para.group);
 
   // Calculate mvr to get number of validators A+ and F
-  const mvrs = filtered.map(o => {
-    const stats = Object.values(o.para.stats)
-    const e = stats.map(o => o.ev).reduce((p, c) => p + c, 0)
-    const i = stats.map(o => o.iv).reduce((p, c) => p + c, 0)
-    const m = stats.map(o => o.mv).reduce((p, c) => p + c, 0)
-    return calculateMvr(e, i, m)
-  })
+  const mvrs = filtered.map(o => calculateMvr(o.para_summary.ev, o.para_summary.iv, o.para_summary.mv));
   // filter A+ validators
   const gradeAplus = mvrs.filter(mvr => grade(1 - mvr) === "A+")
   // const averageMvrGradeAplus = Math.round((gradeAplus.reduce((p, c) => p + c, 0) / gradeAplus.length) * 10000) / 10000
   // filter F validators
-  const gradeF = mvrs.filter(mvr => grade(1-mvr) === "F")
+  const gradeF = mvrs.filter(mvr => grade(1 - mvr) === "F")
   const averageMvrGradeF = Math.round((gradeF.reduce((p, c) => p + c, 0) / gradeF.length) * 10000) / 10000
   
   return (
@@ -57,11 +52,11 @@ export default function ValGroupsGrid({sessionIndex}) {
           <Typography variant="subtitle2">{(gradeF.length * 100) / filtered.length}% have a low performance (F) with an average missed vote ratio of {averageMvrGradeF}</Typography>
       </Box>
       <Grid container spacing={2}>
-          {Object.values(groups).map((g, i) => (
-            <Grid item xs={12} md={3} key={i}>
-              <ValGroupCard groupId={i} validators={g} />
-            </Grid>
-          ))}
+        {Object.values(groupedByValGroupId).map((validators, i) => (
+          <Grid item xs={12} md={3} key={i}>
+            <ValGroupCard validators={validators} />
+          </Grid>
+        ))}
       </Grid>
 		</Box>
   );

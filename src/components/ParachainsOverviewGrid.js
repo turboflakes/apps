@@ -26,25 +26,6 @@ export default function ParachainsOverviewGrid({sessionIndex}) {
   
   // Group validators by paraID
   const groupedByParaId = groupBy(filtered, (o) => o.para.pid)
-
-  const parachains = Object.values(groupedByParaId).map(o => {
-    const paraId = o[0].para.pid
-    const groupId = o[0].para.group
-    const coreAssignments = o[0].para_summary.ca
-    const validators = o.map(v => { if (v.is_auth && v.is_para) { 
-        const pt = v.ep - v.sp
-        return createValidatorData(v.address, v.identity, v.para_summary.ev, v.para_summary.iv, v.para_summary.mv, pt)
-      } else {
-        return createValidatorData('', '', 0, 0, 0, 0)
-      }
-    });
-    return {
-      paraId,
-      groupId,
-      coreAssignments,
-      validators,
-    }
-  }).filter(o => !isNull(o.paraId))
   
   return (
 		<Box sx={{ m: 0 }}>
@@ -68,7 +49,7 @@ export default function ParachainsOverviewGrid({sessionIndex}) {
             <Paper sx={{ p: 2, width: 176, borderRadius: 3, display: 'flex', flexDirection: 'column', alignItems: 'flex-end',
               boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'}}>
               <Typography variant="caption">Parachains scheduled</Typography>
-              <Typography variant="h5">{parachains.length}</Typography>
+              <Typography variant="h5">{groupedByParaId.length}</Typography>
             </Paper>
           </Box>
         </Box>
@@ -77,11 +58,11 @@ export default function ParachainsOverviewGrid({sessionIndex}) {
           <Typography variant="subtitle2">{(gradeF.length * 100) / filtered.length}% have a low performance (F) with an average missed vote ratio of {averageMvrGradeF}</Typography> */}
       </Box>
       <Grid container spacing={2}>
-          {Object.values(parachains).map((p, i) => (
-            <Grid item xs={12} md={3} key={i}>
-              <ParachainCard paraId={p.paraId} validators={p.validators} groupId={p.groupId} coreAssignments={p.coreAssignments} />
-            </Grid>
-          ))}
+        {Object.values(groupedByParaId).map((validators, i) => (
+          <Grid item xs={12} md={3} key={i}>
+            <ParachainCard validators={validators} />
+          </Grid>
+        ))}
       </Grid>
 		</Box>
   );

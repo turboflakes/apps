@@ -23,53 +23,32 @@ import {
 } from '../features/layout/layoutSlice';
 import { isChainSupported, getChainName } from '../constants'
 import { calculateMvr } from '../util/mvr'
-import {nameDisplay} from '../util/display'
+import { stashDisplay, nameDisplay } from '../util/display'
 import { grade } from '../util/grade';
-
-function createDataGridRows(id, identity, address, b, i, e, m, p) {
-  return { id, identity, address, b, i, e, m, p };
-}
 
 function createBackingPieData(e, i, m, n) {
   return { e, i, m, n };
 }
 
-export default function ValGroupCard({validators, groupId}) {
+export default function ValGroupCard({validators}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const selectedChain = useSelector(selectChain);
-  // const total = data.e + data.i + data.m;
-   
-  const dataGridRows = validators.map((v, i) => {
-    if (v.is_auth) {
-      const authored_blocks = v.auth.ab
-      const total_points = v.auth.ep - v.auth.sp
-      const stats = Object.values(v.para.stats)
-      const explicit_votes = stats.map(o => o.ev).reduce((p, c) => p + c, 0)
-      const implicit_votes = stats.map(o => o.iv).reduce((p, c) => p + c, 0)
-      const missed_votes = stats.map(o => o.mv).reduce((p, c) => p + c, 0)
-      return createDataGridRows(i+1, v.identity, v.address, authored_blocks, implicit_votes, explicit_votes, missed_votes, total_points)
-    } else {
-      return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0)
-    }
-  })
+  
+  const groupId = validators[0].para.group;
+  const paraId = validators[0].para.pid;
+  const coreAssignments = validators[0].para_summary.ca;
 
-  const pieChartsData = dataGridRows.map(o => createBackingPieData(o.e, o.i, o.m, o.n)).reduce((prev, current) => 
-    createBackingPieData(prev.e + current.e, prev.i + current.i, prev.m + current.m, prev.n), 
-    createBackingPieData(0,0,0, groupId));
-
-  const principal = validators[0];
-  const stats = Object.values(principal.para.stats);
-  const coreAssignments = stats.map(o => o.ca).reduce((p, c) => p + c, 0)
-  const chainName = principal.para.pid ? (isChainSupported(selectedChain, principal.para.pid) ? getChainName(selectedChain, principal.para.pid) : principal.para.pid) : ''
-  const validityVotes = dataGridRows[0].e + dataGridRows[0].i + dataGridRows[0].m
-  const mvr = calculateMvr(
-    dataGridRows.map(o => o.e).reduce((p, c) => p + c, 0),
-    dataGridRows.map(o => o.i).reduce((p, c) => p + c, 0),
-    dataGridRows.map(o => o.m).reduce((p, c) => p + c, 0)
-  )
-  const validatorsOrderedByPoints = orderBy(dataGridRows, o => o.p, "desc")
+  // calculate MVR
+  const e = validators.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0);
+  const i = validators.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0);
+  const m = validators.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0);
+  const mvr = calculateMvr(e, i, m);
+  const validityVotes = validators.length > 0 ? ((e + i + m) / validators.length) : 0;
+  const pieChartsData = createBackingPieData(e, i, m, paraId);
+  const validatorsOrderedByPoints = orderBy(validators, o => o.auth.ep - o.auth.sp, "desc");  
+  const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
 
   const handleAddressSelected = (address) => {
     dispatch(addressChanged(address));
@@ -101,14 +80,16 @@ export default function ValGroupCard({validators, groupId}) {
               {validatorsOrderedByPoints.map((v, i) => (
                 <ListItemButton key={i} sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(v.address)}>
                   <ListItemIcon sx={{minWidth: 0, mr: 1, display: 'flex', alignItems: 'center'}}>
-                    <span style={{ width: '4px', height: '4px', marginLeft: '-4px', marginRight: '8px', borderRadius: '50%', backgroundColor: theme.palette.grade[grade(1-calculateMvr(v.e, v.i, v.m))], display: "inline-block" }}></span>
+                    <span style={{ width: '4px', height: '4px', marginLeft: '-4px', marginRight: '8px', borderRadius: '50%', 
+                      backgroundColor: theme.palette.grade[grade(1-calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv))], 
+                      display: "inline-block" }}></span>
                     <Identicon
                       value={v.address}
                       size={24}
                       theme={'polkadot'} />
                   </ListItemIcon>
                   <ListItemText sx={{whiteSpace: "nowrap"}}
-                    primary={nameDisplay(v.identity, 12)}
+                    primary={nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address), 12)}
                   />
                 </ListItemButton>
               ))}

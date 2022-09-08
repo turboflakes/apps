@@ -30,25 +30,25 @@ function createBackingPieData(e, i, m, n) {
   return { e, i, m, n };
 }
 
-export default function ParachainCard({validators, paraId, groupId, coreAssignments}) {
+export default function ParachainCard({validators}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const selectedChain = useSelector(selectChain);
-  // const total = data.e + data.i + data.m;
-   
-  const e = validators.map(v => v.e).reduce((a, b) => a + b, 0);
-  const i = validators.map(v => v.i).reduce((a, b) => a + b, 0);
-  const m = validators.map(v => v.m).reduce((a, b) => a + b, 0);
+  
+  const groupId = validators[0].para.group;
+  const paraId = validators[0].para.pid;
+  const coreAssignments = validators[0].para_summary.ca;
 
-  const pieChartsData = createBackingPieData(e, i, m, paraId)
-
-  // const principal = validators[0];
-  // const stats = Object.values(principal.para.stats);
-  const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : ''
-  const validityVotes = validators.length > 0 ? ((e + i + m) / validators.length) : 0
-  const mvr = calculateMvr(e, i, m)
-  const validatorsOrderedByPoints = orderBy(validators, o => o.p, "desc")
+  // calculate MVR
+  const e = validators.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0);
+  const i = validators.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0);
+  const m = validators.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0);
+  const mvr = calculateMvr(e, i, m);
+  const validityVotes = validators.length > 0 ? ((e + i + m) / validators.length) : 0;
+  const pieChartsData = createBackingPieData(e, i, m, paraId);
+  const validatorsOrderedByPoints = orderBy(validators, o => o.auth.ep - o.auth.sp, "desc");  
+  const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
 
   const handleAddressSelected = (address) => {
     dispatch(addressChanged(address));
@@ -92,7 +92,9 @@ export default function ParachainCard({validators, paraId, groupId, coreAssignme
                       value={v.address}
                       size={24}
                       theme={'polkadot'} />
-                    <span style={{ width: '4px', height: '4px', marginLeft: '8px', marginRight: '-4px', borderRadius: '50%', backgroundColor: theme.palette.grade[grade(1-calculateMvr(v.e, v.i, v.m))], display: "inline-block" }}></span>
+                    <span style={{ width: '4px', height: '4px', marginLeft: '8px', marginRight: '-4px', borderRadius: '50%', 
+                      backgroundColor: theme.palette.grade[grade(1-calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv))],
+                      display: "inline-block" }}></span>
                   </ListItemIcon>
                 </ListItemButton>
               ))}
