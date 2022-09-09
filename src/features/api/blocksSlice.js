@@ -94,7 +94,6 @@ const blocksSlice = createSlice({
 export default blocksSlice;
 
 // Selectors
-
 export const selectBest = (state) => !!state.blocks.ids.length ? state.blocks.entities[state.blocks.ids[state.blocks.ids.length-1]] : undefined;
 
 export const { 

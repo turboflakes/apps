@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import groupBy from 'lodash/groupBy'
-import isNumber from 'lodash/isNumber'
 import isUndefined from 'lodash/isUndefined'
 import isNull from 'lodash/isNull'
 import Grid from '@mui/material/Grid';
@@ -13,16 +12,14 @@ import {
   selectValidatorsAll
  } from '../features/api/validatorsSlice'
 
-function createValidatorData(address, identity, e, i, m, p) {
-  return { address, identity, e, i, m, p };
-}
 
 export default function ParachainsOverviewGrid({sessionIndex}) {
 	// const theme = useTheme();
   const allValidators = useSelector(selectValidatorsAll)
 
   // Filter validators by authority, p/v and session
-  const filtered = allValidators.filter(o => o.is_auth && o.is_para && o.session === sessionIndex);
+  let filtered = allValidators.filter(o => o.is_auth && o.is_para && o.session === sessionIndex)
+    .filter(o => !isNull(o.para.pid) && !isUndefined(o.para.pid));
   
   // Group validators by paraID
   const groupedByParaId = groupBy(filtered, (o) => o.para.pid)
@@ -49,7 +46,7 @@ export default function ParachainsOverviewGrid({sessionIndex}) {
             <Paper sx={{ p: 2, width: 176, borderRadius: 3, display: 'flex', flexDirection: 'column', alignItems: 'flex-end',
               boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'}}>
               <Typography variant="caption">Parachains scheduled</Typography>
-              <Typography variant="h5">{groupedByParaId.length}</Typography>
+              <Typography variant="h5">{Object.keys(groupedByParaId).length}</Typography>
             </Paper>
           </Box>
         </Box>

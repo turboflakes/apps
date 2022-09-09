@@ -8,6 +8,8 @@ import socketSlice from '../features/api/socketSlice';
 import blocksSlice from '../features/api/blocksSlice';
 import sessionsSlice from '../features/api/sessionsSlice';
 import validatorsSlice from '../features/api/validatorsSlice';
+import authoritiesSlice from '../features/api/authoritiesSlice';
+import valGroupsSlice from '../features/api/valGroupsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +19,8 @@ export const store = configureStore({
     blocks: blocksSlice.reducer,
     sessions: sessionsSlice.reducer,
     validators: validatorsSlice.reducer,
+    authorities: authoritiesSlice.reducer,
+    valGroups: valGroupsSlice.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
     socket: socketSlice.reducer
   },

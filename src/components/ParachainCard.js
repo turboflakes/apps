@@ -85,7 +85,7 @@ export default function ParachainCard({validators}) {
                 <ListItemButton key={i} sx={{ borderRadius: 30}} disableRipple 
                   onClick={() => handleAddressSelected(v.address)}>
                   <ListItemText align="right" sx={{whiteSpace: "nowrap", }}
-                    primary={nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address), 12)}
+                    primary={nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 4), 12)}
                   />
                   <ListItemIcon sx={{minWidth: 0, ml: 1, display: 'flex', alignItems: 'center'}}>
                     <Identicon

@@ -29,7 +29,6 @@ export const ValGroupPage = () => {
   const searchAddress = searchParams.get("address");
 
   React.useEffect(() => {
-    
     if (searchAddress && searchAddress !== currentSelected) {
       dispatch(addressChanged(searchAddress));
     }
@@ -44,7 +43,7 @@ export const ValGroupPage = () => {
 		<Box sx={{ m: 2, minHeight: '100vh' }}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={5}>
-          {!!currentSelected ? <ValAddress address={currentSelected} /> : null}
+          {/* {!!currentSelected ? <ValAddress address={currentSelected} /> : null} */}
           </Grid>
           <Grid item xs={12} md={4}>
           <SessionPieChart sessionIndex={currentSession} />

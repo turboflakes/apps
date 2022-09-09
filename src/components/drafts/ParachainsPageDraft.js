@@ -13,19 +13,19 @@ import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 // import IconButton from '@mui/material/IconButton';
 // import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import { PoolBox } from '../features/pools/PoolBox'
-import { PoolsBox } from '../features/pools/PoolsBox'
+import { PoolBox } from '../../features/pools/PoolBox'
+import { PoolsBox } from '../../features/pools/PoolsBox'
 
 import VotesByParachainsChart from './VotesByParachainsChart';
-import PointsByParachainsChart from './PointsByParachainsChart';
-import SessionTimeline from './SessionTimeline';
+import PointsByParachainsChart from '../PointsByParachainsChart';
+import SessionTimeline from '../SessionTimeline';
 import onet from '../assets/onet.svg';
-import { getNetworkName, getNetworkPoolId, getNetworkIcon } from '../constants'
-import apiSlice from '../features/api/apiSlice'
+import { getNetworkName, getNetworkPoolId, getNetworkIcon } from '../../constants'
+import apiSlice from '../../features/api/apiSlice'
 import {
   chainChanged,
   selectChain,
-} from '../features/chain/chainSlice';
+} from '../../features/chain/chainSlice';
 
 
 export const ParachainsPage = ({api}) => {

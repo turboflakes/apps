@@ -16,7 +16,7 @@ import {
 } from '../features/chain/chainSlice';
 
 export default function ValAddress({address}) {
-  const {data, isSuccess, isFetching} = useGetValidatorByAddressQuery(address);
+  const {data, isSuccess, isFetching} = useGetValidatorByAddressQuery({address});
   const chainInfo = useSelector(selectChainInfo)
 
   if (isUndefined(chainInfo)) { 

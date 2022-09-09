@@ -21,6 +21,9 @@ import {
 import {
   pageChanged
 } from '../features/layout/layoutSlice';
+import {
+  selectValidatorsBySessionAndGroupId
+} from '../features/api/valGroupsSlice';
 import { isChainSupported, getChainName } from '../constants'
 import { calculateMvr } from '../util/mvr'
 import { stashDisplay, nameDisplay } from '../util/display'
@@ -30,13 +33,13 @@ function createBackingPieData(e, i, m, n) {
   return { e, i, m, n };
 }
 
-export default function ValGroupCard({validators}) {
+export default function ValGroupCard({sessionIndex, groupId}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const selectedChain = useSelector(selectChain);
+  const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex, groupId));
   
-  const groupId = validators[0].para.group;
   const paraId = validators[0].para.pid;
   const coreAssignments = validators[0].para_summary.ca;
 
@@ -89,7 +92,7 @@ export default function ValGroupCard({validators}) {
                       theme={'polkadot'} />
                   </ListItemIcon>
                   <ListItemText sx={{whiteSpace: "nowrap"}}
-                    primary={nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address), 12)}
+                    primary={nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 4), 12)}
                   />
                 </ListItemButton>
               ))}

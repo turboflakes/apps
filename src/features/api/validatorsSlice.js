@@ -50,17 +50,20 @@ export const extendedApi = apiSlice.injectEndpoints({
       },
     }),
     getValidatorByAddress: builder.query({
-      query: (address) => `/validators/${address}`,
+      query: ({address, session, show_summary, show_stats}) => ({
+        url: `/validators/${address}`,
+        params: { session, show_summary, show_stats }
+      }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
-      async onQueryStarted(address, { dispatch, queryFulfilled }) {
+      async onQueryStarted({address, session, show_summary, show_stats}, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
           // `onSuccess` subscribe for updates
-          const msg = JSON.stringify({ method: "subscribe_validator", params: [address] });
+          const msg = JSON.stringify({ method: "subscribe_validator", params: [address.toString()] });
           dispatch(socketActions.messageQueued(msg))
           if (data.is_para) {
             data.para.peers.forEach((peer) => {
-              dispatch(extendedApi.endpoints.getValidatorPeerByAuthority.initiate({address, peer}, {forceRefetch: true}))
+              dispatch(extendedApi.endpoints.getValidatorPeerByAuthority.initiate({address, peer, session, show_summary, show_stats }, {forceRefetch: true}))
             })
           }
         } catch (err) {
@@ -70,14 +73,17 @@ export const extendedApi = apiSlice.injectEndpoints({
       },
     }),
     getValidatorPeerByAuthority: builder.query({
-      query: ({address, peer}) => `/validators/${address}/peers/${peer}`,
+      query: ({address, peer, session, show_summary, show_stats}) => ({
+        url: `/validators/${address}/peers/${peer}`,
+        params: { session, show_summary, show_stats }
+      }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
-      async onQueryStarted({ address }, { dispatch, queryFulfilled }) {
+      async onQueryStarted({ }, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
           // `onSuccess` subscribe for updates
           if (data.is_auth) {
-            const msg = JSON.stringify({ method: "subscribe_validator", params: [data.address] });
+            const msg = JSON.stringify({ method: "subscribe_validator", params: [data.address.toString()] });
             dispatch(socketActions.messageQueued(msg))
           }
         } catch (err) {
@@ -109,7 +115,7 @@ const adapter = createEntityAdapter({
   selectId: (data) => `${data.session}_${data.address}`,
 })
 
-const matchValidatorReceived = isAnyOf(
+export const matchValidatorReceived = isAnyOf(
   socketValidatorReceived,
   extendedApi.endpoints.getValidatorByAddress.matchFulfilled,
   extendedApi.endpoints.getValidatorPeerByAuthority.matchFulfilled
@@ -144,5 +150,8 @@ export default validatorsSlice;
 // Selectors
 export const { 
   selectAll: selectValidatorsAll,
-  selectById: selectValidatorByAddress
+  selectById: selectValidatorById,
 } = adapter.getSelectors(state => state.validators)
+
+export const selectValidatorBySessionAndAddress = (state, session, address) => selectValidatorById(state, `${session}_${address}`)
+// export const selectValidatorsAllBySessionAndAddress = (state, session, address) => selectValidatorById(state, `${session}_${address}`)

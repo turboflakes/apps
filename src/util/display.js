@@ -1,6 +1,6 @@
 
-export const stashDisplay = (stash) => {
-    return !!stash ? `${stash.slice(0, 6)}...${stash.slice(stash.length-6, stash.length)}` : `-`
+export const stashDisplay = (stash, max = 6) => {
+    return !!stash ? `${stash.slice(0, max)}...${stash.slice(stash.length-max, stash.length)}` : `-`
 }
 
 export const hashDisplay = (hash) => {
