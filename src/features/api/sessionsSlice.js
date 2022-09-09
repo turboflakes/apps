@@ -16,6 +16,7 @@ import {
   selectValidatorsBySessionAndGroupId,
   selectValidatorIdsBySessionAndGroupId
 } from './valGroupsSlice'
+import { calculateMvr } from '../../util/mvr'
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Sessions'],
@@ -115,8 +116,9 @@ const sessionsSlice = createSlice({
       const filtered = action.payload.filter(v => v.is_auth && v.is_para);
       // Note: we assume that every payload is under a unique session
       const session = filtered[0].session;
-      const groupIds = filtered.map(v => toNumber(v.para.group))
-      adapter.upsertOne(state, { six: session, groupIds: uniq(groupIds).sort((a, b) => a - b)})
+      const groupIds = uniq(filtered.map(v => toNumber(v.para.group))).sort((a, b) => a - b)
+      const mvrs = filtered.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
+      adapter.upsertOne(state, { six: session, groupIds, mvrs})
     })
   }
 })
@@ -130,8 +132,9 @@ export const {
 export const selectSessionHistory = (state) => state.sessions.history;
 export const selectSessionCurrent = (state) => state.sessions.current;
 export const selectValGroupIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session).groupIds) ? selectSessionByIndex(state, session).groupIds : []) : [];
-export const selectValidatorIdsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session).groupIds.map(groupId => selectValidatorIdsBySessionAndGroupId(state, session, groupId)) : []
-export const selectValidatorsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session).groupIds.map(groupId => selectValidatorsBySessionAndGroupId(state, session, groupId)) : []
+export const selectMVRsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session).mvrs) ? selectSessionByIndex(state, session).mvrs : []) : [];
+export const selectParaValidatorIdsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session).groupIds.map(groupId => selectValidatorIdsBySessionAndGroupId(state, session, groupId)) : []
+export const selectParaValidatorsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session).groupIds.map(groupId => selectValidatorsBySessionAndGroupId(state, session, groupId)) : []
 
 export const { sessionHistoryChanged } = sessionsSlice.actions;
 
