@@ -81,7 +81,7 @@ export default function GradesBox({sessionIndex}) {
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
           <GradesPieChart data={pieChartData} size="md" />
-          <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%'}}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', width: '256px'}}>
             <List dense >
               {grades.map((g, i) => (
                 <ListItem key={i} sx={{ 

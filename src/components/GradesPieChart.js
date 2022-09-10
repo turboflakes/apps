@@ -42,7 +42,7 @@ export default function GradesPieChart({data, size}) {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          width: size === "md" ? 304 : 160,
+          width: size === "md" ? '304px' : '160px',
           // height: '100%',
           // borderRadius: 3,
           // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
