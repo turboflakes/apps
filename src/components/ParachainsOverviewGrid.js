@@ -50,9 +50,6 @@ export default function ParachainsOverviewGrid({sessionIndex}) {
             </Paper>
           </Box>
         </Box>
-        {/* {!isUndefined(gradeAplus) && !isUndefined(gradeF) ? 
-          <Typography variant="subtitle2">{(gradeAplus.length * 100) / filtered.length}% of para validators in the current session have an exceptional performance (A+)</Typography> : null}
-          <Typography variant="subtitle2">{(gradeF.length * 100) / filtered.length}% have a low performance (F) with an average missed vote ratio of {averageMvrGradeF}</Typography> */}
       </Box>
       <Grid container spacing={2}>
         {Object.values(groupedByParaId).map((validators, i) => (
