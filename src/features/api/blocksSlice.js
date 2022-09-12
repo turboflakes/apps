@@ -75,7 +75,7 @@ const blocksSlice = createSlice({
       const s = current(state)
       const latest_block = s.ids[s.ids.length-1]
       // calculate mvr based on latest validators received data
-      const data = action.payload.map(o => { if (o.is_auth && o.is_para) { 
+      const data = action.payload.data.map(o => { if (o.is_auth && o.is_para) { 
           return createValidityData(o.para_summary.ev, o.para_summary.iv, o.para_summary.mv)
         } else {
           return createValidityData(0, 0, 0)

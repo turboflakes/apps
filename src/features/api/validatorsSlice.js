@@ -18,9 +18,6 @@ export const extendedApi = apiSlice.injectEndpoints({
         params: { session, role, show_summary, show_stats }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
-      transformResponse: responseData => {
-        return responseData.data
-      },
       async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
@@ -136,8 +133,9 @@ const validatorsSlice = createSlice({
       adapter.upsertOne(state, { ...action.payload, _ts: + new Date()})
     })
     .addMatcher(matchValidatorsReceived, (state, action) => {
-      const validators = action.payload.map(validator => ({
+      const validators = action.payload.data.map(validator => ({
         ...validator,
+        session: action.payload.session,
         _ts: + new Date()
       }))
       adapter.upsertMany(state, validators)

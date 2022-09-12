@@ -18,9 +18,6 @@ export const extendedApi = apiSlice.injectEndpoints({
         params: { session }
       }),
       providesTags: (result, error, arg) => [{ type: 'Parachains', id: arg }],
-      // transformResponse: responseData => {
-      //   return responseData.data
-      // },
       async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
         try {
           await queryFulfilled

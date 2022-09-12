@@ -116,12 +116,10 @@ const sessionsSlice = createSlice({
     })
     .addMatcher(matchValidatorsReceived, (state, action) => {
       // Filter validators if authority and p/v
-      const filtered = action.payload.filter(v => v.is_auth && v.is_para);
-      // Note: we assume that every payload is under a unique session
-      const session = filtered[0].session;
+      const filtered = action.payload.data.filter(v => v.is_auth && v.is_para);
       const groupIds = uniq(filtered.map(v => toNumber(v.para.group))).sort((a, b) => a - b)
       const mvrs = filtered.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
-      adapter.upsertOne(state, { six: session, groupIds, mvrs})
+      adapter.upsertOne(state, { six: action.payload.session, groupIds, mvrs})
     })
     .addMatcher(matchParachainsReceived, (state, action) => {
       adapter.upsertOne(state, { six: action.payload.session, parachainIds: action.payload.data.map(p => p.pid)})

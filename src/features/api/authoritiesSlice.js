@@ -29,10 +29,10 @@ const authoritiesSlice = createSlice({
       }
     })
     .addMatcher(matchValidatorsReceived, (state, action) => {
-      const validators = action.payload.filter(validator => !!validator.is_auth)
+      const validators = action.payload.data.filter(validator => !!validator.is_auth)
           .map(validator => ({ 
-            id: `${validator.session}_${validator.auth.aix}`, 
-            validatorId: `${validator.session}_${validator.address}`
+            id: `${action.payload.session}_${validator.auth.aix}`, 
+            validatorId: `${action.payload.session}_${validator.address}`
           }))
       adapter.upsertMany(state, validators)
     })
