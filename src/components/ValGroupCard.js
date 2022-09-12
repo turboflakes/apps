@@ -1,42 +1,26 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux';
-import orderBy from 'lodash/orderBy'
+import { useSelector } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
-import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Identicon from '@polkadot/react-identicon';
 import BackingPieChart from './BackingPieChart';
+import ValGroupList from './ValGroupList';
 import {
   selectChain,
-  addressChanged
 } from '../features/chain/chainSlice';
-import {
-  pageChanged
-} from '../features/layout/layoutSlice';
 import {
   selectValidatorsBySessionAndGroupId
 } from '../features/api/valGroupsSlice';
 import { isChainSupported, getChainName } from '../constants'
 import { calculateMvr } from '../util/mvr'
-import { stashDisplay, nameDisplay } from '../util/display'
-import { grade } from '../util/grade';
 
 function createBackingPieData(e, i, m, n) {
   return { e, i, m, n };
 }
 
 export default function ValGroupCard({sessionIndex, groupId}) {
-  const theme = useTheme();
-  const dispatch = useDispatch();
-  const navigate = useNavigate()
   const selectedChain = useSelector(selectChain);
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex, groupId));
   
@@ -50,16 +34,7 @@ export default function ValGroupCard({sessionIndex, groupId}) {
   const mvr = calculateMvr(e, i, m);
   const validityVotes = validators.length > 0 ? ((e + i + m) / validators.length) : 0;
   const pieChartsData = createBackingPieData(e, i, m, paraId);
-  const validatorsOrderedByPoints = orderBy(validators, o => o.auth.ep - o.auth.sp, "desc");  
   const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
-
-  const handleAddressSelected = (address) => {
-    dispatch(addressChanged(address));
-    dispatch(pageChanged('parachains/val-group'));
-    const path = `/one-t/${selectedChain}/parachains/val-group`
-    navigate(`${path}?address=${address}`)
-  }
-
 
   return (
     <Paper sx={{ 
@@ -78,26 +53,7 @@ export default function ValGroupCard({sessionIndex, groupId}) {
           <Typography variant="caption"><i>{!!chainName ? `Currently backing ${chainName}` : 'Not backing'}</i></Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
-          <Box sx={{ display: 'flex', flexDirection: 'column'}}>
-            <List dense >
-              {validatorsOrderedByPoints.map((v, i) => (
-                <ListItemButton key={i} sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(v.address)}>
-                  <ListItemIcon sx={{minWidth: 0, mr: 1, display: 'flex', alignItems: 'center'}}>
-                    <span style={{ width: '4px', height: '4px', marginLeft: '-4px', marginRight: '8px', borderRadius: '50%', 
-                      backgroundColor: theme.palette.grade[grade(1-calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv))], 
-                      display: "inline-block" }}></span>
-                    <Identicon
-                      value={v.address}
-                      size={24}
-                      theme={'polkadot'} />
-                  </ListItemIcon>
-                  <ListItemText sx={{whiteSpace: "nowrap"}}
-                    primary={nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 4), 12)}
-                  />
-                </ListItemButton>
-              ))}
-            </List>
-          </Box>
+          <ValGroupList sessionIndex={sessionIndex} groupId={groupId} />
           <BackingPieChart data={pieChartsData} size="md" />
         </Box>
       </Box>

@@ -13,6 +13,9 @@ import {
   matchValidatorsReceived,
 } from './validatorsSlice'
 import { 
+  matchParachainsReceived,
+} from './parachainsSlice'
+import { 
   selectValidatorsBySessionAndGroupId,
   selectValidatorIdsBySessionAndGroupId
 } from './valGroupsSlice'
@@ -120,6 +123,9 @@ const sessionsSlice = createSlice({
       const mvrs = filtered.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
       adapter.upsertOne(state, { six: session, groupIds, mvrs})
     })
+    .addMatcher(matchParachainsReceived, (state, action) => {
+      adapter.upsertOne(state, { six: action.payload.session, parachainIds: action.payload.data.map(p => p.pid)})
+    })
   }
 })
 
@@ -132,6 +138,7 @@ export const {
 export const selectSessionHistory = (state) => state.sessions.history;
 export const selectSessionCurrent = (state) => state.sessions.current;
 export const selectValGroupIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session).groupIds) ? selectSessionByIndex(state, session).groupIds : []) : [];
+export const selectParachainIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session).parachainIds) ? selectSessionByIndex(state, session).parachainIds : []) : [];
 export const selectMVRsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session).mvrs) ? selectSessionByIndex(state, session).mvrs : []) : [];
 export const selectParaValidatorIdsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session).groupIds.map(groupId => selectValidatorIdsBySessionAndGroupId(state, session, groupId)) : []
 export const selectParaValidatorsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session).groupIds.map(groupId => selectValidatorsBySessionAndGroupId(state, session, groupId)) : []

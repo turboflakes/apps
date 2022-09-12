@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useNavigate, Outlet } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 // import { useTheme } from '@mui/material/styles';
 import Tabs from '@mui/material/Tabs';
@@ -12,9 +12,6 @@ import {
  } from '../features/api/validatorsSlice'
  import {
   pageChanged,
-  selectPage,
-  selectMode,
-  selectIsHistoryMode
 } from '../features/layout/layoutSlice';
  import {
   selectChain,
@@ -27,18 +24,17 @@ function a11yProps(index) {
   };
 }
 
-const tabPages = ["overview", "val-groups"];
+const tabPages = ["parachains/overview", "parachains/val-groups"];
 
 export default function ParachainsOverviewTabs({sessionIndex, tab}) {
 	// const theme = useTheme();
   const navigate = useNavigate();
 	const dispatch = useDispatch();
   const selectedChain = useSelector(selectChain);
-  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
-  // const [value, setValue] = React.useState(0);
+  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true}, {refetchOnMountOrArgChange: true});
   const handleChange = (event, newValue) => {
     dispatch(pageChanged(tabPages[newValue]));
-    navigate(`/one-t/${selectedChain}/parachains/${tabPages[newValue]}`)
+    navigate(`/one-t/${selectedChain}/${tabPages[newValue]}`)
   };
 
   if (!isSuccess) {

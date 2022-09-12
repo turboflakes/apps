@@ -8,7 +8,6 @@ const renderTooltip = (props) => {
   const { active, payload } = props;
   if (active && payload && payload.length) {
     const data = payload[0] && payload[0].payload;
-    const p = data.payload.total === 0 ? 0 : data.payload.value / data.payload.total
     return (
       <Box
         sx={{ 

@@ -1,8 +1,5 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux'
-import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from 'recharts';
 import { Typography } from '@mui/material';
 import {nameDisplay} from '../util/display';

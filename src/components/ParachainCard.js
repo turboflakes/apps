@@ -1,61 +1,40 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux';
-import orderBy from 'lodash/orderBy'
+import { useSelector } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
-import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Identicon from '@polkadot/react-identicon';
 import BackingPieChart from './BackingPieChart';
+import ValGroupList from './ValGroupList';
 import {
   selectChain,
-  addressChanged
 } from '../features/chain/chainSlice';
-import {
-  pageChanged
-} from '../features/layout/layoutSlice';
+import { 
+  selectParachainBySessionAndParaId,
+ } from '../features/api/parachainsSlice'
 import { isChainSupported, getChainName, getChainLogo } from '../constants'
 import { calculateMvr } from '../util/mvr'
-import { stashDisplay, nameDisplay } from '../util/display'
-import { grade } from '../util/grade';
 
 function createBackingPieData(e, i, m, n) {
   return { e, i, m, n };
 }
 
-export default function ParachainCard({validators}) {
-  const theme = useTheme();
-  const dispatch = useDispatch();
-  const navigate = useNavigate()
+export default function ParachainCard({sessionIndex, paraId}) {
+  // const theme = useTheme();
   const selectedChain = useSelector(selectChain);
+
+  const parachain = useSelector(state => selectParachainBySessionAndParaId(state, sessionIndex, paraId));
   
-  const groupId = validators[0].para.group;
-  const paraId = validators[0].para.pid;
-  const coreAssignments = validators[0].para_summary.ca;
-
-  // calculate MVR
-  const e = validators.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0);
-  const i = validators.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0);
-  const m = validators.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0);
-  const mvr = calculateMvr(e, i, m);
-  const validityVotes = validators.length > 0 ? ((e + i + m) / validators.length) : 0;
-  const pieChartsData = createBackingPieData(e, i, m, paraId);
-  const validatorsOrderedByPoints = orderBy(validators, o => o.auth.ep - o.auth.sp, "desc");  
-  const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
-
-  const handleAddressSelected = (address) => {
-    dispatch(addressChanged(address));
-    dispatch(pageChanged('parachains/val-group'));
-    const path = `/one-t/${selectedChain}/parachains/val-group`
-    navigate(`${path}?address=${address}`)
+  if (!parachain) {
+    return null
   }
+
+  const coreAssignments = parachain.stats.ca;
+  const validityVotes = parachain.stats.ev + parachain.stats.iv + parachain.stats.mv;
+  const mvr = calculateMvr(parachain.stats.ev, parachain.stats.iv, parachain.stats.mv);
+  const pieChartsData = createBackingPieData(parachain.stats.ev, parachain.stats.iv, parachain.stats.mv, paraId);
+  const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
 
   return (
     <Paper sx={{ 
@@ -79,26 +58,8 @@ export default function ParachainCard({validators}) {
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
           <BackingPieChart data={pieChartsData} size="md" />
           <Box sx={{ display: 'flex', flexDirection: 'column'}}>
-            <Typography variant="caption" align='right' sx={{ mr: 2 }}>Val. Group {groupId}</Typography>
-            <List dense sx={{ mr: -1}} >
-              {validatorsOrderedByPoints.map((v, i) => (
-                <ListItemButton key={i} sx={{ borderRadius: 30}} disableRipple 
-                  onClick={() => handleAddressSelected(v.address)}>
-                  <ListItemText align="right" sx={{whiteSpace: "nowrap", }}
-                    primary={nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 4), 12)}
-                  />
-                  <ListItemIcon sx={{minWidth: 0, ml: 1, display: 'flex', alignItems: 'center'}}>
-                    <Identicon
-                      value={v.address}
-                      size={24}
-                      theme={'polkadot'} />
-                    <span style={{ width: '4px', height: '4px', marginLeft: '8px', marginRight: '-4px', borderRadius: '50%', 
-                      backgroundColor: theme.palette.grade[grade(1-calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv))],
-                      display: "inline-block" }}></span>
-                  </ListItemIcon>
-                </ListItemButton>
-              ))}
-            </List>
+            <Typography variant="caption" align='right' sx={{ mr: 2 }}><i>{!!parachain.group ? `Backed by Val. Group ${parachain.group}` : `Waiting core assignment`}</i></Typography>
+            <ValGroupList sessionIndex={sessionIndex} groupId={parachain.group} />
           </Box>
         </Box>
       </Box>

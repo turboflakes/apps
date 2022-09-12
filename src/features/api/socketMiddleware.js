@@ -7,6 +7,9 @@ import {
   socketValidatorReceived,
   socketValidatorsReceived,
   selectValidatorsAll } from './validatorsSlice'
+import { 
+  socketParachainsReceived,
+} from './parachainsSlice'
 import {
   selectAddress,
   selectChain
@@ -79,6 +82,10 @@ const initWebsocket = (store) => {
             store.dispatch(socketValidatorsReceived(message.result))
             break
           }
+          case 'parachains': {
+            store.dispatch(socketParachainsReceived(message.result))
+            break
+          }
           default:
             break
         }
@@ -132,8 +139,11 @@ const socketMiddleware = (store) => {
           const currentSession = selectSessionCurrent(store.getState());
           switch (previousPage) {
             case 'parachains/overview': {
-              const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [currentSession.toString()] });
+              const msg = JSON.stringify({ method: 'unsubscribe_parachains', params: [currentSession.toString()] });
               store.dispatch(socketActions.messageQueued(msg))
+              break
+            }
+            case 'parachains/val-groups': {
               break
             }
             case 'parachains/val-group': {
