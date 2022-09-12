@@ -37,8 +37,17 @@ export default function GradesBox({sessionIndex}) {
     return null
   }
 
-  const gradesPercentages = grades.map(g => mvrs.filter(mvr => grade(1 - mvr) === g).length * 100 / mvrs.length);
-  const pieChartData = grades.map((g, i) => ({name: g, value: gradesPercentages[i]}))
+  const gradesData = grades.map(g => {
+    const quantity = mvrs.filter(mvr => grade(1 - mvr) === g).length;
+    const percentage = quantity * 100 / mvrs.length;
+    return {
+      name: g,
+      value: percentage,
+      quantity,
+    }
+  });
+  
+  // const pieChartData = grades.map((g, i) => ({name: g, value: gradesPercentages[i], }))
   
   return (
     <Paper sx={{ 
@@ -54,7 +63,10 @@ export default function GradesBox({sessionIndex}) {
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
       <Box sx={{p: 2}}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
-          <Typography variant="h6">Grades</Typography>
+          <Box>
+            <Typography variant="h6">Grades</Typography>
+            <Typography variant="caption"><i>Validators by grade</i></Typography>
+          </Box>
           <CustomTooltip
             disableFocusListener
             placement="bottom-end"
@@ -79,26 +91,27 @@ export default function GradesBox({sessionIndex}) {
             <InfoOutlinedIcon sx={{ color: theme.palette.neutrals[300]}}/>
           </CustomTooltip>
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
-          <GradesPieChart data={pieChartData} size="md" />
+        <Box sx={{ mt: '-24px', display: 'flex', justifyContent: 'space-between'}}>
+          <GradesPieChart data={gradesData} size="md" />
           <Box sx={{ display: 'flex', flexDirection: 'column', width: '256px'}}>
             <List dense >
-              {grades.map((g, i) => (
+              {gradesData.map((g, i) => (
                 <ListItem key={i} sx={{ 
                     // bgcolor: theme.palette.grade[g],
                     borderBottom: `1px solid ${theme.palette.divider}`, 
                     '+ :last-child': { borderBottom: 'none'} 
                   }}
                     secondaryAction={
-                      <Typography variant="caption">{`${gradesPercentages[i]}%`}</Typography>
+                      <Typography variant="caption">{`${g.value}%`}</Typography>
                     }
                   >
                   <ListItemIcon sx={{ minWidth: '24px'}}>
                     <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 
-                      bgcolor: theme.palette.grade[g], 
-                      display: "inline-block" }}></Box>
+                      bgcolor: theme.palette.grade[g.name], 
+                      display: "inline-block" }}>
+                    </Box>
                   </ListItemIcon>
-                  <ListItemText sx={{ m: 0 }} primary={g} />
+                  <ListItemText sx={{ m: 0 }} primary={`${g.name}`} />
                 </ListItem>
               ))}
             </List>

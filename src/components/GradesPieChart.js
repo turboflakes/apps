@@ -20,10 +20,13 @@ const renderTooltip = (props) => {
          }}
       >
         <Typography component="div" variant="caption" color="inherit" gutterBottom>
-          <b>Grade</b>
+          <b>Grade {data.payload.name}</b>
+        </Typography>
+        <Typography component="div" variant="caption" color="inherit" gutterBottom>
+          {data.payload.value}%
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          {data.payload.name}: {data.payload.value}%
+          {data.payload.quantity} validators
         </Typography>
       </Box>
     );
@@ -67,6 +70,9 @@ export default function GradesPieChart({data, size}) {
                   <Cell key={`cell-${index}`} fill={theme.palette.grade[entry.name]} />
                 ))}
               </Pie>
+              <text x="50%" y="50%" fill="#343434" style={{ ...theme.typography.h2 }} textAnchor={'middle'} dominantBaseline="central">
+                {data.slice().sort((a, b) => b.value - a.value)[0].name}
+              </text>
               <Tooltip 
                 cursor={{fill: 'transparent'}}
                 wrapperStyle={{ zIndex: 100 }} 
