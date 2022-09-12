@@ -30,7 +30,8 @@ export default function ParachainCard({sessionIndex, paraId}) {
     return null
   }
 
-  const coreAssignments = parachain.stats.ca;
+  // NOTE: parachain cOre_assignments is given in cents (100 = 1)
+  const coreAssignments = parachain.stats.ca / 100;
   const validityVotes = parachain.stats.ev + parachain.stats.iv + parachain.stats.mv;
   const mvr = calculateMvr(parachain.stats.ev, parachain.stats.iv, parachain.stats.mv);
   const pieChartsData = createBackingPieData(parachain.stats.ev, parachain.stats.iv, parachain.stats.mv, paraId);
