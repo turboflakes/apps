@@ -18,7 +18,7 @@ import {
   selectIsSocketConnected,
 } from '../features/api/socketSlice'
 
-export const ParachainsOverviewPage = () => {
+export const ParachainsOverviewPage = ({tab}) => {
 	// const theme = useTheme();
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const isLiveMode = useSelector(selectIsLiveMode);
@@ -52,7 +52,7 @@ export const ParachainsOverviewPage = () => {
           </Grid>
         : null}
         <Grid item xs={12}>
-          {!!sessionIndex ? <ParachainsOverviewTabs sessionIndex={sessionIndex} /> : null}
+          {!!sessionIndex ? <ParachainsOverviewTabs sessionIndex={sessionIndex} tab={tab} /> : null}
         </Grid>
       </Grid>
 		</Box>

@@ -311,6 +311,14 @@ export const LayoutPage = ({api}) => {
                 <ListItemText primary="Overview" 
                   sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
+              <ListItemButton selected={selectedPage === 'parachains/val-groups'}
+                onClick={() => handlePageSelection('parachains/val-groups')}>
+                <ListItemIcon>
+                  <FontAwesomeIcon icon={faLink} />
+                </ListItemIcon>
+                <ListItemText primary="Val. Groups" 
+                  sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+              </ListItemButton>
               <ListItemButton selected={selectedPage === 'parachains/val-group'} 
                 onClick={() => handlePageSelection('parachains/val-group')}>
                 <ListItemIcon>

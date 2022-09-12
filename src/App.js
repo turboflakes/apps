@@ -59,7 +59,8 @@ const App = () => {
               <Route path=":chainName" element={<ValidateChain />}>
               <Route index element={<Navigate to="/one-t/kusama/parachains/overview" />} />
                 <Route path="parachains">
-                  <Route path="overview" element={<ParachainsOverviewPage />} />
+                  <Route path="overview" element={<ParachainsOverviewPage tab={0} />} />
+                  <Route path="val-groups" element={<ParachainsOverviewPage tab={1} />} />
                   <Route path="val-group" element={<ValGroupPage />} />
                 </Route>
               </Route>
