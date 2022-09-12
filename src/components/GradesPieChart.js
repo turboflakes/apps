@@ -70,7 +70,10 @@ export default function GradesPieChart({data, size}) {
                   <Cell key={`cell-${index}`} fill={theme.palette.grade[entry.name]} />
                 ))}
               </Pie>
-              <text x="50%" y="50%" fill="#343434" style={{ ...theme.typography.h2 }} textAnchor={'middle'} dominantBaseline="central">
+              <text x="50%" y="50%" fill="#343434" style={{ 
+                fontFamily: theme.typography.h2.fontFamily,
+                fontSize: theme.typography.h2.fontSize
+                 }} textAnchor={'middle'} dominantBaseline="central">
                 {data.slice().sort((a, b) => b.value - a.value)[0].name}
               </text>
               <Tooltip 
