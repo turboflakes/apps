@@ -8,8 +8,8 @@ import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import {
   selectChain
-} from '../features/chain/chainSlice';
-import { isChainSupported, getChainNameShort, getChainColor } from '../constants'
+} from '../../features/chain/chainSlice';
+import { isChainSupported, getChainNameShort, getChainColor } from '../../constants'
 
 function createData(id, m, b, i, e, mvr, pp, tp) {
   return { id, m, b, i, e, mvr, pp, tp };

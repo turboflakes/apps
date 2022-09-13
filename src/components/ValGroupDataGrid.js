@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
@@ -7,29 +8,32 @@ import { DataGrid } from '@mui/x-data-grid';
 import Identicon from '@polkadot/react-identicon';
 import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
+import {
+  selectValidatorsBySessionAndGroupId
+} from '../features/api/valGroupsSlice'
+import {
+  selectAddress
+} from '../features/chain/chainSlice';
+import { stashDisplay, nameDisplay } from '../util/display'
 
-const codes = ['★', 'A', 'B', 'C', 'D']
+// const codes = ['★', 'A', 'B', 'C', 'D']
 
 const columns = [
-  { 
-    field: 'id', 
-    headerName: '#', 
-    width: 48,
-    sortable: false,
-    disableColumnMenu: true,
-    valueGetter: (params) => {
-      return codes[params.row.id-1]
-    },
-  },
+  // { 
+  //   field: 'id', 
+  //   headerName: '#', 
+  //   width: 48,
+  //   sortable: false,
+  //   disableColumnMenu: true,
+  //   valueGetter: (params) => {
+  //     return codes[params.row.id-1]
+  //   },
+  // },
   {
     field: 'identity',
     headerName: 'Identity',
     width: 256,
     disableColumnMenu: true,
-    // valueGetter: (params) => {
-    //   return names[params.row.address-1].identity
-    //   // return (<div>teste</div>)
-    // },
     renderCell: (params) => {
       if (params.row.address) {
         return (
@@ -42,7 +46,7 @@ const columns = [
           </span>
           )
       }
-      return (<div>teste</div>)  
+      return (<div>-</div>)  
     }
   },
   {
@@ -120,8 +124,29 @@ const columns = [
   },
 ];
 
-export default function ValGroupDataGrid({rows}) {
+function createDataGridRows(id, identity, address, b, i, e, m, p) {
+  return {id, identity, address, b, i, e, m, p };
+}
+
+export default function ValGroupDataGrid({sessionIndex, groupId}) {
+  const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
+  const selected = useSelector(selectAddress);
+  if (!validators.length || validators.length !== validators.filter(v => !!v.para_stats).length) {
+    return null
+  }
   
+  let filtered = validators.filter(v => v.address !== selected)
+  filtered.splice(0,0,validators.find(v => v.address === selected));
+
+  const rows = filtered.map((v, i) => {
+    if (v.is_auth && v.is_para) {
+      const authored_blocks = v.auth.ab;
+      const total_points = v.auth.ep - v.auth.sp;
+      return createDataGridRows(i+1, nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 4), 12), v.address, authored_blocks, v.para_summary.iv, v.para_summary.ev, v.para_summary.mv, total_points)
+    } else {
+      return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0)
+    }
+  })
   return (
     <Paper
       sx={{

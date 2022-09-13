@@ -14,9 +14,20 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import {
-  selectChain
+  selectChain,
+  selectAddress
 } from '../features/chain/chainSlice';
+import {
+  selectValidatorsBySessionAndGroupId
+} from '../features/api/valGroupsSlice'
 import { isChainSupported, getChainNameShort } from '../constants'
+import { stashDisplay, nameDisplay } from '../util/display'
+
+const codes = ['★', 'A', 'B', 'C', 'D']
+
+function createParachainsData(x, y, a, m, p, z) {
+  return { x, y, a, m, p, z };
+}
 
 const renderTooltip = (props, valIdentities) => {
   const { active, payload } = props;
@@ -65,11 +76,37 @@ const renderParachainLabel = (value) => {
 
 
 const renderIdentityTick = (identity) => {
-  return identity.code
+  return identity.identity
 }
 
-export default function ValGroupParachainsChart({data, ids, identities}) {
+export default function ValGroupParachainsChart({sessionIndex, groupId}) {
   const selectedChain = useSelector(selectChain);
+  const selectedAddress = useSelector(selectAddress);
+  const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
+  
+  if (!validators.length || validators.length !== validators.filter(v => !!v.para_stats).length) {
+    return null
+  }
+
+  let filtered = validators.filter(v => v.address !== selectedAddress)
+  filtered.splice(0,0,validators.find(v => v.address === selectedAddress));
+
+  const paraIds = Object.keys(validators[0].para_stats);
+  const data = paraIds.map((p, i) => {
+    return filtered.map((v, j) => {
+      if (v.para_stats[p]) {
+        const total = v.para_stats[p].ev + v.para_stats[p].iv + v.para_stats[p].mv
+        return createParachainsData(j+1, 1, v.para_stats[p].ev + v.para_stats[p].iv, v.para_stats[p].mv, v.para_stats[p].pt, total)
+      }
+      return createParachainsData(j+1, 1, 0, 0, 0, 0)
+    })
+  })
+
+  const identities = filtered.map((v, i) => ({
+    code: codes[i],
+    identity: nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 3), 10)
+  }))
+
   const maxRange = Math.max(...data.map(o => o[0].a + o[0].m))
   
   return (
@@ -123,7 +160,7 @@ export default function ValGroupParachainsChart({data, ids, identities}) {
                 tick={false}
                 tickLine={false}
                 axisLine={false}
-                label={() => renderParachainLabel(isChainSupported(selectedChain, ids[i]) ? getChainNameShort(selectedChain, ids[i]) : ids[i])}
+                label={() => renderParachainLabel(isChainSupported(selectedChain, paraIds[i]) ? getChainNameShort(selectedChain, paraIds[i]) : paraIds[i])}
               />
               <ZAxis type="number" dataKey="z" range={[0, 200]} domain={[0, maxRange]} />
               {/* <ZAxis type="number" dataKey="w" zAxisId={1} unit="votes missed" range={[0, 200]} domain={[0, 7]} /> */}

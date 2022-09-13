@@ -1,8 +1,16 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Typography } from '@mui/material';
+import {
+  selectAddress
+} from '../features/chain/chainSlice';
+import {
+  selectValidatorsBySessionAndGroupId
+} from '../features/api/valGroupsSlice'
+import { stashDisplay, nameDisplay } from '../util/display'
 
 const renderTooltip = (props) => {
   const { active, payload } = props;
@@ -20,10 +28,10 @@ const renderTooltip = (props) => {
          }}
       >
         <Typography component="div" variant="caption" color="inherit" gutterBottom>
-        <b>{data.n}</b>
+        <b>{data.name}</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          Total points: {data.p}
+          Total points: {data.points}
         </Typography>
       </Box>
     );
@@ -32,7 +40,21 @@ const renderTooltip = (props) => {
   return null;
 };
 
-export default function PointsByParachainsChart({data}) {
+export default function PointsByParachainsChart({sessionIndex, groupId}) {
+  const selectedAddress = useSelector(selectAddress);
+  const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
+
+  if (!validators.length || validators.length !== validators.filter(v => !!v.para_stats).length) {
+    return null
+  }
+
+  let filtered = validators.filter(v => v.address !== selectedAddress)
+  filtered.splice(0,0,validators.find(v => v.address === selectedAddress));
+
+  const data = filtered.map(v => ({
+    points: v.auth.ep - v.auth.sp,
+    name: nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 4), 10)
+  }))
   
   return (
     <Paper sx={{ p: 2,
@@ -65,9 +87,9 @@ export default function PointsByParachainsChart({data}) {
         >
           <CartesianGrid strokeDasharray="1 3" vertical={false} />
           <XAxis style={{ fontSize: '0.8rem' }} axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} type="number" />         
-          <YAxis style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }} dataKey="n" type="category" axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} />
+          <YAxis style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }} dataKey="name" type="category" axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} />
           {/* <Tooltip /> */}
-          <Bar dataKey="p" fill="#45CDE9" barSize={8} />
+          <Bar dataKey="points" fill="#45CDE9" barSize={8} />
           {/* <Bar dataKey="p" barSize={8} background={{ fill: '#eee' }}>
             {
               data.map((entry, index) => (

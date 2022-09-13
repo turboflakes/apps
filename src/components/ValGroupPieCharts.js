@@ -1,10 +1,34 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 import BackingPieChart from './BackingPieChart';
+import {
+  selectAddress
+} from '../features/chain/chainSlice';
+import {
+  selectValidatorsBySessionAndGroupId
+} from '../features/api/valGroupsSlice'
+import { stashDisplay, nameDisplay } from '../util/display'
 
-export default function ValGroupPieCharts({data}) {
+function createBackingPieData(e, i, m, n) {
+  return { e, i, m, n };
+}
+
+export default function ValGroupPieCharts({sessionIndex, groupId}) {
+  const selectedAddress = useSelector(selectAddress);
+  const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
+
+  if (!validators.length || validators.length !== validators.filter(v => !!v.para_stats).length) {
+    return null
+  }
+
+  let filtered = validators.filter(v => v.address !== selectedAddress)
+  filtered.splice(0,0,validators.find(v => v.address === selectedAddress));
+
+  const data = filtered.map(v => createBackingPieData(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv, nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 4), 12)))
+
   return (
     <Paper sx={{ p: 2,
       display: 'flex',

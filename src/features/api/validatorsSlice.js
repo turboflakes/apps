@@ -75,7 +75,7 @@ export const extendedApi = apiSlice.injectEndpoints({
         params: { session, show_summary, show_stats }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
-      async onQueryStarted({ }, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
           // `onSuccess` subscribe for updates

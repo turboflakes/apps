@@ -12,36 +12,23 @@ import ValGroupPointsChart from './ValGroupPointsChart';
 import ValGroupParachainsChart from './ValGroupParachainsChart';
 import { 
   useGetValidatorByAddressQuery,
-  selectValidatorBySessionAndAddress,
-  selectValidatorsAll
 } from '../features/api/validatorsSlice'
  import {
    selectValidatorsBySessionAndGroupId
 } from '../features/api/valGroupsSlice'
 import {
-  selectChain
+  selectChain,
+  selectAddress
 } from '../features/chain/chainSlice';
-import { stashDisplay, nameDisplay } from '../util/display'
+import { stashDisplay } from '../util/display'
 import { isChainSupported, getChainName, getChainLogo } from '../constants'
 import { calculateMvr } from '../util/mvr'
 
-const codes = ['★', 'A', 'B', 'C', 'D']
-
-function createDataGridRows(id, identity, address, b, i, e, m, p) {
-  return { id, identity, address, b, i, e, m, p };
-}
-
-function createParachainsData(x, y, a, m, p, z) {
-  return { x, y, a, m, p, z };
-}
-
-function createBackingPieData(e, i, m, n) {
-  return { e, i, m, n };
-}
 
 export default function ValGroupBox({address, sessionIndex}) {
   const {data, isSuccess, isError, error} = useGetValidatorByAddressQuery({address, session: sessionIndex, show_summary: true, show_stats: true}, {refetchOnMountOrArgChange: true});
   const selectedChain = useSelector(selectChain);
+  const selectedAddress = useSelector(selectAddress);
   const groupId = !!data ? (!!data.is_para ? data.para.group : undefined) : undefined;
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
   
@@ -53,66 +40,36 @@ export default function ValGroupBox({address, sessionIndex}) {
     return null
   }
 
-  const principal = validators.filter(v => v.address === address)[0];
+  if (!validators.length || validators.length !== validators.filter(v => !!v.para_stats).length) {
+    return null
+  }
 
-  if (isUndefined(principal)) {
+  let filtered = validators.filter(v => v.address !== selectedAddress)
+  filtered.splice(0,0,validators.find(v => v.address === selectedAddress));
+
+  if (isUndefined(filtered[0])) {
     return (<Typography>At the current session the validator {stashDisplay(address)} is not found.</Typography>)
   }
 
-  if (!principal.is_auth) {
+  if (!filtered[0].is_auth) {
     return (<Typography>At the current session the validator {stashDisplay(address)} is not Authority.</Typography>)
   }
 
-  if (!principal.is_para) {
+  if (!filtered[0].is_para) {
     return (<Typography>At the current session the validator {stashDisplay(address)} is not Para Validator.</Typography>)
   }
-  
-  const dataGridRows = validators.map((v, i) => {
-    if (v.is_auth && v.is_para) {
-      const authored_blocks = v.auth.ab;
-      const total_points = v.auth.ep - v.auth.sp;
-      return createDataGridRows(i+1, nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 4), 12), v.address, authored_blocks, v.para_summary.iv, v.para_summary.ev, v.para_summary.mv, total_points)
-    } else {
-      return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0)
-    }
-  })
 
-  // const groupId = validator.para.group;
-  const paraId = principal.para.pid;
-  const coreAssignments = principal.para_summary.ca;
-  const validityVotes = principal.para_summary.ev + principal.para_summary.iv + principal.para_summary.mv;
+  const paraId = filtered[0].para.pid;
+  const coreAssignments = filtered[0].para_summary.ca;
+  const validityVotes = filtered[0].para_summary.ev + filtered[0].para_summary.iv + filtered[0].para_summary.mv;
   const mvr = calculateMvr(
-    dataGridRows.map(o => o.e).reduce((a, b) => a + b, 0),
-    dataGridRows.map(o => o.i).reduce((a, b) => a + b, 0),
-    dataGridRows.map(o => o.m).reduce((a, b) => a + b, 0)
+    validators.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0),
+    validators.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0),
+    validators.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0)
   )
 
   const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
 
-  const pieChartsData = dataGridRows.map(v => createBackingPieData(v.e, v.i, v.m, v.identity))
-
-  const barChartsData = dataGridRows.map(v => {
-    return {
-      p: v.p,
-      n: v.identity
-    }
-  })
-
-  // const parachainIds = Object.keys(principal.para.stats);
-  // const parachainsData = parachainIds.map((p, i) => {
-  //   return group.map((v, j) => {
-  //     if (v.para.stats[p]) {
-  //       const total = v.para.stats[p].ev + v.para.stats[p].iv + v.para.stats[p].mv
-  //       return createParachainsData(j+1, 1, v.para.stats[p].ev + v.para.stats[p].iv, v.para.stats[p].mv, v.para.stats[p].pt, total)
-  //     }
-  //     return createParachainsData(j+1, 1, 0, 0, 0, 0)
-  //   })
-  // })
-
-  // const valIdentities = group.map((v, i) => ({
-  //   code: codes[i],
-  //   identity: v.identity
-  // }))
 
   return (
     <Box
@@ -212,18 +169,18 @@ export default function ValGroupBox({address, sessionIndex}) {
               <Grid item xs={12} md={8}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <ValGroupPieCharts data={pieChartsData} groupId={groupId}/>
+                    <ValGroupPieCharts sessionIndex={sessionIndex} groupId={groupId} />
                   </Grid>
                   <Grid item xs={12}>
-                    <ValGroupPointsChart data={barChartsData} groupId={groupId} />
+                    <ValGroupPointsChart sessionIndex={sessionIndex} groupId={groupId} />
                   </Grid>
                   <Grid item xs={12}>
-                    <ValGroupDataGrid rows={dataGridRows} groupId={groupId} />
+                    <ValGroupDataGrid sessionIndex={sessionIndex} groupId={groupId} />
                   </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={12} md={4}>
-                {/* <ValGroupParachainsChart data={parachainsData} ids={parachainIds} identities={valIdentities} groupId={validator.para.group} /> */}
+                <ValGroupParachainsChart sessionIndex={sessionIndex} groupId={groupId} />
               </Grid>
             </Grid>            
           </Grid>
