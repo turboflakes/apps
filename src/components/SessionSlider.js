@@ -16,32 +16,33 @@ import {
  } from '../features/api/sessionsSlice'
 
 // TODO add a maximum of 6*4*2 = 48 sessions? kusama
-const MAX_SESSIONS = 48;
+const MAX_SESSIONS = 6;
 
 const CustomSlider = styled(Slider)(({ theme }) => ({
   color: '#000',
-  height: 2,
+  height: 4,
   padding: '15px 0',
-  // '& .MuiSlider-thumb': {
-  //   height: 28,
-  //   width: 28,
-  //   backgroundColor: '#fff',
-  //   boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-  //   '&:focus, &:hover, &.Mui-active': {
-  //     boxShadow:
-  //       'rgba(149, 157, 165, 0.6) 0px 8px 24px',
-  //     // Reset on touch devices, it doesn't add specificity
-  //     '@media (hover: none)': {
-  //       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-  //     },
-  //   },
-  // },
+  '& .MuiSlider-thumb': {
+    width: 8,
+    height: 8,
+    transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
+    '&:before': {
+      boxShadow: '0 2px 12px 0 rgba(0,0,0,0.4)',
+    },
+    '&:hover, &.Mui-focusVisible, &.Mui-active': {
+      boxShadow: '0px 0px 0px 8px rgb(0 0 0 / 16%)',
+    },
+    '&.Mui-active': {
+      width: 20,
+      height: 20,
+    },
+  },
   '& .MuiSlider-valueLabel': {
     fontSize: 12,
     fontWeight: 'normal',
     top: -6,
     backgroundColor: 'unset',
-    color: theme.palette.text.primary,
+    // color: theme.palette.text.primary,
     '&:before': {
       display: 'none',
     },
@@ -88,10 +89,17 @@ export default function SessionSlider() {
   let defaultSession = !!historySession ? historySession : currentSession;
 
   const handleChange = (event, val) => {
-    dispatch(sessionHistoryChanged(val));
+    setTimeout(() => dispatch(sessionHistoryChanged(val)), 300);
   }
 
   let marks = data.map(session => {
+    
+    if (session.is_partial) {
+      return {
+        value: session.six,
+        label: `✗`
+      }
+    }
 
     if (session.esix === 1) {
       return {
@@ -99,6 +107,7 @@ export default function SessionSlider() {
         label: `${session.eix} // ${session.six}`
       }
     }
+    
     return {
       value: session.six,
       label: ``
@@ -135,7 +144,7 @@ export default function SessionSlider() {
           defaultValue={defaultSession}
           onChangeCommitted={handleChange}
           step={1}
-          min={currentSession - MAX_SESSIONS}
+          min={currentSession - MAX_SESSIONS + 1}
           max={currentSession}
           marks={marks}
           valueLabelDisplay="on"/>

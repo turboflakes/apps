@@ -161,10 +161,24 @@ const socketMiddleware = (store) => {
           switch (currentPage) {
             case 'parachains/overview': {
               if (action.payload === 'History') {
-                const msg = JSON.stringify({ method: 'unsubscribe_para_authorities_summary', params: [currentSession.toString()] });
+                let msg = JSON.stringify({ method: 'unsubscribe_para_authorities_summary', params: [currentSession.toString()] });
+                store.dispatch(socketActions.messageQueued(msg))
+                msg = JSON.stringify({ method: 'unsubscribe_parachains', params: [currentSession.toString()] });
                 store.dispatch(socketActions.messageQueued(msg))
               } else if (action.payload === 'Live') {
-                const msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [currentSession.toString()] });
+                let msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [currentSession.toString()] });
+                store.dispatch(socketActions.messageQueued(msg));
+                msg = JSON.stringify({ method: 'subscribe_parachains', params: [currentSession.toString()] });
+                store.dispatch(socketActions.messageQueued(msg))
+              }
+              break
+            }
+            case 'parachains/val-groups': {
+              if (action.payload === 'History') {
+                let msg = JSON.stringify({ method: 'unsubscribe_para_authorities_summary', params: [currentSession.toString()] });
+                store.dispatch(socketActions.messageQueued(msg))
+              } else if (action.payload === 'Live') {
+                let msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [currentSession.toString()] });
                 store.dispatch(socketActions.messageQueued(msg));
               }
               break

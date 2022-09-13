@@ -82,7 +82,7 @@ export default function ModeSwitch({mode}) {
 
   const handleChange = (event) => {
     setChecked(event.target.checked);
-    dispatch(modeChanged(event.target.checked ? 'Live' : 'History'));
+    setTimeout(() => dispatch(modeChanged(event.target.checked ? 'Live' : 'History')), 100);
   };
 
   return (
