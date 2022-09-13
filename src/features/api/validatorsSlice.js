@@ -25,19 +25,17 @@ export const extendedApi = apiSlice.injectEndpoints({
           const session = selectSessionByIndex(getState(), params.session)
           if (params.role === "para_authority" && session.is_current) {
             if (params.show_summary) {
-              const msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [params.session.toString()] });
+              let msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [params.session.toString()] });
+              dispatch(socketActions.messageQueued(msg))
+              // NOTE: always unsubscribe previous session
+              msg = JSON.stringify({ method: 'unsubscribe_para_authorities_summary', params: [(params.session - 1).toString()] });
               dispatch(socketActions.messageQueued(msg))
             } else if (params.show_stats) {
-              const msg = JSON.stringify({ method: 'subscribe_para_authorities_stats', params: [params.session.toString()] });
+              let msg = JSON.stringify({ method: 'subscribe_para_authorities_stats', params: [params.session.toString()] });
               dispatch(socketActions.messageQueued(msg))
-            }
-            
-            // unsubscribe previous session if session is new
-            if (session.is_new) {
-              const msg1 = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [(params.session - 1).toString()] });
-              dispatch(socketActions.messageQueued(msg1))
-              const msg2 = JSON.stringify({ method: 'subscribe_para_authorities_stats', params: [(params.session - 1).toString()] });
-              dispatch(socketActions.messageQueued(msg2))
+              // NOTE: always unsubscribe previous session
+              msg = JSON.stringify({ method: 'unsubscribe_para_authorities_stats', params: [params.session.toString()] });
+              dispatch(socketActions.messageQueued(msg))
             }
           }         
         } catch (err) {
