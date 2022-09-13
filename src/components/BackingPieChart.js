@@ -21,7 +21,7 @@ const renderTooltip = (props) => {
           boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px'
          }}
       >
-        <Typography component="div" variant="caption" color="inherit" gutterBottom>
+        <Typography component="div" variant="caption" color="inherit" paragraph>
         <b>Statements</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
@@ -98,7 +98,7 @@ export default function BackingPieChart({data, showLegend, size}) {
                 content={renderTooltip} />
             </PieChart>
           </ResponsiveContainer>
-          {showLegend ? <Typography sx={{ mt: 2}} variant="caption">{nameDisplay(data.n, 15)}</Typography> : null}
+          {showLegend ? <Typography sx={{ mt: 2}} variant="caption">{nameDisplay(data.n, 16)}</Typography> : null}
     </Box>
   );
 }

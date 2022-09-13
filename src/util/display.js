@@ -7,11 +7,11 @@ export const hashDisplay = (hash) => {
     return !!hash ? `${hash.slice(0, 6)}...${hash.slice(hash.length-4, hash.length)}` : `-`
 }
   
-export const nameDisplay = (name, len) => {
+export const nameDisplay = (name, len, prefix = '') => {
     if (!len) {
         len = 24
     }
-    return name.length > len ? `${name.slice(0, len)}...` : name
+    return name.length > len ? `${prefix}${name.slice(0, len)}...` : `${prefix}${name}`
 }
 
 export const stakeDisplay = (stake, networkDetails) => {

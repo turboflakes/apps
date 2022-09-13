@@ -13,6 +13,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import Divider from '@mui/material/Divider';
 import {
   selectChain,
   selectAddress
@@ -45,7 +46,7 @@ const renderTooltip = (props, valIdentities) => {
          }}
 
       >
-        <Typography component="div" variant="caption" color="inherit" gutterBottom>
+        <Typography component="div" variant="caption" color="inherit" paragraph>
           <b>{valIdentities[data.x-1].identity}</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
@@ -54,8 +55,9 @@ const renderTooltip = (props, valIdentities) => {
         <Typography component="div" variant="caption" color="inherit">
         (✗) Missed: {data.m}
         </Typography>
+        <Divider sx={{ my: 1 }} />
         <Typography component="div" variant="caption" color="inherit">
-        Total points: {data.p}
+          <b>Total points: {data.p}</b>
         </Typography>
       </Box>
     );
@@ -104,7 +106,7 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
 
   const identities = filtered.map((v, i) => ({
     code: codes[i],
-    identity: nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 3), 10)
+    identity: nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 3), 10, selectedAddress === v.address ? '★ ' : '')
   }))
 
   const maxRange = Math.max(...data.map(o => o[0].a + o[0].m))

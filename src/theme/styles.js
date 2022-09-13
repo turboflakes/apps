@@ -34,8 +34,8 @@ let theme = createTheme({
     grade: {
       "A+": "#6DD400", // Emerald
       "A": "#44D7B6", // Amazonite
-      "B+": "#8BDCAD", // Apatite
-      "B": "#0091FF", // Sapphire
+      "B+": "#0091FF", // Sapphire
+      "B": "#32C5FF", // Apatite
       "C+": "#C8C9CC", // Gray
       "C": "#EEEEEE", // Light Gray
       "D+": "#F7B500", // Citrine
@@ -45,7 +45,8 @@ let theme = createTheme({
     },
     neutrals: {
       100: "#F1F1F0",
-      200: "#EEEEEE",
+      200: "#A1A1A1",
+      // 200: "#EEEEEE",
       300: "#4D4D4D",
       400: "#343434",
       // 400: "#DFF1FA",
