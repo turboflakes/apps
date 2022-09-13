@@ -33,7 +33,7 @@ export default function SessionPerformanceTimeline() {
     mvr: 1 - o._mvr
   }))
 
-  console.log("___timelineData", timelineData);
+  // console.log("___timelineData", timelineData);
   return (
     <Paper
       sx={{

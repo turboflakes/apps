@@ -23,16 +23,16 @@ export const ValGroupPage = () => {
 	// const theme = useTheme();
   const dispatch = useDispatch();
   const isSocketConnected = useSelector(selectIsSocketConnected);
-  const currentSelected = useSelector(selectAddress);
+  const selectedAddress = useSelector(selectAddress);
   const currentSession = useSelector(selectSessionCurrent);
   let [searchParams] = useSearchParams();
   const searchAddress = searchParams.get("address");
 
   React.useEffect(() => {
-    if (searchAddress && searchAddress !== currentSelected) {
+    if (searchAddress && searchAddress !== selectedAddress) {
       dispatch(addressChanged(searchAddress));
     }
-  }, [searchAddress, currentSelected]);
+  }, [searchAddress, selectedAddress]);
 
   if (!isSocketConnected) {
     // TODO websocket/network disconnected page
@@ -43,7 +43,7 @@ export const ValGroupPage = () => {
 		<Box sx={{ m: 2, minHeight: '100vh' }}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={5}>
-          {/* {!!currentSelected ? <ValAddress address={currentSelected} /> : null} */}
+          {!!selectedAddress ? <ValAddress address={selectedAddress}  sessionIndex={currentSession} showGrade /> : null}
           </Grid>
           <Grid item xs={12} md={4}>
           <SessionPieChart sessionIndex={currentSession} />
@@ -52,8 +52,8 @@ export const ValGroupPage = () => {
           <BestBlock />
         </Grid>
         <Grid item xs={12}>
-          {!!currentSelected ? 
-            <ValGroupBox address={currentSelected} sessionIndex={currentSession} /> : 
+          {!!selectedAddress ? 
+            <ValGroupBox address={selectedAddress} sessionIndex={currentSession} /> : 
             <Box sx={{ height: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <SearchSmall />
             </Box>
