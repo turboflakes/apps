@@ -4,6 +4,7 @@ import {
   createEntityAdapter,
   isAnyOf
 } from '@reduxjs/toolkit'
+import isUndefined from 'lodash/isUndefined'
 import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
 import { 
@@ -13,9 +14,9 @@ export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Parachains'],
   endpoints: (builder) => ({
     getParachains: builder.query({
-      query: ({session}) => ({
+      query: ({session, retry}) => ({
         url: `/parachains`,
-        params: { session }
+        params: { session, retry }
       }),
       providesTags: (result, error, arg) => [{ type: 'Parachains', id: arg }],
       async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
@@ -29,7 +30,13 @@ export const extendedApi = apiSlice.injectEndpoints({
           }       
         } catch (err) {
           // `onError` side-effect
-          // dispatch(socketActions.messageQueued(msg))
+          const parsed = parseInt(params.retry, 10);
+          const retry = isNaN(parsed) ? 1 : parsed + 1;
+          if (retry < 6) {
+            setTimeout(() => {
+              dispatch(extendedApi.endpoints.getParachains.initiate({session: params.session, retry }))
+            }, 1000)
+          }
         }
       },
     }),
