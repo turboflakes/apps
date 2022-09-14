@@ -13,6 +13,7 @@ import {
   addressChanged
 } from '../features/chain/chainSlice';
 import { 
+  selectSessionHistory,
   selectSessionCurrent,
  } from '../features/api/sessionsSlice'
 import { 
@@ -27,10 +28,12 @@ export const ValGroupPage = () => {
   const dispatch = useDispatch();
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const selectedAddress = useSelector(selectAddress);
+  const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
   const isLiveMode = useSelector(selectIsLiveMode);
   let [searchParams] = useSearchParams();
   const searchAddress = searchParams.get("address");
+  const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
 
   React.useEffect(() => {
     if (searchAddress && searchAddress !== selectedAddress) {
@@ -47,10 +50,10 @@ export const ValGroupPage = () => {
 		<Box sx={{ m: 2, minHeight: '100vh', mt: isLiveMode ? '16px' : '112px' }}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={isLiveMode ? 5 : 8}>
-          {!!selectedAddress ? <ValAddress address={selectedAddress}  sessionIndex={currentSession} showGrade /> : null}
+          {!!selectedAddress ? <ValAddress address={selectedAddress}  sessionIndex={sessionIndex} showGrade /> : null}
         </Grid>
         <Grid item xs={12} md={4}>
-          <SessionPieChart sessionIndex={currentSession} />
+          <SessionPieChart sessionIndex={sessionIndex} />
         </Grid>
         {isLiveMode ? 
           <Grid item xs={12} md={3}>
@@ -59,7 +62,7 @@ export const ValGroupPage = () => {
         : null}
         <Grid item xs={12}>
           {!!selectedAddress ? 
-            <ValGroupBox address={selectedAddress} sessionIndex={currentSession} /> : 
+            <ValGroupBox address={selectedAddress} sessionIndex={sessionIndex} /> : 
             <Box sx={{ height: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <SearchSmall />
             </Box>
