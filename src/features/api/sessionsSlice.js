@@ -25,9 +25,9 @@ export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Sessions'],
   endpoints: (builder) => ({
     getSessions: builder.query({
-      query: ({max}) => ({
+      query: ({number_last_sessions}) => ({
         url: `/sessions`,
-        params: { max }
+        params: { number_last_sessions }
       }),
       providesTags: (result, error, arg) => [{ type: 'Sessions', id: arg }],
       transformResponse: responseData => {
@@ -115,11 +115,13 @@ const sessionsSlice = createSlice({
       adapter.upsertMany(state, sessions)
     })
     .addMatcher(matchValidatorsReceived, (state, action) => {
-      // Filter validators if authority and p/v
-      const filtered = action.payload.data.filter(v => v.is_auth && v.is_para);
-      const groupIds = uniq(filtered.map(v => toNumber(v.para.group))).sort((a, b) => a - b)
-      const mvrs = filtered.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
-      adapter.upsertOne(state, { six: action.payload.session, groupIds, mvrs})
+      if (!!action.payload.session) {
+        // Filter validators if authority and p/v
+        const filtered = action.payload.data.filter(v => v.is_auth && v.is_para);
+        const groupIds = uniq(filtered.map(v => toNumber(v.para.group))).sort((a, b) => a - b)
+        const mvrs = filtered.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
+        adapter.upsertOne(state, { six: action.payload.session, groupIds, mvrs})
+      }
     })
     .addMatcher(matchParachainsReceived, (state, action) => {
       adapter.upsertOne(state, { six: action.payload.session, parachainIds: action.payload.data.map(p => p.pid)})

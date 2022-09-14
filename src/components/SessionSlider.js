@@ -5,15 +5,11 @@ import Slider from '@mui/material/Slider';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
-
 import { 
   useGetSessionsQuery, 
   sessionHistoryChanged,
   selectSessionHistory,
- } from '../features/api/sessionsSlice'
-
-// TODO add a maximum of 6*4*2 = 48 sessions? kusama
-const MAX_SESSIONS = 12;
+} from '../features/api/sessionsSlice'
 
 const CustomSlider = styled(Slider)(({ theme }) => ({
   color: '#000',
@@ -74,11 +70,10 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
   },
 }));
 
-export default function SessionSlider() {
-  
+export default function SessionSlider({maxSessions}) {
   // const theme = useTheme();
   const dispatch = useDispatch();
-  const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({max: MAX_SESSIONS}, {refetchOnMountOrArgChange: true});
+  const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions}, {refetchOnMountOrArgChange: true});
   const historySession = useSelector(selectSessionHistory);
   if (!isSessionSuccess) {
     return null
@@ -142,7 +137,7 @@ export default function SessionSlider() {
           defaultValue={defaultSession}
           onChangeCommitted={handleChange}
           step={1}
-          min={currentSession - MAX_SESSIONS + 1}
+          min={currentSession - maxSessions + 1}
           max={currentSession}
           marks={marks}
           valueLabelDisplay="on"/>

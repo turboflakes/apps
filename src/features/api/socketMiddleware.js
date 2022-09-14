@@ -21,7 +21,8 @@ import {
 import {
   selectPage
 } from '../layout/layoutSlice';
-import { getNetworkHost } from '../../constants'
+import apiSlice from './apiSlice';
+import { getNetworkHost, getMaxHistorySessions } from '../../constants'
 
 
 const dispatchValidator = (store, method = 'subscribe') => {
@@ -186,9 +187,21 @@ const socketMiddleware = (store) => {
             }
             case 'parachains/val-group': {
               if (action.payload === 'History') {
+                // unsubscribe
                 dispatchValidator(store, "unsubscribe");
+                let msg = JSON.stringify({ method: 'unsubscribe_para_authorities_summary', params: [currentSession.toString()] });
+                store.dispatch(socketActions.messageQueued(msg))
+
+                // get summary data for the selected address for the last X sessions
+                const selectedAddress = selectAddress(store.getState())
+                const chainName = selectChain(store.getState())
+                const maxSessions = getMaxHistorySessions(chainName);
+                store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: true }, {forceRefetch: true}))
+
               } else if (action.payload === 'Live') {
                 dispatchValidator(store, "subscribe");
+                let msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [currentSession.toString()] });
+                store.dispatch(socketActions.messageQueued(msg));
               }
               break
             }

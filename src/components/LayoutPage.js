@@ -45,6 +45,7 @@ import {
 import {
   selectAccount,
 } from '../features/web3/web3Slice';
+import { getMaxHistorySessions } from '../constants'
 
 
 function useWeb3ChainInfo(api) {
@@ -242,7 +243,7 @@ export const LayoutPage = ({api}) => {
                 alignItems: 'center',
                 width: '100%'
               }}>
-              <SessionSlider /> 
+              <SessionSlider maxSessions={getMaxHistorySessions(selectedChain)} /> 
             </Box> : null}
         </Toolbar>
       </AppBar>

@@ -32,7 +32,7 @@ const networkSettings = {
     logo: logoKusamaSVG,
     url: "https://kusama.network",
     maxValidators: 24,
-    maxHistoryEras: 8,
+    maxHistoryEras: 4,
     poolIds: [process.env.REACT_APP_KUSAMA_POOL_ID_1, process.env.REACT_APP_KUSAMA_POOL_ID_2],
     chains: prodParasKusama
   },
@@ -57,6 +57,7 @@ export const getNetworkIcon = (network) => networkSettings[network].icon
 export const getNetworkLogo = (network) => networkSettings[network].logo
 export const getNetworkURL = (network) => networkSettings[network].url
 export const getMaxHistoryEras = (network) => networkSettings[network].maxHistoryEras
+export const getMaxHistorySessions = (network) => networkSettings[network].maxHistoryEras * 6
 export const getNetworkPoolId = (network, index) => networkSettings[network].poolIds[index]
 // Useful for the leaderboard tabs selection
 export const getNetworkIndex = (network) => Object.keys(networkSettings).findIndex(n => n === network)

@@ -48,17 +48,19 @@ const valGroupsSlice = createSlice({
       }
     })
     .addMatcher(matchValidatorsReceived, (state, action) => {
-      // Filter validators if authority and p/v
-      const filtered = action.payload.data.filter(v => v.is_auth && v.is_para);
-      
-      // Group validators by groupID
-      const groupedByValGroupId = groupBy(filtered, v => v.para.group);
-      
-      const groups = Object.values(groupedByValGroupId).map(g => ({
-        id: `${action.payload.session}_${g[0].para.group}`,
-        validatorIds: g.map(v => `${action.payload.session}_${v.address}`)
-      }))
-      adapter.upsertMany(state, groups)      
+      if (!!action.payload.session) {
+        // Filter validators if authority and p/v
+        const filtered = action.payload.data.filter(v => v.is_auth && v.is_para);
+        
+        // Group validators by groupID
+        const groupedByValGroupId = groupBy(filtered, v => v.para.group);
+        
+        const groups = Object.values(groupedByValGroupId).map(g => ({
+          id: `${action.payload.session}_${g[0].para.group}`,
+          validatorIds: g.map(v => `${action.payload.session}_${v.address}`)
+        }))
+        adapter.upsertMany(state, groups)      
+      }
     })
   }
 })

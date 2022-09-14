@@ -8,14 +8,18 @@ import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
 import { 
   selectSessionByIndex } from './sessionsSlice'
+import {
+  selectIsLiveMode
+} from '../layout/layoutSlice'
+
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Validators'],
   endpoints: (builder) => ({
     getValidators: builder.query({
-      query: ({session, role, show_summary, show_stats}) => ({
+      query: ({address, session, role, number_last_sessions, show_summary, show_stats}) => ({
         url: `/validators`,
-        params: { session, role, show_summary, show_stats }
+        params: { address, session, role, number_last_sessions, show_summary, show_stats }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
       async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
@@ -34,7 +38,7 @@ export const extendedApi = apiSlice.injectEndpoints({
               let msg = JSON.stringify({ method: 'subscribe_para_authorities_stats', params: [params.session.toString()] });
               dispatch(socketActions.messageQueued(msg))
               // NOTE: always unsubscribe previous session
-              msg = JSON.stringify({ method: 'unsubscribe_para_authorities_stats', params: [params.session.toString()] });
+              msg = JSON.stringify({ method: 'unsubscribe_para_authorities_stats', params: [(params.session - 1).toString()] });
               dispatch(socketActions.messageQueued(msg))
             }
           }         
@@ -50,12 +54,15 @@ export const extendedApi = apiSlice.injectEndpoints({
         params: { session, show_summary, show_stats }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
-      async onQueryStarted({address, session, show_summary, show_stats}, { dispatch, queryFulfilled }) {
+      async onQueryStarted({address, session, show_summary, show_stats}, { getState, dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
           // `onSuccess` subscribe for updates
-          const msg = JSON.stringify({ method: "subscribe_validator", params: [address.toString()] });
-          dispatch(socketActions.messageQueued(msg))
+          const isLiveMode = selectIsLiveMode(getState())
+          if (isLiveMode) {
+            const msg = JSON.stringify({ method: "subscribe_validator", params: [address.toString()] });
+            dispatch(socketActions.messageQueued(msg))
+          }
           if (data.is_para) {
             data.para.peers.forEach((peer) => {
               dispatch(extendedApi.endpoints.getValidatorPeerByAuthority.initiate({address, peer, session, show_summary, show_stats }, {forceRefetch: true}))
@@ -73,11 +80,12 @@ export const extendedApi = apiSlice.injectEndpoints({
         params: { session, show_summary, show_stats }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { getState, dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
           // `onSuccess` subscribe for updates
-          if (data.is_auth) {
+          const isLiveMode = selectIsLiveMode(getState())
+          if (isLiveMode && data.is_auth) {
             const msg = JSON.stringify({ method: "subscribe_validator", params: [data.address.toString()] });
             dispatch(socketActions.messageQueued(msg))
           }
@@ -133,7 +141,7 @@ const validatorsSlice = createSlice({
     .addMatcher(matchValidatorsReceived, (state, action) => {
       const validators = action.payload.data.map(validator => ({
         ...validator,
-        session: action.payload.session,
+        session: !!validator.session ? validator.session : action.payload.session,
         _ts: + new Date()
       }))
       adapter.upsertMany(state, validators)
