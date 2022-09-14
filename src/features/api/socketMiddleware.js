@@ -6,10 +6,14 @@ import {
 import { 
   socketValidatorReceived,
   socketValidatorsReceived,
-  selectValidatorsAll } from './validatorsSlice'
+  selectValidatorBySessionAndAddress,
+} from './validatorsSlice'
 import { 
   socketParachainsReceived,
 } from './parachainsSlice'
+import {
+  selectValidatorBySessionAndAuthId
+} from './authoritiesSlice';
 import {
   selectAddress,
   selectChain
@@ -20,22 +24,19 @@ import {
 import { getNetworkHost } from '../../constants'
 
 
-const unsubscribeValidator = (store) => {
-  const previous_address = selectAddress(store.getState())
-  const allValidators = selectValidatorsAll(store.getState())
-  if (previous_address) {
-    const principal = allValidators.find(o => o.address === previous_address)
-    if (!!principal && principal.is_para) {
-      const addresses = [
-        previous_address,
-        ...allValidators.filter(o => principal.para.peers.includes(o.auth.aix)).map(o => o.address)
-      ];
-      const msg = JSON.stringify({ method: "unsubscribe_validator", params: addresses });
-      store.dispatch(socketActions.messageQueued(msg))
-    } else {
-      const msg = JSON.stringify({ method: "unsubscribe_validator", params: [previous_address] });
-      store.dispatch(socketActions.messageQueued(msg))
-    }
+const dispatchValidator = (store, method = 'subscribe') => {
+  const selectedAddress = selectAddress(store.getState())
+  const msg = JSON.stringify({ method: `${method}_validator`, params: [selectedAddress] });
+  store.dispatch(socketActions.messageQueued(msg));
+  const currentSession = selectSessionCurrent(store.getState());
+  const validator = selectValidatorBySessionAndAddress(store.getState(), currentSession, selectedAddress);
+  if (!!validator && validator.is_para) {
+    const addresses = validator.para.peers.map((peer) => {
+      const validatorPeer = selectValidatorBySessionAndAuthId(store.getState(), currentSession, peer);
+      return validatorPeer.address
+    })
+    const msg = JSON.stringify({ method: `${method}_validator`, params: addresses });
+    store.dispatch(socketActions.messageQueued(msg))
   }
 }
 
@@ -130,7 +131,7 @@ const socketMiddleware = (store) => {
         if (action.type === 'chain/addressChanged') {
           const isConnected = selectIsSocketConnected(store.getState())
           if (isConnected) {
-            unsubscribeValidator(store)
+            dispatchValidator(store, "unsubscribe");
           }
         }
         // unsubscribe to address and peers previously subscribed
@@ -147,7 +148,7 @@ const socketMiddleware = (store) => {
               break
             }
             case 'parachains/val-group': {
-              unsubscribeValidator(store)
+              dispatchValidator(store, "unsubscribe");
               break
             }
             default:
@@ -157,7 +158,7 @@ const socketMiddleware = (store) => {
         // subscribe/unsubscribe all subscriptions
         if (action.type === 'layout/modeChanged') {
           const currentSession = selectSessionCurrent(store.getState());
-          const currentPage = selectPage(store.getState())
+          const currentPage = selectPage(store.getState());
           switch (currentPage) {
             case 'parachains/overview': {
               if (action.payload === 'History') {
@@ -180,6 +181,14 @@ const socketMiddleware = (store) => {
               } else if (action.payload === 'Live') {
                 let msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [currentSession.toString()] });
                 store.dispatch(socketActions.messageQueued(msg));
+              }
+              break
+            }
+            case 'parachains/val-group': {
+              if (action.payload === 'History') {
+                dispatchValidator(store, "unsubscribe");
+              } else if (action.payload === 'Live') {
+                dispatchValidator(store, "subscribe");
               }
               break
             }

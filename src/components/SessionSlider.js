@@ -1,12 +1,9 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { useTheme } from '@mui/material/styles';
-import isUndefined from 'lodash/isUndefined'
-import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import Stack from '@mui/material/Stack';
-import { alpha, styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 
 import { 
@@ -16,11 +13,11 @@ import {
  } from '../features/api/sessionsSlice'
 
 // TODO add a maximum of 6*4*2 = 48 sessions? kusama
-const MAX_SESSIONS = 6;
+const MAX_SESSIONS = 12;
 
 const CustomSlider = styled(Slider)(({ theme }) => ({
   color: '#000',
-  height: 4,
+  height: 2,
   padding: '15px 0',
   '& .MuiSlider-thumb': {
     width: 8,
@@ -78,6 +75,7 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
 }));
 
 export default function SessionSlider() {
+  
   // const theme = useTheme();
   const dispatch = useDispatch();
   const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({max: MAX_SESSIONS}, {refetchOnMountOrArgChange: true});

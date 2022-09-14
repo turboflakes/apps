@@ -7,6 +7,7 @@ import { styled } from '@mui/material/styles';
 
 import {
   modeChanged,
+  selectIsLiveMode
 } from '../features/layout/layoutSlice';
 import { 
   selectBest,
@@ -75,6 +76,7 @@ export default function ModeSwitch({mode}) {
   const currentSession = useSelector(selectSessionCurrent);
   const sessionSelected = !!historySession ? historySession : currentSession;
   const session = useSelector(state => selectSessionByIndex(state, sessionSelected));
+  const isLiveMode = useSelector(selectIsLiveMode);
 
   if (!block) {
     return null
@@ -82,7 +84,9 @@ export default function ModeSwitch({mode}) {
 
   const handleChange = (event) => {
     setChecked(event.target.checked);
-    setTimeout(() => dispatch(modeChanged(event.target.checked ? 'Live' : 'History')), 100);
+    setTimeout(() => {
+      dispatch(modeChanged(event.target.checked ? 'Live' : 'History'))
+    }, 100);
   };
 
   return (
@@ -91,7 +95,7 @@ export default function ModeSwitch({mode}) {
         checked={checked}
         onChange={handleChange} />
       <Typography variant="caption" sx={{ fontWeight: '600' }} color="textPrimary">
-        {checked ? `Live [ #${block.bix.format()} ]` : `${mode} [ ${session.eix} // ${session.six} ]`}
+        {isLiveMode ? `Live [ #${block.bix.format()} ]` : `${mode} [ ${session.eix} // ${session.six} ]`}
       </Typography>
     </Stack>
   );
