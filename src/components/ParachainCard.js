@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
+import isNull from 'lodash/isNull'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -59,7 +60,7 @@ export default function ParachainCard({sessionIndex, paraId}) {
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
           <BackingPieChart data={pieChartsData} size="md" />
           <Box sx={{ display: 'flex', flexDirection: 'column'}}>
-            <Typography variant="caption" align='right' sx={{ mr: 2 }}><i>{!!parachain.group ? `Backed by Val. Group ${parachain.group}` : `Waiting core assignment`}</i></Typography>
+            <Typography variant="caption" align='right' sx={{ mr: 2 }}>{!isNull(parachain.group) ? `Backed by Val. Group ${parachain.group}` : `Waiting core assignment`}</Typography>
             <ValGroupList sessionIndex={sessionIndex} groupId={parachain.group} />
           </Box>
         </Box>

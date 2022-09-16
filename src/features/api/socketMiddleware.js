@@ -19,7 +19,8 @@ import {
   selectChain
 } from '../chain/chainSlice';
 import {
-  selectPage
+  selectPage,
+  selectIsHistoryMode,
 } from '../layout/layoutSlice';
 import apiSlice from './apiSlice';
 import { getNetworkHost, getMaxHistorySessions } from '../../constants'
@@ -137,6 +138,7 @@ const socketMiddleware = (store) => {
         }
         // unsubscribe to address and peers previously subscribed
         if (action.type === 'layout/pageChanged') {
+          const nextPage = action.payload;
           const previousPage = selectPage(store.getState())
           const currentSession = selectSessionCurrent(store.getState());
           switch (previousPage) {
@@ -150,6 +152,21 @@ const socketMiddleware = (store) => {
             }
             case 'parachains/val-group': {
               dispatchValidator(store, "unsubscribe");
+              break
+            }
+            default:
+              break
+          }
+          switch (nextPage) {
+            case 'parachains/val-group': {
+              const isHistoryMode = selectIsHistoryMode(store.getState());
+              if (isHistoryMode) {
+                // get summary data for the selected address for the last X sessions
+                const selectedAddress = selectAddress(store.getState())
+                const chainName = selectChain(store.getState())
+                const maxSessions = getMaxHistorySessions(chainName);
+                store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
+              }
               break
             }
             default:
@@ -196,7 +213,7 @@ const socketMiddleware = (store) => {
                 const selectedAddress = selectAddress(store.getState())
                 const chainName = selectChain(store.getState())
                 const maxSessions = getMaxHistorySessions(chainName);
-                store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: true }, {forceRefetch: true}))
+                store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
 
               } else if (action.payload === 'Live') {
                 dispatchValidator(store, "subscribe");

@@ -35,45 +35,43 @@ export default function SearchSmall(props) {
   }
 
     return (
-      <Box>
-        <form style={{ display: "flex", alignItems: "center"}} 
-          noValidate autoComplete="off"
-          onSubmit={handleSubmit}>
-          <TextField
-            sx={{
-              // backgroundColor: theme.palette.neutrals[100],
+      <form style={{ display: "flex", alignItems: "center"}} 
+        noValidate autoComplete="off"
+        onSubmit={handleSubmit}>
+        <TextField
+          sx={{
+            // backgroundColor: theme.palette.neutrals[100],
+            borderRadius: 30,
+            width: 512
+          }}
+          variant="outlined"
+          placeholder="Search by validator address"
+          color="primary"
+          value={address}
+          onChange={handleChange}
+          size="small"
+          fullWidth
+          // error={!isValidAddress(this.state.address)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconButton onClick={handleSubmit} size="small"
+                  color="primary" 
+                  // disabled={!isValidAddress(this.state.address)}
+                  >
+                  <SearchIcon color="primary" />
+                </IconButton>
+              </InputAdornment>
+            ),
+            sx: {
               borderRadius: 30,
-              width: 512
-            }}
-            variant="outlined"
-            placeholder="Search by validator address"
-            color="primary"
-            value={address}
-            onChange={handleChange}
-            size="small"
-            fullWidth
-            // error={!isValidAddress(this.state.address)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconButton onClick={handleSubmit} size="small"
-                    color="primary" 
-                    // disabled={!isValidAddress(this.state.address)}
-                    >
-                    <SearchIcon color="primary" />
-                  </IconButton>
-                </InputAdornment>
-              ),
-              sx: {
-                borderRadius: 30,
-                paddingLeft: '4px',
-                '> .MuiOutlinedInput-input': {
-                  fontSize: "1rem",
-                },
-              }
-            }}
-        />
-        </form>
-      </Box>
+              paddingLeft: '4px',
+              '> .MuiOutlinedInput-input': {
+                fontSize: "1rem",
+              },
+            }
+          }}
+      />
+      </form>
     )
 }

@@ -16,11 +16,10 @@ import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
 import { stashDisplay, nameDisplay } from '../util/display'
 
-const renderTooltip = (props) => {
+const renderTooltip = (props, theme) => {
   const { active, payload } = props;
   if (active && payload && payload.length) {
     const data = payload[0] && payload[0].payload;
-    // const p = data.payload.total === 0 ? 0 : data.payload.value / data.payload.total
     return (
       <Box
         sx={{ 
@@ -31,9 +30,17 @@ const renderTooltip = (props) => {
           boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px'
          }}
       >
-        <Typography component="div" variant="caption" color="inherit" paragraph>
-        <b>{data.name}</b>
-        </Typography>
+        <Box sx={{mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+          <Typography component="div" variant="caption" color="inherit">
+          <b>{data.name}</b>
+          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center'}}>
+            <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 
+                        bgcolor: theme.palette.grade[data.gradeValue] }}>
+            </Box>
+            <Typography variant="caption" sx={{ml: 1}}><b>{data.gradeValue}</b></Typography>
+          </Box>
+        </Box>
         <Typography component="div" variant="caption" color="inherit">
           Backing points: {data.pvPoints}
         </Typography>
@@ -51,7 +58,7 @@ const renderTooltip = (props) => {
   return null;
 };
 
-export default function PointsByParachainsChart({sessionIndex, groupId}) {
+export default function ValGroupPointsChart({sessionIndex, groupId}) {
   const theme = useTheme();
   const selectedAddress = useSelector(selectAddress);
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
@@ -93,13 +100,13 @@ export default function PointsByParachainsChart({sessionIndex, groupId}) {
           layout="vertical"
           data={data}
           margin={{
-            top: 20,
-            right: 30,
+            top: 16,
+            right: 32,
             left: 0,
-            bottom: 5,
+            bottom: 0
           }}
         >
-          <CartesianGrid strokeDasharray="1 4"  horizontalPoints={10} vertical={true} horizontal={false} />
+          <CartesianGrid strokeDasharray="1 4" vertical={true} horizontal={false} />
           <XAxis style={{ fontSize: '0.8rem' }} axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} type="number" />         
           <YAxis style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }} dataKey="name" type="category" width={128}
             axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}} />
@@ -111,9 +118,10 @@ export default function PointsByParachainsChart({sessionIndex, groupId}) {
             }
           </Bar>
           <Tooltip 
-                cursor={{fill: 'transparent'}}
+                cursor={{fill: theme.palette.divider}}
+                offset={24}
                 wrapperStyle={{ zIndex: 100 }} 
-                content={renderTooltip} />
+                content={props => renderTooltip(props, theme)} />
         </BarChart>
       </ResponsiveContainer>
     </Paper>

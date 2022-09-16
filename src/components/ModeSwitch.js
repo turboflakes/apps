@@ -91,12 +91,12 @@ export default function ModeSwitch({mode}) {
 
   return (
     <Stack spacing={1} direction="row" alignItems="center">
-      <MaterialUISwitch {...label} 
-        checked={checked}
-        onChange={handleChange} />
       <Typography variant="caption" sx={{ fontWeight: '600' }} color="textPrimary">
         {isLiveMode ? `Live [ #${block.bix.format()} ]` : `${mode} [ ${session.eix} // ${session.six} ]`}
       </Typography>
+      <MaterialUISwitch {...label} 
+        checked={checked}
+        onChange={handleChange} />
     </Stack>
   );
 }

@@ -37,7 +37,7 @@ export default function ParachainsOverviewGrid({sessionIndex}) {
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
           <Box>
             <Typography variant="h4">Parachains</Typography>
-            <Typography variant="subtitle2">Attestations of Validity by Parachain</Typography>
+            <Typography variant="subtitle">Attestations of Validity by Parachain</Typography>
           </Box>
           {/* <Box>
             <Paper sx={{ p: 2, width: 176, borderRadius: 3, display: 'flex', flexDirection: 'column', alignItems: 'flex-end',

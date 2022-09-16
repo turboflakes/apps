@@ -10,6 +10,10 @@ import ValGroupPieCharts from './ValGroupPieCharts';
 import ValGroupDataGrid from './ValGroupDataGrid';
 import ValGroupPointsChart from './ValGroupPointsChart';
 import ValGroupParachainsChart from './ValGroupParachainsChart';
+import ValGroupCoreAssignmentBox from './ValGroupCoreAssignmentBox';
+import ValGroupValidityVotesBox from './ValGroupValidityVotesBox';
+import ValGroupMvrBox from './ValGroupMvrBox';
+import ValGroupPointsBox from './ValGroupPointsBox';
 import { 
   useGetValidatorByAddressQuery,
 } from '../features/api/validatorsSlice'
@@ -26,7 +30,7 @@ import { calculateMvr } from '../util/mvr'
 
 
 export default function ValGroupBox({address, sessionIndex}) {
-  const {data, isSuccess, isError, error} = useGetValidatorByAddressQuery({address, session: sessionIndex, show_summary: true, show_stats: true}, {refetchOnMountOrArgChange: true});
+  const {data, isSuccess, isError, error} = useGetValidatorByAddressQuery({address, session: sessionIndex, show_summary: true, show_stats: true});
   const selectedChain = useSelector(selectChain);
   const selectedAddress = useSelector(selectAddress);
   const groupId = !!data ? (!!data.is_para ? data.para.group : undefined) : undefined;
@@ -44,8 +48,9 @@ export default function ValGroupBox({address, sessionIndex}) {
     return null
   }
 
+  // Make the selectedAddress the first in the list
   let filtered = validators.filter(v => v.address !== selectedAddress)
-  filtered.splice(0,0,validators.find(v => v.address === selectedAddress));
+  filtered.splice(0,0, validators.find(v => v.address === selectedAddress));
 
   if (isUndefined(filtered[0])) {
     return (<Typography>At the current session the validator {stashDisplay(address)} is not found.</Typography>)
@@ -60,16 +65,7 @@ export default function ValGroupBox({address, sessionIndex}) {
   }
 
   const paraId = filtered[0].para.pid;
-  const coreAssignments = filtered[0].para_summary.ca;
-  const validityVotes = filtered[0].para_summary.ev + filtered[0].para_summary.iv + filtered[0].para_summary.mv;
-  const mvr = calculateMvr(
-    validators.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0),
-    validators.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0),
-    validators.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0)
-  )
-
   const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
-
 
   return (
     <Box
@@ -86,63 +82,24 @@ export default function ValGroupBox({address, sessionIndex}) {
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box>
-            <Typography variant="h5" paragraph>Val. Group {groupId}</Typography>
+            <Typography variant="h4" paragraph>Val. Group {groupId}</Typography>
             {/* <Typography variant="subtitle2">-</Typography> */}
           </Box>
         </Box>
         <Grid container spacing={2}>
-          <Grid item xs={3}>
-            <Paper sx={{
-                p: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                width: '100%',
-                height: 112,
-                borderRadius: 3,
-                boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
-              }}>
-              <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Typography variant="h4" gutterBottom>{coreAssignments}</Typography>
-                <Typography variant="caption">Core Assignments</Typography>
-              </Box>
-            </Paper>
+          <Grid item xs={2}>
+            <ValGroupCoreAssignmentBox sessionIndex={sessionIndex} groupId={groupId} />
           </Grid>
-          <Grid item xs={3}>
-            <Paper sx={{
-                p: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                width: '100%',
-                height: 112,
-                borderRadius: 3,
-                boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
-              }}>
-              <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Typography variant="h4" gutterBottom>{validityVotes}</Typography>
-                <Typography variant="caption">Validity Votes</Typography>
-              </Box>
-            </Paper>
+          <Grid item xs={2}>
+            <ValGroupValidityVotesBox sessionIndex={sessionIndex} groupId={groupId} />
           </Grid>
-          <Grid item xs={3}>
-            <Paper sx={{
-                p: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                width: '100%',
-                height: 112,
-                borderRadius: 3,
-                boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
-              }}>
-              <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Typography variant="h4" gutterBottom>{!isUndefined(mvr) ? Math.round(mvr * 10000) / 10000 : '-'}</Typography>
-                <Typography variant="caption">Missed Vote Ratio</Typography>
-              </Box>
-            </Paper>
+          <Grid item xs={2}>
+            <ValGroupMvrBox sessionIndex={sessionIndex} groupId={groupId} />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={2}>
+            <ValGroupPointsBox sessionIndex={sessionIndex} groupId={groupId} />
+          </Grid>
+          <Grid item xs={4}>
             <Paper sx={{
                 p: 2,
                 display: 'flex',

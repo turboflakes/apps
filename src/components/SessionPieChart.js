@@ -88,7 +88,7 @@ export default function SessionPieChart({sessionIndex}) {
             <Box sx={{ mr: 1, display: 'flex', flexDirection: 'column'}}>
               <Typography variant="caption" align='right'>epoch</Typography>
               <Typography variant="h5" align='right' sx={{fontFamily: "'Roboto', sans-serif"}}>1 hr</Typography>
-              <Typography variant="subtitle2" align='right'>
+              <Typography variant="body2" align='right'>
                 {min > 0 ? <span style={{ marginRight: '4px'}}>{`${min} mins`}</span> : null}
                 {sec > 0 ? <span>{`${sec} s`}</span> : null}
               </Typography>

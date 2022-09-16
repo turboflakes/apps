@@ -45,7 +45,8 @@ let theme = createTheme({
     },
     neutrals: {
       100: "#F1F1F0",
-      200: "#A1A1A1",
+      200: "#C8C9CC",
+      // 200: "#A1A1A1",
       // 200: "#EEEEEE",
       300: "#4D4D4D",
       400: "#343434",
@@ -155,7 +156,9 @@ let theme = createTheme({
     },
     subtitle2: {
       fontFamily: "'Roboto', sans-serif",
-      fontSize: "1rem"
+      fontSize: "0.825rem",
+      fontStyle: "italic",
+      color: '#4D4D4D',
     }, 
   },
   shape: {

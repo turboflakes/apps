@@ -117,9 +117,9 @@ const defineColumns = (theme) => {
   },
   {
     field: 'pp',
-    headerName: 'P/V Points',
+    headerName: 'Backing Points',
     type: 'number',
-    width: 96,
+    width: 128,
     disableColumnMenu: true,
     valueGetter: (params) => {
       if (params.row.p === 0) {
@@ -130,9 +130,9 @@ const defineColumns = (theme) => {
   },
   {
     field: 'p',
-    headerName: 'Points',
+    headerName: 'Total Points',
     type: 'number',
-    width: 96,
+    width: 128,
     disableColumnMenu: true,
   },
 ]};

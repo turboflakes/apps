@@ -118,13 +118,15 @@ const sessionsSlice = createSlice({
       if (!!action.payload.session) {
         // Filter validators if authority and p/v
         const filtered = action.payload.data.filter(v => v.is_auth && v.is_para);
-        const groupIds = uniq(filtered.map(v => toNumber(v.para.group))).sort((a, b) => a - b)
-        const mvrs = filtered.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
-        adapter.upsertOne(state, { six: action.payload.session, groupIds, mvrs})
+        const _group_ids = uniq(filtered.map(v => toNumber(v.para.group))).sort((a, b) => a - b)
+        const _mvrs = filtered.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
+        const _validity_votes = filtered.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv);
+        const _backing_points = filtered.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab * 20) : 0);
+        adapter.upsertOne(state, { six: action.payload.session, _group_ids, _mvrs, _validity_votes, _backing_points})
       }
     })
     .addMatcher(matchParachainsReceived, (state, action) => {
-      adapter.upsertOne(state, { six: action.payload.session, parachainIds: action.payload.data.map(p => p.pid)})
+      adapter.upsertOne(state, { six: action.payload.session, _parachainIds: action.payload.data.map(p => p.pid)})
     })
   }
 })
@@ -137,11 +139,13 @@ export const {
 
 export const selectSessionHistory = (state) => state.sessions.history;
 export const selectSessionCurrent = (state) => state.sessions.current;
-export const selectValGroupIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session).groupIds) ? selectSessionByIndex(state, session).groupIds : []) : [];
-export const selectParachainIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session).parachainIds) ? selectSessionByIndex(state, session).parachainIds : []) : [];
-export const selectMVRsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session).mvrs) ? selectSessionByIndex(state, session).mvrs : []) : [];
-export const selectParaValidatorIdsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session).groupIds.map(groupId => selectValidatorIdsBySessionAndGroupId(state, session, groupId)) : []
-export const selectParaValidatorsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session).groupIds.map(groupId => selectValidatorsBySessionAndGroupId(state, session, groupId)) : []
+export const selectValGroupIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session)._group_ids) ? selectSessionByIndex(state, session)._group_ids : []) : [];
+export const selectParachainIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session)._parachainIds) ? selectSessionByIndex(state, session)._parachainIds : []) : [];
+export const selectMVRsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session)._mvrs) ? selectSessionByIndex(state, session)._mvrs : []) : [];
+export const selectValidityVotesBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session)._validity_votes) ? selectSessionByIndex(state, session)._validity_votes : []) : [];
+export const selectBackingPointsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session)._backing_points) ? selectSessionByIndex(state, session)._backing_points : []) : [];
+export const selectParaValidatorIdsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session)._group_ids.map(groupId => selectValidatorIdsBySessionAndGroupId(state, session, groupId)) : []
+export const selectParaValidatorsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session)._group_ids.map(groupId => selectValidatorsBySessionAndGroupId(state, session, groupId)) : []
 
 export const { sessionHistoryChanged } = sessionsSlice.actions;
 

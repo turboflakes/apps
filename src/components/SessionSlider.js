@@ -16,8 +16,8 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
   height: 2,
   padding: '15px 0',
   '& .MuiSlider-thumb': {
-    width: 8,
-    height: 8,
+    width: 16,
+    height: 16,
     transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
     '&:before': {
       boxShadow: '0 2px 12px 0 rgba(0,0,0,0.4)',
@@ -75,6 +75,7 @@ export default function SessionSlider({maxSessions}) {
   const dispatch = useDispatch();
   const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions}, {refetchOnMountOrArgChange: true});
   const historySession = useSelector(selectSessionHistory);
+  console.log("__historySession", historySession);
   if (!isSessionSuccess) {
     return null
   }
@@ -82,7 +83,7 @@ export default function SessionSlider({maxSessions}) {
   let defaultSession = !!historySession ? historySession : currentSession;
 
   const handleChange = (event, val) => {
-    setTimeout(() => dispatch(sessionHistoryChanged(val)), 300);
+    dispatch(sessionHistoryChanged(val))
   }
 
   let marks = data.map(session => {
@@ -134,8 +135,9 @@ export default function SessionSlider({maxSessions}) {
         <Typography variant="caption">past</Typography>
         <CustomSlider
           aria-label="session slider"
-          defaultValue={defaultSession}
-          onChangeCommitted={handleChange}
+          // defaultValue={defaultSession}
+          value={defaultSession}
+          onChange={handleChange}
           step={1}
           min={currentSession - maxSessions + 1}
           max={currentSession}

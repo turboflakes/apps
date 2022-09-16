@@ -19,7 +19,7 @@ export default function ValGroupsGrid({sessionIndex}) {
         <Grid item xs={12} md={8}>
           <Box sx={{ p: 2 }}>
             <Typography variant="h4">Val. Groups</Typography>
-            <Typography variant="subtitle2">Attestations of Validity by Val. Groups</Typography>
+            <Typography variant="subtitle">Attestations of Validity by Val. Groups</Typography>
             <GradeDescription sessionIndex={sessionIndex} gradeValue="A+" />
           </Box>
         </Grid>

@@ -55,7 +55,7 @@ export default function ValAddress({sessionIndex, address, showGrade}) {
             theme={'polkadot'} />
           <Box>
             <Typography variant="h4">{name}</Typography>
-            <Typography variant="subtitle2">{stashDisplay(chainAddress(address, chainInfo.ss58Format))}</Typography>
+            <Typography variant="subtitle">{stashDisplay(chainAddress(address, chainInfo.ss58Format))}</Typography>
           </Box>
         </Box>
         {showGrade ? 

@@ -194,14 +194,6 @@ export const LayoutPage = ({api}) => {
               }
             </Box> */}
 
-            {/* mode switch live/history */}
-            <ModeSwitch mode={selectedMode} />
-
-            {/* search validator */}
-            <Box sx={{ ml: 3,  flexGrow: 1}}>
-              {selectedPage === 'parachains/val-group' ? (!!selectedAddress ? <SearchSmall /> : null) : null}
-            </Box>
-
             {/* network toggle */}
             <ToggleButtonGroup
               value={selectedChain}
@@ -235,6 +227,15 @@ export const LayoutPage = ({api}) => {
                 {selected === "westend" ? <Typography variant='h5' sx={{ paddingLeft: '8px'}}>Westend</Typography> : null}
               </ToggleButton> */}
             </ToggleButtonGroup>
+
+            {/* search validator */}
+            <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}>
+              {selectedPage === 'parachains/val-group' ? (!!selectedAddress ? <SearchSmall /> : null) : null}
+            </Box>
+
+            {/* mode switch live/history */}
+            <ModeSwitch mode={selectedMode} />
+
           </Box>
           {isHistoryMode ? 
             <Box sx={{

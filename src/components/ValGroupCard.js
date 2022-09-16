@@ -50,7 +50,7 @@ export default function ValGroupCard({sessionIndex, groupId}) {
       <Box sx={{p: 2, height: 302}}>
         <Box>
           <Typography variant="h6">Val. Group {groupId}</Typography>
-          <Typography variant="caption"><i>{!!chainName ? `Currently backing ${chainName}` : 'Not backing'}</i></Typography>
+          <Typography variant="subtitle2">{!!chainName ? `Currently backing ${chainName}` : 'Not backing'}</Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
           <ValGroupList sessionIndex={sessionIndex} groupId={groupId} />

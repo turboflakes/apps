@@ -4,6 +4,7 @@ import {
   createEntityAdapter,
   isAnyOf
 } from '@reduxjs/toolkit'
+import isUndefined from 'lodash/isUndefined'
 import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
 import { 
@@ -11,15 +12,19 @@ import {
 import {
   selectIsLiveMode
 } from '../layout/layoutSlice'
+import {
+  selectValGroupMvrBySessionAndGroupId
+} from './valGroupsSlice'
+import { calculateMvr } from '../../util/mvr'
 
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Validators'],
   endpoints: (builder) => ({
     getValidators: builder.query({
-      query: ({address, session, role, number_last_sessions, show_summary, show_stats}) => ({
+      query: ({address, session, role, number_last_sessions, show_summary, show_stats, fetch_peers}) => ({
         url: `/validators`,
-        params: { address, session, role, number_last_sessions, show_summary, show_stats }
+        params: { address, session, role, number_last_sessions, show_summary, show_stats, fetch_peers }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
       async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
@@ -158,4 +163,22 @@ export const {
 } = adapter.getSelectors(state => state.validators)
 
 export const selectValidatorBySessionAndAddress = (state, session, address) => selectValidatorById(state, `${session}_${address}`)
+export const selectValidatorsByAddressAndSessions = (state, address, sessions = []) => 
+  sessions.map(session => {
+    const validator = selectValidatorById(state, `${session}_${address}`);
+    if (!isUndefined(validator)) {
+      // return valGroup MVR
+      if (validator.is_para) {
+        const _val_group_mvr = selectValGroupMvrBySessionAndGroupId(state, session, validator.para.group)
+        // console.log("__valGroupMVR", _val_group_mvr);
+        return {
+          ...validator,
+          _val_group_mvr
+        }
+      }
+      return {
+        ...validator
+      }
+    }
+  })
 // export const selectValidatorsAllBySessionAndAddress = (state, session, address) => selectValidatorById(state, `${session}_${address}`)

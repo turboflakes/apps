@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -23,11 +24,12 @@ import {
 } from '../features/api/valGroupsSlice'
 import { isChainSupported, getChainNameShort } from '../constants'
 import { stashDisplay, nameDisplay } from '../util/display'
+import { ThemeContext } from '@emotion/react';
 
 const codes = ['★', 'A', 'B', 'C', 'D']
 
-function createParachainsData(x, y, a, m, p, z) {
-  return { x, y, a, m, p, z };
+function createParachainsData(x, y, a, m, p, z, pid) {
+  return { x, y, a, m, p, z, pid };
 }
 
 const renderTooltip = (props, valIdentities) => {
@@ -82,28 +84,31 @@ const renderIdentityTick = (identity) => {
 }
 
 export default function ValGroupParachainsChart({sessionIndex, groupId}) {
+  const theme = useTheme();
   const selectedChain = useSelector(selectChain);
   const selectedAddress = useSelector(selectAddress);
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
-  
+
   if (!validators.length || validators.length !== validators.filter(v => !!v.para_stats).length) {
     return null
   }
 
   let filtered = validators.filter(v => v.address !== selectedAddress)
   filtered.splice(0,0,validators.find(v => v.address === selectedAddress));
-
+  
+  const currentParaId = validators[0].para.pid;
   const paraIds = Object.keys(validators[0].para_stats);
   const data = paraIds.map((p, i) => {
+    console.log(p);
     return filtered.map((v, j) => {
       if (v.para_stats[p]) {
         const total = v.para_stats[p].ev + v.para_stats[p].iv + v.para_stats[p].mv
-        return createParachainsData(j+1, 1, v.para_stats[p].ev + v.para_stats[p].iv, v.para_stats[p].mv, v.para_stats[p].pt, total)
+        return createParachainsData(j+1, 1, v.para_stats[p].ev + v.para_stats[p].iv, v.para_stats[p].mv, v.para_stats[p].pt, total, parseInt(p))
       }
-      return createParachainsData(j+1, 1, 0, 0, 0, 0)
+      return createParachainsData(j+1, 1, 0, 0, 0, 0, 0)
     })
   })
-
+  
   const identities = filtered.map((v, i) => ({
     code: codes[i],
     identity: nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 3), 10, selectedAddress === v.address ? '★ ' : '')
@@ -129,7 +134,8 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
             <Typography variant="h6">Parachains breakdown</Typography>
           </Box>
         </Box>
-        {data.map((d, i) => (
+        {data.map((d, i) => {
+          return (
           <ResponsiveContainer key={i} width="100%" height={60}>
             <ScatterChart
               // width={500}
@@ -139,6 +145,11 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
                 right: 10,
                 bottom: 0,
                 left: 10,
+              }}
+              style={{
+                borderRadius: '24px',
+                margin: '10px',
+                backgroundColor: d[0].pid === currentParaId ? theme.palette.neutrals[100] : 'transparent'
               }}
             >
               {i === data.length - 1 ? 
@@ -170,7 +181,7 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
                 cursor={{ strokeDasharray: '3 3' }} 
                 wrapperStyle={{ zIndex: 100 }} 
                 content={(props) => renderTooltip(props, identities)} />
-                  <Scatter data={d} >
+                  <Scatter data={d}>
                   {
                       d.map((entry, index) => {
                         // green to red
@@ -186,7 +197,7 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
                   </Scatter> 
             </ScatterChart>
           </ResponsiveContainer>
-        ))}
+        )})}
     </Paper>
   );
 }
