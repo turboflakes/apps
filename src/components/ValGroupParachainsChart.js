@@ -71,7 +71,7 @@ const renderTooltip = (props, valIdentities) => {
 const renderParachainLabel = (value) => {
   return (
     <g>
-      <text style={{fontSize: "0.8rem"}} x={40} y={10} fill="#666" textAnchor="middle" dominantBaseline="middle">
+      <text style={{fontSize: "0.8rem"}} x={44} y={22} fill="#666" textAnchor="middle" dominantBaseline="middle">
         {value}
       </text>
     </g>
@@ -124,7 +124,7 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: (60 * data.length) + 90,
+        height: (60 * data.length) + 112,
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}
@@ -141,9 +141,9 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
               // width={500}
               height={60}
               margin={{
-                top: 10,
+                top: 20,
                 right: 10,
-                bottom: 0,
+                bottom: -10,
                 left: 10,
               }}
               style={{
@@ -155,7 +155,7 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
               {i === data.length - 1 ? 
                 <XAxis type="category" dataKey="x"
                   allowDuplicatedCategory={false}
-                  axisLine={{stroke: '#C8C9CC', strokeWidth: 1}}
+                  axisLine={{stroke: theme.palette.divider, strokeWidth: 1}}
                   interval={0}
                   tick={{ fontSize: '0.8rem' }}
                   tickLine={{ transform: 'translate(0, -6)' }}
@@ -163,7 +163,7 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
                 /> : 
                 <XAxis type="category" dataKey="x"
                   allowDuplicatedCategory={false}
-                  axisLine={{stroke: '#C8C9CC', strokeWidth: 1}}
+                  axisLine={{stroke: theme.palette.divider, strokeWidth: 1}}
                   interval={0}
                   tick={{ fontSize: 0 }}
                   tickLine={{ transform: 'translate(0, -6)' }}
