@@ -99,7 +99,6 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
   const currentParaId = validators[0].para.pid;
   const paraIds = Object.keys(validators[0].para_stats);
   const data = paraIds.map((p, i) => {
-    console.log(p);
     return filtered.map((v, j) => {
       if (v.para_stats[p]) {
         const total = v.para_stats[p].ev + v.para_stats[p].iv + v.para_stats[p].mv
