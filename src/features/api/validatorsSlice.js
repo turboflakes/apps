@@ -13,9 +13,8 @@ import {
   selectIsLiveMode
 } from '../layout/layoutSlice'
 import {
-  selectValGroupMvrBySessionAndGroupId
+  selectValidatorMvrsBySessionAndGroupId
 } from './valGroupsSlice'
-import { calculateMvr } from '../../util/mvr'
 
 
 export const extendedApi = apiSlice.injectEndpoints({
@@ -167,10 +166,9 @@ export const selectValidatorsByAddressAndSessions = (state, address, sessions = 
   sessions.map(session => {
     const validator = selectValidatorById(state, `${session}_${address}`);
     if (!isUndefined(validator)) {
-      // return valGroup MVR
       if (validator.is_para) {
-        const _val_group_mvr = selectValGroupMvrBySessionAndGroupId(state, session, validator.para.group)
-        // console.log("__valGroupMVR", _val_group_mvr);
+        const _mvrs = selectValidatorMvrsBySessionAndGroupId(state, session, validator.para.group);
+        const _val_group_mvr = _mvrs.reduce((a, b) => a + b, 0) / _mvrs.length;
         return {
           ...validator,
           _val_group_mvr

@@ -175,10 +175,13 @@ const socketMiddleware = (store) => {
               const isHistoryMode = selectIsHistoryMode(store.getState());
               if (isHistoryMode) {
                 // get summary data for the selected address for the last X sessions
-                const selectedAddress = selectAddress(store.getState())
-                const chainName = selectChain(store.getState())
-                const maxSessions = getMaxHistorySessions(chainName);
-                store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
+                // const selectedAddress = selectAddress(store.getState())
+                // const chainName = selectChain(store.getState())
+                // const maxSessions = getMaxHistorySessions(chainName);
+                // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
+                // // get all validators summary for the selected session (useful to get the comparison stats)
+                // const historySession = selectSessionHistory(store.getState());
+                // store.dispatch(apiSlice.endpoints.getValidators.initiate({session: historySession, role: "para_authority", show_summary: true}, {forceRefetch: true}));
               }
               break
             }
@@ -223,10 +226,10 @@ const socketMiddleware = (store) => {
                 // store.dispatch(socketActions.messageQueued(msg))
 
                 // get summary data for the selected address for the last X sessions
-                const selectedAddress = selectAddress(store.getState())
-                const chainName = selectChain(store.getState())
-                const maxSessions = getMaxHistorySessions(chainName);
-                store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
+                // const selectedAddress = selectAddress(store.getState())
+                // const chainName = selectChain(store.getState())
+                // const maxSessions = getMaxHistorySessions(chainName);
+                // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
 
               } else if (action.payload === 'Live') {
                 // dispatchValidator(store, "subscribe");

@@ -9,7 +9,7 @@ import ValGroupsGrid from './ValGroupsGrid';
 import ParachainsOverviewGrid from './ParachainsOverviewGrid';
 import { 
   useGetValidatorsQuery,
- } from '../features/api/validatorsSlice'
+ } from '../features/api/validatorsSlice';
  import {
   pageChanged,
 } from '../features/layout/layoutSlice';

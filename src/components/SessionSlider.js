@@ -75,7 +75,7 @@ export default function SessionSlider({maxSessions}) {
   const dispatch = useDispatch();
   const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions}, {refetchOnMountOrArgChange: true});
   const historySession = useSelector(selectSessionHistory);
-  console.log("__historySession", historySession);
+  
   if (!isSessionSuccess) {
     return null
   }

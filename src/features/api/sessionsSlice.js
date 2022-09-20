@@ -7,6 +7,8 @@ import {
 import uniq from 'lodash/uniq'
 import toNumber from 'lodash/toNumber'
 import isArray from 'lodash/isArray'
+import forEach from 'lodash/forEach'
+import groupBy from 'lodash/groupBy'
 import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
 import { 
@@ -115,15 +117,20 @@ const sessionsSlice = createSlice({
       adapter.upsertMany(state, sessions)
     })
     .addMatcher(matchValidatorsReceived, (state, action) => {
-      if (!!action.payload.session) {
-        // Filter validators if authority and p/v
-        const filtered = action.payload.data.filter(v => v.is_auth && v.is_para);
-        const _group_ids = uniq(filtered.map(v => toNumber(v.para.group))).sort((a, b) => a - b)
-        const _mvrs = filtered.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
-        const _validity_votes = filtered.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv);
-        const _backing_points = filtered.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab * 20) : 0);
-        adapter.upsertOne(state, { six: action.payload.session, _group_ids, _mvrs, _validity_votes, _backing_points})
-      }
+      // Filter validators if authority and p/v
+      const filtered = action.payload.data.filter(v => v.is_auth && v.is_para);
+
+      // Group validators by session first
+      const groupedBySession = groupBy(filtered, v => !!v.session ? v.session : action.payload.session)
+
+      forEach(groupedBySession, (validators, session) => {
+        const _group_ids = uniq(validators.map(v => toNumber(v.para.group))).sort((a, b) => a - b)
+        const _mvrs = validators.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
+        const _validity_votes = validators.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv);
+        const _backing_points = validators.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab * 20) : 0);
+        adapter.upsertOne(state, { six: parseInt(session, 10), _group_ids, _mvrs, _validity_votes, _backing_points})
+      })
+
     })
     .addMatcher(matchParachainsReceived, (state, action) => {
       adapter.upsertOne(state, { six: action.payload.session, _parachainIds: action.payload.data.map(p => p.pid)})

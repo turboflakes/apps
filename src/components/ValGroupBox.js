@@ -26,7 +26,6 @@ import {
 } from '../features/chain/chainSlice';
 import { stashDisplay } from '../util/display'
 import { isChainSupported, getChainName, getChainLogo } from '../constants'
-import { calculateMvr } from '../util/mvr'
 
 
 export default function ValGroupBox({address, sessionIndex}) {

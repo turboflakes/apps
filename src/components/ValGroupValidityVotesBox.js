@@ -6,6 +6,9 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
+import { 
+  useGetValidatorsQuery,
+ } from '../features/api/validatorsSlice'
 import {
    selectValidatorsBySessionAndGroupId
 } from '../features/api/valGroupsSlice';
@@ -46,10 +49,12 @@ const renderTooltip = (props, theme) => {
 
 export default function ValGroupValidityVotesBox({groupId, sessionIndex}) {
   const theme = useTheme();
+  // fetch history summary for all validators in the selected history session
+  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
   const allValidityVotes = useSelector(state => selectValidityVotesBySession(state, sessionIndex));
   
-  if (!validators.length) {
+  if (!validators.length && !isSuccess) {
     return null
   }
   

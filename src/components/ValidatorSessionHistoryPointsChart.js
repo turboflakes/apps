@@ -4,22 +4,21 @@ import isUndefined from 'lodash/isUndefined'
 import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import { ComposedChart, BarChart, Bar, Line, Area, XAxis, YAxis, Cell, CartesianGrid, LabelList, Tooltip, ResponsiveContainer, Rectangle } from 'recharts';
+import { ComposedChart, Bar, Line, Area, XAxis, YAxis, Cell, ReferenceLine, CartesianGrid, Tooltip, ResponsiveContainer, Rectangle } from 'recharts';
 import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
+import { Spinner } from './Spinner';
 import {
   selectValidatorsByAddressAndSessions
-} from '../features/api/validatorsSlice'
-import {
-  selectChain,
-  selectAddress
-} from '../features/chain/chainSlice';
+} from '../features/api/validatorsSlice';
+import { 
+  useGetValidatorsQuery,
+ } from '../features/api/validatorsSlice';
 import {
   selectSessionCurrent,
   selectSessionHistory,
   sessionHistoryChanged,
 } from '../features/api/sessionsSlice';
-import { getMaxHistorySessions } from '../constants'
 import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
 
@@ -119,18 +118,20 @@ const buildSessionIdsArray = (startSession, max = 0) => {
   }
   return out;
 }
-export default function ValidatorSessionHistoryPointsChart({sessionIndex}) {
+export default function ValidatorSessionHistoryPointsChart({address, maxSessions}) {
   const theme = useTheme();
   const dispatch = useDispatch();
-
   const currentSession = useSelector(selectSessionCurrent);
   const historySession = useSelector(selectSessionHistory);
-  const selectedAddress = useSelector(selectAddress);
-  const selectedChain = useSelector(selectChain);
-  const maxSessions = getMaxHistorySessions(selectedChain);
+  const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
+  // const {isSuccess} = useGetValidatorsQuery({role: "authority", number_last_sessions: maxSessions, show_summary: true, show_stats: false});
   const historySessionIds = buildSessionIdsArray(currentSession, maxSessions);
-  const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, selectedAddress, historySessionIds));
-  
+  const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds));
+
+  if (!isSuccess) {
+    return null
+  }
+
   if (validators.filter(v => !isUndefined(v)).length !== maxSessions) {
     return null
   }
@@ -139,10 +140,6 @@ export default function ValidatorSessionHistoryPointsChart({sessionIndex}) {
     session: v.session,
     isAuth: v.is_auth ? 1 : 0,
     isPara: v.is_para ? 1 : 0,
-    // ab: v.is_auth ? v.auth.ab : 'NA',
-    // ev: v.is_para ? v.para_summary.ev : 'NA',
-    // iv: v.is_para ? v.para_summary.iv : 'NA',
-    // mv: v.is_para ? v.para_summary.mv : 'NA',
     abPoints: v.is_auth ? v.auth.ab * 20 : 0,
     pvPoints: v.is_para && (v.auth.ep - v.auth.sp) >= (v.auth.ab * 20) ? (v.auth.ep - v.auth.sp) - (v.auth.ab * 20) : 0,
     gradeValue: v.is_para ? grade(1 - calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)) : '',
@@ -168,7 +165,7 @@ export default function ValidatorSessionHistoryPointsChart({sessionIndex}) {
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
-          <Typography variant="h6" gutterBottom>{`Validator Performance of the last ${maxSessions} sessions`}</Typography>
+          <Typography variant="h6" gutterBottom>{`Validator Performance History (${maxSessions} sessions)`}</Typography>
           {/* <Typography variant="subtitle2">Points by session</Typography> */}
           {/* <Typography variant="subtitle2">(+4%) than previous session</Typography> */}
         </Box>
@@ -181,12 +178,13 @@ export default function ValidatorSessionHistoryPointsChart({sessionIndex}) {
           data={data}
           margin={{
             top: 16,
-            right: 32,
-            left: 0,
+            right: 2,
+            left: -18,
             bottom: 0,
           }}
         >
           <CartesianGrid strokeDasharray="1 4" vertical={false} horizontal={true} />
+          
 
           {/* is_authority */}
           <YAxis yAxisId="rightAuth" orientation="right"
@@ -197,6 +195,8 @@ export default function ValidatorSessionHistoryPointsChart({sessionIndex}) {
           <Area yAxisId="rightAuth" type="step" dataKey="isAuth" 
             activeDot={false} dot={false} 
             fill={theme.palette.neutrals[100]} strokeWidth={0} />
+
+          <ReferenceLine x={historySession} stroke={theme.palette.neutrals[300]}/>
 
           {/* points */}
           <XAxis style={{ fontSize: '0.8rem' }} dataKey="session" type="category" 
@@ -212,8 +212,8 @@ export default function ValidatorSessionHistoryPointsChart({sessionIndex}) {
             {
               data.map((entry, index) => (
                 <Cell key={`cell-${index}`} cursor="pointer" 
-                  stroke={"#4D4D4D"}
-                  strokeWidth={historySession === entry.session ? 2 : 0}
+                  stroke={theme.palette.neutrals[300]}
+                  strokeWidth={historySession === entry.session ? 1 : 0}
                   fill={theme.palette.grade[entry.gradeValue]} />
                 ))
             }

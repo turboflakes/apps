@@ -3,6 +3,7 @@ import {
   createEntityAdapter,
   current
 } from '@reduxjs/toolkit'
+import forEach from 'lodash/forEach'
 import groupBy from 'lodash/groupBy'
 import { calculateMvr } from '../../util/mvr'
 import { 
@@ -51,14 +52,21 @@ const valGroupsSlice = createSlice({
       // Filter validators if authority and p/v
       const filtered = action.payload.data.filter(v => v.is_auth && v.is_para);
       
-      // Group validators by groupID
-      const groupedByValGroupId = groupBy(filtered, v => v.para.group);
-      
-      const groups = Object.values(groupedByValGroupId).map(g => ({
-        id: !!g[0].session ? `${g[0].session}_${g[0].para.group}` : `${action.payload.session}_${g[0].para.group}`,
-        _validatorIds: g.map(v => !!v.session ? `${v.session}_${v.address}` : `${action.payload.session}_${v.address}`)
-      }))
-      adapter.upsertMany(state, groups)
+      // Group validators by session first
+      const groupedBySession = groupBy(filtered, v => !!v.session ? v.session : action.payload.session)
+
+      forEach(groupedBySession, (validators, session) => {
+
+        // Group validators by groupID
+        const groupedByValGroupId = groupBy(validators, v => v.para.group);
+        
+        const groups = Object.values(groupedByValGroupId).map(group => ({
+          id: `${session}_${group[0].para.group}`,
+          _validatorIds: group.map(v => `${session}_${v.address}`),
+          _mvrs: group.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv))
+        }))
+        adapter.upsertMany(state, groups)
+      })
     })
   }
 })
@@ -72,16 +80,10 @@ const {
 
 export const selectValidatorIdsBySessionAndGroupId = (state, session, groupId) => !!selectById(state, `${session}_${groupId}`) ? 
   selectById(state, `${session}_${groupId}`)._validatorIds : [];
-  
+
+export const selectValidatorMvrsBySessionAndGroupId = (state, session, groupId) => !!selectById(state, `${session}_${groupId}`) ? 
+  selectById(state, `${session}_${groupId}`)._mvrs : [];
+
 export const selectValidatorsBySessionAndGroupId = (state, session, groupId) => !!selectById(state, `${session}_${groupId}`) ? 
   selectById(state, `${session}_${groupId}`)._validatorIds.map(id => selectValidatorById(state, id))
   : [];
-
-export const selectValGroupMvrBySessionAndGroupId = (state, session, groupId) => {
-  if (!!selectById(state, `${session}_${groupId}`)) {
-    const ev = selectById(state, `${session}_${groupId}`)._validatorIds.map(id => selectValidatorById(state, id).para_summary.ev).reduce((a, b) => a + b, 0);
-    const iv = selectById(state, `${session}_${groupId}`)._validatorIds.map(id => selectValidatorById(state, id).para_summary.iv).reduce((a, b) => a + b, 0);
-    const mv = selectById(state, `${session}_${groupId}`)._validatorIds.map(id => selectValidatorById(state, id).para_summary.mv).reduce((a, b) => a + b, 0);
-    return calculateMvr(ev, iv, mv)
-  }
-};

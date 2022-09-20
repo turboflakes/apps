@@ -12,20 +12,23 @@ import ValAddress from './ValAddress';
 import SearchSmall from './SearchSmall';
 import ValidatorSessionHistoryPointsChart from './ValidatorSessionHistoryPointsChart';
 import {
+  selectChain,
   selectAddress,
   addressChanged
 } from '../features/chain/chainSlice';
 import { 
   selectSessionHistory,
   selectSessionCurrent,
- } from '../features/api/sessionsSlice'
+ } from '../features/api/sessionsSlice';
 import { 
   selectIsLiveMode,
   selectIsHistoryMode,
-} from '../features/layout/layoutSlice'
+} from '../features/layout/layoutSlice';
 import { 
   selectIsSocketConnected,
-} from '../features/api/socketSlice'
+} from '../features/api/socketSlice';
+import { getMaxHistorySessions } from '../constants';
+
 
 export const ValGroupPage = () => {
 	// const theme = useTheme();
@@ -36,6 +39,8 @@ export const ValGroupPage = () => {
   const currentSession = useSelector(selectSessionCurrent);
   const isLiveMode = useSelector(selectIsLiveMode);
   const isHistoryMode = useSelector(selectIsHistoryMode);
+  const selectedChain = useSelector(selectChain);
+  const maxSessions = getMaxHistorySessions(selectedChain);
   let [searchParams] = useSearchParams();
   const searchAddress = searchParams.get("address");
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
@@ -57,21 +62,22 @@ export const ValGroupPage = () => {
         <Grid item xs={12} md={5}>
           {!!selectedAddress ? <ValAddress address={selectedAddress}  sessionIndex={sessionIndex} showGrade /> : null}
         </Grid>
-        {isLiveMode ?
-          <Grid item xs={12} md={4}>
-            <SessionPieChart sessionIndex={sessionIndex} />
-          </Grid>
-        : null}
+
+        <Grid item xs={12} md={4}>
+          <SessionPieChart sessionIndex={sessionIndex} />
+        </Grid>
         {isLiveMode ? 
           <Grid item xs={12} md={3}>
             <BestBlock />
           </Grid>
         : null}
+        
         {isHistoryMode ? 
           <Grid item xs={12}>
-            <ValidatorSessionHistoryPointsChart sessionIndex={sessionIndex} />
+            <ValidatorSessionHistoryPointsChart address={selectedAddress} maxSessions={maxSessions} />
           </Grid>
         : null}
+        
         {isHistoryMode ? 
           <Grid item xs={12}>
             <Divider sx={{ my: 1 }} />
