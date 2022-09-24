@@ -117,12 +117,14 @@ export default function ValidatorSessionHistoryPointsChart({address, maxSessions
   const currentSession = useSelector(selectSessionCurrent);
   const historySession = useSelector(selectSessionHistory);
   const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
-  const historySessionIds = buildSessionIdsArrayHelper(currentSession, maxSessions);
+  const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1 , maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds));
 
   if (!isSuccess) {
     return null
   }
+
+  console.log("_historySessionIds", historySessionIds.length, validators.length);
 
   if (validators.filter(v => !isUndefined(v)).length !== maxSessions) {
     return null

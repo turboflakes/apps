@@ -16,7 +16,8 @@ import {
   selectSessionHistory,
   selectSessionCurrent,
   selectSessionByIndex,
- } from '../features/api/sessionsSlice'
+  sessionHistoryChanged,
+ } from '../features/api/sessionsSlice';
 
 const label = { inputProps: { 'aria-label': 'Mode switch' } };
 
@@ -85,14 +86,17 @@ export default function ModeSwitch({mode}) {
   const handleChange = (event) => {
     setChecked(event.target.checked);
     setTimeout(() => {
-      dispatch(modeChanged(event.target.checked ? 'Live' : 'History'))
+      dispatch(modeChanged(event.target.checked ? 'Live' : 'History'));
+      if (!event.target.checked) {
+        dispatch(sessionHistoryChanged(currentSession - 1))
+      }
     }, 100);
   };
 
   return (
     <Stack spacing={1} direction="row" alignItems="center">
       <Typography variant="caption" sx={{ fontWeight: '600' }} color="textPrimary">
-        {isLiveMode ? `Live [ #${block.bix.format()} ]` : `${mode} [ ${session.eix} // ${session.six} ]`}
+        {isLiveMode ? `Live [ #${block.bix.format()} ]` : (!!session ? `${mode} [ ${session.eix} // ${session.six} ]`: '')}
       </Typography>
       <MaterialUISwitch {...label} 
         checked={checked}

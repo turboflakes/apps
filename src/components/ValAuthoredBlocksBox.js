@@ -61,7 +61,7 @@ export default function ValPointsBox({address, maxSessions}) {
   const currentSession = useSelector(selectSessionCurrent);
   const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true});
   const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
-  const historySessionIds = buildSessionIdsArrayHelper(currentSession, maxSessions).filter(session => session !== currentSession);
+  const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
   const allAuthoredBlocks = useSelector(state => selectAuthoredBlocksBySessions(state, historySessionIds));
   const identity = useSelector(state => selectIdentityByAddress(state, address));

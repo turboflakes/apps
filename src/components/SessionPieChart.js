@@ -27,15 +27,13 @@ const COLORS = ['#343434', '#C8C9CC'];
 
 export default function SessionPieChart({sessionIndex}) {
   const {isSuccess: isBlockSuccess} = useGetBlockQuery("best");
-  
-  // const {data, isSuccess: isSessionSuccess } = useGetSessionByIndexQuery(sessionIndex, {refetchOnMountOrArgChange: true});
+  // const {isSuccess: isSessionSuccess } = useGetSessionByIndexQuery(sessionIndex, {refetchOnMountOrArgChange: true});
   const {isSuccess: isSessionSuccess } = useGetSessionByIndexQuery(sessionIndex);
-
   const blocks = useSelector(selectAll)
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex))
   const isLiveMode = useSelector(selectIsLiveMode)
 
-  if (!isBlockSuccess || !isSessionSuccess) {
+  if (!isBlockSuccess || !isSessionSuccess || !session) {
     return null
   }
 

@@ -88,17 +88,17 @@ export default function SessionSlider({maxSessions}) {
 
   let marks = data.map(session => {
     
-    if (session.is_partial) {
-      return {
-        value: session.six,
-        label: `!`
-      }
-    }
-
     if (session.is_empty) {
       return {
         value: session.six,
         label: `✗`
+      }
+    }
+
+    if (!session.is_full) {
+      return {
+        value: session.six,
+        label: `!`
       }
     }
 

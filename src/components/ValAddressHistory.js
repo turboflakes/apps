@@ -23,7 +23,7 @@ import { stashDisplay, nameDisplay } from '../util/display'
 export default function ValAddressHistory({address, maxSessions, showGrade}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const historySessionIds = buildSessionIdsArrayHelper(currentSession, maxSessions).filter(session => session !== currentSession);
+  const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
   const identity = useSelector(state => selectIdentityByAddress(state, address));
 
