@@ -73,7 +73,7 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
 export default function SessionSlider({maxSessions}) {
   // const theme = useTheme();
   const dispatch = useDispatch();
-  const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions}, {refetchOnMountOrArgChange: true});
+  const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true}, {refetchOnMountOrArgChange: true});
   const historySession = useSelector(selectSessionHistory);
   
   if (!isSessionSuccess) {
@@ -89,6 +89,13 @@ export default function SessionSlider({maxSessions}) {
   let marks = data.map(session => {
     
     if (session.is_partial) {
+      return {
+        value: session.six,
+        label: `!`
+      }
+    }
+
+    if (session.is_empty) {
       return {
         value: session.six,
         label: `✗`
@@ -112,14 +119,14 @@ export default function SessionSlider({maxSessions}) {
   return (
     <Box
       sx={{
-        mt:3,
+        mt: 1,
         p: 2,
         display: 'flex',
         // justifyContent: 'space-between',
         flexDirection: 'column',
         // alignItems: 'center',
         width: '100%',
-        // height: 112,
+        // height: 72,
         // borderRadius: 3,
         // borderTopLeftRadius: '24px',
         // borderTopRightRadius: '24px',

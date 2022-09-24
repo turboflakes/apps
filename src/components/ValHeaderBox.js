@@ -8,9 +8,11 @@ import Divider from '@mui/material/Divider';
 import SessionPieChart from './SessionPieChart';
 import BestBlock from './BestBlock';
 import ValGroupBox from './ValGroupBox';
-import ValAddress from './ValAddress';
+import ValAddressHistory from './ValAddressHistory';
+import ValMvrBox from './ValMvrBox';
+import ValPointsBox from './ValPointsBox';
+import ValAuthoredBlocksBox from './ValAuthoredBlocksBox';
 import SearchSmall from './SearchSmall';
-import ValHeaderBox from './ValHeaderBox';
 import ValidatorSessionHistoryPointsChart from './ValidatorSessionHistoryPointsChart';
 import {
   selectChain,
@@ -31,7 +33,7 @@ import {
 import { getMaxHistorySessions } from '../constants';
 
 
-export const ValGroupPage = () => {
+export default function ValHeaderBox({address}) {
 	// const theme = useTheme();
   const dispatch = useDispatch();
   const isSocketConnected = useSelector(selectIsSocketConnected);
@@ -46,61 +48,40 @@ export const ValGroupPage = () => {
   const searchAddress = searchParams.get("address");
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
 
-  React.useEffect(() => {
-    if (searchAddress && searchAddress !== selectedAddress) {
-      dispatch(addressChanged(searchAddress));
-    }
-  }, [searchAddress, selectedAddress]);
-
   if (!isSocketConnected) {
     // TODO websocket/network disconnected page
     return (<Box sx={{ m: 2, minHeight: '100vh' }}></Box>)
   }
 
   return (
-		<Box sx={{ m: 2, minHeight: '100vh', mt: isLiveMode ? '16px' : '112px' }}>
+		<Box sx={{ 
+        p: 2,
+          // m: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+      }}>
+      <Box>
+        <Typography variant="h4">Validator Performance History</Typography>
+        <Typography variant="subtitle" paragraph>Only the previous {maxSessions} sessions are considered</Typography>
+      </Box>
       <Grid container spacing={2}>
-
-        {/* History section */}
-        {isHistoryMode ? 
-          <Grid item xs={12}>
-            <ValHeaderBox address={selectedAddress} sessionIndex={sessionIndex} />
-            {/* {!!selectedAddress ? <ValAddress address={selectedAddress}  sessionIndex={sessionIndex} showGrade /> : null} */}
-          </Grid>
-        : null}
-        {/* {isHistoryMode ? 
-          <Grid item xs={12}>
-            <ValidatorSessionHistoryPointsChart address={selectedAddress} maxSessions={maxSessions} />
-          </Grid>
-        : null} */}
-
-        {isHistoryMode ? 
-          <Grid item xs={12}>
-            <Divider sx={{ my: 1 }} />
-          </Grid>
-        : null}
-
-        {/* val. Group section */}
         <Grid item xs={12} md={5}>
-          {!!selectedAddress ? <ValAddress address={selectedAddress}  sessionIndex={sessionIndex} showGrade /> : null}
+          <Box sx={{ display: 'flex'}}>
+            <ValAddressHistory address={address} maxSessions={maxSessions} showGrade />
+          </Box>
         </Grid>
-        <Grid item xs={12} md={4}>
-          <SessionPieChart sessionIndex={sessionIndex} />
+        <Grid item xs={12} md={2}>
+          <ValMvrBox address={address} maxSessions={maxSessions} />
         </Grid>
-        {isLiveMode ? 
-          <Grid item xs={12} md={3}>
-            <BestBlock />
-          </Grid>
-        : null}
-        
-        
-        <Grid item xs={12}>
-          {!!selectedAddress ? 
-            <ValGroupBox address={selectedAddress} sessionIndex={sessionIndex} /> : 
-            <Box sx={{ height: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <SearchSmall />
-            </Box>
-          }
+        <Grid item xs={12} md={2}>
+          <ValPointsBox address={address} maxSessions={maxSessions} />
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <ValAuthoredBlocksBox address={address} maxSessions={maxSessions} />
+        </Grid>
+        <Grid item xs={8}>
+          <ValidatorSessionHistoryPointsChart address={selectedAddress} maxSessions={maxSessions} />
         </Grid>
       </Grid>
 		</Box>

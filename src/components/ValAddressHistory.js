@@ -1,36 +1,46 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
-import isUndefined from 'lodash/isUndefined'
 import { Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Identicon from '@polkadot/react-identicon';
 import Tooltip from '@mui/material/Tooltip';
-import ValMvrBox from './ValMvrBox';
-import { stashDisplay, nameDisplay } from '../util/display'
-import { chainAddress } from '../util/crypto'
-import { 
-  selectValidatorBySessionAndAddress,
- } from '../features/api/validatorsSlice'
- import {
-  selectChainInfo
-} from '../features/chain/chainSlice';
+import {
+  selectValidatorsByAddressAndSessions,
+  buildSessionIdsArrayHelper
+} from '../features/api/validatorsSlice';
+import {
+  selectSessionCurrent,
+} from '../features/api/sessionsSlice';
+import {
+  selectIdentityByAddress,
+} from '../features/api/identitiesSlice';
 import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
+import { stashDisplay, nameDisplay } from '../util/display'
 
-export default function ValAddress({sessionIndex, address, showGrade}) {
+export default function ValAddressHistory({address, maxSessions, showGrade}) {
   const theme = useTheme();
-  const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, address))
+  const currentSession = useSelector(selectSessionCurrent);
+  const historySessionIds = buildSessionIdsArrayHelper(currentSession, maxSessions).filter(session => session !== currentSession);
+  const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
+  const identity = useSelector(state => selectIdentityByAddress(state, address));
 
-  const chainInfo = useSelector(selectChainInfo)
-
-  if (isUndefined(chainInfo) || isUndefined(validator)) { 
+  if (!validators.length) { 
     return null
   }
 
-  const name = nameDisplay(!!validator.identity ? validator.identity : stashDisplay(address), 24);
-  const gradeValue = !isUndefined(validator.para_summary) ? grade(1 - calculateMvr(validator.para_summary.ev, validator.para_summary.iv, validator.para_summary.mv)) : undefined;
+  const filtered = validators.filter(v => v.is_auth && v.is_para);
+  
+  const mvr = calculateMvr(
+    filtered.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0),
+    filtered.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0),
+    filtered.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0)
+  );
+
+  const name = nameDisplay(!!identity ? identity : stashDisplay(address), 24);
+  const gradeValue = grade(1 - mvr);
 
   return (
     <Paper
@@ -60,7 +70,7 @@ export default function ValAddress({sessionIndex, address, showGrade}) {
           <Box sx={{ width: 80, height: 80, borderRadius: '50%', 
                     bgcolor: theme.palette.grade[gradeValue], 
                     display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
-            <Tooltip title={`Validator grade for the currennt session: ${gradeValue}`} arrow>
+            <Tooltip title={`Validator grade obtained in the last ${filtered.length} p/v sessions: ${gradeValue}`} arrow>
               <Box sx={{ width: 72, height: 72, borderRadius: '50%', 
                     bgcolor: "#fff", 
                     display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>

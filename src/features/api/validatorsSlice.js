@@ -162,12 +162,18 @@ export const {
 } = adapter.getSelectors(state => state.validators)
 
 export const selectValidatorBySessionAndAddress = (state, session, address) => selectValidatorById(state, `${session}_${address}`)
-export const selectValidatorsByAddressAndSessions = (state, address, sessions = []) => 
-  sessions.map(session => {
-    const validator = selectValidatorById(state, `${session}_${address}`);
+export const selectValidatorsByAddressAndSessions = (state, address, sessions = [], exclude_partial_sessions = false) => 
+  sessions.map(sessionId => {
+    if (exclude_partial_sessions) {
+      const session = selectSessionByIndex(state, sessionId);
+      if (!isUndefined(session)) {
+        if (session.is_partial || session.is_empty) return
+      }
+    }
+    const validator = selectValidatorById(state, `${sessionId}_${address}`);
     if (!isUndefined(validator)) {
       if (validator.is_para) {
-        const _mvrs = selectValidatorMvrsBySessionAndGroupId(state, session, validator.para.group);
+        const _mvrs = selectValidatorMvrsBySessionAndGroupId(state, sessionId, validator.para.group);
         const _val_group_mvr = _mvrs.reduce((a, b) => a + b, 0) / _mvrs.length;
         return {
           ...validator,
@@ -178,5 +184,14 @@ export const selectValidatorsByAddressAndSessions = (state, address, sessions = 
         ...validator
       }
     }
-  })
+  }).filter(v => !isUndefined(v))
+
 // export const selectValidatorsAllBySessionAndAddress = (state, session, address) => selectValidatorById(state, `${session}_${address}`)
+
+export const buildSessionIdsArrayHelper = (startSession, max = 0) => {
+  let out = [];
+  for (let i = max - 1; i >= 0; i--) {
+    out.push(startSession-i);
+  }
+  return out;
+}

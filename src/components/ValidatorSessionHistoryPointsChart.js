@@ -9,11 +9,10 @@ import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { Spinner } from './Spinner';
 import {
-  selectValidatorsByAddressAndSessions
-} from '../features/api/validatorsSlice';
-import { 
   useGetValidatorsQuery,
- } from '../features/api/validatorsSlice';
+  selectValidatorsByAddressAndSessions,
+  buildSessionIdsArrayHelper
+} from '../features/api/validatorsSlice';
 import {
   selectSessionCurrent,
   selectSessionHistory,
@@ -111,21 +110,14 @@ const renderTooltip = (props, theme) => {
   return null;
 };
 
-const buildSessionIdsArray = (startSession, max = 0) => {
-  let out = [];
-  for (let i = max - 1; i >= 0; i--) {
-    out.push(startSession-i);
-  }
-  return out;
-}
+
 export default function ValidatorSessionHistoryPointsChart({address, maxSessions}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const currentSession = useSelector(selectSessionCurrent);
   const historySession = useSelector(selectSessionHistory);
   const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
-  // const {isSuccess} = useGetValidatorsQuery({role: "authority", number_last_sessions: maxSessions, show_summary: true, show_stats: false});
-  const historySessionIds = buildSessionIdsArray(currentSession, maxSessions);
+  const historySessionIds = buildSessionIdsArrayHelper(currentSession, maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds));
 
   if (!isSuccess) {
@@ -154,38 +146,38 @@ export default function ValidatorSessionHistoryPointsChart({address, maxSessions
   };
 
   return (
-    <Paper sx={{ p: 2,
+    <Paper sx={{ 
+      p: 2,
+      // mt: 2,
       display: 'flex',
       flexDirection: 'column',
       // justifyContent: 'center',
       // alignItems: 'center',
       width: '100%',
-      height: 256,
+      // height: 256,
       borderRadius: 3,
-      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
+      // bgcolor: theme.palette.neutrals[300],
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' 
+      }} elevation={0}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
-          <Typography variant="h6" gutterBottom>{`Validator Performance History (${maxSessions} sessions)`}</Typography>
-          {/* <Typography variant="subtitle2">Points by session</Typography> */}
-          {/* <Typography variant="subtitle2">(+4%) than previous session</Typography> */}
+          <Typography variant="h6" paragraph>{`History (${maxSessions} sessions)`}</Typography>
         </Box>
       </Box>
-      <ResponsiveContainer width="100%" >
+      <ResponsiveContainer width="100%" height={192}>
         <ComposedChart
           // width={500}
-          // height={400}
           // layout="vertical"
           data={data}
           margin={{
-            top: 16,
-            right: 2,
-            left: -18,
+            top: 0,
+            right: 0,
+            left: 0,
             bottom: 0,
           }}
         >
           <CartesianGrid strokeDasharray="1 4" vertical={false} horizontal={true} />
-          
-
+      
           {/* is_authority */}
           <YAxis yAxisId="rightAuth" orientation="right"
             style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}
@@ -203,6 +195,7 @@ export default function ValidatorSessionHistoryPointsChart({address, maxSessions
             interval={6}
             axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} />         
           <YAxis type="number" 
+            width={64}
             style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}
             axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}} 
             />
@@ -221,6 +214,7 @@ export default function ValidatorSessionHistoryPointsChart({address, maxSessions
 
           {/* mvr & group mvr */}
           <YAxis yAxisId="rightMVR" orientation="right"
+            width={64}
             style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}
             axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}} 
             />

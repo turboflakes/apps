@@ -5,6 +5,7 @@ import {
   isAnyOf,
 } from '@reduxjs/toolkit'
 import uniq from 'lodash/uniq'
+import isUndefined from 'lodash/isUndefined'
 import toNumber from 'lodash/toNumber'
 import isArray from 'lodash/isArray'
 import forEach from 'lodash/forEach'
@@ -27,9 +28,9 @@ export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Sessions'],
   endpoints: (builder) => ({
     getSessions: builder.query({
-      query: ({number_last_sessions}) => ({
+      query: ({number_last_sessions, show_stats}) => ({
         url: `/sessions`,
-        params: { number_last_sessions }
+        params: { number_last_sessions, show_stats }
       }),
       providesTags: (result, error, arg) => [{ type: 'Sessions', id: arg }],
       transformResponse: responseData => {
@@ -153,6 +154,33 @@ export const selectValidityVotesBySession = (state, session) => !!selectSessionB
 export const selectBackingPointsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session)._backing_points) ? selectSessionByIndex(state, session)._backing_points : []) : [];
 export const selectParaValidatorIdsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session)._group_ids.map(groupId => selectValidatorIdsBySessionAndGroupId(state, session, groupId)) : []
 export const selectParaValidatorsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session)._group_ids.map(groupId => selectValidatorsBySessionAndGroupId(state, session, groupId)) : []
+// from session.stats
+export const selectMvrsBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    if (session.stats && !session.is_partial && !session.is_empty) {
+      return calculateMvr(session.stats.ev, session.stats.iv, session.stats.mv); 
+    }
+  }
+}).filter(v => !isUndefined(v))
+
+export const selectBackingPointsBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    if (session.stats && !session.is_partial && !session.is_empty) {
+      return session.stats.pt - (session.stats.ab * 20); 
+    }
+  }
+}).filter(v => !isUndefined(v))
+
+export const selectAuthoredBlocksBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    if (session.stats && !session.is_partial && !session.is_empty) {
+      return session.stats.ab; 
+    }
+  }
+}).filter(v => !isUndefined(v))
 
 export const { sessionHistoryChanged } = sessionsSlice.actions;
 

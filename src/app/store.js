@@ -11,6 +11,7 @@ import validatorsSlice from '../features/api/validatorsSlice';
 import authoritiesSlice from '../features/api/authoritiesSlice';
 import valGroupsSlice from '../features/api/valGroupsSlice';
 import parachainsSlice from '../features/api/parachainsSlice';
+import identitiesSlice from '../features/api/identitiesSlice';
 
 export const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
     blocks: blocksSlice.reducer,
     sessions: sessionsSlice.reducer,
     validators: validatorsSlice.reducer,
+    identities: identitiesSlice.reducer,
     authorities: authoritiesSlice.reducer,
     valGroups: valGroupsSlice.reducer,
     parachains: parachainsSlice.reducer,

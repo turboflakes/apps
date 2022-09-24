@@ -135,6 +135,8 @@ export const LayoutPage = ({api}) => {
   const web3Account = useSelector(selectAccount);
 	useWeb3ChainInfo(api);
 
+  const maxSessions = getMaxHistorySessions(selectedChain);
+
 	const handleChainSelection = (ev, chain) => {
 		if (chain === null) {
 			return;
@@ -240,11 +242,12 @@ export const LayoutPage = ({api}) => {
           {isHistoryMode ? 
             <Box sx={{
                 display: 'flex', 
+                flexDirection: 'column',
                 justifyContent: 'center', 
                 alignItems: 'center',
-                width: '100%'
+                width: '100%',
               }}>
-              <SessionSlider maxSessions={getMaxHistorySessions(selectedChain)} /> 
+              <SessionSlider maxSessions={maxSessions} /> 
             </Box> : null}
         </Toolbar>
       </AppBar>
@@ -347,7 +350,7 @@ export const LayoutPage = ({api}) => {
               //   theme.palette.mode === 'light'
               //     ? theme.palette.grey[100]
               //     : theme.palette.grey[900],
-              background: "linear-gradient(180deg, #FFF, #F1F1F0)",
+              background: isHistoryMode ? theme.palette.gradients.light180 : theme.palette.gradients.light180,
               flexGrow: 1,
               height: '100vh',
               overflow: 'auto',
