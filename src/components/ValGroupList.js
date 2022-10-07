@@ -54,7 +54,7 @@ export default function ValGroupList({sessionIndex, groupId}) {
                   theme={'polkadot'} />
               </ListItemIcon>
               <ListItemText sx={{whiteSpace: "nowrap"}}
-                primary={nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 4), 12)}
+                primary={nameDisplay(!!v.profile ? v.profile._identity : stashDisplay(v.address, 4), 12)}
               />
             </ListItemButton>
           ))}

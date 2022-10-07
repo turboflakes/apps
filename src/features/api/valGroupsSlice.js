@@ -11,6 +11,9 @@ import {
   matchValidatorsReceived,
   selectValidatorById
 } from './validatorsSlice'
+import { 
+  selectValProfileByAddress,
+} from './valProfilesSlice'
 
 
 // Slice
@@ -84,4 +87,11 @@ export const selectValidatorIdsBySessionAndGroupId = (state, session, groupId) =
 export const selectValidatorMvrsBySessionAndGroupId = (state, session, groupId) => !!selectById(state, `${session}_${groupId}`) ? 
   (!!selectById(state, `${session}_${groupId}`)._mvrs ? selectById(state, `${session}_${groupId}`)._mvrs : []) : [];
 
-export const selectValidatorsBySessionAndGroupId = (state, session, groupId) => selectValidatorIdsBySessionAndGroupId(state, session, groupId).map(id => selectValidatorById(state, id));
+export const selectValidatorsBySessionAndGroupId = (state, session, groupId) => 
+  selectValidatorIdsBySessionAndGroupId(state, session, groupId).map(id => { 
+    const validator = selectValidatorById(state, id);
+    return {
+      ...validator,
+      profile: selectValProfileByAddress(state, validator.address)
+    }
+  });

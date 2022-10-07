@@ -3,10 +3,12 @@ import { useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import SessionPieChart from './SessionPieChart';
-import BlockBox from './BlockBox';
+import SessionBox from './SessionBox';
+import BlockFinalizedBox from './BlockFinalizedBox';
 import SessionPerformancePieChart from './SessionPerformancePieChart';
 import SessionPerformanceTimeline from './SessionPerformanceTimeline';
 import ParachainsOverviewTabs from './ParachainsOverviewTabs';
+import GradesBox from './GradesBox';
 import { 
   selectSessionHistory,
   selectSessionCurrent,
@@ -35,22 +37,18 @@ export const ParachainsOverviewPage = ({tab}) => {
   return (
 		<Box sx={{ m: 2, minHeight: '100vh', mt: isLiveMode ? '16px' : '112px' }}>
       <Grid container spacing={2}>
-        <Grid item xs={3} md={isLiveMode ? 3 : 8}>
+        <Grid item xs={6} md={6}>
           <SessionPerformanceTimeline />
         </Grid>
-        {isLiveMode ?
-          <Grid item xs={12} md={2}>
-            <SessionPerformancePieChart />
-          </Grid>
-        : null}
-        <Grid item xs={12} md={4}>
-          <SessionPieChart sessionIndex={sessionIndex} />
+        <Grid item xs={12} md={2}>
+          <SessionPerformancePieChart />
         </Grid>
-        {isLiveMode ? 
-          <Grid item xs={12} md={3}>
-            <BlockBox />
-          </Grid>
-        : null}
+        <Grid item xs={12} md={2}>
+          <SessionPieChart sessionIndex={sessionIndex} /> 
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <BlockFinalizedBox />
+        </Grid>
         <Grid item xs={12}>
           {!!sessionIndex ? <ParachainsOverviewTabs sessionIndex={sessionIndex} tab={tab} /> : null}
         </Grid>

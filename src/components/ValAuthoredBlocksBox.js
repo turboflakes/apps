@@ -66,9 +66,6 @@ export default function ValPointsBox({address, maxSessions}) {
   const allAuthoredBlocks = useSelector(state => selectAuthoredBlocksBySessions(state, historySessionIds));
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
 
-
-  
-
   if (!isSuccess || !isSessionSuccess) {
     return null
   }
@@ -79,7 +76,6 @@ export default function ValPointsBox({address, maxSessions}) {
     return null
   }
 
-  console.log("__filtered", filtered);
 
   const authoredBlocksTotal = filtered.map(v => v.auth.ab.length).reduce((a, b) => a + b, 0);
   const authoredBlocks = Math.round((authoredBlocksTotal / filtered.length) * 100) / 100;

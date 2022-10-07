@@ -3,16 +3,19 @@ import {
   createEntityAdapter,
 } from '@reduxjs/toolkit'
 import apiSlice from './apiSlice'
+import { 
+  matchValidatorsReceived,
+ } from './validatorsSlice'
 import { stashDisplay, commissionDisplay } from '../../util/display'
 
 export const extendedApi = apiSlice.injectEndpoints({
-  tagTypes: ['Validators'],
+  tagTypes: ['ValProfiles'],
   endpoints: (builder) => ({
     getValidatorProfileByAddress: builder.query({
       query: (address) => ({
         url: `/validators/${address}/profile`,
       }),
-      providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
+      providesTags: (result, error, arg) => [{ type: 'ValProfiles', id: arg }],
     }),
   }),
 })
@@ -42,6 +45,22 @@ const valProfilesSlice = createSlice({
             `${action.payload.identity.name}`) 
           : stashDisplay(action.payload.stash),
         _ts: + new Date()})
+    })
+    .addMatcher(matchValidatorsReceived, (state, action) => {
+      const profiles = action.payload.data.filter(validator => !!validator.profile)
+          .map(validator => {
+            return {
+              ...validator.profile,
+              _commission: !!validator.profile.commission ? commissionDisplay(validator.profile.commission) : '',
+              _identity: !!validator.profile.identity ? 
+                (!!validator.profile.identity.sub ? 
+                  `${validator.profile.identity.name}/${validator.profile.identity.sub}` : 
+                  `${validator.profile.identity.name}`) 
+                : stashDisplay(validator.profile.stash, 4),
+              _ts: + new Date()
+            }
+          })
+      adapter.upsertMany(state, profiles)
     })
   }
 })

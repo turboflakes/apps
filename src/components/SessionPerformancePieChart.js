@@ -75,8 +75,8 @@ export default function SessionPerformancePieChart() {
               cy="50%"
               outerRadius={36}
               innerRadius={24}
-              startAngle={210}
-              endAngle={-30}
+              startAngle={180}
+              endAngle={0}
             >
               {pieData.map((entry, index) => (
                 <Cell key={`cell-${index}`} 

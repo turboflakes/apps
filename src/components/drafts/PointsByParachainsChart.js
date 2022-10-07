@@ -6,8 +6,8 @@ import { BarChart, Bar, Line, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Text, 
 import { Typography } from '@mui/material';
 import {
   selectChain
-} from '../features/chain/chainSlice';
-import { isChainSupported, getChainNameShort, getChainColor } from '../constants'
+} from '../../features/chain/chainSlice';
+import { isChainSupported, getChainNameShort, getChainColor } from '../../constants'
 
 function createData(paraId, points) {
   return { paraId, points };

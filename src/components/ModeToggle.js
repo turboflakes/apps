@@ -5,6 +5,12 @@ import Stack from '@mui/material/Stack';
 import { Typography } from '@mui/material';
 import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
+import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
+import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
+import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
+import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import {
   modeChanged,
@@ -96,14 +102,24 @@ export default function ModeSwitch({mode}) {
   };
 
   return (
-    <Stack spacing={1} direction="row" alignItems="center">
-      <Typography variant="caption" sx={{ fontWeight: '600' }} color="textPrimary">
-        {/* {isLiveMode ? `Live [ # ${block.bix.format()} ]` : (!!session ? `${mode} [ ${session.eix} // ${session.six} ]`: '')} */}
-        {`${mode} [ ${session.eix} // ${session.six} ]`}
-      </Typography>
-      <MaterialUISwitch {...label} 
-        checked={checked}
-        onChange={handleChange} />
-    </Stack>
+    <ToggleButtonGroup
+      value={checked}
+      exclusive
+      onChange={handleChange}
+      aria-label="text alignment"
+    >
+      <ToggleButton value="left" aria-label="left aligned">
+        <FormatAlignLeftIcon />
+      </ToggleButton>
+      <ToggleButton value="center" aria-label="centered">
+        <FormatAlignCenterIcon />
+      </ToggleButton>
+      <ToggleButton value="right" aria-label="right aligned">
+        <FormatAlignRightIcon />
+      </ToggleButton>
+      <ToggleButton value="justify" aria-label="justified" disabled>
+        <FormatAlignJustifyIcon />
+      </ToggleButton>
+    </ToggleButtonGroup>
   );
 }

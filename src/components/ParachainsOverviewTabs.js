@@ -31,7 +31,7 @@ export default function ParachainsOverviewTabs({sessionIndex, tab}) {
   const navigate = useNavigate();
 	const dispatch = useDispatch();
   const selectedChain = useSelector(selectChain);
-  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true}, {refetchOnMountOrArgChange: true});
+  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true, show_profile: true}, {refetchOnMountOrArgChange: true});
   const handleChange = (event, newValue) => {
     dispatch(pageChanged(tabPages[newValue]));
     navigate(`/one-t/${selectedChain}/${tabPages[newValue]}`)

@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import SessionPieChart from './SessionPieChart';
-import BlockBox from './BlockBox';
+import BlockFinalizedBox from './BlockFinalizedBox';
 import ValGroupBox from './ValGroupBox';
 import ValAddress from './ValAddress';
 import SearchSmall from './SearchSmall';
@@ -81,18 +81,22 @@ export const ValGroupPage = () => {
         : null}
 
         {/* val. Group section */}
-        <Grid item xs={12} md={5}>
+        <Grid item xs={12} md={8}>
           {!!selectedAddress ? <ValAddress address={selectedAddress}  sessionIndex={sessionIndex} showGrade /> : null}
         </Grid>
-        <Grid item xs={12} md={4}>
-          <SessionPieChart sessionIndex={sessionIndex} />
-        </Grid>
+
+        {/* Live Mode */}
         {isLiveMode ? 
-          <Grid item xs={12} md={3}>
-            <BlockBox />
+          <Grid item xs={12} md={2}>
+            <SessionPieChart sessionIndex={sessionIndex} />
           </Grid>
         : null}
-        
+        {isLiveMode ? 
+          <Grid item xs={12} md={2}>
+            <BlockFinalizedBox />
+          </Grid>
+        : null}
+        {/* ---------- */}
         
         <Grid item xs={12}>
           {!!selectedAddress ? 

@@ -21,9 +21,9 @@ export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Validators'],
   endpoints: (builder) => ({
     getValidators: builder.query({
-      query: ({address, session, role, number_last_sessions, show_summary, show_stats, fetch_peers}) => ({
+      query: ({address, session, role, number_last_sessions, show_summary, show_stats, show_profile, fetch_peers}) => ({
         url: `/validators`,
-        params: { address, session, role, number_last_sessions, show_summary, show_stats, fetch_peers }
+        params: { address, session, role, number_last_sessions, show_summary, show_stats, show_profile, fetch_peers }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
       async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
