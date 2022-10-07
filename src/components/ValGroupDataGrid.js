@@ -134,6 +134,7 @@ const defineColumns = (theme) => {
     type: 'number',
     width: 128,
     disableColumnMenu: true,
+    sortingOrder: ['asc', 'desc']
   },
 ]};
 
@@ -151,15 +152,14 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
     return null
   }
 
-  let filtered = validators.filter(v => v.address !== selectedAddress)
-  filtered.splice(0,0,validators.find(v => v.address === selectedAddress));
+  let sorted = validators.sort((a, b) => ((b.auth.ep - b.auth.sp) - (a.auth.ep - a.auth.sp)));
 
-  const rows = filtered.map((v, i) => {
+  const rows = sorted.map((v, i) => {
     if (v.is_auth && v.is_para) {
       const authored_blocks = v.auth.ab.length;
       const total_points = v.auth.ep - v.auth.sp;
       return createDataGridRows(i+1, 
-        nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 6), 36, selectedAddress === v.address ? '★ ' : ''), 
+        nameDisplay(!!v.profile ? v.profile._identity : stashDisplay(v.address, 6), 36, selectedAddress === v.address ? '★ ' : ''), 
         v.address, 
         authored_blocks, 
         v.para_summary.iv, 

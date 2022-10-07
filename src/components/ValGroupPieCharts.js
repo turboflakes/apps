@@ -31,7 +31,7 @@ export default function ValGroupPieCharts({sessionIndex, groupId}) {
     v.para_summary.ev, 
     v.para_summary.iv, 
     v.para_summary.mv, 
-    nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 4), 24, selectedAddress === v.address ? '★ ' : '')))
+    nameDisplay(!!v.profile ? v.profile._identity : stashDisplay(v.address, 4), 24, selectedAddress === v.address ? '★ ' : '')))
 
   return (
     <Paper sx={{ p: 2,
