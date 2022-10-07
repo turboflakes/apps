@@ -67,11 +67,11 @@ export default function ValGroupPointsChart({sessionIndex, groupId}) {
     return null
   }
 
-  let sorted = validators.sort((a, b) => ((b.auth.ep - b.auth.sp) - (b.auth.ab * 20)) - ((a.auth.ep - a.auth.sp) - (a.auth.ab * 20)));
+  let sorted = validators.sort((a, b) => ((b.auth.ep - b.auth.sp) - (b.auth.ab.length * 20)) - ((a.auth.ep - a.auth.sp) - (a.auth.ab.length * 20)));
 
   const data = sorted.map(v => ({
-    pvPoints: (v.auth.ep - v.auth.sp) - (v.auth.ab * 20),
-    abPoints: v.auth.ab * 20,
+    pvPoints: (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20),
+    abPoints: v.auth.ab.length * 20,
     gradeValue: grade(1 - calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)),
     name: nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 4), 10, selectedAddress === v.address ? '★ ' : '')
   }))

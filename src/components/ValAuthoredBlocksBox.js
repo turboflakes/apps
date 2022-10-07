@@ -18,9 +18,9 @@ import {
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
 import {
-  selectIdentityByAddress,
-} from '../features/api/identitiesSlice';
-import { stashDisplay, nameDisplay } from '../util/display'
+  selectValProfileByAddress,
+} from '../features/api/valProfilesSlice';
+import { nameDisplay } from '../util/display'
 
 const renderTooltip = (props, theme) => {
   const { active, payload } = props;
@@ -64,26 +64,31 @@ export default function ValPointsBox({address, maxSessions}) {
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
   const allAuthoredBlocks = useSelector(state => selectAuthoredBlocksBySessions(state, historySessionIds));
-  const identity = useSelector(state => selectIdentityByAddress(state, address));
+  const valProfile = useSelector(state => selectValProfileByAddress(state, address));
+
+
+  
 
   if (!isSuccess || !isSessionSuccess) {
     return null
   }
 
-  if (!validators.length) {
+  const filtered = validators.filter(v => v.is_auth);
+
+  if (!filtered.length) {
     return null
   }
 
-  const filtered = validators.filter(v => v.is_auth);
+  console.log("__filtered", filtered);
 
-  const authoredBlocks = Math.round((filtered.map(v => v.auth.ab).reduce((a, b) => a + b, 0) / filtered.length) * 100) / 100;
+  const authoredBlocksTotal = filtered.map(v => v.auth.ab.length).reduce((a, b) => a + b, 0);
+  const authoredBlocks = Math.round((authoredBlocksTotal / filtered.length) * 100) / 100;
   
   const avg = !!allAuthoredBlocks.length ? Math.round((allAuthoredBlocks.reduce((a, b) => a + b, 0) / (allAuthoredBlocks.length * 1000)) * 100) / 100 : 0;
   const diff = !!avg ? Math.round(((authoredBlocks * 100 / avg) - 100) * 10) / 10 : 0;
-  const name = nameDisplay(!!identity ? identity : stashDisplay(address), 24);
-
+  
   const data = [
-    {name, value: authoredBlocks, valueQty: filtered.length, avg, avgQty: allAuthoredBlocks.length},
+    {name: nameDisplay(valProfile._identity), value: authoredBlocks, valueQty: filtered.length, avg, avgQty: allAuthoredBlocks.length},
   ];
   
   return (
@@ -101,7 +106,7 @@ export default function ValPointsBox({address, maxSessions}) {
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Authored Blocks</Typography>
         <Typography variant="h4">
-          {!isUndefined(authoredBlocks) ? authoredBlocks : '-'}
+          {!isUndefined(authoredBlocksTotal) ? authoredBlocksTotal : '-'}
         </Typography>
         <Tooltip title={`${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of Authored Blocks per session of all the Validators of the last ${allAuthoredBlocks.length} sessions.`} arrow>
           <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 
@@ -124,7 +129,7 @@ export default function ValPointsBox({address, maxSessions}) {
           <ChartTooltip 
                 cursor={{fill: 'transparent'}}
                 offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme)} />
         </BarChart>
       </ResponsiveContainer>

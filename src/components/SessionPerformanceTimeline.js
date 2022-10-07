@@ -15,7 +15,7 @@ import {
 
 export default function SessionPerformanceTimeline() {
   // const theme = useTheme();
-  const {isSuccess} = useGetBlockQuery("best");
+  const {isSuccess} = useGetBlockQuery("finalized");
   const blocks = useSelector(selectAll)
   
   if (!isSuccess) {

@@ -18,10 +18,10 @@ import {
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
 import {
-  selectIdentityByAddress,
-} from '../features/api/identitiesSlice';
+  selectValProfileByAddress,
+} from '../features/api/valProfilesSlice';
 import { calculateMvr } from '../util/mvr'
-import { stashDisplay, nameDisplay } from '../util/display'
+import { nameDisplay } from '../util/display'
 
 const renderTooltip = (props, theme) => {
   const { active, payload } = props;
@@ -65,17 +65,17 @@ export default function ValMvrBox({address, maxSessions}) {
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
   const allMVRs = useSelector(state => selectMvrsBySessions(state, historySessionIds));
-  const identity = useSelector(state => selectIdentityByAddress(state, address));
+  const valProfile = useSelector(state => selectValProfileByAddress(state, address));
   
   if (!isSuccess || !isSessionSuccess) {
     return null
   }
 
-  if (!validators.length) {
+  const filtered = validators.filter(v => v.is_auth && v.is_para);
+
+  if (!filtered.length) {
     return null
   }
-
-  const filtered = validators.filter(v => v.is_auth && v.is_para);
   
   const mvr = Math.round(calculateMvr(
     filtered.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0),
@@ -85,10 +85,9 @@ export default function ValMvrBox({address, maxSessions}) {
 
   const avg = Math.round((!!allMVRs.length ? allMVRs.reduce((a, b) => a + b, 0) / allMVRs.length : 0) * 10000) / 10000;
   const diff = !!avg && !!mvr ? Math.round(((mvr * 100 / avg) - 100) * 10) / 10 : 0;
-  const name = nameDisplay(!!identity ? identity : stashDisplay(address), 24);
-
+  
   const data = [
-    {name, value: mvr, valueQty: filtered.length, avg, avgQty: allMVRs.length},
+    {name: nameDisplay(valProfile._identity), value: mvr, valueQty: filtered.length, avg, avgQty: allMVRs.length},
   ];
   
   return (

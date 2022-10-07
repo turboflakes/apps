@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import SessionPieChart from './SessionPieChart';
-import BestBlock from './BestBlock';
+import BlockBox from './BlockBox';
 import ValGroupBox from './ValGroupBox';
 import ValAddress from './ValAddress';
 import SearchSmall from './SearchSmall';
@@ -89,7 +89,7 @@ export const ValGroupPage = () => {
         </Grid>
         {isLiveMode ? 
           <Grid item xs={12} md={3}>
-            <BestBlock />
+            <BlockBox />
           </Grid>
         : null}
         

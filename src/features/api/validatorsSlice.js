@@ -166,9 +166,7 @@ export const selectValidatorsByAddressAndSessions = (state, address, sessions = 
   sessions.map(sessionId => {
     if (exclude_partial_sessions) {
       const session = selectSessionByIndex(state, sessionId);
-      if (!isUndefined(session)) {
-        if (!session.is_full || session.is_empty) return
-      }
+      if (isUndefined(session)) return
     }
     const validator = selectValidatorById(state, `${sessionId}_${address}`);
     if (!isUndefined(validator)) {

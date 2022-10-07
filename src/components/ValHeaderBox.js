@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import SessionPieChart from './SessionPieChart';
-import BestBlock from './BestBlock';
+import BlockBox from './BlockBox';
 import ValGroupBox from './ValGroupBox';
 import ValAddressHistory from './ValAddressHistory';
 import ValMvrBox from './ValMvrBox';
@@ -55,20 +55,20 @@ export default function ValHeaderBox({address}) {
 
   return (
 		<Box sx={{ 
-        p: 2,
-          // m: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
+        // p: 2,
+        // m: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
       }}>
-      <Box>
+      {/* <Box>
         <Typography variant="h4">Validator Performance History</Typography>
-        <Typography variant="subtitle" paragraph>Only the previous {maxSessions} sessions are considered</Typography>
-      </Box>
+        <Typography variant="subtitle" paragraph>Stats from the previous {maxSessions} sessions</Typography>
+      </Box> */}
       <Grid container spacing={2}>
-        <Grid item xs={12} md={5}>
+        <Grid item xs={12} md={6}>
           <Box sx={{ display: 'flex'}}>
-            <ValAddressHistory address={address} maxSessions={maxSessions} showGrade />
+            <ValAddressHistory address={address} maxSessions={maxSessions} showGrade={false} />
           </Box>
         </Grid>
         <Grid item xs={12} md={2}>
@@ -80,7 +80,7 @@ export default function ValHeaderBox({address}) {
         <Grid item xs={12} md={2}>
           <ValAuthoredBlocksBox address={address} maxSessions={maxSessions} />
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={6}>
           <ValidatorSessionHistoryPointsChart address={selectedAddress} maxSessions={maxSessions} />
         </Grid>
       </Grid>

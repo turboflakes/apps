@@ -1,11 +1,17 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import isUndefined from 'lodash/isUndefined'
 import { useTheme } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
 import Identicon from '@polkadot/react-identicon';
 import Tooltip from '@mui/material/Tooltip';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faWallet } from '@fortawesome/free-solid-svg-icons'
+import tvpValid from '../assets/tvp_valid.svg';
+import tvpInvalid from '../assets/tvp_invalid.svg';
 import {
   selectValidatorsByAddressAndSessions,
   buildSessionIdsArrayHelper
@@ -14,18 +20,28 @@ import {
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
 import {
-  selectIdentityByAddress,
-} from '../features/api/identitiesSlice';
+  selectValProfileByAddress, 
+  useGetValidatorProfileByAddressQuery,
+} from '../features/api/valProfilesSlice';
+import {
+  selectChainInfo
+} from '../features/chain/chainSlice';
 import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
-import { stashDisplay, nameDisplay } from '../util/display'
+import { stakeDisplay } from '../util/display'
 
 export default function ValAddressHistory({address, maxSessions, showGrade}) {
   const theme = useTheme();
+  const {isSuccess} = useGetValidatorProfileByAddressQuery(address)
   const currentSession = useSelector(selectSessionCurrent);
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
-  const identity = useSelector(state => selectIdentityByAddress(state, address));
+  const valProfile = useSelector(state => selectValProfileByAddress(state, address));
+  const chainInfo = useSelector(selectChainInfo)
+
+  if (!isSuccess || isUndefined(chainInfo)) {
+    return null
+  }
 
   if (!validators.length) { 
     return null
@@ -39,31 +55,58 @@ export default function ValAddressHistory({address, maxSessions, showGrade}) {
     filtered.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0)
   );
 
-  const name = nameDisplay(!!identity ? identity : stashDisplay(address), 24);
   const gradeValue = grade(1 - mvr);
 
   return (
     <Paper
       sx={{
-        p: 2,
+        p: 3,
         // m: 2,
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: 112,
+        height: 256,
         borderRadius: 3,
+        // backgroundColor: theme.palette.neutrals[300],
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}
       >
       <Box sx={{ display: "flex", height: '100%', justifyContent: 'space-between'}}>
-        <Box sx={{ display: "flex", alignItems: 'center'}}>
+        <Box sx={{ display: "flex" }}>
           <Identicon style={{marginRight: '16px'}}
             value={address}
             size={64}
             theme={'polkadot'} />
           <Box>
-            <Typography variant="h4">{name}</Typography>
-            <Typography variant="subtitle">{stashDisplay(address)}</Typography>
+            <Typography variant="h5">{valProfile._identity}</Typography>
+            <Typography variant="subtitle"><FontAwesomeIcon style={{ marginRight: 8 }} icon={faWallet} />{address}</Typography>
+            <Divider sx={{ my: 2,
+              opacity: 0.25,
+              height: '1px',
+              borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+              borderBottom: 'none',
+              backgroundColor: 'transparent',
+              backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+              }} />
+            <Box sx={{ display: 'flex'}}>
+              <Box sx={{ mr: 3,  display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>Commission</Typography>
+                <Box>
+                  <Typography variant="h5" component="span">{valProfile._commission}</Typography>
+                </Box>
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>Bonded</Typography>
+                <Box>
+                  <Typography variant="h5" component="span">{stakeDisplay(valProfile.own_stake, chainInfo)}</Typography>
+                </Box>
+              </Box>
+              <Box>
+                <img src={tvpValid} style={{ 
+                    width: 80,
+                    height: 80 }} alt={"tvp"}/>
+              </Box>
+            </Box>
           </Box>
         </Box>
         {showGrade && gradeValue ? 
@@ -78,8 +121,46 @@ export default function ValAddressHistory({address, maxSessions, showGrade}) {
               </Box>
             </Tooltip>
           </Box>
-          : null}
+          : null}        
       </Box>
+      {/* <Grid container spacing={0}>
+        <Grid item xs={6} md={3}>
+          <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+            <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Commission</Typography>
+            <Box>
+              <Typography variant="h5" component="span">3</Typography>
+              <Typography component="span" variant="caption" sx={{m: 1, verticalAlign: "top"}}>%</Typography>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={6} md={3}>
+          <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+            <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Bonded</Typography>
+            <Box>
+              <Typography variant="h5" component="span">101</Typography>
+              <Typography component="span" variant="caption" sx={{m: 1, verticalAlign: "top"}}>KSM</Typography>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={6} md={3}>
+          <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+            <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Commission</Typography>
+            <Box>
+              <Typography variant="h5" component="span">3</Typography>
+              <Typography component="span" variant="caption" sx={{m: 1, verticalAlign: "top"}}>%</Typography>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={6} md={3}>
+          <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+            <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Bonded</Typography>
+            <Box>
+              <Typography variant="h5" component="span">101</Typography>
+              <Typography component="span" variant="caption" sx={{m: 1, verticalAlign: "top"}}>KSM</Typography>
+            </Box>
+          </Box>
+        </Grid>
+      </Grid> */}
     </Paper>
   );
 }

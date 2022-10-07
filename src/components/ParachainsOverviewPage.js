@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import SessionPieChart from './SessionPieChart';
-import BestBlock from './BestBlock';
+import BlockBox from './BlockBox';
 import SessionPerformancePieChart from './SessionPerformancePieChart';
 import SessionPerformanceTimeline from './SessionPerformanceTimeline';
 import ParachainsOverviewTabs from './ParachainsOverviewTabs';
@@ -48,7 +48,7 @@ export const ParachainsOverviewPage = ({tab}) => {
         </Grid>
         {isLiveMode ? 
           <Grid item xs={12} md={3}>
-            <BestBlock />
+            <BlockBox />
           </Grid>
         : null}
         <Grid item xs={12}>

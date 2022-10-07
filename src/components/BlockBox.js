@@ -10,8 +10,8 @@ import {
   selectAll,
  } from '../features/api/blocksSlice'
 
-export default function BestBlock() {
-  const {isSuccess} = useGetBlockQuery("best");
+export default function BlockBox() {
+  const {isSuccess} = useGetBlockQuery("finalized");
   const [timer, setTimer] = React.useState(0);
   const blocks = useSelector(selectAll);
   const updateTimer = React.useRef(null);
@@ -61,7 +61,7 @@ export default function BestBlock() {
           <Box sx={{ display: 'flex', alignItems: 'flex-end'}}>
             <Typography variant="h4" sx={{mr: 2}}>#</Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-              <Typography variant="caption">best block</Typography>
+              <Typography variant="caption">finalized block</Typography>
               <Typography variant="h4">{isSuccess ? `${block.bix.format()}` : `# -`}</Typography>
             </Box>
           </Box>

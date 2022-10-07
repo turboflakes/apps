@@ -53,7 +53,7 @@ export default function ValGroupPointsBox({groupId, sessionIndex}) {
     return null
   }
   
-  const backingPoints = Math.round(validators.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab * 20) : 0).reduce((a, b) => a + b, 0) / validators.length);
+  const backingPoints = Math.round(validators.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0).reduce((a, b) => a + b, 0) / validators.length);
 
   const avg = !!all.length ? Math.round(all.reduce((a, b) => a + b, 0) / all.length) : 0;
   const diff = !!avg ? Math.round(((backingPoints * 100 / avg) - 100) * 10) / 10 : 0;

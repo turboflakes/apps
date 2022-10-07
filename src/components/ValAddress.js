@@ -7,9 +7,9 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Identicon from '@polkadot/react-identicon';
 import Tooltip from '@mui/material/Tooltip';
-import ValMvrBox from './ValMvrBox';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faWallet } from '@fortawesome/free-solid-svg-icons'
 import { stashDisplay, nameDisplay } from '../util/display'
-import { chainAddress } from '../util/crypto'
 import { 
   selectValidatorBySessionAndAddress,
  } from '../features/api/validatorsSlice'
@@ -53,7 +53,7 @@ export default function ValAddress({sessionIndex, address, showGrade}) {
             theme={'polkadot'} />
           <Box>
             <Typography variant="h4">{name}</Typography>
-            <Typography variant="subtitle">{stashDisplay(address)}</Typography>
+            <Typography variant="subtitle"><FontAwesomeIcon style={{ marginRight: 8 }} icon={faWallet} />{stashDisplay(address)}</Typography>
           </Box>
         </Box>
         {showGrade && gradeValue ? 

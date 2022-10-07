@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux'
+import isUndefined from 'lodash/isUndefined';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -9,15 +10,14 @@ import {
   useGetBlockQuery,
   selectAll,
  } from '../features/api/blocksSlice'
-
- import { 
+import { 
   useGetSessionByIndexQuery,
-  selectSessionsAll,
   selectSessionByIndex,
  } from '../features/api/sessionsSlice'
- import {
+import {
   selectIsLiveMode
 } from '../features/layout/layoutSlice';
+
 
 function createData(name, value) {
   return { name, value };
@@ -26,14 +26,14 @@ function createData(name, value) {
 const COLORS = ['#343434', '#C8C9CC'];
 
 export default function SessionPieChart({sessionIndex}) {
-  const {isSuccess: isBlockSuccess} = useGetBlockQuery("best");
+  const {isSuccess: isBlockSuccess} = useGetBlockQuery("finalized");
   // const {isSuccess: isSessionSuccess } = useGetSessionByIndexQuery(sessionIndex, {refetchOnMountOrArgChange: true});
   const {isSuccess: isSessionSuccess } = useGetSessionByIndexQuery(sessionIndex);
   const blocks = useSelector(selectAll)
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex))
   const isLiveMode = useSelector(selectIsLiveMode)
 
-  if (!isBlockSuccess || !isSessionSuccess || !session) {
+  if (!isBlockSuccess || !isSessionSuccess || isUndefined(session)) {
     return null
   }
 

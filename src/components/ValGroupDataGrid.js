@@ -156,7 +156,7 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
 
   const rows = filtered.map((v, i) => {
     if (v.is_auth && v.is_para) {
-      const authored_blocks = v.auth.ab;
+      const authored_blocks = v.auth.ab.length;
       const total_points = v.auth.ep - v.auth.sp;
       return createDataGridRows(i+1, 
         nameDisplay(!!v.identity ? v.identity : stashDisplay(v.address, 6), 36, selectedAddress === v.address ? '★ ' : ''), 

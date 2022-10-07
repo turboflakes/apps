@@ -138,7 +138,7 @@ let theme = createTheme({
     },
     body1: {
       fontFamily: "'Roboto', sans-serif",
-      fontSize: "1.2rem",
+      fontSize: "1.1rem",
       '@media screen and (max-width: 900px)': {
         fontSize: "1rem",
       }
@@ -148,6 +148,13 @@ let theme = createTheme({
       fontFamily: "'Roboto', sans-serif",
       color: '#4D4D4D',
       lineHeight: 1
+    },
+    subtitle: {
+      fontFamily: "'Roboto', sans-serif",
+      fontSize: "1.1rem",
+      '@media screen and (max-width: 900px)': {
+        fontSize: "1rem",
+      }
     },
     subtitle1: {
       fontFamily: "'Roboto', sans-serif",

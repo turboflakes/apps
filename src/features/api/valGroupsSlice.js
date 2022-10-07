@@ -79,11 +79,9 @@ const {
 } = adapter.getSelectors(state => state.valGroups)
 
 export const selectValidatorIdsBySessionAndGroupId = (state, session, groupId) => !!selectById(state, `${session}_${groupId}`) ? 
-  selectById(state, `${session}_${groupId}`)._validatorIds : [];
+  (!!selectById(state, `${session}_${groupId}`)._validatorIds ? selectById(state, `${session}_${groupId}`)._validatorIds : []) : [];
 
 export const selectValidatorMvrsBySessionAndGroupId = (state, session, groupId) => !!selectById(state, `${session}_${groupId}`) ? 
-  selectById(state, `${session}_${groupId}`)._mvrs : [];
+  (!!selectById(state, `${session}_${groupId}`)._mvrs ? selectById(state, `${session}_${groupId}`)._mvrs : []) : [];
 
-export const selectValidatorsBySessionAndGroupId = (state, session, groupId) => !!selectById(state, `${session}_${groupId}`) ? 
-  selectById(state, `${session}_${groupId}`)._validatorIds.map(id => selectValidatorById(state, id))
-  : [];
+export const selectValidatorsBySessionAndGroupId = (state, session, groupId) => selectValidatorIdsBySessionAndGroupId(state, session, groupId).map(id => selectValidatorById(state, id));

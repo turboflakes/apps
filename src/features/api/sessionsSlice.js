@@ -128,7 +128,7 @@ const sessionsSlice = createSlice({
         const _group_ids = uniq(validators.map(v => toNumber(v.para.group))).sort((a, b) => a - b)
         const _mvrs = validators.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
         const _validity_votes = validators.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv);
-        const _backing_points = validators.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab * 20) : 0);
+        const _backing_points = validators.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0);
         adapter.upsertOne(state, { six: parseInt(session, 10), _group_ids, _mvrs, _validity_votes, _backing_points})
       })
 
@@ -158,7 +158,7 @@ export const selectParaValidatorsBySessionGrouped = (state, session) => !!select
 export const selectMvrsBySessions = (state, sessionIds = []) => sessionIds.map(id => {
   const session = selectSessionByIndex(state, id);
   if (!isUndefined(session)) {
-    if (session.stats && !session.is_partial && !session.is_empty) {
+    if (session.stats) {
       return calculateMvr(session.stats.ev, session.stats.iv, session.stats.mv); 
     }
   }
@@ -167,7 +167,7 @@ export const selectMvrsBySessions = (state, sessionIds = []) => sessionIds.map(i
 export const selectBackingPointsBySessions = (state, sessionIds = []) => sessionIds.map(id => {
   const session = selectSessionByIndex(state, id);
   if (!isUndefined(session)) {
-    if (session.stats && !session.is_partial && !session.is_empty) {
+    if (session.stats) {
       return session.stats.pt - (session.stats.ab * 20); 
     }
   }
@@ -176,7 +176,7 @@ export const selectBackingPointsBySessions = (state, sessionIds = []) => session
 export const selectAuthoredBlocksBySessions = (state, sessionIds = []) => sessionIds.map(id => {
   const session = selectSessionByIndex(state, id);
   if (!isUndefined(session)) {
-    if (session.stats && !session.is_partial && !session.is_empty) {
+    if (session.stats) {
       return session.stats.ab; 
     }
   }

@@ -69,7 +69,7 @@ const initWebsocket = (store) => {
       if (event.data){
         const message = JSON.parse(event.data)
         switch (message.type) {
-          case 'best_block': {
+          case 'finalized_block': {
             store.dispatch(socketBlockReceived(message.result))
             break
           }

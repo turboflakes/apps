@@ -124,8 +124,6 @@ export default function ValidatorSessionHistoryPointsChart({address, maxSessions
     return null
   }
 
-  console.log("_historySessionIds", historySessionIds.length, validators.length);
-
   if (validators.filter(v => !isUndefined(v)).length !== maxSessions) {
     return null
   }
@@ -134,8 +132,8 @@ export default function ValidatorSessionHistoryPointsChart({address, maxSessions
     session: v.session,
     isAuth: v.is_auth ? 1 : 0,
     isPara: v.is_para ? 1 : 0,
-    abPoints: v.is_auth ? v.auth.ab * 20 : 0,
-    pvPoints: v.is_para && (v.auth.ep - v.auth.sp) >= (v.auth.ab * 20) ? (v.auth.ep - v.auth.sp) - (v.auth.ab * 20) : 0,
+    abPoints: v.is_auth ? v.auth.ab.length * 20 : 0,
+    pvPoints: v.is_para && (v.auth.ep - v.auth.sp) >= (v.auth.ab.length * 20) ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0,
     gradeValue: v.is_para ? grade(1 - calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)) : '',
     mvr: v.is_para ? calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv) : 0,
     valGroupMvr: v.is_para ? v._val_group_mvr : 0,    

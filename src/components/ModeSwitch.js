@@ -10,7 +10,7 @@ import {
   selectIsLiveMode
 } from '../features/layout/layoutSlice';
 import { 
-  selectBest,
+  selectBlock,
  } from '../features/api/blocksSlice'
 import { 
   selectSessionHistory,
@@ -72,7 +72,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 export default function ModeSwitch({mode}) {
   const dispatch = useDispatch();
   const [checked, setChecked] = React.useState(mode === 'Live');
-  const block = useSelector(selectBest);
+  const block = useSelector(selectBlock);
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
   const sessionSelected = !!historySession ? historySession : currentSession;

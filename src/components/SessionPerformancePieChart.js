@@ -20,7 +20,7 @@ const COLORS = ['#343434', '#C8C9CC'];
 
 export default function SessionPerformancePieChart() {
   const theme = useTheme();
-  const {isSuccess} = useGetBlockQuery("best");
+  const {isSuccess} = useGetBlockQuery("finalized");
   const blocks = useSelector(selectAll)
   
   if (!isSuccess) {

@@ -18,9 +18,9 @@ import {
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
 import {
-  selectIdentityByAddress,
-} from '../features/api/identitiesSlice';
-import { stashDisplay, nameDisplay } from '../util/display'
+  selectValProfileByAddress,
+} from '../features/api/valProfilesSlice';
+import { nameDisplay } from '../util/display'
 
 const renderTooltip = (props, theme) => {
   const { active, payload } = props;
@@ -64,26 +64,25 @@ export default function ValPointsBox({address, maxSessions}) {
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
   const allBackingPoints = useSelector(state => selectBackingPointsBySessions(state, historySessionIds));
-  const identity = useSelector(state => selectIdentityByAddress(state, address));
+  const valProfile = useSelector(state => selectValProfileByAddress(state, address));
 
   if (!isSuccess || !isSessionSuccess) {
     return null
   }
 
-  if (!validators.length) {
+  const filtered = validators.filter(v => v.is_auth && v.is_para);
+
+  if (!filtered.length) {
     return null
   }
 
-  const filtered = validators.filter(v => v.is_auth && v.is_para);
-
-  const backingPoints = Math.round(filtered.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab * 20) : 0).reduce((a, b) => a + b, 0) / filtered.length);
+  const backingPoints = Math.round(filtered.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0).reduce((a, b) => a + b, 0) / filtered.length);
   
   const avg = !!allBackingPoints.length ? Math.round(allBackingPoints.reduce((a, b) => a + b, 0) / (allBackingPoints.length * 200)) : 0;
   const diff = !!avg ? Math.round(((backingPoints * 100 / avg) - 100) * 10) / 10 : 0;
-  const name = nameDisplay(!!identity ? identity : stashDisplay(address), 24);
-
+  
   const data = [
-    {name, value: backingPoints, valueQty: filtered.length, avg, avgQty: allBackingPoints.length},
+    {name: nameDisplay(valProfile._identity), value: backingPoints, valueQty: filtered.length, avg, avgQty: allBackingPoints.length},
   ];
   
   return (
