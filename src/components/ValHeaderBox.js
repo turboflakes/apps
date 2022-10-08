@@ -12,6 +12,8 @@ import ValAddressProfile from './ValAddressProfile';
 import ValMvrBox from './ValMvrBox';
 import ValPointsBox from './ValPointsBox';
 import ValAuthoredBlocksBox from './ValAuthoredBlocksBox';
+import ValInclusionBox from './ValInclusionBox';
+import ValParaInclusionBox from './ValParaInclusionBox';
 import SearchSmall from './SearchSmall';
 import ValidatorSessionHistoryPointsChart from './ValidatorSessionHistoryPointsChart';
 import {
@@ -71,14 +73,25 @@ export default function ValHeaderBox({address}) {
             <ValAddressProfile address={address} maxSessions={maxSessions} showGrade />
           </Box>
         </Grid>
-        <Grid item xs={12} md={2}>
-          <ValMvrBox address={address} maxSessions={maxSessions} />
-        </Grid>
-        <Grid item xs={12} md={2}>
-          <ValPointsBox address={address} maxSessions={maxSessions} />
-        </Grid>
-        <Grid item xs={12} md={2}>
-          <ValAuthoredBlocksBox address={address} maxSessions={maxSessions} />
+        <Grid item xs={12} md={6}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={4}>
+              <ValMvrBox address={address} maxSessions={maxSessions} />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <ValPointsBox address={address} maxSessions={maxSessions} />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <ValInclusionBox address={address} maxSessions={maxSessions} />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <ValAuthoredBlocksBox address={address} maxSessions={maxSessions} />
+            </Grid>
+            
+            <Grid item xs={12} md={4}>
+              <ValParaInclusionBox address={address} maxSessions={maxSessions} />
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={12}>
           <ValidatorSessionHistoryPointsChart address={selectedAddress} maxSessions={maxSessions} />

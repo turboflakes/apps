@@ -95,13 +95,13 @@ export default function ValPointsBox({address, maxSessions}) {
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
-        height: 112,
+        height: 96,
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Authored Blocks</Typography>
-        <Typography variant="h4">
+        <Typography variant="h5">
           {!isUndefined(authoredBlocksTotal) ? authoredBlocksTotal : '-'}
         </Typography>
         <Tooltip title={`${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of Authored Blocks per session of all the Validators of the last ${allAuthoredBlocks.length} sessions.`} arrow>
@@ -115,10 +115,10 @@ export default function ValPointsBox({address, maxSessions}) {
       <ResponsiveContainer width='40%' height='100%'>
         <BarChart data={data}
           margin={{
-            top: 10,
+            top: 4,
             right: 0,
             left: 0,
-            bottom: 10,
+            bottom: 4,
           }}>
           <Bar dataKey="value" barSize={12} fill={theme.palette.neutrals[400]} />
           <Bar dataKey="avg" barSize={12} fill={theme.palette.neutrals[200]} />

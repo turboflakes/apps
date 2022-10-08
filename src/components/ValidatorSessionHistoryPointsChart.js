@@ -75,7 +75,7 @@ const renderTooltip = (props, theme) => {
               <Divider sx={{ my: 1 }} />
               <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                 <Typography component="div" variant="subtitle2" color="inherit">
-                Para Validator Authority
+                Para-Authority
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center'}}>
                   <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 

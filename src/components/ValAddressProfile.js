@@ -51,7 +51,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade}) {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: 192,
+        height: 208,
         borderRadius: 3,
         // backgroundColor: theme.palette.neutrals[300],
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'

@@ -155,7 +155,7 @@ export const selectBackingPointsBySession = (state, session) => !!selectSessionB
 export const selectParaValidatorIdsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session)._group_ids.map(groupId => selectValidatorIdsBySessionAndGroupId(state, session, groupId)) : []
 export const selectParaValidatorsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session)._group_ids.map(groupId => selectValidatorsBySessionAndGroupId(state, session, groupId)) : []
 // from session.stats
-export const selectMvrsBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+export const selectMvrBySessions = (state, sessionIds = []) => sessionIds.map(id => {
   const session = selectSessionByIndex(state, id);
   if (!isUndefined(session)) {
     if (session.stats) {

@@ -14,7 +14,7 @@ import {
 } from '../features/api/validatorsSlice';
 import {
   useGetSessionsQuery,
-  selectMvrsBySessions,
+  selectMvrBySessions,
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
 import {
@@ -34,7 +34,7 @@ const renderTooltip = (props, theme) => {
           p: 2,
           m: 0,
           borderRadius: 1,
-          minWidth: '272px',
+          minWidth: '280px',
           boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px'
          }}
       >
@@ -64,7 +64,7 @@ export default function ValMvrBox({address, maxSessions}) {
   const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
-  const allMVRs = useSelector(state => selectMvrsBySessions(state, historySessionIds));
+  const allMVRs = useSelector(state => selectMvrBySessions(state, historySessionIds));
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
   
   if (!isSuccess || !isSessionSuccess) {
@@ -98,13 +98,13 @@ export default function ValMvrBox({address, maxSessions}) {
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
-        height: 112,
+        height: 96,
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Missed Vote Ratio</Typography>
-        <Typography variant="h4">
+        <Typography variant="h5">
           {!isUndefined(mvr) ? Math.round(mvr * 10000) / 10000 : '-'}
         </Typography>
         <Tooltip title={diff === 0 ? 'Exceptional run. The validator participate in all votes.'  : `${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of MVR per p/v session of all the Validators of the last ${allMVRs.length} sessions.`} arrow>
@@ -119,10 +119,10 @@ export default function ValMvrBox({address, maxSessions}) {
       <ResponsiveContainer width='40%' height='100%'>
         <BarChart data={data}
           margin={{
-            top: 10,
+            top: 4,
             right: 0,
             left: 0,
-            bottom: 10,
+            bottom: 4,
           }}>
           <Bar dataKey="value" barSize={12} fill={theme.palette.neutrals[400]} />
           <Bar dataKey="avg" barSize={12} fill={theme.palette.neutrals[200]} />
