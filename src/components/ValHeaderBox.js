@@ -80,7 +80,7 @@ export default function ValHeaderBox({address}) {
         <Grid item xs={12} md={2}>
           <ValAuthoredBlocksBox address={address} maxSessions={maxSessions} />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <ValidatorSessionHistoryPointsChart address={selectedAddress} maxSessions={maxSessions} />
         </Grid>
       </Grid>

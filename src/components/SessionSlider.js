@@ -70,6 +70,10 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
   },
 }));
 
+// function valueLabelFormat(value) {
+//   return `${value}`;
+// }
+
 export default function SessionSlider({maxSessions}) {
   // const theme = useTheme();
   const dispatch = useDispatch();
@@ -91,7 +95,8 @@ export default function SessionSlider({maxSessions}) {
     if (session.esix === 1) {
       return {
         value: session.six,
-        label: `${session.eix} // ${session.six}`
+        // label: `${session.eix} // ${session.six}`
+        label: session.eix
       }
     }
     
@@ -135,6 +140,7 @@ export default function SessionSlider({maxSessions}) {
           min={currentSession - maxSessions + 1}
           max={currentSession}
           marks={marks}
+          // valueLabelFormat={valueLabelFormat}
           valueLabelDisplay="on"/>
         <Typography variant="caption">present</Typography>
       </Stack>

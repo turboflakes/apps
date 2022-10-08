@@ -42,7 +42,7 @@ const renderTooltip = (props, theme) => {
           <b>Missed Vote Ratio</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit" paragraph>
-          <i>{data.avgQty} full sessions</i>
+          <i>{data.avgQty} sessions</i>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
           <span style={{ marginRight: '8px', color: theme.palette.neutrals[400] }}>❚</span>{data.name} (avg. {data.valueQty}x): <b>{data.value}</b>
@@ -87,7 +87,7 @@ export default function ValMvrBox({address, maxSessions}) {
   const diff = !!avg && !!mvr ? Math.round(((mvr * 100 / avg) - 100) * 10) / 10 : 0;
   
   const data = [
-    {name: nameDisplay(valProfile._identity), value: mvr, valueQty: filtered.length, avg, avgQty: allMVRs.length},
+    {name: nameDisplay(valProfile._identity, 12), value: mvr, valueQty: filtered.length, avg, avgQty: allMVRs.length},
   ];
   
   return (

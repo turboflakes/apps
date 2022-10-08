@@ -65,7 +65,6 @@ export const ValGroupPage = () => {
         {isHistoryMode ? 
           <Grid item xs={12}>
             <ValHeaderBox address={selectedAddress} sessionIndex={sessionIndex} />
-            {/* {!!selectedAddress ? <ValAddress address={selectedAddress}  sessionIndex={sessionIndex} showGrade /> : null} */}
           </Grid>
         : null}
         {/* {isHistoryMode ? 
