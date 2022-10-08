@@ -85,7 +85,7 @@ export default function ValGroupMvrBox({groupId, sessionIndex}) {
         <Typography variant="h4">
           {!isUndefined(mvr) ? mvr : '-'}
         </Typography>
-        <Tooltip title={`${diff}% than the MVR average of all the Val. Groups in the current session`} arrow>
+        <Tooltip title={`${Math.abs(diff)}% ${diff !== 0 ? (Math.sign(diff) > 0 ? `more` : `less`) : ''} than the average of MVR from all Val. Groups in the current session.`} arrow>
           <Typography variant="subtitle2" sx={{
             lineHeight: 0.875,
             whiteSpace: 'nowrap', color: Math.sign(diff) > 0 ? theme.palette.semantics.red : theme.palette.semantics.green

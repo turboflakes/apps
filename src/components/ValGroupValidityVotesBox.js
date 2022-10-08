@@ -83,7 +83,7 @@ export default function ValGroupValidityVotesBox({groupId, sessionIndex}) {
         <Typography variant="h4">
           {validityVotes}
         </Typography>
-        <Tooltip title={`${diff}% than the MVR average of all the Val. Groups in the current session`} arrow>
+        <Tooltip title={`${Math.abs(diff)}% ${diff !== 0 ? (Math.sign(diff) > 0 ? `more` : `less`) : ''} than the average of validity votes from all Val. Groups in the current session.`} arrow>
           <Typography variant="subtitle2" sx={{
             lineHeight: 0.875,
             whiteSpace: 'nowrap', color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red
