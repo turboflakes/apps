@@ -38,7 +38,7 @@ const renderTooltip = (props, theme) => {
          }}
       >
         <Typography component="div" variant="caption" color="inherit">
-          <b>Backing Points</b>
+          <b>Authored Blocks</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit" paragraph>
           <i>{data.avgQty} full sessions</i>
@@ -124,7 +124,7 @@ export default function ValPointsBox({address, maxSessions}) {
           <Bar dataKey="avg" barSize={12} fill={theme.palette.neutrals[200]} />
           <ChartTooltip 
                 cursor={{fill: 'transparent'}}
-                offset={24}
+                offset={48}
                 wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme)} />
         </BarChart>

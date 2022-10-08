@@ -8,7 +8,7 @@ import Divider from '@mui/material/Divider';
 import SessionPieChart from './SessionPieChart';
 import BlockFinalizedBox from './BlockFinalizedBox';
 import ValGroupBox from './ValGroupBox';
-import ValAddress from './ValAddress';
+import ValAddressProfile from './ValAddressProfile';
 import SearchSmall from './SearchSmall';
 import ValHeaderBox from './ValHeaderBox';
 import ValidatorSessionHistoryPointsChart from './ValidatorSessionHistoryPointsChart';
@@ -82,7 +82,7 @@ export const ValGroupPage = () => {
 
         {/* val. Group section */}
         <Grid item xs={12} md={8}>
-          {!!selectedAddress ? <ValAddress address={selectedAddress}  sessionIndex={sessionIndex} showGrade /> : null}
+          {!!selectedAddress ? <ValAddressProfile address={selectedAddress}  sessionIndex={sessionIndex} showGrade /> : null}
         </Grid>
 
         {/* Live Mode */}

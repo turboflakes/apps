@@ -8,7 +8,7 @@ import Divider from '@mui/material/Divider';
 import SessionPieChart from './SessionPieChart';
 import BlockBox from './BlockBox';
 import ValGroupBox from './ValGroupBox';
-import ValAddressHistory from './ValAddressHistory';
+import ValAddressProfile from './ValAddressProfile';
 import ValMvrBox from './ValMvrBox';
 import ValPointsBox from './ValPointsBox';
 import ValAuthoredBlocksBox from './ValAuthoredBlocksBox';
@@ -68,7 +68,7 @@ export default function ValHeaderBox({address}) {
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <Box sx={{ display: 'flex'}}>
-            <ValAddressHistory address={address} maxSessions={maxSessions} showGrade={false} />
+            <ValAddressProfile address={address} maxSessions={maxSessions} showGrade />
           </Box>
         </Grid>
         <Grid item xs={12} md={2}>
