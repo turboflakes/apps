@@ -24,6 +24,9 @@ import {
   selectChain,
   selectAddress
 } from '../features/chain/chainSlice';
+import {
+  selectIsLiveMode
+} from '../features/layout/layoutSlice';
 import { stashDisplay } from '../util/display'
 import { isChainSupported, getChainName, getChainLogo } from '../constants'
 
@@ -32,6 +35,7 @@ export default function ValGroupBox({address, sessionIndex}) {
   const {data, isSuccess, isError, error} = useGetValidatorByAddressQuery({address, session: sessionIndex, show_summary: true, show_stats: true});
   const selectedChain = useSelector(selectChain);
   const selectedAddress = useSelector(selectAddress);
+  const isLiveMode = useSelector(selectIsLiveMode)
   const groupId = !!data ? (!!data.is_para ? data.para.group : undefined) : undefined;
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
   
@@ -99,26 +103,27 @@ export default function ValGroupBox({address, sessionIndex}) {
             <ValGroupPointsBox sessionIndex={sessionIndex} groupId={groupId} />
           </Grid>
           <Grid item xs={4}>
-            <Paper sx={{
-                p: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                width: '100%',
-                height: 112,
-                borderRadius: 3,
-                boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
-              }}>
-              <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Box sx={{ display: 'flex' }} >
-                  <Box>
-                    <img src={getChainLogo(selectedChain, paraId)} style={{ width: 32, height: 32, marginRight: 8, marginBottom: 4, backgroundColor: '#F7F7FA', borderRadius: 16}} alt={"logo"}/>
+            {isLiveMode ? 
+              <Paper sx={{
+                  p: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  width: '100%',
+                  height: 112,
+                  borderRadius: 3,
+                  boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
+                }}>
+                <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                  <Box sx={{ display: 'flex' }} >
+                    <Box>
+                      <img src={getChainLogo(selectedChain, paraId)} style={{ width: 32, height: 32, marginRight: 8, marginBottom: 4, backgroundColor: '#F7F7FA', borderRadius: 16}} alt={"logo"}/>
+                    </Box>
+                    <Typography variant="h5" gutterBottom>{chainName}</Typography>
                   </Box>
-                  <Typography variant="h5" gutterBottom>{chainName}</Typography>
+                  <Typography variant="caption">{!!chainName ? 'Backing Parachain' : 'Not Backing'}</Typography>
                 </Box>
-                <Typography variant="caption">{!!chainName ? 'Backing Parachain' : 'Not Backing'}</Typography>
-              </Box>
-            </Paper>
+              </Paper> : null}
           </Grid>
           <Grid item xs={12}>
             <Grid container spacing={2}>

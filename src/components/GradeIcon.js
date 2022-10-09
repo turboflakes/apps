@@ -29,7 +29,7 @@ export default function GradeIcon({sessionIndex, address}) {
       <Box sx={{ ml: 2, width: 64, height: 64, borderRadius: '50%', 
                 bgcolor: theme.palette.grade[gradeValue], 
                 display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
-        <Tooltip title={`Para-Validator grade for the session ${sessionIndex}.`} arrow>
+        <Tooltip title={`Para-Authority grade for the session ${sessionIndex}.`} arrow>
           <Box sx={{ width: 54, height: 54, borderRadius: '50%', 
                 bgcolor: "#fff", 
                 display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>

@@ -113,6 +113,7 @@ const sessionsSlice = createSlice({
     .addMatcher(matchSessionsReceived, (state, action) => {
       const sessions = action.payload.map(session => ({
         ...session,
+        _mvr: !isUndefined(session.stats) ? calculateMvr(session.stats.ev, session.stats.iv, session.stats.mv) : undefined,
         _ts: + new Date()
       }))
       adapter.upsertMany(state, sessions)
@@ -155,14 +156,13 @@ export const selectBackingPointsBySession = (state, session) => !!selectSessionB
 export const selectParaValidatorIdsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session)._group_ids.map(groupId => selectValidatorIdsBySessionAndGroupId(state, session, groupId)) : []
 export const selectParaValidatorsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session)._group_ids.map(groupId => selectValidatorsBySessionAndGroupId(state, session, groupId)) : []
 // from session.stats
+
 export const selectMvrBySessions = (state, sessionIds = []) => sessionIds.map(id => {
   const session = selectSessionByIndex(state, id);
   if (!isUndefined(session)) {
-    if (session.stats) {
-      return calculateMvr(session.stats.ev, session.stats.iv, session.stats.mv); 
-    }
+    return session._mvr
   }
-}).filter(v => !isUndefined(v))
+})
 
 export const selectBackingPointsBySessions = (state, sessionIds = []) => sessionIds.map(id => {
   const session = selectSessionByIndex(state, id);

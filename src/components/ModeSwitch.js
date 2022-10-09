@@ -99,7 +99,7 @@ export default function ModeSwitch({mode}) {
     <Stack spacing={1} direction="row" alignItems="center">
       <Typography variant="caption" sx={{ fontWeight: '600' }} color="textPrimary">
         {/* {isLiveMode ? `Live [ # ${block.bix.format()} ]` : (!!session ? `${mode} [ ${session.eix} // ${session.six} ]`: '')} */}
-        {`${mode} [ ${session.eix} // ${session.six} ]`}
+        {`${mode} [ ${session.eix.format()} // ${session.six.format()} ]`}
       </Typography>
       <MaterialUISwitch {...label} 
         checked={checked}

@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
+import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import Divider from '@mui/material/Divider';
 import { Typography } from '@mui/material';
 import { 
   useGetBlockQuery,
@@ -14,98 +14,71 @@ import {
   useGetSessionByIndexQuery,
   selectSessionByIndex,
  } from '../features/api/sessionsSlice'
+import { 
+  selectValidatorBySessionAndAddress,
+ } from '../features/api/validatorsSlice'
 import {
   selectIsLiveMode
 } from '../features/layout/layoutSlice';
 
-
-function createData(name, value) {
-  return { name, value };
-}
-
-const COLORS = ['#343434', '#C8C9CC'];
-
-export default function SessionBox({sessionIndex}) {
+export default function SessionBox({sessionIndex, address, dark}) {
+  const theme = useTheme();
   const {isSuccess: isBlockSuccess} = useGetBlockQuery("finalized");
-  // const {isSuccess: isSessionSuccess } = useGetSessionByIndexQuery(sessionIndex, {refetchOnMountOrArgChange: true});
   const {isSuccess: isSessionSuccess } = useGetSessionByIndexQuery(sessionIndex);
   const blocks = useSelector(selectAll)
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex))
   const isLiveMode = useSelector(selectIsLiveMode)
+  const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, address))
 
   if (!isBlockSuccess || !isSessionSuccess || isUndefined(session)) {
     return null
   }
 
-  const block = blocks[blocks.length-1]
-  const diff = isLiveMode ? block.bix - session.sbix : session.ebix - session.sbix
-  const pieData = [
-    createData('done', Math.round((diff * 100)/600)),
-    createData('progress', Math.round(((600-diff) * 100)/600)),
-  ];
+  const block = blocks[blocks.length-1];
+  const diff = isLiveMode ? block.bix - session.sbix : session.ebix - session.sbix;
 
-  const min = Math.floor(((600-diff)*6)/60)
-  const dec = (((600-diff)*6)/60) % 1
-  const sec = parseFloat(dec.toPrecision(4))*60
-
+  const status = isUndefined(validator) ? '' : (validator.is_auth && validator.is_para ? 'Para-Authority' : (validator.is_auth ? 'Authority' : 'Not Authority'));
+  
   return (
     <Paper
       sx={{
-        p: `16px 24px`,
+        p: 2,
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center',
         width: '100%',
-        height: 112,
+        height: 96,
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+        bgcolor: dark ? theme.palette.background.secondary : theme.palette.background.primary
       }}
       >
-      <Box sx={{ width: '50%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption">Finalized block</Typography>
-          <Typography variant="h5">{isBlockSuccess ? `# ${block.bix.format()}` : '-'}</Typography>
-          <Typography variant="subtitle2">
-            {isLiveMode ?
-              <Typography variant="subtitle2">{isBlockSuccess ? `${diff.format()} finalized blocks since #${session.sbix.format()}` : `-`}</Typography> : 
-              <Typography variant="subtitle2">{`${diff.format()} blocks from #${session.sbix.format()} to #${session.ebix.format()}`}</Typography>
-            }
-          </Typography>
-          {/* 
-          <Typography variant="subtitle2">
-              {min > 0 ? <span>{`${min} mins`}</span> : null}
-              {sec > 0 ? <span>{` ${sec} sec`}</span> : null}
-              {` to finish`}
-          </Typography> 
-          */}
-        </Box>
-      </Box>
-      {/* <Grid container>
-        <Grid item xs={12} sm={isLiveMode ? 7 : 12} sx={{display: 'flex', alignItems: 'center',}}>
-          <Box>
-            <Box sx={{ display: 'flex', alignItems: 'flex-end'}}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-                <Typography variant="caption">era</Typography>
-                <Typography variant="h5">{isSessionSuccess ? session.eix.format() : '-'}</Typography>
-              </Box>
-              <Typography sx={{ml: 1, mr: 1}} variant="h5">{'//'}</Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-                <Typography variant="caption">session</Typography>
-                <Typography variant="h5">{isSessionSuccess ? session.six.format() : '-'}</Typography>
-              </Box>
-              <Typography sx={{ml: 1, mr: 1}} variant="h5">{'//'}</Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-                <Typography variant="caption">finalized</Typography>
-                <Typography variant="h5">{isBlockSuccess ? `${block.bix.format()}` : '-'}</Typography>
-              </Box>
-            </Box>
-            {isLiveMode ?
-              <Typography variant="subtitle2">{isBlockSuccess ? `${diff.format()} finalized blocks since #${session.sbix.format()}` : `-`}</Typography> : 
-              <Typography variant="subtitle2">{`${diff.format()} blocks from #${session.sbix.format()} to #${session.ebix.format()}`}</Typography>
-            }
+      <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+        <Box sx={{ display: 'flex', alignItems: 'flex-end'}}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
+            <Typography variant="caption" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>era</Typography>
+            <Typography variant="h5" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{isSessionSuccess ? session.eix.format() : '-'}</Typography>
           </Box>
-        </Grid>
-      </Grid> */}
+          <Typography sx={{ml: 1, mr: 1}} variant="h5" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{'//'}</Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
+            <Typography variant="caption" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>session</Typography>
+            <Typography variant="h5" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{isSessionSuccess ? session.six.format() : '-'}</Typography>
+          </Box>
+        </Box>
+        {isLiveMode ?
+          <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{isBlockSuccess ? `${diff.format()} finalized blocks since #${session.sbix.format()}` : `-`}</Typography> : 
+          <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{`${diff.format()} blocks from #${session.sbix.format()} to #${session.ebix.format()}`}</Typography>
+        }
+      </Box>
+      <Divider orientation="vertical" 
+        sx={{
+          borderColor: dark ? theme.palette.background.primary : theme.palette.background.secondary,
+          opacity: 0.64
+        }}/>
+      <Box sx={{ pl: 1, pr: 1, minWidth: '192px',
+        display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'flex-start'}}>
+        <Typography variant="caption" align='right' color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>status</Typography>
+        <Typography variant="h5" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{status}</Typography>
+      </Box>
     </Paper>
   );
 }

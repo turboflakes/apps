@@ -30,6 +30,8 @@ let theme = createTheme({
       red: "#E02020",
       amber: "#FA6400",
       green: "#44D7B6",
+      blue: "#86D3E7",
+      purple: "#8B7AB8",
     },
     grade: {
       "A+": "#6DD400", // Emerald

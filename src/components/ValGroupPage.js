@@ -3,17 +3,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useSearchParams } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 import SessionPieChart from './SessionPieChart';
 import BlockFinalizedBox from './BlockFinalizedBox';
 import ValGroupBox from './ValGroupBox';
 import ValAddressProfile from './ValAddressProfile';
 import SearchSmall from './SearchSmall';
 import ValHeaderBox from './ValHeaderBox';
-import ValidatorSessionHistoryPointsChart from './ValidatorSessionHistoryPointsChart';
+import ValBodyBox from './ValBodyBox';
 import {
-  selectChain,
   selectAddress,
   addressChanged
 } from '../features/chain/chainSlice';
@@ -28,8 +27,6 @@ import {
 import { 
   selectIsSocketConnected,
 } from '../features/api/socketSlice';
-import { getMaxHistorySessions } from '../constants';
-
 
 export const ValGroupPage = () => {
 	// const theme = useTheme();
@@ -40,11 +37,10 @@ export const ValGroupPage = () => {
   const currentSession = useSelector(selectSessionCurrent);
   const isLiveMode = useSelector(selectIsLiveMode);
   const isHistoryMode = useSelector(selectIsHistoryMode);
-  const selectedChain = useSelector(selectChain);
-  const maxSessions = getMaxHistorySessions(selectedChain);
   let [searchParams] = useSearchParams();
   const searchAddress = searchParams.get("address");
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
+  
 
   React.useEffect(() => {
     if (searchAddress && searchAddress !== selectedAddress) {
@@ -67,24 +63,26 @@ export const ValGroupPage = () => {
             <ValHeaderBox address={selectedAddress} sessionIndex={sessionIndex} />
           </Grid>
         : null}
-        {/* {isHistoryMode ? 
-          <Grid item xs={12}>
-            <ValidatorSessionHistoryPointsChart address={selectedAddress} maxSessions={maxSessions} />
-          </Grid>
-        : null} */}
-
+        
         {isHistoryMode ? 
           <Grid item xs={12}>
             <Divider sx={{ my: 1 }} />
           </Grid>
         : null}
 
-        {/* val. Group section */}
-        <Grid item xs={12} md={8}>
-          {!!selectedAddress ? <ValAddressProfile address={selectedAddress}  sessionIndex={sessionIndex} showGrade /> : null}
-        </Grid>
+        {isHistoryMode ? 
+          <Grid item xs={12}>
+            <ValBodyBox address={selectedAddress} sessionIndex={sessionIndex} />
+          </Grid>
+        : null}
 
+        {/* val. Group section */}
         {/* Live Mode */}
+        {isLiveMode ? 
+          <Grid item xs={12} md={6}>
+            {!!selectedAddress ? <ValAddressProfile address={selectedAddress}  sessionIndex={sessionIndex} showGrade /> : null}
+          </Grid>
+        : null}
         {isLiveMode ? 
           <Grid item xs={12} md={2}>
             <SessionPieChart sessionIndex={sessionIndex} />

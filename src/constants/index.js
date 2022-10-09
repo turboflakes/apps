@@ -33,7 +33,7 @@ const networkSettings = {
     logo: logoKusamaSVG,
     url: "https://kusama.network",
     maxValidators: 24,
-    maxHistoryEras: 12,
+    maxHistoryEras: 16,
     coreAssignmentsTarget: 60,
     poolIds: [process.env.REACT_APP_KUSAMA_POOL_ID_1, process.env.REACT_APP_KUSAMA_POOL_ID_2],
     chains: prodParasKusama
