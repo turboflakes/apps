@@ -169,6 +169,7 @@ let theme = createTheme({
       fontFamily: "'Roboto', sans-serif",
       fontSize: "0.825rem",
       fontStyle: "italic",
+      lineHeight: 0.875,
       color: '#4D4D4D',
     }, 
   },

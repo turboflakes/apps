@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined';
 import Stack from '@mui/material/Stack';
 import { Typography } from '@mui/material';
 import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
-
+import { 
+  useGetValidatorsQuery,
+ } from '../features/api/validatorsSlice';
 import {
   modeChanged,
   selectIsLiveMode
@@ -72,12 +75,15 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 }));
 
 export default function ModeSwitch({mode}) {
+  const theme = useTheme();
   const dispatch = useDispatch();
   const [checked, setChecked] = React.useState(mode === 'Live');
   const block = useSelector(selectBlock);
   const isLiveMode = useSelector(selectIsLiveMode);
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
+  // fetch current session validators
+  const {isSuccess} = useGetValidatorsQuery({session: currentSession, role: "para_authority", show_summary: true});
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
 
@@ -97,6 +103,10 @@ export default function ModeSwitch({mode}) {
 
   return (
     <Stack spacing={1} direction="row" alignItems="center">
+      {isLiveMode ? <span style={{ width: '8px', height: '8px', borderRadius: '50%', 
+                  animation: "pulse 1s infinite ease-in-out alternate",
+                  backgroundColor: theme.palette.semantics.green, 
+                  display: "inline-block" }}></span> : null}
       <Typography variant="caption" sx={{ fontWeight: '600' }} color="textPrimary">
         {/* {isLiveMode ? `Live [ # ${block.bix.format()} ]` : (!!session ? `${mode} [ ${session.eix} // ${session.six} ]`: '')} */}
         {`${mode} [ ${session.eix.format()} // ${session.six.format()} ]`}

@@ -239,7 +239,7 @@ export const LayoutPage = ({api}) => {
             <ModeSwitch mode={selectedMode} />
 
           </Box>
-          {isHistoryMode ? 
+          {/* {isHistoryMode ? 
             <Box sx={{
                 display: 'flex', 
                 flexDirection: 'column',
@@ -248,7 +248,7 @@ export const LayoutPage = ({api}) => {
                 width: '100%',
               }}>
               <SessionSlider maxSessions={maxSessions} /> 
-            </Box> : null}
+            </Box> : null} */}
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>

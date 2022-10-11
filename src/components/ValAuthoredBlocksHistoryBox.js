@@ -8,16 +8,18 @@ import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
 import {
-  selectValidatorBySessionAndAddress,
+  useGetValidatorsQuery,
+  selectValidatorsByAddressAndSessions,
+  buildSessionIdsArrayHelper
 } from '../features/api/validatorsSlice';
 import {
-  selectMVRsBySession,
+  useGetSessionsQuery,
+  selectAuthoredBlocksBySessions,
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
 import {
   selectValProfileByAddress,
 } from '../features/api/valProfilesSlice';
-import { calculateMvr } from '../util/mvr'
 import { nameDisplay } from '../util/display'
 
 const renderTooltip = (props, theme) => {
@@ -31,21 +33,21 @@ const renderTooltip = (props, theme) => {
           p: 2,
           m: 0,
           borderRadius: 1,
-          minWidth: '280px',
+          minWidth: '272px',
           boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px'
          }}
       >
         <Typography component="div" variant="caption" color="inherit">
-          <b>Missed Vote Ratio</b>
+          <b>Authored Blocks</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit" paragraph>
-          <i>Session {data.session.format()}</i>
+          <i>{data.avgQty} sessions</i>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          <span style={{ marginRight: '8px', color: theme.palette.neutrals[400] }}>❚</span>{data.name}: <b>{data.value}</b>
+          <span style={{ marginRight: '8px', color: theme.palette.neutrals[400] }}>❚</span>{data.name} (avg. {data.valueQty}x): <b>{data.value}</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          <span style={{ marginRight: '8px', color: theme.palette.neutrals[200] }}>❚</span>All Para-Authorities: <b>{data.avg}</b>
+          <span style={{ marginRight: '8px', color: theme.palette.neutrals[200] }}>❚</span>All Authorities (avg. {data.avgQty}x): <b>{data.avg}</b>
         </Typography>
       </Box>
     );
@@ -54,27 +56,35 @@ const renderTooltip = (props, theme) => {
   return null;
 };
 
-export default function ValMvrBox({address}) {
+export default function ValAuthoredBlocksHistoryBox({address, maxSessions}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
-  const allMvrs = useSelector(state => selectMVRsBySession(state, currentSession));
+  const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true});
+  const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
+  const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
+  const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
+  const allAuthoredBlocks = useSelector(state => selectAuthoredBlocksBySessions(state, historySessionIds));
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
+
+  if (!isSuccess || !isSessionSuccess) {
+    return null
+  }
+
+  const filtered = validators.filter(v => v.is_auth);
+
+  if (!filtered.length) {
+    return null
+  }
+
+
+  const authoredBlocksTotal = filtered.map(v => v.auth.ab.length).reduce((a, b) => a + b, 0);
+  const authoredBlocks = Math.round((authoredBlocksTotal / filtered.length) * 100) / 100;
   
-  if (isUndefined(validator) || isUndefined(valProfile)) {
-    return null
-  }
-
-  if (!validator.is_para) {
-    return null
-  }
-
-  const mvr = Math.round(calculateMvr(validator.para_summary.ev, validator.para_summary.iv, validator.para_summary.mv) * 10000) / 10000;
-  const avg = Math.round((!!allMvrs.length ? allMvrs.reduce((a, b) => a + b, 0) / allMvrs.length : 0) * 10000) / 10000;
-  const diff = !!avg && !!mvr ? Math.round(((mvr * 100 / avg) - 100) * 10) / 10 : 0;
+  const avg = !!allAuthoredBlocks.length ? Math.round((allAuthoredBlocks.reduce((a, b) => a + b, 0) / (allAuthoredBlocks.length * 1000)) * 100) / 100 : 0;
+  const diff = !!avg ? Math.round(((authoredBlocks * 100 / avg) - 100) * 10) / 10 : 0;
   
   const data = [
-    {name: nameDisplay(valProfile._identity, 12), value: mvr, avg, session: currentSession},
+    {name: nameDisplay(valProfile._identity, 12), value: authoredBlocks, valueQty: filtered.length, avg, avgQty: allAuthoredBlocks.length},
   ];
   
   return (
@@ -89,16 +99,15 @@ export default function ValMvrBox({address}) {
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
-      <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Missed Vote Ratio</Typography>
+      <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left', maxWidth: '128px'}}>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Authored Blocks</Typography>
         <Typography variant="h5">
-          {!isUndefined(mvr) ? Math.round(mvr * 10000) / 10000 : '-'}
+          {!isUndefined(authoredBlocksTotal) ? authoredBlocksTotal : '-'}
         </Typography>
-        <Tooltip title={diff === 0 ? 'Exceptional run. The validator participate in all votes.'  : `${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of MVR of all Para-Authorities in the current session.`} arrow>
-          <Typography variant="subtitle2" sx={{
+        <Tooltip title={`${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of Authored Blocks per session of all the Authorities of the last ${allAuthoredBlocks.length} sessions.`} arrow>
+          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 
             lineHeight: 0.875,
-            whiteSpace: 'nowrap', color: Math.sign(diff) > 0 ? theme.palette.semantics.red : theme.palette.semantics.green
-            }}>
+            color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red }}>
             <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${diff}%` : `-${Math.abs(diff)}%`) : ' '}</b>
           </Typography>
         </Tooltip>
@@ -115,8 +124,8 @@ export default function ValMvrBox({address}) {
           <Bar dataKey="avg" barSize={12} fill={theme.palette.neutrals[200]} />
           <ChartTooltip 
                 cursor={{fill: 'transparent'}}
-                offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                offset={48}
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme)} />
         </BarChart>
       </ResponsiveContainer>

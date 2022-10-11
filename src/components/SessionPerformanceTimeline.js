@@ -43,7 +43,7 @@ export default function SessionPerformanceTimeline() {
         flexDirection: 'column',
         // alignItems: 'center',
         width: '100%',
-        height: 112,
+        height: 96,
         borderRadius: 3,
         // borderTopLeftRadius: '24px',
         // borderTopRightRadius: '24px',

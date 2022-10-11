@@ -22,6 +22,9 @@ import {
 import {
   selectValidatorsBySessionAndGroupId
 } from '../features/api/valGroupsSlice'
+import {
+  selectIsLiveMode
+} from '../features/layout/layoutSlice';
 import { isChainSupported, getChainNameShort } from '../constants'
 import { stashDisplay, nameDisplay } from '../util/display'
 
@@ -68,7 +71,7 @@ const renderTooltip = (props, valIdentities) => {
 const renderParachainLabel = (value, i) => {
   return (
     <g>
-      <text style={{fontSize: "0.8rem", textAlign: "left"}} x={40} y={i === 0 ? 50 : 30} fill="#666" textAnchor="middle" dominantBaseline="middle">
+      <text style={{fontSize: "0.8rem", textAlign: "left"}} x={40} y={ i === 0 ? 50 : 30} fill="#666" textAnchor="middle" dominantBaseline="middle">
         {value}
       </text>
     </g>
@@ -83,6 +86,7 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
   const theme = useTheme();
   const selectedChain = useSelector(selectChain);
   const selectedAddress = useSelector(selectAddress);
+  const isLiveMode = useSelector(selectIsLiveMode);
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
 
   if (!validators.length || validators.length !== validators.filter(v => !!v.para_stats).length) {
@@ -138,10 +142,10 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
         </Box>
         {data.map((d, i) => {
           return (
-            <ResponsiveContainer key={i} width="100%" height={i === 0 ? 80 : 60}>
+            <ResponsiveContainer key={i} width="100%" height={ i === 0 ? 80 : 60}>
               <ScatterChart
                 // width={500}
-                height={i === 0 ? 80 : 60}
+                height={ i === 0 ? 80 : 60}
                 margin={{
                   top: i === 0 ? 10 : 0,
                   right: 10,
@@ -150,10 +154,10 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
                 }}
                 style={{
                   borderRadius: '24px',
-                  backgroundColor: d[0].pid === currentParaId ? theme.palette.neutrals[100] : 'transparent'
+                  backgroundColor: isLiveMode && d[0].pid === currentParaId ? theme.palette.neutrals[100] : 'transparent'
                 }}
               >
-                {i === 0 ? 
+                { i === 0 ? 
                   (<XAxis type="category" dataKey="x"
                     allowDuplicatedCategory={false}
                     orientation="top"
@@ -164,7 +168,7 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
                     // tickLine={{ transform: 'translate(0, -6)' }}
                     // tick={false}
                     tickLine={false}
-                    tickMargin={4}
+                    tickMargin={isLiveMode ? 4 : 16}
                     tickFormatter={(v, i) => renderIdentityTick(identities[i])}
                   />) : (
                     <XAxis type="category" dataKey="x"

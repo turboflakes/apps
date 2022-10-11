@@ -32,11 +32,12 @@ export default function ValInclusionBox({address, maxSessions}) {
   const inclusion = Math.round((nAuth / maxSessions) * 100);
 
   return (
-    <Paper sx={{
+    <Paper 
+      sx={{
         p: 2,
         display: 'flex',
         // flexDirection: 'column',
-        // justifyContent: 'space-between',
+        justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
         height: 96,

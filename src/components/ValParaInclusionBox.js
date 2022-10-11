@@ -30,7 +30,7 @@ export default function ValParaInclusionBox({address, maxSessions}) {
 
   const nAuth = validators.filter(v => v.is_auth).length;
   const nPara = validators.filter(v => v.is_auth && v.is_para).length;
-  const paraInclusion = Math.round((nPara / nAuth) * 100);
+  const paraInclusion = nAuth > 0 ? Math.round((nPara / nAuth) * 100) : 0;
 
   return (
     <Paper sx={{

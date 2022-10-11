@@ -51,8 +51,9 @@ export default function SessionPerformancePieChart() {
         // flexDirection: 'column',
         // alignItems: 'center',
         width: '100%',
-        height: 112,
+        height: 96,
         borderRadius: 3,
+        bgcolor: theme.palette.neutrals[200],
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       }}
       >
@@ -79,8 +80,8 @@ export default function SessionPerformancePieChart() {
               endAngle={0}
             >
               {pieData.map((entry, index) => (
-                <Cell key={`cell-${index}`} 
-                  fill={COLORS[index % COLORS.length]} />
+                <Cell key={`cell-${index}`} strokeWidth={0} stroke={theme.palette.neutrals[300]}
+                  fill={index === 0 ? theme.palette.background.secondary : theme.palette.neutrals[100] } />
               ))}
             </Pie>
             {/* <text x="50%" y="50%" fill="#343434" style={{ fontSize: '1rem' }} textAnchor={'middle'} dominantBaseline="central">

@@ -130,7 +130,7 @@ export default function SessionSlider({maxSessions}) {
         </Box>
       </Box> */}
       <Stack spacing={3} direction="row" sx={{ mb: 1 }} alignItems="center">
-        <Typography variant="caption">past</Typography>
+        <Typography variant="caption" sx={{ ml: 3 }}>past</Typography>
         <CustomSlider
           aria-label="session slider"
           // defaultValue={defaultSession}

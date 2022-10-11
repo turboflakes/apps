@@ -11,18 +11,13 @@ import {
 import {
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
-import {
-  selectValProfileByAddress,
-} from '../features/api/valProfilesSlice';
-import { nameDisplay } from '../util/display'
 
-export default function ValAuthoredBlocksBox({address, maxSessions}) {
+export default function ValTotalPointsBox({address}) {
   // const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
-  const valProfile = useSelector(state => selectValProfileByAddress(state, address));
-
-  if (isUndefined(validator) || isUndefined(valProfile)) {
+  
+  if (isUndefined(validator)) {
     return null
   }
 
@@ -30,12 +25,8 @@ export default function ValAuthoredBlocksBox({address, maxSessions}) {
     return null
   }
 
-  const total = validator.auth.ab.length;
-  const description = total > 0 ? `Last # ${validator.auth.ab[total - 1].format()}` : '';
-  
-  const data = [
-    {name: nameDisplay(valProfile._identity, 12), value: total, description, session: currentSession},
-  ];
+  const total = validator.auth.ep - validator.auth.sp;
+  // const description = validator.auth.ep > 0 ? `Total era points ${validator.auth.ep.format()}` : '';
   
   return (
     <Paper sx={{
@@ -50,12 +41,12 @@ export default function ValAuthoredBlocksBox({address, maxSessions}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Authored Blocks</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Session Points</Typography>
         <Typography variant="h5">
           {!isUndefined(total) ? total : '-'}
         </Typography>
         <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
-          {description}
+          {`Earned at session ${currentSession.format()}`}
         </Typography>
       </Box>
     </Paper>

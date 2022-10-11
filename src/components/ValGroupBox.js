@@ -6,6 +6,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
 import ValGroupPieCharts from './ValGroupPieCharts';
 import ValGroupDataGrid from './ValGroupDataGrid';
 import ValGroupPointsChart from './ValGroupPointsChart';

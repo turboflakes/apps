@@ -33,9 +33,9 @@ export default function BlockFinalizedBox() {
         p: `16px 24px`,
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        // alignItems: 'center',
         width: '100%',
-        height: 112,
+        height: 96,
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       }}

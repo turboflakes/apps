@@ -9,6 +9,7 @@ import { ComposedChart, Bar, Line, Area, XAxis, YAxis, Cell, ReferenceLine,
 import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { Spinner } from './Spinner';
+import SessionSlider from './SessionSlider';
 import {
   useGetValidatorsQuery,
   selectValidatorsByAddressAndSessions,
@@ -203,17 +204,15 @@ export default function ValidatorSessionHistoryPointsChart({address, maxSessions
       borderRadius: 3,
       // bgcolor: theme.palette.neutrals[300],
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' 
-      }} elevation={0}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box>
-          <Typography variant="h6" paragraph>Timeline</Typography>
-          {/* <Typography variant="h6" paragraph>{`Timeline (${maxSessions} sessions)`}</Typography> */}
-        </Box>
+      }}>
+      <Box>
+        <Typography variant="h6" paragraph>Timeline</Typography>
       </Box>
       <ResponsiveContainer width="100%" height={228}>
         <ComposedChart
           // width={500}
           // layout="vertical"
+          height={228}
           data={data}
           margin={{
             top: 0,

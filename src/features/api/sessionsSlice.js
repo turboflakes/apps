@@ -153,6 +153,7 @@ export const selectParachainIdsBySession = (state, session) => !!selectSessionBy
 export const selectMVRsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session)._mvrs) ? selectSessionByIndex(state, session)._mvrs : []) : [];
 export const selectValidityVotesBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session)._validity_votes) ? selectSessionByIndex(state, session)._validity_votes : []) : [];
 export const selectBackingPointsBySession = (state, session) => !!selectSessionByIndex(state, session) ? (isArray(selectSessionByIndex(state, session)._backing_points) ? selectSessionByIndex(state, session)._backing_points : []) : [];
+
 export const selectParaValidatorIdsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session)._group_ids.map(groupId => selectValidatorIdsBySessionAndGroupId(state, session, groupId)) : []
 export const selectParaValidatorsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? selectSessionByIndex(state, session)._group_ids.map(groupId => selectValidatorsBySessionAndGroupId(state, session, groupId)) : []
 // from session.stats
@@ -169,6 +170,15 @@ export const selectBackingPointsBySessions = (state, sessionIds = []) => session
   if (!isUndefined(session)) {
     if (session.stats) {
       return session.stats.pt - (session.stats.ab * 20); 
+    }
+  }
+}).filter(v => !isUndefined(v))
+
+export const selectTotalPointsBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    if (session.stats) {
+      return session.stats.pt; 
     }
   }
 }).filter(v => !isUndefined(v))

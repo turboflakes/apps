@@ -53,8 +53,10 @@ export default function ValAddressProfile({address, maxSessions, showGrade}) {
         width: '100%',
         height: 208,
         borderRadius: 3,
-        // backgroundColor: theme.palette.neutrals[300],
-        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
+        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+        // boxShadow: 'rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;'
+        // boxShadow: 'rgba(69, 205, 233, 0.4) 5px 5px, rgba(69, 205, 233, 0.3) 10px 10px, rgba(69, 205, 233, 0.2) 15px 15px, rgba(69, 205, 233, 0.1) 20px 20px, rgba(69, 205, 233, 0.05) 25px 25px;'
+        // boxShadow: 'rgba(11, 19, 16, 0.4) 5px 5px, rgba(11, 19, 16, 0.3) 10px 10px, rgba(11, 19, 16, 0.2) 15px 15px, rgba(11, 19, 16, 0.1) 20px 20px, rgba(11, 19, 16, 0.05) 25px 25px;'
       }}
       >
       <Box sx={{ display: "flex", height: '100%', justifyContent: 'space-between'}}>
@@ -74,7 +76,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade}) {
               borderTop: '0px solid rgba(0, 0, 0, 0.08)',
               borderBottom: 'none',
               backgroundColor: 'transparent',
-              backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+              backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
               }} />
             <Box sx={{ display: 'flex'}}>
               <Box sx={{ mr: 3,  display: 'flex', flexDirection: 'column', alignItems: 'left'}}>

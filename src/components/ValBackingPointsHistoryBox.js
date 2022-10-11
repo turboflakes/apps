@@ -33,12 +33,12 @@ const renderTooltip = (props, theme) => {
           p: 2,
           m: 0,
           borderRadius: 1,
-          minWidth: '272px',
+          minWidth: '296px',
           boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px'
          }}
       >
         <Typography component="div" variant="caption" color="inherit">
-          <b>Backing Points</b>
+          <b>Backing Points (avg.)</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit" paragraph>
           <i>{data.avgQty} sessions</i>
@@ -47,7 +47,7 @@ const renderTooltip = (props, theme) => {
           <span style={{ marginRight: '8px', color: theme.palette.neutrals[400] }}>❚</span>{data.name} (avg. {data.valueQty}x): <b>{data.value}</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          <span style={{ marginRight: '8px', color: theme.palette.neutrals[200] }}>❚</span>All Validators (avg. {data.avgQty}x): <b>{data.avg}</b>
+          <span style={{ marginRight: '8px', color: theme.palette.neutrals[200] }}>❚</span>All Para-Authorities (avg. {data.avgQty}x): <b>{data.avg}</b>
         </Typography>
       </Box>
     );
@@ -56,7 +56,7 @@ const renderTooltip = (props, theme) => {
   return null;
 };
 
-export default function ValPointsBox({address, maxSessions}) {
+export default function ValBackingPointsHistoryBox({address, maxSessions}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
   const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true});
@@ -78,6 +78,7 @@ export default function ValPointsBox({address, maxSessions}) {
 
   const backingPoints = Math.round(filtered.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0).reduce((a, b) => a + b, 0) / filtered.length);
   
+  // TODO get the total para-authorities per session from backend
   const avg = !!allBackingPoints.length ? Math.round(allBackingPoints.reduce((a, b) => a + b, 0) / (allBackingPoints.length * 200)) : 0;
   const diff = !!avg ? Math.round(((backingPoints * 100 / avg) - 100) * 10) / 10 : 0;
   
@@ -86,7 +87,8 @@ export default function ValPointsBox({address, maxSessions}) {
   ];
   
   return (
-    <Paper sx={{
+    <Paper 
+      sx={{
         p: 2,
         display: 'flex',
         // flexDirection: 'column',
@@ -97,12 +99,12 @@ export default function ValPointsBox({address, maxSessions}) {
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
-      <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Backing Points</Typography>
+      <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left', maxWidth: '112px'}}>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Backing Points (avg.)</Typography>
         <Typography variant="h5">
           {!isUndefined(backingPoints) ? backingPoints : '-'}
         </Typography>
-        <Tooltip title={`${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of Backing Points per p/v session of all the Validators of the last ${allBackingPoints.length} sessions.`} arrow>
+        <Tooltip title={`${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of Backing Points collected by all Para-Authorities of the last ${allBackingPoints.length} sessions.`} arrow>
           <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 
             lineHeight: 0.875,
             color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red }}>
@@ -110,8 +112,9 @@ export default function ValPointsBox({address, maxSessions}) {
           </Typography>
         </Tooltip>
       </Box>
-      <ResponsiveContainer width='40%' height='100%'>
+      <ResponsiveContainer height='100%'  sx={{ display: 'flex', justifyContent: 'flex-end'}}>
         <BarChart data={data}
+        width='100%'
           margin={{
             top: 4,
             right: 0,

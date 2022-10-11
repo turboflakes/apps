@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import SessionPieChart from './SessionPieChart';
+import SessionBox from './SessionBox';
 import BlockFinalizedBox from './BlockFinalizedBox';
 import ValGroupBox from './ValGroupBox';
 import ValAddressProfile from './ValAddressProfile';
@@ -54,53 +55,45 @@ export const ValGroupPage = () => {
   }
 
   return (
-		<Box sx={{ m: 2, minHeight: '100vh', mt: isLiveMode ? '16px' : '112px' }}>
+		<Box sx={{ m: 2, minHeight: '100vh' }}>
       <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <ValHeaderBox address={selectedAddress} sessionIndex={sessionIndex} />
+        </Grid>
+        <Grid item xs={12}>
+          <Divider sx={{ 
+            opacity: 0.25,
+            height: '1px',
+            borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+            borderBottom: 'none',
+            backgroundColor: 'transparent',
+            backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+            }} />
+        </Grid>
 
-        {/* History section */}
-        {isHistoryMode ? 
-          <Grid item xs={12}>
-            <ValHeaderBox address={selectedAddress} sessionIndex={sessionIndex} />
-          </Grid>
-        : null}
+        <Grid item xs={12}>
+          <ValBodyBox address={selectedAddress} sessionIndex={sessionIndex} />
+        </Grid>
         
-        {isHistoryMode ? 
-          <Grid item xs={12}>
-            <Divider sx={{ my: 1 }} />
-          </Grid>
-        : null}
-
-        {isHistoryMode ? 
-          <Grid item xs={12}>
-            <ValBodyBox address={selectedAddress} sessionIndex={sessionIndex} />
-          </Grid>
-        : null}
-
-        {/* val. Group section */}
-        {/* Live Mode */}
-        {isLiveMode ? 
-          <Grid item xs={12} md={6}>
-            {!!selectedAddress ? <ValAddressProfile address={selectedAddress}  sessionIndex={sessionIndex} showGrade /> : null}
-          </Grid>
-        : null}
-        {isLiveMode ? 
-          <Grid item xs={12} md={2}>
-            <SessionPieChart sessionIndex={sessionIndex} />
-          </Grid>
-        : null}
-        {isLiveMode ? 
-          <Grid item xs={12} md={2}>
-            <BlockFinalizedBox />
-          </Grid>
-        : null}
         {/* ---------- */}
         
         <Grid item xs={12}>
           {!!selectedAddress ? 
-            <ValGroupBox address={selectedAddress} sessionIndex={sessionIndex} /> : 
-            <Box sx={{ height: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <SearchSmall />
-            </Box>
+          <Box>
+            <Divider sx={{ 
+            opacity: 0.25,
+            height: '1px',
+            borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+            borderBottom: 'none',
+            backgroundColor: 'transparent',
+            backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+            }} />
+            <ValGroupBox address={selectedAddress} sessionIndex={sessionIndex} />
+          </Box>
+             : 
+          <Box sx={{ height: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <SearchSmall />
+          </Box>
           }
         </Grid>
       </Grid>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-// import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -9,20 +9,17 @@ import {
   selectValidatorBySessionAndAddress,
 } from '../features/api/validatorsSlice';
 import {
+  selectSessionByIndex,
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
-import {
-  selectValProfileByAddress,
-} from '../features/api/valProfilesSlice';
-import { nameDisplay } from '../util/display'
 
-export default function ValAuthoredBlocksBox({address, maxSessions}) {
-  // const theme = useTheme();
+export default function ValEraPointsBox({address}) {
+  const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
-  const valProfile = useSelector(state => selectValProfileByAddress(state, address));
+  const session = useSelector(state => selectSessionByIndex(state, currentSession))
 
-  if (isUndefined(validator) || isUndefined(valProfile)) {
+  if (isUndefined(validator) || isUndefined(session)) {
     return null
   }
 
@@ -30,12 +27,7 @@ export default function ValAuthoredBlocksBox({address, maxSessions}) {
     return null
   }
 
-  const total = validator.auth.ab.length;
-  const description = total > 0 ? `Last # ${validator.auth.ab[total - 1].format()}` : '';
-  
-  const data = [
-    {name: nameDisplay(valProfile._identity, 12), value: total, description, session: currentSession},
-  ];
+  const total = validator.auth.ep;
   
   return (
     <Paper sx={{
@@ -47,15 +39,17 @@ export default function ValAuthoredBlocksBox({address, maxSessions}) {
         width: '100%',
         height: 96,
         borderRadius: 3,
+        // bgcolor: theme.palette.neutrals[200],
+        bgcolor: theme.palette.background.secondary,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Authored Blocks</Typography>
-        <Typography variant="h5">
+        <Typography variant="caption" color="textSecondary" sx={{whiteSpace: 'nowrap'}}>Era Points</Typography>
+        <Typography variant="h5" color="textSecondary">
           {!isUndefined(total) ? total : '-'}
         </Typography>
-        <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
-          {description}
+        <Typography variant="subtitle2" color="textSecondary" sx={{ whiteSpace: 'nowrap' }}>
+          {`Earned at era ${session.eix.format()}`}
         </Typography>
       </Box>
     </Paper>

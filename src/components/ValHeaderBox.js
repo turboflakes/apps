@@ -1,66 +1,130 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+// import { useTheme } from '@mui/material/styles';
+import isUndefined from 'lodash/isUndefined'
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import { Typography } from '@mui/material';
 import ValAddressProfile from './ValAddressProfile';
 import ValMvrBox from './ValMvrBox';
-import ValPointsBox from './ValPointsBox';
+import ValMvrHistoryBox from './ValMvrHistoryBox';
+import ValBackingPointsBox from './ValBackingPointsBox';
+import ValBackingPointsHistoryBox from './ValBackingPointsHistoryBox';
 import ValAuthoredBlocksBox from './ValAuthoredBlocksBox';
+import ValTotalPointsBox from './ValTotalPointsBox';
+import ValEraPointsBox from './ValEraPointsBox';
+import ValEraPointsHistoryBox from './ValEraPointsHistoryBox';
+import ValAuthoredBlocksHistoryBox from './ValAuthoredBlocksHistoryBox';
 import ValInclusionBox from './ValInclusionBox';
+import ValStateBox from './ValStateBox';
 import ValParaInclusionBox from './ValParaInclusionBox';
-import ValidatorSessionHistoryPointsChart from './ValidatorSessionHistoryPointsChart';
+import {
+  useGetSessionsQuery,
+  selectAuthoredBlocksBySessions,
+  selectSessionByIndex,
+  selectSessionCurrent,
+} from '../features/api/sessionsSlice';
 import {
   selectChain,
-  selectAddress,
 } from '../features/chain/chainSlice';
-import { getMaxHistorySessions } from '../constants';
+import { 
+  selectIsLiveMode,
+} from '../features/layout/layoutSlice';
+import { 
+  getMaxHistoryEras,
+  getMaxHistorySessions } from '../constants';
 
+const order = ['1st', '2nd', '3rd', '4th', '5th', '6th'];
 
-export default function ValHeaderBox({address}) {
+export default function ValHeaderBox({address, sessionIndex}) {
 	// const theme = useTheme();
-  const selectedAddress = useSelector(selectAddress);
   const selectedChain = useSelector(selectChain);
+  const maxEras = getMaxHistoryEras(selectedChain);
   const maxSessions = getMaxHistorySessions(selectedChain);
+  const currentSession = useSelector(selectSessionCurrent);
+  const isLiveMode = useSelector(selectIsLiveMode);
+  const session = useSelector(state => selectSessionByIndex(state, currentSession))
+
+  if (isNaN(sessionIndex) || isUndefined(session)) {
+    return null
+  }
 
   return (
 		<Box sx={{ 
-        // p: 2,
+        p: 2,
         // m: 2,
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
       }}>
-      {/* <Box>
-        <Typography variant="h4">Validator Performance History</Typography>
-        <Typography variant="subtitle" paragraph>Stats from the previous {maxSessions} sessions</Typography>
-      </Box> */}
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={5}>
           <Box sx={{ display: 'flex'}}>
             <ValAddressProfile address={address} maxSessions={maxSessions} showGrade />
           </Box>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
-              <ValMvrBox address={address} maxSessions={maxSessions} />
+        <Grid item xs={12} md={7}>
+          <Box sx={{ 
+            // pl: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            borderRadius: 3,
+            // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+            // background: theme.palette.gradients.light180,
+            // border: `1px solid ${theme.palette.neutrals[200]}`,
+            // boxShadow: 'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;'
+          }}>
+            <Grid container spacing={2}>
+              {/* first row */}
+              <Grid item xs={12} md={3}>
+                {isLiveMode ? 
+                  <ValStateBox address={address} sessionIndex={sessionIndex} /> :
+                  <Box sx={{ 
+                      p: 2,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      width: '100%',
+                      height: 96,
+                    }}> 
+                    <Typography variant="h6">History Stats</Typography>
+                    <Typography variant="subtitle2">{isLiveMode ? `${order[session.esix-1]} session of era ${session.eix.format()}` : `Previous ${maxSessions} sessions (${maxEras} eras)`}</Typography>
+                  </Box> }
+              </Grid>
+              <Grid item xs={12} md={isLiveMode ? 3 : 3}>
+                  {isLiveMode ? 
+                    <ValAuthoredBlocksBox address={address} /> :
+                    <ValAuthoredBlocksHistoryBox address={address} maxSessions={maxSessions} /> }
+              </Grid>
+              <Grid item xs={12} md={isLiveMode ? 3 : 3}>
+                  {isLiveMode ? 
+                    <ValTotalPointsBox address={address} /> :
+                    <ValEraPointsHistoryBox address={address} maxSessions={maxSessions} /> }
+              </Grid>
+              <Grid item xs={12} md={3}>
+                  {isLiveMode ? 
+                    <ValEraPointsBox address={address} /> :
+                    <ValInclusionBox address={address} maxSessions={maxSessions} /> }
+              </Grid>
+              {/* second row */}
+              <Grid item xs={12} md={3}>
+                {isLiveMode ? 
+                  <ValMvrBox address={address} /> : 
+                  <ValMvrHistoryBox address={address} maxSessions={maxSessions} /> }
+              </Grid>
+              <Grid item xs={12} md={3}>
+                {isLiveMode ? 
+                  <ValBackingPointsBox address={address} /> : 
+                  <ValBackingPointsHistoryBox address={address} maxSessions={maxSessions} /> }
+              </Grid>
+              {!isLiveMode ? <Grid item xs={12} md={3}>
+                <ValParaInclusionBox address={address} maxSessions={maxSessions} />
+              </Grid> : null}
+              {/* <Grid item xs={12} md={4}>
+                TODO disputes
+              </Grid> */}
             </Grid>
-            <Grid item xs={12} md={4}>
-              <ValPointsBox address={address} maxSessions={maxSessions} />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              {/* TODO disputes */}
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <ValAuthoredBlocksBox address={address} maxSessions={maxSessions} />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <ValInclusionBox address={address} maxSessions={maxSessions} />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <ValParaInclusionBox address={address} maxSessions={maxSessions} />
-            </Grid>
-          </Grid>
+          </Box>
         </Grid>
       </Grid>
 		</Box>
