@@ -10,20 +10,15 @@ import ValStateBox from './ValStateBox';
 import SessionSlider from './SessionSlider';
 import ValidatorSessionHistoryPointsChart from './ValidatorSessionHistoryPointsChart';
 import {
-  selectChain,
-} from '../features/chain/chainSlice';
-import {
-  selectIsLiveMode
+  selectIsLiveMode,
+  selectMaxHistorySessions,
+  selectMaxHistoryEras
 } from '../features/layout/layoutSlice';
-import { 
-  getMaxHistoryEras,
-  getMaxHistorySessions } from '../constants';
 
 export default function ValBodyBox({address, sessionIndex}) {
 	const theme = useTheme();
-  const selectedChain = useSelector(selectChain);
-  const maxSessions = getMaxHistorySessions(selectedChain);
-  const maxEras = getMaxHistoryEras(selectedChain);
+  const maxHistorySessions = useSelector(selectMaxHistorySessions);
+  const maxHistoryEras = useSelector(selectMaxHistoryEras);
   const isLiveMode = useSelector(selectIsLiveMode)
   
   return (
@@ -46,7 +41,7 @@ export default function ValBodyBox({address, sessionIndex}) {
           : 
           <Box sx={{  p: 2 }}>
             <Typography variant="h3">Performance History</Typography>
-            <Typography variant="subtitle" color="secondary">Previous {maxSessions} sessions ({maxEras} eras).</Typography>
+            <Typography variant="subtitle" color="secondary">Previous {maxHistorySessions} sessions ({maxHistoryEras} eras).</Typography>
           </Box>
         }
         </Grid>
@@ -65,12 +60,12 @@ export default function ValBodyBox({address, sessionIndex}) {
         
         {!isLiveMode ?
           <Grid item xs={12}>
-            <SessionSlider maxSessions={maxSessions} /> 
+            <SessionSlider maxSessions={maxHistorySessions} /> 
           </Grid> : null}
 
         {!isLiveMode ?
           <Grid item xs={12}>
-            <ValidatorSessionHistoryPointsChart address={address} maxSessions={maxSessions} />
+            <ValidatorSessionHistoryPointsChart address={address} maxSessions={maxHistorySessions} />
           </Grid> : null}
       </Grid>
 		</Box>

@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useTheme } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined';
+import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
-import { styled } from '@mui/material/styles';
+import HistoryErasMenu from './HistoryErasMenu';
 import { 
   useGetValidatorsQuery,
  } from '../features/api/validatorsSlice';
@@ -103,14 +104,23 @@ export default function ModeSwitch({mode}) {
 
   return (
     <Stack spacing={1} direction="row" alignItems="center">
-      {isLiveMode ? <span style={{ width: '8px', height: '8px', borderRadius: '50%', 
+      {isLiveMode ? 
+        <Box sx={{ display: 'flex', alignItems: 'center'}}>
+          <span style={{ width: '8px', height: '8px', borderRadius: '50%', 
                   animation: "pulse 1s infinite ease-in-out alternate",
                   backgroundColor: theme.palette.semantics.green, 
-                  display: "inline-block" }}></span> : null}
-      <Typography variant="caption" sx={{ fontWeight: '600' }} color="textPrimary">
-        {/* {isLiveMode ? `Live [ # ${block.bix.format()} ]` : (!!session ? `${mode} [ ${session.eix} // ${session.six} ]`: '')} */}
-        {`${mode} [ ${session.eix.format()} // ${session.six.format()} ]`}
-      </Typography>
+                  display: "inline-block" }}></span>
+          <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
+            {`${mode} [ ${session.eix.format()} // ${session.six.format()} ]`}
+          </Typography>
+        </Box> : 
+        <Box sx={{ display: 'flex', alignItems: 'center'}}>
+          <HistoryErasMenu />
+          <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
+            {`[ ${session.eix.format()} // ${session.six.format()} ]`}
+          </Typography>
+        </Box>
+      }
       <MaterialUISwitch {...label} 
         checked={checked}
         onChange={handleChange} />

@@ -13,7 +13,8 @@ const initializePage = () => {
 
 const initialState = {
   page: initializePage(),
-  mode: 'Live'
+  mode: 'Live',
+  maxHistoryEras: 8
 };
 
 const layoutSlice = createSlice({
@@ -26,6 +27,9 @@ const layoutSlice = createSlice({
     modeChanged: (state, action) => {
       state.mode = action.payload;
     },
+    maxHistoryErasChanged: (state, action) => {
+      state.maxHistoryEras = action.payload;
+    },
   },
 });
 
@@ -33,7 +37,12 @@ export const selectPage = (state) => state.layout.page;
 export const selectMode = (state) => state.layout.mode;
 export const selectIsLiveMode = (state) => state.layout.mode === 'Live';
 export const selectIsHistoryMode = (state) => state.layout.mode === 'History';
+export const selectMaxHistoryEras = (state) => state.layout.maxHistoryEras;
+export const selectMaxHistorySessions = (state) => state.layout.maxHistoryEras * 6;
 
-export const { pageChanged, modeChanged } = layoutSlice.actions;
+export const { 
+  pageChanged, 
+  modeChanged, 
+  maxHistoryErasChanged } = layoutSlice.actions;
 
 export default layoutSlice;

@@ -20,28 +20,21 @@ import ValDisputesHistoryBox from './ValDisputesHistoryBox';
 import ValStateBox from './ValStateBox';
 import ValParaInclusionBox from './ValParaInclusionBox';
 import {
-  useGetSessionsQuery,
-  selectAuthoredBlocksBySessions,
   selectSessionByIndex,
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
 import {
-  selectChain,
-} from '../features/chain/chainSlice';
-import { 
   selectIsLiveMode,
+  selectMaxHistorySessions,
+  selectMaxHistoryEras
 } from '../features/layout/layoutSlice';
-import { 
-  getMaxHistoryEras,
-  getMaxHistorySessions } from '../constants';
 
-const order = ['1st', '2nd', '3rd', '4th', '5th', '6th'];
+const ORDER = ['1st', '2nd', '3rd', '4th', '5th', '6th'];
 
 export default function ValHeaderBox({address, sessionIndex}) {
 	// const theme = useTheme();
-  const selectedChain = useSelector(selectChain);
-  const maxEras = getMaxHistoryEras(selectedChain);
-  const maxSessions = getMaxHistorySessions(selectedChain);
+  const maxHistorySessions = useSelector(selectMaxHistorySessions);
+  const maxHistoryEras = useSelector(selectMaxHistoryEras);
   const currentSession = useSelector(selectSessionCurrent);
   const isLiveMode = useSelector(selectIsLiveMode);
   const session = useSelector(state => selectSessionByIndex(state, currentSession))
@@ -61,7 +54,7 @@ export default function ValHeaderBox({address, sessionIndex}) {
       <Grid container spacing={2}>
         <Grid item xs={12} md={5}>
           <Box sx={{ display: 'flex'}}>
-            <ValAddressProfile address={address} maxSessions={maxSessions} showGrade />
+            <ValAddressProfile address={address} maxSessions={maxHistorySessions} showGrade />
           </Box>
         </Grid>
         <Grid item xs={12} md={7}>
@@ -89,44 +82,44 @@ export default function ValHeaderBox({address, sessionIndex}) {
                       height: 96,
                     }}> 
                     <Typography variant="h6">History Stats</Typography>
-                    <Typography variant="subtitle2">{isLiveMode ? `${order[session.esix-1]} session of era ${session.eix.format()}` : `Previous ${maxSessions} sessions (${maxEras} eras)`}</Typography>
+                    <Typography variant="subtitle2">{isLiveMode ? `${ORDER[session.esix-1]} session of era ${session.eix.format()}` : `Previous ${maxHistorySessions} sessions (${maxHistoryEras} eras)`}</Typography>
                   </Box> }
               </Grid>
               <Grid item xs={12} md={isLiveMode ? 3 : 3}>
                   {isLiveMode ? 
                     <ValAuthoredBlocksBox address={address} /> :
-                    <ValAuthoredBlocksHistoryBox address={address} maxSessions={maxSessions} /> }
+                    <ValAuthoredBlocksHistoryBox address={address} maxSessions={maxHistorySessions} /> }
               </Grid>
               <Grid item xs={12} md={isLiveMode ? 3 : 3}>
                   {isLiveMode ? 
                     <ValTotalPointsBox address={address} /> :
-                    <ValEraPointsHistoryBox address={address} maxSessions={maxSessions} /> }
+                    <ValEraPointsHistoryBox address={address} maxSessions={maxHistorySessions} /> }
               </Grid>
               <Grid item xs={12} md={3}>
                   {isLiveMode ? 
                     <ValEraPointsBox address={address} /> :
-                    <ValInclusionBox address={address} maxSessions={maxSessions} /> }
+                    <ValInclusionBox address={address} maxSessions={maxHistorySessions} /> }
               </Grid>
               {/* second row */}
               <Grid item xs={12} md={3}>
                 {isLiveMode ? 
                   <ValMvrBox address={address} /> : 
-                  <ValMvrHistoryBox address={address} maxSessions={maxSessions} /> }
+                  <ValMvrHistoryBox address={address} maxSessions={maxHistorySessions} /> }
               </Grid>
               <Grid item xs={12} md={3}>
                 {isLiveMode ? 
                   <ValBackingPointsBox address={address} /> : 
-                  <ValBackingPointsHistoryBox address={address} maxSessions={maxSessions} /> }
+                  <ValBackingPointsHistoryBox address={address} maxSessions={maxHistorySessions} /> }
               </Grid>
               <Grid item xs={12} md={3}>
                 {isLiveMode ? 
                   null :
-                  <ValParaInclusionBox address={address} maxSessions={maxSessions} /> }
+                  <ValParaInclusionBox address={address} maxSessions={maxHistorySessions} /> }
               </Grid>
               <Grid item xs={12} md={3}>
                 {isLiveMode ? 
                   null :
-                  <ValDisputesHistoryBox address={address} maxSessions={maxSessions}/> }
+                  <ValDisputesHistoryBox address={address} maxSessions={maxHistorySessions}/> }
               </Grid>
               {/* <Grid item xs={12} md={4}>
                 TODO disputes

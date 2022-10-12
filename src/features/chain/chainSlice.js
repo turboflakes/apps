@@ -12,7 +12,7 @@ export const validateChain = () => {
 }
 
 const initialState = {
-  name: validateChain()
+  name: validateChain(),
 };
 
 const chainSlice = createSlice({

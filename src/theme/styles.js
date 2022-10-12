@@ -18,7 +18,8 @@ let theme = createTheme({
   palette: {
     primary: {
       // dark automatic calculated
-      main: "#ED1C24",
+      // main: "#ED1C24",
+      main: "#0B1317",
       contrastText: '#FFFFFF',
     },
     secondary: {
@@ -34,29 +35,17 @@ let theme = createTheme({
       blue: "#86D3E7",
       purple: "#8B7AB8",
     },
-    // grade: {
-    //   "A+": "#6DD400", // Emerald
-    //   "A": "#44D7B6", // Amazonite
-    //   "B+": "#0091FF", // Sapphire
-    //   "B": "#32C5FF", // Apatite
-    //   "C+": "#C8C9CC", // Gray
-    //   "C": "#EEEEEE", // Light Gray
-    //   "D+": "#F7B500", // Citrine
-    //   "D": "#FA6400", // Amber
-    //   "F": "#E02020", // Ruby
-    //   "-": "#FFF", // White
-    // },
     grade: {
-      "A+": "#78C143", // Emerald
-      "A": "#5FC3AD", // Amazonite
-      "B+": "#4DC1EF", // Sapphire
-      "B": "#4787C7", // Apatite
-      "C+": "#C8C9CB", // Gray
-      "C": "#EEEEEE", // Light Gray
-      "D+": "#F6B519", // Citrine
-      "D": "#F26522", // Amber
-      "F": "#DF2326", // Ruby
-      "-": "#FFF", // White
+      "A+": "#78C143",
+      "A": "#5FC3AD",
+      "B+": "#4DC1EF",
+      "B": "#4787C7",
+      "C+": "#C8C9CB",
+      "C": "#EEEEEE",
+      "D+": "#F6B519",
+      "D": "#F26522",
+      "F": "#DF2326",
+      "-": "#FFFFFF",
     },
     neutrals: {
       100: "#F1F1F0",

@@ -34,7 +34,8 @@ import {
   pageChanged,
   selectPage,
   selectMode,
-  selectIsHistoryMode
+  selectIsHistoryMode,
+  selectMaxHistorySessions
 } from '../features/layout/layoutSlice';
 import {
   chainInfoChanged,
@@ -45,7 +46,7 @@ import {
 import {
   selectAccount,
 } from '../features/web3/web3Slice';
-import { getMaxHistorySessions } from '../constants'
+
 
 
 function useWeb3ChainInfo(api) {
@@ -131,11 +132,10 @@ export const LayoutPage = ({api}) => {
   const selectedPage = useSelector(selectPage);
   const selectedMode = useSelector(selectMode);
   const isHistoryMode = useSelector(selectIsHistoryMode);
+  const maxHistorySessions = useSelector(selectMaxHistorySessions);
   
   const web3Account = useSelector(selectAccount);
 	useWeb3ChainInfo(api);
-
-  const maxSessions = getMaxHistorySessions(selectedChain);
 
 	const handleChainSelection = (ev, chain) => {
 		if (chain === null) {
@@ -247,7 +247,7 @@ export const LayoutPage = ({api}) => {
                 alignItems: 'center',
                 width: '100%',
               }}>
-              <SessionSlider maxSessions={maxSessions} /> 
+              <SessionSlider maxSessions={maxHistorySessions} /> 
             </Box> : null} */}
         </Toolbar>
       </AppBar>
