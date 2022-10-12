@@ -8,6 +8,7 @@ import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
 import { 
   selectSessionByIndex } from './sessionsSlice'
+import { calculateMvr } from '../../util/mvr'
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Parachains'],
@@ -74,6 +75,8 @@ const parachainsSlice = createSlice({
       const parachains = action.payload.data.map(parachain => ({
         ...parachain,
         session: action.payload.session,
+        _backing_points: !!parachain.stats ? parachain.stats.pt - (parachain.stats.ab * 20) : 0,
+        _mvr: !!parachain.stats ? calculateMvr(parachain.stats.ev, parachain.stats.iv, parachain.stats.mv) : undefined,
         _ts: + new Date()
       }))
       adapter.upsertMany(state, parachains)
@@ -90,3 +93,9 @@ const {
 
 export const selectParachainBySessionAndParaId = (state, session, paraId) => !!selectById(state, `${session}_${paraId}`) ? 
   selectById(state, `${session}_${paraId}`)  : undefined;
+
+export const selectParachainMvrBySessionAndParaId = (state, session, paraId) => !!selectById(state, `${session}_${paraId}`) ? 
+  (!!selectById(state, `${session}_${paraId}`)._mvr ? selectById(state, `${session}_${paraId}`)._mvr : undefined) : undefined;
+
+  export const selectParachainBackingPointsBySessionAndParaId = (state, session, paraId) => !!selectById(state, `${session}_${paraId}`) ? 
+  (!!selectById(state, `${session}_${paraId}`)._backing_points ? selectById(state, `${session}_${paraId}`)._backing_points : 0) : 0;

@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
 import {
-   selectValidatorsBySessionAndGroupId
+  selectValGroupBackingPointsBySessionAndGroupId
 } from '../features/api/valGroupsSlice';
 import {
   selectBackingPointsBySession
@@ -44,17 +44,11 @@ const renderTooltip = (props, theme) => {
   return null;
 };
 
-export default function ValGroupPointsBox({groupId, sessionIndex}) {
+export default function ValGroupBackingPointsBox({groupId, sessionIndex}) {
   const theme = useTheme();
-  const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
+  const backingPoints = useSelector(state => selectValGroupBackingPointsBySessionAndGroupId(state, sessionIndex,  groupId));
   const all = useSelector(state => selectBackingPointsBySession(state, sessionIndex));
   
-  if (!validators.length) {
-    return null
-  }
-  
-  const backingPoints = Math.round(validators.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0).reduce((a, b) => a + b, 0) / validators.length);
-
   const avg = !!all.length ? Math.round(all.reduce((a, b) => a + b, 0) / all.length) : 0;
   const diff = !!avg ? Math.round(((backingPoints * 100 / avg) - 100) * 10) / 10 : 0;
 
@@ -75,7 +69,7 @@ export default function ValGroupPointsBox({groupId, sessionIndex}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Backing Points</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Backing Points (x̅)</Typography>
         <Typography variant="h4">
           {backingPoints}
         </Typography>

@@ -10,7 +10,6 @@ const COLORS = (theme) => ([theme.palette.grey[300], theme.palette.grey[200],'#F
 const renderTooltip = (props) => {
   const { active, payload, color } = props;
   if (active && payload && payload.length) {
-    console.log("__props", props);
     const data = payload[0] && payload[0].payload;
     const p = data.payload.total === 0 ? 0 : data.payload.value / data.payload.total
     return (

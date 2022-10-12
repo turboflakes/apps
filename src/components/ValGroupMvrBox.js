@@ -8,12 +8,11 @@ import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
 import {
-   selectValidatorsBySessionAndGroupId
+  selectValGroupMvrBySessionAndGroupId
 } from '../features/api/valGroupsSlice';
 import {
   selectMVRsBySession
 } from '../features/api/sessionsSlice';
-import { calculateMvr } from '../util/mvr'
 
 const renderTooltip = (props, theme) => {
   const { active, payload } = props;
@@ -48,18 +47,10 @@ const renderTooltip = (props, theme) => {
 
 export default function ValGroupMvrBox({groupId, sessionIndex}) {
   const theme = useTheme();
-  const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
+  const _mvr = useSelector(state => selectValGroupMvrBySessionAndGroupId(state, sessionIndex,  groupId));
+  const mvr = Math.round(_mvr * 10000) / 10000;
   const allMVRs = useSelector(state => selectMVRsBySession(state, sessionIndex));
   
-  if (!validators.length) {
-    return null
-  }
-  
-  const mvr = Math.round(calculateMvr(
-    validators.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0),
-    validators.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0),
-    validators.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0)
-  ) * 10000) / 10000;
   const avg = Math.round((!!allMVRs.length ? allMVRs.reduce((a, b) => a + b, 0) / allMVRs.length : 0) * 10000) / 10000;
 
   const diff = !!avg && !!mvr ? Math.round(((mvr * 100 / avg) - 100) * 10) / 10 : 0;

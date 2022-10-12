@@ -14,7 +14,7 @@ import ValGroupParachainsChart from './ValGroupParachainsChart';
 import ValGroupCoreAssignmentBox from './ValGroupCoreAssignmentBox';
 import ValGroupValidityVotesBox from './ValGroupValidityVotesBox';
 import ValGroupMvrBox from './ValGroupMvrBox';
-import ValGroupPointsBox from './ValGroupPointsBox';
+import ValGroupBackingPointsBox from './ValGroupBackingPointsBox';
 import { 
   useGetValidatorByAddressQuery,
 } from '../features/api/validatorsSlice'
@@ -98,7 +98,7 @@ export default function ValGroupBox({address, sessionIndex}) {
             <ValGroupMvrBox sessionIndex={sessionIndex} groupId={groupId} />
           </Grid>
           <Grid item xs={2}>
-            <ValGroupPointsBox sessionIndex={sessionIndex} groupId={groupId} />
+            <ValGroupBackingPointsBox sessionIndex={sessionIndex} groupId={groupId} />
           </Grid>
           <Grid item xs={4}>
             {isLiveMode ? 

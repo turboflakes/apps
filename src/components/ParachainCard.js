@@ -14,6 +14,8 @@ import {
 } from '../features/chain/chainSlice';
 import { 
   selectParachainBySessionAndParaId,
+  selectParachainMvrBySessionAndParaId,
+  selectParachainBackingPointsBySessionAndParaId
  } from '../features/api/parachainsSlice'
 import { isChainSupported, getChainName, getChainLogo } from '../constants'
 import { calculateMvr } from '../util/mvr'
@@ -26,6 +28,8 @@ export default function ParachainCard({sessionIndex, paraId}) {
   const theme = useTheme();
   const selectedChain = useSelector(selectChain);
   const parachain = useSelector(state => selectParachainBySessionAndParaId(state, sessionIndex, paraId));
+  const mvr = useSelector(state => selectParachainMvrBySessionAndParaId(state, sessionIndex, paraId));
+  const backingPoints = useSelector(state => selectParachainBackingPointsBySessionAndParaId(state, sessionIndex, paraId));
   
   if (!parachain) {
     return null
@@ -34,8 +38,6 @@ export default function ParachainCard({sessionIndex, paraId}) {
   // NOTE: parachain cOre_assignments is given in cents (100 = 1)
   const coreAssignments = parachain.stats.ca / 100;
   const validityVotes = parachain.stats.ev + parachain.stats.iv + parachain.stats.mv;
-  const backingPoints = parachain.stats.pt - (parachain.stats.ab * 20);
-  const mvr = calculateMvr(parachain.stats.ev, parachain.stats.iv, parachain.stats.mv);
   const pieChartsData = createBackingPieData(parachain.stats.ev, parachain.stats.iv, parachain.stats.mv, paraId);
   const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
 
@@ -68,7 +70,7 @@ export default function ParachainCard({sessionIndex, paraId}) {
         backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
         }} />
 
-      <Box sx={{ py: 2, display: 'flex', justifyContent: 'space-between'}}>
+      <Box sx={{ py: 2, display: 'flex', justifyContent: 'space-around'}}>
         <Box>
           <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
             <Typography variant="caption" align='center'>Validity Statements</Typography>  

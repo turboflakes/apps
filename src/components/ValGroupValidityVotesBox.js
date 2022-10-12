@@ -10,7 +10,7 @@ import {
   useGetValidatorsQuery,
  } from '../features/api/validatorsSlice'
 import {
-   selectValidatorsBySessionAndGroupId
+  selectValGroupValidityVotesBySessionAndGroupId
 } from '../features/api/valGroupsSlice';
 import {
   selectValidityVotesBySession
@@ -51,14 +51,13 @@ export default function ValGroupValidityVotesBox({groupId, sessionIndex}) {
   const theme = useTheme();
   // fetch history summary for all validators in the selected history session
   const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
-  const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
+  const validityVotes = useSelector(state => selectValGroupValidityVotesBySessionAndGroupId(state, sessionIndex,  groupId));
   const allValidityVotes = useSelector(state => selectValidityVotesBySession(state, sessionIndex));
   
-  if (!validators.length && !isSuccess) {
+  if (!isSuccess) {
     return null
   }
   
-  const validityVotes = validators[0].para_summary.ev + validators[0].para_summary.iv + validators[0].para_summary.mv;
   const avg = Math.round((!!allValidityVotes.length ? allValidityVotes.reduce((a, b) => a + b, 0) / allValidityVotes.length : 0) * 100) / 100;
   const diff = !!avg ? Math.round(((validityVotes * 100 / avg) - 100) * 10) / 10 : 0;
 

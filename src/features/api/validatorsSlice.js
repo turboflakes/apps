@@ -13,7 +13,7 @@ import {
   selectIsLiveMode
 } from '../layout/layoutSlice'
 import {
-  selectValidatorMvrsBySessionAndGroupId
+  selectValGroupMvrBySessionAndGroupId
 } from './valGroupsSlice'
 
 
@@ -171,11 +171,9 @@ export const selectValidatorsByAddressAndSessions = (state, address, sessions = 
     const validator = selectValidatorById(state, `${sessionId}_${address}`);
     if (!isUndefined(validator)) {
       if (validator.is_para) {
-        const _mvrs = selectValidatorMvrsBySessionAndGroupId(state, sessionId, validator.para.group);
-        const _val_group_mvr = _mvrs.reduce((a, b) => a + b, 0) / _mvrs.length;
         return {
           ...validator,
-          _val_group_mvr
+          _val_group_mvr: selectValGroupMvrBySessionAndGroupId(state, sessionId, validator.para.group)
         }
       }
       return {

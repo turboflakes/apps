@@ -38,7 +38,7 @@ const renderTooltip = (props, theme) => {
          }}
       >
         <Typography component="div" variant="caption" color="inherit">
-          <b>Era Points (avg.)</b>
+          <b>Era Points (x̅)</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit" paragraph>
           <i>{data.avgQty} eras</i>
@@ -102,7 +102,7 @@ export default function ValTotalPointsHistoryBox({address, maxSessions}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left', maxWidth: '128px'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Era Points (avg.)</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Era Points (x̅)</Typography>
         <Typography variant="h5">
           {!isUndefined(avgPoints) ? avgPoints : '-'}
         </Typography>

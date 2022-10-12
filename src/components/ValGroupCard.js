@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { useTheme } from '@mui/material/styles';
+// import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -12,35 +12,34 @@ import {
   selectChain,
 } from '../features/chain/chainSlice';
 import {
-  selectValidatorsBySessionAndGroupId
+  selectValGroupParaIdBySessionAndGroupId,
+  selectValGroupMvrBySessionAndGroupId,
+  selectValGroupValidityVotesBySessionAndGroupId,
+  selectValGroupValidityExplicitVotesBySessionAndGroupId,
+  selectValGroupValidityImplicitVotesBySessionAndGroupId,
+  selectValGroupValidityMissedVotesBySessionAndGroupId,
+  selectValGroupBackingPointsBySessionAndGroupId,
+  selectValGroupCoreAssignmentsBySessionAndGroupId
 } from '../features/api/valGroupsSlice';
 import { isChainSupported, getChainName } from '../constants'
-import { calculateMvr } from '../util/mvr'
 
 function createBackingPieData(e, i, m, n) {
   return { e, i, m, n };
 }
 
 export default function ValGroupCard({sessionIndex, groupId}) {
-  const theme = useTheme();
+  // const theme = useTheme();
   const selectedChain = useSelector(selectChain);
-  const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex, groupId));
-  
-  const paraId = validators[0].para.pid;
-  const coreAssignments = validators[0].para_summary.ca;
+  const paraId = useSelector(state => selectValGroupParaIdBySessionAndGroupId(state, sessionIndex, groupId));
+  const mvr = useSelector(state => selectValGroupMvrBySessionAndGroupId(state, sessionIndex, groupId));
+  const ev = useSelector(state => selectValGroupValidityExplicitVotesBySessionAndGroupId(state, sessionIndex, groupId));
+  const iv = useSelector(state => selectValGroupValidityImplicitVotesBySessionAndGroupId(state, sessionIndex, groupId));
+  const mv = useSelector(state => selectValGroupValidityMissedVotesBySessionAndGroupId(state, sessionIndex, groupId));
+  const validityVotes = useSelector(state => selectValGroupValidityVotesBySessionAndGroupId(state, sessionIndex, groupId));
+  const backingPoints = useSelector(state => selectValGroupBackingPointsBySessionAndGroupId(state, sessionIndex, groupId));
+  const coreAssignments = useSelector(state => selectValGroupCoreAssignmentsBySessionAndGroupId(state, sessionIndex, groupId));
 
-  const filtered = validators.filter(v => v.is_auth && v.is_para);
-  console.log("___validators", validators);
-  
-  // calculate MVR
-  const e = filtered.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0);
-  const i = filtered.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0);
-  const m = filtered.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0);
-  const mvr = calculateMvr(e, i, m);
-  // calculate backing points
-  const backingPoints = filtered.map(v => (v.auth.ep - v.auth.sp) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0).reduce((a, b) => a + b, 0);
-  const validityVotes = filtered.length > 0 ? ((e + i + m) / filtered.length) : 0;
-  const pieChartsData = createBackingPieData(e, i, m, paraId);
+  const pieChartsData = createBackingPieData(ev, iv, mv, paraId);
   const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
 
   return (
@@ -68,7 +67,7 @@ export default function ValGroupCard({sessionIndex, groupId}) {
         backgroundColor: 'transparent',
         backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
         }} />
-      <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between'}}>
+      <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-around'}}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
           <ValGroupList sessionIndex={sessionIndex} groupId={groupId} />
         </Box>
@@ -98,7 +97,7 @@ export default function ValGroupCard({sessionIndex, groupId}) {
           <Typography variant="h5" align='center'>{!isUndefined(mvr) ? Math.round(mvr * 10000) / 10000 : '-'}</Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-          <Typography variant="caption" align='center'>Backing Points</Typography>
+          <Typography variant="caption" align='center'>Backing Points (x̅)</Typography>
           <Typography variant="h5" align='center'>{backingPoints}</Typography>
         </Box>
       </Box>

@@ -38,7 +38,7 @@ const renderTooltip = (props, theme) => {
          }}
       >
         <Typography component="div" variant="caption" color="inherit">
-          <b>Backing Points (avg.)</b>
+          <b>Backing Points (x̅)</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit" paragraph>
           <i>{data.avgQty} sessions</i>
@@ -100,7 +100,7 @@ export default function ValBackingPointsHistoryBox({address, maxSessions}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left', maxWidth: '112px'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Backing Points (avg.)</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Backing Points (x̅)</Typography>
         <Typography variant="h5">
           {!isUndefined(backingPoints) ? backingPoints : '-'}
         </Typography>

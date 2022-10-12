@@ -46,10 +46,12 @@ export default function ParachainsOverviewTabs({sessionIndex, tab}) {
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs textColor="inherit" sx={{ 
           '.MuiTabs-indicator': { display: 'none' }, 
-          '& .Mui-selected': { bgcolor: "rgba(0, 0, 0, 0.22)", 
-          fontWeight: 600}}} value={tab} onChange={handleChange} aria-label="Parachains" >
-          <Tab sx={{ my:1, mr: 2,  borderRadius: 3, bgcolor: "rgba(0, 0, 0, 0.06)",  }} label="Overview" {...a11yProps(0)} disableRipple disableFocusRipple />
-          <Tab sx={{ my:1,  borderRadius: 3, bgcolor: "rgba(0, 0, 0, 0.06)",  }} label="Val. Groups" {...a11yProps(1)} disableRipple disableFocusRipple />
+          '& .Mui-selected': { 
+            bgcolor: 'rgba(11, 19, 23, 0.08)',
+            color: '#0B1317'
+          }}} value={tab} onChange={handleChange} aria-label="Parachains" >
+          <Tab sx={{ my:1, mr: 2,  borderRadius: 3 }} label="Overview" {...a11yProps(0)} disableRipple disableFocusRipple />
+          <Tab sx={{ my:1,  borderRadius: 3 }} label="Val. Groups" {...a11yProps(1)} disableRipple disableFocusRipple />
         </Tabs>
       </Box>
       {tab === 0 ? 

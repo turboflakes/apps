@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from 'recharts';
 import {
-   selectValidatorsBySessionAndGroupId
+  selectValGroupCoreAssignmentsBySessionAndGroupId
 } from '../features/api/valGroupsSlice'
 import {
   selectChain,
@@ -46,14 +46,9 @@ const renderTooltip = (props, theme) => {
 export default function ValGroupCoreAssignmentBox({groupId, sessionIndex}) {
   const theme = useTheme();
   const selectedChain = useSelector(selectChain);
-  const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
+  const coreAssignments = useSelector(state => selectValGroupCoreAssignmentsBySessionAndGroupId(state, sessionIndex,  groupId));
   
-  if (!validators.length) {
-    return null
-  }
   const caTarget = getCoreAssignmentsTarget(selectedChain);
-  const coreAssignments = validators[0].para_summary.ca;
-  // const coreAssignments = parseInt(validators.map(v => v.para_summary.ca).reduce((a, b) => a + b, 0) / validators.length, 10);
   
   const data = [
     {name: 'Done', value: coreAssignments, percentage: Math.round((coreAssignments * 100)/caTarget)},
