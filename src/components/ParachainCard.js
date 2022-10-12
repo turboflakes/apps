@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import isNull from 'lodash/isNull'
 import Paper from '@mui/material/Paper';
@@ -22,9 +23,8 @@ function createBackingPieData(e, i, m, n) {
 }
 
 export default function ParachainCard({sessionIndex, paraId}) {
-  // const theme = useTheme();
+  const theme = useTheme();
   const selectedChain = useSelector(selectChain);
-
   const parachain = useSelector(state => selectParachainBySessionAndParaId(state, sessionIndex, paraId));
   
   if (!parachain) {
@@ -34,6 +34,7 @@ export default function ParachainCard({sessionIndex, paraId}) {
   // NOTE: parachain cOre_assignments is given in cents (100 = 1)
   const coreAssignments = parachain.stats.ca / 100;
   const validityVotes = parachain.stats.ev + parachain.stats.iv + parachain.stats.mv;
+  const backingPoints = parachain.stats.pt - (parachain.stats.ab * 20);
   const mvr = calculateMvr(parachain.stats.ev, parachain.stats.iv, parachain.stats.mv);
   const pieChartsData = createBackingPieData(parachain.stats.ev, parachain.stats.iv, parachain.stats.mv, paraId);
   const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
@@ -46,38 +47,61 @@ export default function ParachainCard({sessionIndex, paraId}) {
       // justifyContent: 'center',
       // alignItems: 'center',
       width: '100%',
-      height: 376,
+      height: 408,
       borderRadius: 3,
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
-      <Box sx={{p: 2, height: 302}}>
-        <Box sx={{ mb:1, height: 40,  display: 'flex', justifyContent: 'space-between' }}>
+      <Box sx={{height: '72px', p: 2}}>
+        <Box sx={{ mb:1, display: 'flex', justifyContent: 'space-between' }}>
           {!!chainName ?
-          <Box sx={{ p: `4px 8px`, display: 'flex', alignItems: 'center', borderRadius: 3, backgroundColor: '#EEE' }} >
+          <Box sx={{ p: `4px 8px`, display: 'flex', alignItems: 'center', borderRadius: 3, bgcolor: theme.palette.grey[0] }} >
             <img src={getChainLogo(selectedChain, paraId)} style={{ width: 32, height: 32, marginRight: 8, backgroundColor: '#F7F7FA', borderRadius: 16}} alt={"logo"}/>
             <Typography variant="h6">{chainName}</Typography>
           </Box> : null}
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
-          <BackingPieChart data={pieChartsData} size="md" />
-          <Box sx={{ display: 'flex', flexDirection: 'column'}}>
-            <Typography variant="caption" align='right' sx={{ mr: 2 }}>{!isNull(parachain.group) ? `Backed by Val. Group ${parachain.group}` : `Waiting core assignment`}</Typography>
-            <ValGroupList sessionIndex={sessionIndex} groupId={parachain.group} />
+      </Box>
+      <Divider sx={{ 
+        opacity: 0.25,
+        height: '1px',
+        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+        borderBottom: 'none',
+        backgroundColor: 'transparent',
+        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+        }} />
+
+      <Box sx={{ py: 2, display: 'flex', justifyContent: 'space-between'}}>
+        <Box>
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
+            <Typography variant="caption" align='center'>Validity Statements</Typography>  
+            <Typography variant="h5" align='center'>{validityVotes}</Typography>
           </Box>
+          <BackingPieChart data={pieChartsData} size="md" />
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
+          <Typography variant="caption" sx={{ ml: 3 }}>{!isNull(parachain.group) ? `Backed by Val. Group ${parachain.group}` : `Waiting core assignment`}</Typography>
+          <ValGroupList sessionIndex={sessionIndex} groupId={parachain.group} />
         </Box>
       </Box>
-      <Divider />
-      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', pb: 1}}>
+      
+      <Divider sx={{ 
+        opacity: 0.25,
+        height: '1px',
+        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+        borderBottom: 'none',
+        backgroundColor: 'transparent',
+        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+        }} />
+      <Box sx={{ py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
           <Typography variant="caption" align='center'>Core Assignments</Typography>
           <Typography variant="h5" align='center'>{coreAssignments}</Typography>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', pb: 1}}>
-          <Typography variant="caption" align='center'>Validity Votes</Typography>
-          <Typography variant="h5" align='center'>{validityVotes}</Typography>
-        </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', pb: 1}}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
           <Typography variant="caption" align='center'>Missed Vote Ratio</Typography>
           <Typography variant="h5" align='center'>{!isUndefined(mvr) ? Math.round(mvr * 10000) / 10000 : '-'}</Typography>
+        </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}} >
+          <Typography variant="caption" align="right">Backing Points</Typography>
+          <Typography variant="h5" align="right">{backingPoints}</Typography>
         </Box>
       </Box>
     </Paper>

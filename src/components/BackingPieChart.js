@@ -1,14 +1,16 @@
 import * as React from 'react';
+import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Tooltip, Cell, Legend, ResponsiveContainer } from 'recharts';
 import { Typography } from '@mui/material';
 import {nameDisplay} from '../util/display';
 
-const COLORS = ['#45CDE9', '#7A8FD3','#FF3D3D'];
+const COLORS = (theme) => ([theme.palette.grey[300], theme.palette.grey[200],'#FF3D3D'])
 
 const renderTooltip = (props) => {
-  const { active, payload } = props;
+  const { active, payload, color } = props;
   if (active && payload && payload.length) {
+    console.log("__props", props);
     const data = payload[0] && payload[0].payload;
     const p = data.payload.total === 0 ? 0 : data.payload.value / data.payload.total
     return (
@@ -17,15 +19,16 @@ const renderTooltip = (props) => {
           bgcolor: '#fff',
           p: 2,
           m: 0,
+          minWidth: '208px',
           borderRadius: 1,
           boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px'
          }}
       >
         <Typography component="div" variant="caption" color="inherit" paragraph>
-        <b>Statements</b>
+        <b>Validity Statements</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          {data.payload.name}: {data.payload.value} ({Math.round(p*100)}%)
+          <span style={{ marginRight: '8px', color: data.fill }}>●</span>{data.payload.name}: {data.payload.value} ({Math.round(p*100)}%)
         </Typography>
       </Box>
     );
@@ -34,8 +37,20 @@ const renderTooltip = (props) => {
   return null;
 };
 
+const renderLegend = (props) => {
+  return (
+    <Box sx={{mt: 1, display: 'flex', flexDirection: 'column'}}>
+      {props.payload.map((o, i) => (
+        <Typography key={i} variant="caption" gutterBottom>
+          <span style={{ marginRight: '8px', color: o.color }}>●</span>{o.payload.name}: {o.payload.value}
+        </Typography>
+      ))}
+    </Box>
+  );
+}
+
 const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, value }) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 1.2;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -51,12 +66,12 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 };
 
 export default function BackingPieChart({data, showLegend, size}) {
-  
+  const theme = useTheme();
   const total = data.e + data.i + data.m;
   const pieData = [
-    { name: '(✓e) Valid', value: data.e, total },
-    { name: '(✓i) Seconded', value: data.i, total },
-    { name: '(✗) Missed', value: data.m, total },
+    { name: 'Valid', value: data.e, total, icon: '✓e' },
+    { name: 'Seconded', value: data.i, total, icon: '✓i' },
+    { name: 'Missed', value: data.m, total, icon: '✗' },
   ];
 
   return (
@@ -89,16 +104,19 @@ export default function BackingPieChart({data, showLegend, size}) {
                 labelLine={false}
               >
                 {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell key={`cell-${index}`} fill={COLORS(theme)[index]} />
                 ))}
               </Pie>
               <Tooltip 
                 cursor={{fill: 'transparent'}}
                 wrapperStyle={{ zIndex: 100 }} 
                 content={renderTooltip} />
+                {showLegend ? <Legend verticalAlign="top" content={renderLegend} height={84} /> : null}
             </PieChart>
           </ResponsiveContainer>
-          {showLegend ? <Typography sx={{ mt: 2}} variant="caption">{nameDisplay(data.n, 16)}</Typography> : null}
+          {/* {showLegend ? <Typography sx={{ mt: 2}} variant="caption">{nameDisplay(data.n, 16)}</Typography> : null} */}
     </Box>
   );
 }
+
+// index % COLORS.length

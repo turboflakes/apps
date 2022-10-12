@@ -29,7 +29,7 @@ let theme = createTheme({
       contrastText: '#FFFFFF',
     },
     semantics: {
-      red: "#E02020",
+      red: "#DF2326",
       amber: "#FA6400",
       green: "#44D7B6",
       blue: "#86D3E7",

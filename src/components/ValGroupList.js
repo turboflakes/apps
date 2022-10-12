@@ -24,6 +24,8 @@ import { stashDisplay, nameDisplay } from '../util/display'
 import { grade } from '../util/grade';
 
 
+const gradeValue = (v) => grade(1-calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
+
 export default function ValGroupList({sessionIndex, groupId}) {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -34,19 +36,18 @@ export default function ValGroupList({sessionIndex, groupId}) {
 
   const handleAddressSelected = (address) => {
     dispatch(addressChanged(address));
-    dispatch(pageChanged('parachains/val-group'));
-    const path = `/one-t/${selectedChain}/parachains/val-group`
-    navigate(`${path}?address=${address}`)
+    dispatch(pageChanged(`validator/${address}`));
+    navigate(`/one-t/${selectedChain}/validator/${address}`)
   }
 
   return (
-      <Box sx={{ display: 'flex', flexDirection: 'column'}}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', width: '192px'}}>
         <List dense >
           {validatorsOrderedByPoints.map((v, i) => (
             <ListItemButton key={i} sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(v.address)}>
               <ListItemIcon sx={{minWidth: 0, mr: 1, display: 'flex', alignItems: 'center'}}>
                 <span style={{ width: '4px', height: '4px', marginLeft: '-4px', marginRight: '8px', borderRadius: '50%', 
-                  backgroundColor: theme.palette.grade[grade(1-calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv))], 
+                  backgroundColor: theme.palette.grade[gradeValue(v)], 
                   display: "inline-block" }}></span>
                 <Identicon
                   value={v.address}

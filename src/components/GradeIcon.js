@@ -47,7 +47,7 @@ export default function GradeIcon({sessionIndex, address, size = 96}) {
 
   return (
       <Box>
-        <Tooltip title={`Para-Authority grade performance for the session ${sessionIndex}.`} arrow>
+        <Tooltip title={`Para-Authority grade performance for session ${sessionIndex}.`} arrow>
           <img src={GRADES[gradeValue]} style={{ 
               width: size,
               height: size }} alt={`Grade: ${gradeValue}`}/>

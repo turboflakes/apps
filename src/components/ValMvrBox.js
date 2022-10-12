@@ -42,10 +42,10 @@ const renderTooltip = (props, theme) => {
           <i>Session {data.session.format()}</i>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          <span style={{ marginRight: '8px', color: theme.palette.neutrals[400] }}>❚</span>{data.name}: <b>{data.value}</b>
+          <span style={{ marginRight: '8px', color: theme.palette.text.primary }}>❚</span>{data.name}: <b>{data.value}</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          <span style={{ marginRight: '8px', color: theme.palette.neutrals[200] }}>❚</span>All Para-Authorities: <b>{data.avg}</b>
+          <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>❚</span>All Para-Authorities: <b>{data.avg}</b>
         </Typography>
       </Box>
     );
@@ -111,8 +111,8 @@ export default function ValMvrBox({address}) {
             left: 0,
             bottom: 4,
           }}>
-          <Bar dataKey="value" barSize={12} fill={theme.palette.neutrals[400]} />
-          <Bar dataKey="avg" barSize={12} fill={theme.palette.neutrals[200]} />
+          <Bar dataKey="value" barSize={12} fill={theme.palette.text.primary[400]} />
+          <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
           <ChartTooltip 
                 cursor={{fill: 'transparent'}}
                 offset={24}

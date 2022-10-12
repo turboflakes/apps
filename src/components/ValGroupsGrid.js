@@ -17,7 +17,7 @@ export default function ValGroupsGrid({sessionIndex}) {
       <Box sx={{ p: 2 }}>
         <Typography variant="h4">Val. Groups</Typography>
         <Typography variant="subtitle">Attestations of Validity by Val. Groups</Typography>
-        <GradeDescription sessionIndex={sessionIndex} gradeValue="A+" />
+        {/* <GradeDescription sessionIndex={sessionIndex} gradeValue="A+" /> */}
       </Box>
       <Grid container spacing={2}>
         {groupIds.map(groupId => (

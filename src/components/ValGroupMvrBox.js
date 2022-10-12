@@ -34,10 +34,10 @@ const renderTooltip = (props, theme) => {
           <b>Missed Vote Ratio</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          <span style={{ marginRight: '8px', color: theme.palette.neutrals[400] }}>❚</span>Val. Group {data.groupId} (avg): <b>{data.value}</b>
+          <span style={{ marginRight: '8px', color: theme.palette.text.primary }}>❚</span>Val. Group {data.groupId} (avg): <b>{data.value}</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          <span style={{ marginRight: '8px', color: theme.palette.neutrals[200] }}>❚</span>All Val. Groups (avg): <b>{data.avg}</b>
+          <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>❚</span>All Val. Groups (avg): <b>{data.avg}</b>
         </Typography>
       </Box>
     );
@@ -76,7 +76,7 @@ export default function ValGroupMvrBox({groupId, sessionIndex}) {
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
-        height: 112,
+        height: 96,
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
@@ -102,8 +102,8 @@ export default function ValGroupMvrBox({groupId, sessionIndex}) {
             left: 0,
             bottom: 10,
           }}>
-          <Bar dataKey="value" barSize={12} fill={theme.palette.neutrals[400]} />
-          <Bar dataKey="avg" barSize={12} fill={theme.palette.neutrals[200]} />
+          <Bar dataKey="value" barSize={12} fill={theme.palette.text.primary} />
+          <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
           <ChartTooltip 
                 cursor={{fill: 'transparent'}}
                 offset={24}

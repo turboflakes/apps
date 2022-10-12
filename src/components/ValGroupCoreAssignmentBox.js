@@ -34,7 +34,7 @@ const renderTooltip = (props, theme) => {
         <b>Core Assignments</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          <span style={{ marginRight: '8px', color: data.payload.name === 'Done' ? `${theme.palette.neutrals[400]}` : `${theme.palette.neutrals[200]}`}}>●</span>{data.payload.name}: <b>{data.payload.value} ({data.payload.percentage}%)</b>
+          <span style={{ marginRight: '8px', color: data.payload.name === 'Done' ? `${theme.palette.text.primary}` : `${theme.palette.neutrals[200]}`}}>●</span>{data.payload.name}: <b>{data.payload.value} ({data.payload.percentage}%)</b>
         </Typography>
       </Box>
     );
@@ -68,7 +68,7 @@ export default function ValGroupCoreAssignmentBox({groupId, sessionIndex}) {
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
-        height: 112,
+        height: 96,
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
@@ -91,7 +91,7 @@ export default function ValGroupCoreAssignmentBox({groupId, sessionIndex}) {
             endAngle={-360}
           >
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={index === 0 ? `${theme.palette.neutrals[400]}` : `${theme.palette.neutrals[200]}`} />
+              <Cell key={`cell-${index}`} fill={index === 0 ? `${theme.palette.text.primary}` : `${theme.palette.grey[200]}`} />
             ))}
           </Pie>
           <Tooltip 

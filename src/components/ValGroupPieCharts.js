@@ -50,7 +50,7 @@ export default function ValGroupPieCharts({sessionIndex, groupId}) {
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-around'}}>
         {data.map((o, i) => 
-          (<BackingPieChart key={i} data={o} showLegend />)
+          (<BackingPieChart key={i} data={o} />)
         )}
       </Box>
     </Paper>

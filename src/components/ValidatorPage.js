@@ -29,7 +29,7 @@ import {
   selectIsSocketConnected,
 } from '../features/api/socketSlice';
 
-export const ValGroupPage = () => {
+export default function ValidatorPage() {
 	// const theme = useTheme();
   const dispatch = useDispatch();
   const isSocketConnected = useSelector(selectIsSocketConnected);

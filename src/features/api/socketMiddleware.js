@@ -153,6 +153,7 @@ const socketMiddleware = (store) => {
           const nextPage = action.payload;
           const previousPage = selectPage(store.getState())
           const currentSession = selectSessionCurrent(store.getState());
+          const currentAddress = selectAddress(store.getState())
           switch (previousPage) {
             case 'parachains/overview': {
               const msg = JSON.stringify({ method: 'unsubscribe_parachains', params: [currentSession.toString()] });
@@ -162,32 +163,31 @@ const socketMiddleware = (store) => {
             case 'parachains/val-groups': {
               break
             }
-            case 'parachains/val-group': {
-              const currentAddress = selectAddress(store.getState())
+            case `validator/${currentAddress}`: {
               dispatchValidator(store, currentAddress, "unsubscribe");
               break
             }
             default:
               break
           }
-          switch (nextPage) {
-            case 'parachains/val-group': {
-              const isHistoryMode = selectIsHistoryMode(store.getState());
-              if (isHistoryMode) {
-                // get summary data for the selected address for the last X sessions
-                // const selectedAddress = selectAddress(store.getState())
-                // const chainName = selectChain(store.getState())
-                // const maxSessions = getMaxHistorySessions(chainName);
-                // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
-                // // get all validators summary for the selected session (useful to get the comparison stats)
-                // const historySession = selectSessionHistory(store.getState());
-                // store.dispatch(apiSlice.endpoints.getValidators.initiate({session: historySession, role: "para_authority", show_summary: true}, {forceRefetch: true}));
-              }
-              break
-            }
-            default:
-              break
-          }
+          // switch (nextPage) {
+          //   case 'parachains/val-group': {
+          //     const isHistoryMode = selectIsHistoryMode(store.getState());
+          //     if (isHistoryMode) {
+          //       // get summary data for the selected address for the last X sessions
+          //       // const selectedAddress = selectAddress(store.getState())
+          //       // const chainName = selectChain(store.getState())
+          //       // const maxSessions = getMaxHistorySessions(chainName);
+          //       // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
+          //       // // get all validators summary for the selected session (useful to get the comparison stats)
+          //       // const historySession = selectSessionHistory(store.getState());
+          //       // store.dispatch(apiSlice.endpoints.getValidators.initiate({session: historySession, role: "para_authority", show_summary: true}, {forceRefetch: true}));
+          //     }
+          //     break
+          //   }
+          //   default:
+          //     break
+          // }
         }
         // subscribe/unsubscribe all subscriptions
         if (action.type === 'layout/modeChanged') {
@@ -218,26 +218,26 @@ const socketMiddleware = (store) => {
               // }
               break
             }
-            case 'parachains/val-group': {
-              if (action.payload === 'History') {
-                // // unsubscribe
-                // dispatchValidator(store, "unsubscribe");
-                // let msg = JSON.stringify({ method: 'unsubscribe_para_authorities_summary', params: [currentSession.toString()] });
-                // store.dispatch(socketActions.messageQueued(msg))
+            // case 'parachains/val-group': {
+            //   if (action.payload === 'History') {
+            //     // // unsubscribe
+            //     // dispatchValidator(store, "unsubscribe");
+            //     // let msg = JSON.stringify({ method: 'unsubscribe_para_authorities_summary', params: [currentSession.toString()] });
+            //     // store.dispatch(socketActions.messageQueued(msg))
 
-                // get summary data for the selected address for the last X sessions
-                // const selectedAddress = selectAddress(store.getState())
-                // const chainName = selectChain(store.getState())
-                // const maxSessions = getMaxHistorySessions(chainName);
-                // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
+            //     // get summary data for the selected address for the last X sessions
+            //     // const selectedAddress = selectAddress(store.getState())
+            //     // const chainName = selectChain(store.getState())
+            //     // const maxSessions = getMaxHistorySessions(chainName);
+            //     // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
 
-              } else if (action.payload === 'Live') {
-                // dispatchValidator(store, "subscribe");
-                // let msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [currentSession.toString()] });
-                // store.dispatch(socketActions.messageQueued(msg));
-              }
-              break
-            }
+            //   } else if (action.payload === 'Live') {
+            //     // dispatchValidator(store, "subscribe");
+            //     // let msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [currentSession.toString()] });
+            //     // store.dispatch(socketActions.messageQueued(msg));
+            //   }
+            //   break
+            // }
             default:
               break
           }

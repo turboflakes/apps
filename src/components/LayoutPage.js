@@ -232,7 +232,7 @@ export const LayoutPage = ({api}) => {
 
             {/* search validator */}
             <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}>
-              {selectedPage === 'parachains/val-group' ? (!!selectedAddress ? <SearchSmall /> : null) : null}
+              {selectedPage.startsWith('validator') ? (!!selectedAddress ? <SearchSmall /> : null) : null}
             </Box>
 
             {/* mode switch live/history */}
@@ -319,18 +319,10 @@ export const LayoutPage = ({api}) => {
               <ListItemButton selected={selectedPage === 'parachains/val-groups'}
                 onClick={() => handlePageSelection('parachains/val-groups')}>
                 <ListItemIcon>
-                  <FontAwesomeIcon icon={faLink} />
+                  <HubIcon />
                 </ListItemIcon>
                 <ListItemText primary="Val. Groups" 
                   sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-              </ListItemButton>
-              <ListItemButton selected={selectedPage === 'parachains/val-group'} 
-                onClick={() => handlePageSelection('parachains/val-group')}>
-                <ListItemIcon>
-                  <HubIcon />
-                </ListItemIcon>
-                <ListItemText primary="Val. Group" 
-                sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
               
               <Divider sx={{ my: 1 }} />
