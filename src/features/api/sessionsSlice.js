@@ -183,7 +183,7 @@ export const selectTotalPointsBySessions = (state, sessionIds = []) => sessionId
   }
 }).filter(v => !isUndefined(v))
 
-export const selectAuthoredBlocksBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+export const  selectAuthoredBlocksBySessions = (state, sessionIds = []) => sessionIds.map(id => {
   const session = selectSessionByIndex(state, id);
   if (!isUndefined(session)) {
     if (session.stats) {

@@ -13,8 +13,29 @@ import {
 } from '../features/api/sessionsSlice';
 import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
+import gradeAplus from '../assets/grades/grade_a_plus.webp';
+import gradeA from '../assets/grades/grade_a.webp';
+import gradeBplus from '../assets/grades/grade_b_plus.webp';
+import gradeB from '../assets/grades/grade_b.webp';
+import gradeCplus from '../assets/grades/grade_c_plus.webp';
+import gradeC from '../assets/grades/grade_c.webp';
+import gradeDplus from '../assets/grades/grade_d_plus.webp';
+import gradeD from '../assets/grades/grade_d.webp';
+import gradeF from '../assets/grades/grade_f.webp';
 
-export default function GradeHistoryIcon({address, maxSessions}) {
+const GRADES = {
+  "A+" : gradeAplus,
+  "A" : gradeA,
+  "B+" : gradeBplus,
+  "B" : gradeB,
+  "C+" : gradeCplus,
+  "C" : gradeC,
+  "D+" : gradeDplus,
+  "D" : gradeD,
+  "F" : gradeF,
+}
+
+export default function GradeHistoryIcon({address, maxSessions, size = 96}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
@@ -39,15 +60,11 @@ export default function GradeHistoryIcon({address, maxSessions}) {
   }
   
   return (
-    <Box sx={{ ml: 2, width: 64, height: 64, borderRadius: '50%', 
-              bgcolor: theme.palette.grade[gradeValue], 
-              display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
+    <Box>
       <Tooltip title={`Para-Authority grade for the last ${maxSessions} sessions.`} arrow>
-        <Box sx={{ width: 54, height: 54, borderRadius: '50%', 
-              bgcolor: "#fff", 
-              display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
-          <Typography variant="h5">{gradeValue}</Typography>
-        </Box>
+        <img src={GRADES[gradeValue]} style={{ 
+            width: size,
+            height: size }} alt={`Grade: ${gradeValue}`}/>
       </Tooltip>
     </Box>
   );

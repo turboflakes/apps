@@ -58,7 +58,6 @@ export default function SessionPieChart({sessionIndex}) {
         width: '100%',
         height: 96,
         borderRadius: 3,
-        bgcolor: theme.palette.neutrals[200],
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       }}
       >

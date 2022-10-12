@@ -16,6 +16,7 @@ import ValEraPointsBox from './ValEraPointsBox';
 import ValEraPointsHistoryBox from './ValEraPointsHistoryBox';
 import ValAuthoredBlocksHistoryBox from './ValAuthoredBlocksHistoryBox';
 import ValInclusionBox from './ValInclusionBox';
+import ValDisputesHistoryBox from './ValDisputesHistoryBox';
 import ValStateBox from './ValStateBox';
 import ValParaInclusionBox from './ValParaInclusionBox';
 import {
@@ -117,9 +118,16 @@ export default function ValHeaderBox({address, sessionIndex}) {
                   <ValBackingPointsBox address={address} /> : 
                   <ValBackingPointsHistoryBox address={address} maxSessions={maxSessions} /> }
               </Grid>
-              {!isLiveMode ? <Grid item xs={12} md={3}>
-                <ValParaInclusionBox address={address} maxSessions={maxSessions} />
-              </Grid> : null}
+              <Grid item xs={12} md={3}>
+                {isLiveMode ? 
+                  null :
+                  <ValParaInclusionBox address={address} maxSessions={maxSessions} /> }
+              </Grid>
+              <Grid item xs={12} md={3}>
+                {isLiveMode ? 
+                  null :
+                  <ValDisputesHistoryBox address={address} maxSessions={maxSessions}/> }
+              </Grid>
               {/* <Grid item xs={12} md={4}>
                 TODO disputes
               </Grid> */}

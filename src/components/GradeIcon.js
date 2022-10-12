@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
-import { useTheme } from '@mui/material/styles';
-import { Typography } from '@mui/material';
+// import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import { 
@@ -10,9 +9,30 @@ import {
  } from '../features/api/validatorsSlice'
 import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
+import gradeAplus from '../assets/grades/grade_a_plus.webp';
+import gradeA from '../assets/grades/grade_a.webp';
+import gradeBplus from '../assets/grades/grade_b_plus.webp';
+import gradeB from '../assets/grades/grade_b.webp';
+import gradeCplus from '../assets/grades/grade_c_plus.webp';
+import gradeC from '../assets/grades/grade_c.webp';
+import gradeDplus from '../assets/grades/grade_d_plus.webp';
+import gradeD from '../assets/grades/grade_d.webp';
+import gradeF from '../assets/grades/grade_f.webp';
 
-export default function GradeIcon({sessionIndex, address}) {
-  const theme = useTheme();
+const GRADES = {
+  "A+" : gradeAplus,
+  "A" : gradeA,
+  "B+" : gradeBplus,
+  "B" : gradeB,
+  "C+" : gradeCplus,
+  "C" : gradeC,
+  "D+" : gradeDplus,
+  "D" : gradeD,
+  "F" : gradeF,
+}
+
+export default function GradeIcon({sessionIndex, address, size = 96}) {
+  // const theme = useTheme();
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, address))
 
   if (isUndefined(validator)) {
@@ -26,15 +46,11 @@ export default function GradeIcon({sessionIndex, address}) {
   }
 
   return (
-      <Box sx={{ ml: 2, width: 64, height: 64, borderRadius: '50%', 
-                bgcolor: theme.palette.grade[gradeValue], 
-                display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
-        <Tooltip title={`Para-Authority grade for the session ${sessionIndex}.`} arrow>
-          <Box sx={{ width: 54, height: 54, borderRadius: '50%', 
-                bgcolor: "#fff", 
-                display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
-            <Typography variant="h5">{gradeValue}</Typography>
-          </Box>
+      <Box>
+        <Tooltip title={`Para-Authority grade performance for the session ${sessionIndex}.`} arrow>
+          <img src={GRADES[gradeValue]} style={{ 
+              width: size,
+              height: size }} alt={`Grade: ${gradeValue}`}/>
         </Tooltip>
       </Box>
   );

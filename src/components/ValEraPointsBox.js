@@ -49,7 +49,7 @@ export default function ValEraPointsBox({address}) {
           {!isUndefined(total) ? total : '-'}
         </Typography>
         <Typography variant="subtitle2" color="textSecondary" sx={{ whiteSpace: 'nowrap' }}>
-          {`Earned at era ${session.eix.format()}`}
+          {`Since era ${session.eix.format()} started`}
         </Typography>
       </Box>
     </Paper>

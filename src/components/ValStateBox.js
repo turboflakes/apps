@@ -18,8 +18,8 @@ const ORDER = ['1st', '2nd', '3rd', '4th', '5th', '6th'];
 export default function ValStateBox({address, sessionIndex, dark}) {
   const theme = useTheme();
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, address))
-  const currentSession = useSelector(selectSessionCurrent);
-  const session = useSelector(state => selectSessionByIndex(state, currentSession))
+  // const currentSession = useSelector(selectSessionCurrent);
+  const session = useSelector(state => selectSessionByIndex(state, sessionIndex))
   
   if (isUndefined(validator) || isUndefined(session)) {
     return null

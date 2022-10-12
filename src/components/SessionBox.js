@@ -43,7 +43,7 @@ export default function SessionBox({sessionIndex, dark}) {
         height: 96,
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-        bgcolor: dark ? theme.palette.background.secondary : theme.palette.neutrals[100]
+        bgcolor: dark ? theme.palette.background.secondary : 'default'
       }}
       >
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>

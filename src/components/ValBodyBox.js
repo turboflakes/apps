@@ -34,9 +34,9 @@ export default function ValBodyBox({address, sessionIndex}) {
         width: '100%',
       }}>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={isLiveMode ? 6 : 7}>
         {isLiveMode ? 
-          <Box sx={{display: 'flex', alignItems: 'center'}}>
+          <Box sx={{ p: 2, display: 'flex', alignItems: 'center'}}>
             <Typography variant="h3">Live Performance</Typography>
             <span style={{ width: '16px', height: '16px', marginTop: '8px', marginLeft: '16px', borderRadius: '50%', 
                 animation: "pulse 1s infinite ease-in-out alternate",
@@ -44,7 +44,7 @@ export default function ValBodyBox({address, sessionIndex}) {
                 display: "inline-block" }}></span>
           </Box> 
           : 
-          <Box>
+          <Box sx={{  p: 2 }}>
             <Typography variant="h3">Performance History</Typography>
             <Typography variant="subtitle" color="secondary">Previous {maxSessions} sessions ({maxEras} eras).</Typography>
           </Box>
@@ -59,10 +59,9 @@ export default function ValBodyBox({address, sessionIndex}) {
             <SessionPieChart sessionIndex={sessionIndex} /> 
           </Grid> : null}
 
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={isLiveMode ? 4 : 3}>
           <SessionBox sessionIndex={sessionIndex} address={address} dark={!isLiveMode} />
         </Grid>
-
         
         {!isLiveMode ?
           <Grid item xs={12}>

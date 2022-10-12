@@ -64,7 +64,7 @@ export default function ValAddress({sessionIndex, address, showGrade}) {
           <Box sx={{ width: 80, height: 80, borderRadius: '50%', 
                     bgcolor: theme.palette.grade[gradeValue], 
                     display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
-            <Tooltip title={`Validator grade for the currennt session: ${gradeValue}`} arrow>
+            <Tooltip title={`Validator grade performance for the currennt session: ${gradeValue}`} arrow>
               <Box sx={{ width: 72, height: 72, borderRadius: '50%', 
                     bgcolor: "#fff", 
                     display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>

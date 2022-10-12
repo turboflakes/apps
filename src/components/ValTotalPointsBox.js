@@ -25,8 +25,7 @@ export default function ValTotalPointsBox({address}) {
     return null
   }
 
-  const total = validator.auth.ep - validator.auth.sp;
-  // const description = validator.auth.ep > 0 ? `Total era points ${validator.auth.ep.format()}` : '';
+  const total = validator.auth.ep - validator.auth.sp > 0 ? validator.auth.ep - validator.auth.sp : 0;
   
   return (
     <Paper sx={{
@@ -46,7 +45,7 @@ export default function ValTotalPointsBox({address}) {
           {!isUndefined(total) ? total : '-'}
         </Typography>
         <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
-          {`Earned at session ${currentSession.format()}`}
+          {`Since session ${currentSession.format()} started`}
         </Typography>
       </Box>
     </Paper>

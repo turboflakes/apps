@@ -84,11 +84,8 @@ export default function ValGroupBox({address, sessionIndex}) {
         // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box>
-            <Typography variant="h4" paragraph>Val. Group {groupId}</Typography>
-            {/* <Typography variant="subtitle2">-</Typography> */}
-          </Box>
+        <Box sx={{ p: 2 }}>
+          <Typography variant="h4" >Val. Group {groupId}</Typography>
         </Box>
         <Grid container spacing={2}>
           <Grid item xs={2}>

@@ -76,14 +76,16 @@ export default function ValTotalPointsHistoryBox({address, maxSessions}) {
     return null
   }
 
-  const totalPoints = Math.round(filtered.map(v => ((v.auth.ep - v.auth.sp) > 0 ? v.auth.ep - v.auth.sp : 0)).reduce((a, b) => a + b, 0) / filtered.length);
-
+  const totalPoints = filtered.map(v => ((v.auth.ep - v.auth.sp) > 0 ? v.auth.ep - v.auth.sp : 0)).reduce((a, b) => a + b, 0);
+  const avgPoints = Math.round(totalPoints / (filtered.length / 6));
+  
   // TODO get the total authorities per session from backend
-  const avg = !!allTotalPoints.length ? Math.round(allTotalPoints.reduce((a, b) => a + b, 0) / (allTotalPoints.length * 1000)) : 0;
-  const diff = !!avg ? Math.round(((totalPoints * 100 / avg) - 100) * 10) / 10 : 0;
+  const avgAll = !!allTotalPoints.length ? (allTotalPoints.reduce((a, b) => a + b, 0) / (allTotalPoints.length / 6)) / 1000 : 0;
+  
+  const diff = !!avgAll ? Math.round(((avgPoints * 100 / avgAll) - 100) * 10) / 10 : 0;
   
   const data = [
-    {name: nameDisplay(valProfile._identity, 12), value: totalPoints, valueQty: Math.round(filtered.length / 6), avg, avgQty: Math.round(allTotalPoints.length / 6)},
+    {name: nameDisplay(valProfile._identity, 12), value: avgPoints, valueQty: Math.round(filtered.length / 6), avg: avgAll, avgQty: Math.round(allTotalPoints.length / 6)},
   ];
 
   return (
@@ -102,7 +104,7 @@ export default function ValTotalPointsHistoryBox({address, maxSessions}) {
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left', maxWidth: '128px'}}>
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Era Points (avg.)</Typography>
         <Typography variant="h5">
-          {!isUndefined(totalPoints) ? totalPoints : '-'}
+          {!isUndefined(avgPoints) ? avgPoints : '-'}
         </Typography>
         <Tooltip title={`${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of Era Points collected by all Authorities of the last ${Math.round(allTotalPoints.length / 6)} eras.`} arrow>
           <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 

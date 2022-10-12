@@ -93,18 +93,18 @@ export default function ValAddressProfile({address, maxSessions, showGrade}) {
               </Box>
             </Box>
           </Box>
-          {showGrade ? (
-            isLiveMode ? 
-              <GradeIcon sessionIndex={sessionIndex} address={address} /> :
-              <GradeHistoryIcon address={address} maxSessions={maxSessions} />
-            )
-           : null}
-          <Box sx={{ ml: 2 }}>
+          {/* <Box sx={{ ml: 2 }}>
             <img src={tvpValid} style={{ 
                 width: 64,
                 height: 64 }} alt={"tvp"}/>
-          </Box>
+          </Box> */}
         </Box>
+        {showGrade ? (
+            isLiveMode ? 
+              <GradeIcon sessionIndex={sessionIndex} address={address} size={96} /> :
+              <GradeHistoryIcon address={address} maxSessions={maxSessions} size={96} />
+            )
+           : null}
       </Box>
     </Paper>
   );

@@ -34,7 +34,7 @@ const networkSettings = {
     url: "https://kusama.network",
     maxValidators: 24,
     // maxHistoryEras: 16,
-    maxHistoryEras: 24,
+    maxHistoryEras: 32,
     coreAssignmentsTarget: 60,
     poolIds: [process.env.REACT_APP_KUSAMA_POOL_ID_1, process.env.REACT_APP_KUSAMA_POOL_ID_2],
     chains: prodParasKusama

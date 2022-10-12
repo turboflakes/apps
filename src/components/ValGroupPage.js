@@ -80,14 +80,14 @@ export const ValGroupPage = () => {
         <Grid item xs={12}>
           {!!selectedAddress ? 
           <Box>
-            <Divider sx={{ 
+            {/* <Divider sx={{ 
             opacity: 0.25,
             height: '1px',
             borderTop: '0px solid rgba(0, 0, 0, 0.08)',
             borderBottom: 'none',
             backgroundColor: 'transparent',
             backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-            }} />
+            }} /> */}
             <ValGroupBox address={selectedAddress} sessionIndex={sessionIndex} />
           </Box>
              : 

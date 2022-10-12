@@ -23,7 +23,8 @@ let theme = createTheme({
     },
     secondary: {
       // dark automatic calculated
-      main: "#343434",
+      // main: "#343434",
+      main: "#4D4D4D",
       contrastText: '#FFFFFF',
     },
     semantics: {
@@ -33,16 +34,28 @@ let theme = createTheme({
       blue: "#86D3E7",
       purple: "#8B7AB8",
     },
+    // grade: {
+    //   "A+": "#6DD400", // Emerald
+    //   "A": "#44D7B6", // Amazonite
+    //   "B+": "#0091FF", // Sapphire
+    //   "B": "#32C5FF", // Apatite
+    //   "C+": "#C8C9CC", // Gray
+    //   "C": "#EEEEEE", // Light Gray
+    //   "D+": "#F7B500", // Citrine
+    //   "D": "#FA6400", // Amber
+    //   "F": "#E02020", // Ruby
+    //   "-": "#FFF", // White
+    // },
     grade: {
-      "A+": "#6DD400", // Emerald
-      "A": "#44D7B6", // Amazonite
-      "B+": "#0091FF", // Sapphire
-      "B": "#32C5FF", // Apatite
-      "C+": "#C8C9CC", // Gray
+      "A+": "#78C143", // Emerald
+      "A": "#5FC3AD", // Amazonite
+      "B+": "#4DC1EF", // Sapphire
+      "B": "#4787C7", // Apatite
+      "C+": "#C8C9CB", // Gray
       "C": "#EEEEEE", // Light Gray
-      "D+": "#F7B500", // Citrine
-      "D": "#FA6400", // Amber
-      "F": "#E02020", // Ruby
+      "D+": "#F6B519", // Citrine
+      "D": "#F26522", // Amber
+      "F": "#DF2326", // Ruby
       "-": "#FFF", // White
     },
     neutrals: {
@@ -102,32 +115,37 @@ let theme = createTheme({
   typography: {
     useNextVariants: true,
     h1: {
-      fontFamily: "'Gilroy-Heavy', 'Helvetica Neue', 'Arial', sans-serif",
+      fontFamily: "'Gilroy', 'Helvetica Neue', 'Arial', sans-serif",
       fontSize: "6rem",
+      fontWeight: 800,
       '@media screen and (max-width: 900px)': {
         fontSize: "3.125rem",
       },
     },
     h2: {
-      fontFamily: "'Gilroy-Heavy', 'Helvetica Neue', 'Arial', sans-serif",
+      fontFamily: "'Gilroy', 'Helvetica Neue', 'Arial', sans-serif",
       fontSize: "3.75rem",
+      fontWeight: 800,
       '@media screen and (max-width: 900px)': {
 
       }
     },
     h3: {
-      fontFamily: "'Gilroy-Heavy', 'Helvetica Neue', 'Arial', sans-serif",
+      fontFamily: "'Gilroy', 'Helvetica Neue', 'Arial', sans-serif",
       fontSize: "3rem",
+      fontWeight: 800,
       '@media screen and (max-width: 900px)': {
         fontSize: "2.5rem",
       }
     },
     h4: {
-      fontFamily: "'Gilroy-Heavy', 'Helvetica Neue', 'Arial', sans-serif",
+      fontFamily: "'Gilroy', 'Helvetica Neue', 'Arial', sans-serif",
+      fontWeight: 800,
       fontSize: "2.125rem",
     },
     h5: {
-      fontFamily: "'Gilroy-Heavy', 'Helvetica Neue', 'Arial', sans-serif",
+      fontFamily: "'Gilroy', 'Helvetica Neue', 'Arial', sans-serif",
+      fontWeight: 800,
       fontSize: "1.5rem",
       '@media screen and (max-width: 900px)': {
         fontSize: "1.125rem",
