@@ -111,7 +111,7 @@ export default function ValMvrBox({address}) {
             left: 0,
             bottom: 4,
           }}>
-          <Bar dataKey="value" barSize={12} fill={theme.palette.text.primary[400]} />
+          <Bar dataKey="value" barSize={12} fill={theme.palette.text.primary} />
           <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
           <ChartTooltip 
                 cursor={{fill: 'transparent'}}

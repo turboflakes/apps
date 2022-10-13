@@ -5,18 +5,15 @@ import isUndefined from 'lodash/isUndefined'
 import isNaN from 'lodash/isNaN'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell } from 'recharts';
 import { Typography } from '@mui/material';
 import { 
   useGetBlockQuery,
   selectAll,
  } from '../features/api/blocksSlice'
-
 function createData(name, value) {
   return { name, value };
 }
-const COLORS = ['#343434', '#C8C9CC'];
 
 export default function SessionPerformancePieChart() {
   const theme = useTheme();
@@ -53,7 +50,6 @@ export default function SessionPerformancePieChart() {
         width: '100%',
         height: 96,
         borderRadius: 3,
-        bgcolor: theme.palette.neutrals[200],
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       }}
       >
@@ -81,7 +77,7 @@ export default function SessionPerformancePieChart() {
             >
               {pieData.map((entry, index) => (
                 <Cell key={`cell-${index}`} strokeWidth={0} stroke={theme.palette.neutrals[300]}
-                  fill={index === 0 ? theme.palette.background.secondary : theme.palette.neutrals[100] } />
+                  fill={index === 0 ? theme.palette.text.primary : theme.palette.grey[200] } />
               ))}
             </Pie>
             {/* <text x="50%" y="50%" fill="#343434" style={{ fontSize: '1rem' }} textAnchor={'middle'} dominantBaseline="central">

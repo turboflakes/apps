@@ -90,7 +90,7 @@ export default function SessionPieChart({sessionIndex}) {
               {pieData.map((entry, index) => (
                 // <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 <Cell key={`cell-${index}`} strokeWidth={0} stroke={theme.palette.neutrals[300]}
-                  fill={index === 0 ? theme.palette.background.secondary : theme.palette.neutrals[100] } />
+                  fill={index === 0 ? theme.palette.text.primary : theme.palette.grey[200] } />
               ))}
             </Pie>
             {/* <text x="50%" y="50%" fill="#343434" style={{ fontSize: '1rem' }} 
