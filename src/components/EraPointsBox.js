@@ -11,24 +11,23 @@ import {
 import {
   selectSessionByIndex,
   selectSessionCurrent,
+  selectEraPointsBySession
 } from '../features/api/sessionsSlice';
 
-export default function ValEraPointsBox({address}) {
+export default function EraPointsBox() {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
+  // const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
   const session = useSelector(state => selectSessionByIndex(state, currentSession))
+  const eraPoints = useSelector(state => selectEraPointsBySession(state, currentSession))
 
-  if (isUndefined(validator) || isUndefined(session)) {
+  if (isUndefined(session)) {
     return null
   }
 
-  if (!validator.is_auth) {
-    return null
-  }
-
-  const total = validator.auth.ep;
-  
+  console.log("__eraPoints", eraPoints);
+  // const total = validator.auth.ep;
+  const total = 0 
   return (
     <Paper sx={{
         p: 2,

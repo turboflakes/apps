@@ -73,7 +73,7 @@ const valGroupsSlice = createSlice({
           _validity_ev: group.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0),
           _validity_iv: group.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0),
           _validity_mv: group.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0),
-          _validity_votes: group.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv).reduce((a, b) => a + b, 0) / group.length,
+          _validity_votes: group.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv).reduce((a, b) => a + b, 0),
           _backing_points: group.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0).reduce((a, b) => a + b, 0)  / group.length
         }))
         adapter.upsertMany(state, groups)

@@ -18,7 +18,6 @@ import {
   selectParachainBackingPointsBySessionAndParaId
  } from '../features/api/parachainsSlice'
 import { isChainSupported, getChainName, getChainLogo } from '../constants'
-import { calculateMvr } from '../util/mvr'
 
 function createBackingPieData(e, i, m, n) {
   return { e, i, m, n };

@@ -26,7 +26,6 @@ export default function ValGroupPieCharts({sessionIndex, groupId}) {
 
   let filtered = validators.filter(v => v.address !== selectedAddress)
   filtered.splice(0,0,validators.find(v => v.address === selectedAddress));
-
   const data = filtered.map(v => createBackingPieData(
     v.para_summary.ev, 
     v.para_summary.iv, 
@@ -49,9 +48,7 @@ export default function ValGroupPieCharts({sessionIndex, groupId}) {
         </Box>
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-around'}}>
-        {data.map((o, i) => 
-          (<BackingPieChart key={i} data={o} />)
-        )}
+        {data.map((o, i) => (<BackingPieChart key={i} data={o} showIdentity />))}
       </Box>
     </Paper>
   );

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { useTheme } from '@mui/material/styles';
+// import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -18,7 +18,7 @@ import {
 
 
 export default function ParachainsOverviewGrid({sessionIndex}) {
-	const theme = useTheme();
+	// const theme = useTheme();
   const [sortBy, setSortBy] = React.useState('');
   const {isSuccess} = useGetParachainsQuery({session: sessionIndex}, {refetchOnMountOrArgChange: true});
   const paraIds = useSelector(state => selectParachainIdsBySessionSortedBy(state, sessionIndex, sortBy));

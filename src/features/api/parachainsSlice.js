@@ -25,7 +25,10 @@ export const extendedApi = apiSlice.injectEndpoints({
           // `onSuccess` subscribe for updates
           const session = selectSessionByIndex(getState(), params.session)
           if (session.is_current) {
-            const msg = JSON.stringify({ method: 'subscribe_parachains', params: [params.session.toString()] });
+            let msg = JSON.stringify({ method: 'subscribe_parachains', params: [params.session.toString()] });
+            dispatch(socketActions.messageQueued(msg))
+            // NOTE: always unsubscribe previous session
+            msg = JSON.stringify({ method: 'unsubscribe_parachains', params: [(params.session - 1).toString()] });
             dispatch(socketActions.messageQueued(msg))
           }       
         } catch (err) {

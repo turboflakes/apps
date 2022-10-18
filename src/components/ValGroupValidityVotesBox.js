@@ -10,7 +10,8 @@ import {
   useGetValidatorsQuery,
  } from '../features/api/validatorsSlice'
 import {
-  selectValGroupValidityVotesBySessionAndGroupId
+  selectValGroupValidityVotesBySessionAndGroupId,
+  selectValidatorIdsBySessionAndGroupId
 } from '../features/api/valGroupsSlice';
 import {
   selectValidityVotesBySession
@@ -32,7 +33,7 @@ const renderTooltip = (props, theme) => {
          }}
       >
         <Typography component="div" variant="caption" color="inherit" paragraph>
-        <b>Validity Votes</b>
+        <b>Validity Statements</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
           <span style={{ marginRight: '8px', color: theme.palette.text.primary }}>❚</span>Val. Group {data.groupId}: <b>{data.value}</b>
@@ -51,13 +52,15 @@ export default function ValGroupValidityVotesBox({groupId, sessionIndex}) {
   const theme = useTheme();
   // fetch history summary for all validators in the selected history session
   const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
-  const validityVotes = useSelector(state => selectValGroupValidityVotesBySessionAndGroupId(state, sessionIndex,  groupId));
+  const _validityVotes = useSelector(state => selectValGroupValidityVotesBySessionAndGroupId(state, sessionIndex,  groupId));
+  const validatorIds = useSelector(state => selectValidatorIdsBySessionAndGroupId(state, sessionIndex,  groupId));
   const allValidityVotes = useSelector(state => selectValidityVotesBySession(state, sessionIndex));
   
-  if (!isSuccess) {
+  if (!isSuccess && validatorIds.length > 0) {
     return null
   }
   
+  const validityVotes = _validityVotes / validatorIds.length;
   const avg = Math.round((!!allValidityVotes.length ? allValidityVotes.reduce((a, b) => a + b, 0) / allValidityVotes.length : 0) * 100) / 100;
   const diff = !!avg ? Math.round(((validityVotes * 100 / avg) - 100) * 10) / 10 : 0;
 
@@ -78,11 +81,11 @@ export default function ValGroupValidityVotesBox({groupId, sessionIndex}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Validity Votes</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Validity Statements (x̅)</Typography>
         <Typography variant="h4">
           {validityVotes}
         </Typography>
-        <Tooltip title={`${Math.abs(diff)}% ${diff !== 0 ? (Math.sign(diff) > 0 ? `more` : `less`) : ''} than the average of validity votes from all Val. Groups in the current session.`} arrow>
+        <Tooltip title={`${Math.abs(diff)}% ${diff !== 0 ? (Math.sign(diff) > 0 ? `more` : `less`) : ''} than the average of validity votes from all Para-Authorities in the current session.`} arrow>
           <Typography variant="subtitle2" sx={{
             lineHeight: 0.875,
             whiteSpace: 'nowrap', color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red

@@ -64,7 +64,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-export default function BackingPieChart({data, showLegend, size}) {
+export default function BackingPieChart({data, showLegend, showIdentity, size}) {
   const theme = useTheme();
   const total = data.e + data.i + data.m;
   const pieData = [
@@ -113,9 +113,7 @@ export default function BackingPieChart({data, showLegend, size}) {
                 {showLegend ? <Legend verticalAlign="top" content={renderLegend} height={84} /> : null}
             </PieChart>
           </ResponsiveContainer>
-          {/* {showLegend ? <Typography sx={{ mt: 2}} variant="caption">{nameDisplay(data.n, 16)}</Typography> : null} */}
+          {showIdentity ? <Typography sx={{ mt: 2}} variant="caption">{nameDisplay(data.n, 16)}</Typography> : null}
     </Box>
   );
 }
-
-// index % COLORS.length

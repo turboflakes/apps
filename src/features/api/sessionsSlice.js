@@ -45,11 +45,13 @@ export const extendedApi = apiSlice.injectEndpoints({
       providesTags: (result, error, arg) => [{ type: 'Sessions', id: arg }],
       async onQueryStarted(id, { dispatch, queryFulfilled }) {
         try {
-          await queryFulfilled
+          const { data } = await queryFulfilled
           // `onSuccess` subscribe for updates
           if (id === "current") {
             const msg = JSON.stringify({ method: "subscribe_session", params: ["new"] });
             dispatch(socketActions.messageQueued(msg))
+            // Fetch previous sessions stats for the current era
+            dispatch(extendedApi.endpoints.getSessions.initiate({number_last_sessions: data.esix - 1, show_stats: true}))
           }
         } catch (err) {
           // `onError` side-effect
@@ -262,6 +264,21 @@ export const  selectAuthoredBlocksBySessions = (state, sessionIds = []) => sessi
     }
   }
 }).filter(v => !isUndefined(v))
+
+// Era
+export const selectEraPointsBySession = (state, sessionId) => {
+  const session = selectSessionByIndex(state, sessionId)
+  if (!isUndefined(session)) {
+    console.log("__session", session.esix);
+    let sessionIds = []
+    for (let i = 1; i < session.esix; i++) {
+      sessionIds.push(session.six - i);
+    }
+    let points = selectTotalPointsBySessions(state, sessionIds).reduce((a, b) => a + b, 0);
+    console.log("__points", points);
+  }
+  return 0
+}
 
 export const { sessionHistoryChanged } = sessionsSlice.actions;
 

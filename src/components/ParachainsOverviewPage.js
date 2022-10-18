@@ -7,7 +7,9 @@ import SessionBox from './SessionBox';
 import SessionPerformancePieChart from './SessionPerformancePieChart';
 import SessionPerformanceTimeline from './SessionPerformanceTimeline';
 import ParachainsOverviewTabs from './ParachainsOverviewTabs';
+import EraPointsBox from './EraPointsBox';
 import GradesBox from './GradesBox';
+
 import { 
   selectSessionHistory,
   selectSessionCurrent,
@@ -47,6 +49,9 @@ export const ParachainsOverviewPage = ({tab}) => {
         </Grid>
         <Grid item xs={12} md={4}>
           <SessionBox sessionIndex={sessionIndex} />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <EraPointsBox sessionIndex={sessionIndex} />
         </Grid>
         <Grid item xs={12}>
           {!!sessionIndex ? <ParachainsOverviewTabs sessionIndex={sessionIndex} tab={tab} /> : null}
