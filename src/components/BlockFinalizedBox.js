@@ -25,7 +25,7 @@ export default function BlockFinalizedBox() {
   }
 
   const block = blocks[blocks.length-1]
-  const diff = block.bix - session.sbix
+  const diff = block.finalized - session.sbix
 
   return (
     <Paper
@@ -43,7 +43,7 @@ export default function BlockFinalizedBox() {
       <Box sx={{ width: '50%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
           <Typography variant="caption">Finalized block</Typography>
-          <Typography variant="h5">{isSuccess ? `# ${block.bix.format()}` : '-'}</Typography>
+          <Typography variant="h5">{isSuccess ? `# ${block.finalized.format()}` : '-'}</Typography>
           <Typography variant="subtitle2">{isSuccess ? `${diff.format()} blocks since #${session.sbix.format()}` : `-`}</Typography>
         </Box>
       </Box>

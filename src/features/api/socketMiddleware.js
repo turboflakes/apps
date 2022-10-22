@@ -1,6 +1,8 @@
 import isUndefined from 'lodash/isUndefined'
 import { socketActions, selectIsSocketConnected, selectMessagesInQueue } from './socketSlice'
-import { socketBlockReceived } from './blocksSlice'
+import { 
+  socketBlockReceived,
+  socketBlocksReceived } from './blocksSlice'
 import { 
   selectSessionCurrent,
   socketSessionReceived } from './sessionsSlice'
@@ -69,8 +71,12 @@ const initWebsocket = (store) => {
       if (event.data){
         const message = JSON.parse(event.data)
         switch (message.type) {
-          case 'finalized_block': {
+          case 'block': {
             store.dispatch(socketBlockReceived(message.result))
+            break
+          }
+          case 'blocks': {
+            store.dispatch(socketBlocksReceived(message.result))
             break
           }
           case 'session': {

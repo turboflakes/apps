@@ -9,7 +9,8 @@ import { PieChart, Pie, Cell } from 'recharts';
 import { Typography } from '@mui/material';
 import { 
   useGetBlockQuery,
-  selectAll,
+  selectFinalizedBlock,
+  selectPreviousFinalizedBlock
  } from '../features/api/blocksSlice'
 function createData(name, value) {
   return { name, value };
@@ -17,25 +18,20 @@ function createData(name, value) {
 
 export default function SessionPerformancePieChart() {
   const theme = useTheme();
-  const {isSuccess} = useGetBlockQuery("finalized");
-  const blocks = useSelector(selectAll)
+  const {isSuccess} = useGetBlockQuery({blockId: "finalized", show_stats: true});
+  const finalized = useSelector(selectFinalizedBlock)
+  const previousFinalized = useSelector(selectPreviousFinalizedBlock)
   
-  if (!isSuccess) {
+  if (!isSuccess || isUndefined(finalized) || isUndefined(previousFinalized)) {
     return null
   }
 
-  const block = blocks[blocks.length-2]
-  const previousBlock = blocks[blocks.length-3]
-  if (isUndefined(block)) {
-    return null
-  }
-  
   const pieData = [
-    createData('done', Math.round((1 - block._mvr) * 100)),
-    createData('progress', Math.round(block._mvr * 100)),
+    createData('done', Math.round((1 - finalized._mvr) * 100)),
+    createData('progress', Math.round(finalized._mvr * 100)),
   ];
 
-  const trend = !isUndefined(previousBlock) ? (1 - block._mvr) - (1 - previousBlock._mvr) : 0
+  const trend = (1 - finalized._mvr) - (1 - previousFinalized._mvr)
   const trendPer = Math.round((trend) * 10000) / 10000
 
   return (
@@ -55,8 +51,8 @@ export default function SessionPerformancePieChart() {
       >
       <Box sx={{ width: '50%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption">Backing Subsystem performance</Typography>
-          <Typography variant="h5">{!isUndefined(block._mvr) ? `${Math.round((1 - block._mvr) * 100)}%` : '-'}</Typography>
+          <Typography variant="caption">Backing Subsystem Performance</Typography>
+          <Typography variant="h5">{!isUndefined(finalized._mvr) ? `${Math.round((1 - finalized._mvr) * 100)}%` : '-'}</Typography>
           <Typography variant="subtitle2" 
               sx={{color: Math.sign(trendPer) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red}}>
           {!isNaN(trendPer) ? (trendPer !== 0 ? `${trendPer}%` : ``) : ''}

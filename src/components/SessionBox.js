@@ -4,11 +4,11 @@ import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
 import { Typography } from '@mui/material';
 import { 
   useGetBlockQuery,
-  selectAll,
+  selectBestBlock,
+  selectFinalizedBlock
  } from '../features/api/blocksSlice'
 import { 
   useGetSessionByIndexQuery,
@@ -20,18 +20,19 @@ import {
 
 export default function SessionBox({sessionIndex, dark}) {
   const theme = useTheme();
-  const {isSuccess: isBlockSuccess} = useGetBlockQuery("finalized");
+  const {isSuccess: isFinalizedBlockSuccess} = useGetBlockQuery({blockId: "finalized", show_stats: true});
+  const {isSuccess: isBestBlockSuccess} = useGetBlockQuery({blockId: "best"});
   const {isSuccess: isSessionSuccess } = useGetSessionByIndexQuery(sessionIndex);
-  const blocks = useSelector(selectAll)
+  const best = useSelector(selectBestBlock)
+  const finalized = useSelector(selectFinalizedBlock)
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex))
   const isLiveMode = useSelector(selectIsLiveMode)
   
-  if (!isBlockSuccess || !isSessionSuccess || isUndefined(session)) {
+  if (!isFinalizedBlockSuccess || !isBestBlockSuccess || !isSessionSuccess || isUndefined(session)) {
     return null
   }
 
-  const block = blocks[blocks.length-1];
-  const diff = isLiveMode ? block.bix - session.sbix : session.ebix - session.sbix;
+  const diff = isLiveMode ? finalized.block_number - session.sbix : session.ebix - session.sbix;
   
   return (
     <Paper
@@ -59,14 +60,15 @@ export default function SessionBox({sessionIndex, dark}) {
           </Box>
         </Box>
         {isLiveMode ?
-          <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : 'default'}>{isBlockSuccess ? `${diff.format()} finalized blocks since #${session.sbix.format()}` : `-`}</Typography> : 
+          <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : 'default'}>{isFinalizedBlockSuccess ? `${diff.format()} finalized blocks since #${session.sbix.format()}` : `-`}</Typography> : 
           <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : 'default'}>{`${diff.format()} blocks from #${session.sbix.format()} to #${session.ebix.format()}`}</Typography>
         }
       </Box>
       {isLiveMode ? 
         <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'flex-start'}}>
           <Typography variant="caption" align='right' color={dark ? theme.palette.text.secondary : 'default'}>finalized block</Typography>
-          <Typography variant="h5" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{isBlockSuccess ? `# ${block.bix.format()}` : '-'}</Typography>
+          <Typography variant="h5" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{isFinalizedBlockSuccess ? `# ${finalized.block_number.format()}` : '-'}</Typography>
+          <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{isBestBlockSuccess ? `best #${best.block_number.format()}` : '-'}</Typography>
         </Box> : null}
     </Paper>
   );

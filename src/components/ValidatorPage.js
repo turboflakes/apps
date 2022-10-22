@@ -7,7 +7,6 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import SessionPieChart from './SessionPieChart';
 import SessionBox from './SessionBox';
-import BlockFinalizedBox from './BlockFinalizedBox';
 import ValGroupBox from './ValGroupBox';
 import ValAddressProfile from './ValAddressProfile';
 import SearchSmall from './SearchSmall';

@@ -39,7 +39,7 @@ export const ParachainsOverviewPage = ({tab}) => {
 		<Box sx={{ m: 2, minHeight: '100vh', mt: isLiveMode ? '16px' : '112px' }}>
       <Grid container spacing={2}>
         <Grid item xs={6} md={4}>
-          <SessionPerformanceTimeline />
+          <SessionPerformanceTimeline sessionIndex={sessionIndex} />
         </Grid>
         <Grid item xs={12} md={2}>
           <SessionPerformancePieChart />

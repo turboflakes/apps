@@ -62,7 +62,7 @@ export default function BlockBox() {
             <Typography variant="h4" sx={{mr: 2}}>#</Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
               <Typography variant="caption">finalized block</Typography>
-              <Typography variant="h4">{isSuccess ? `${block.bix.format()}` : `# -`}</Typography>
+              <Typography variant="h4">{isSuccess ? `${block.finalized.format()}` : `# -`}</Typography>
             </Box>
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>

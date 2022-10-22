@@ -5,35 +5,36 @@ import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import { PieChart, Pie, Cell, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 
 import { Typography } from '@mui/material';
 import { 
-  useGetBlockQuery,
-  selectAll,
+  useGetBlocksQuery,
+  selectBlocksBySession,
  } from '../features/api/blocksSlice'
 
-export default function SessionPerformanceTimeline() {
+export default function SessionPerformanceTimeline({sessionIndex}) {
   // const theme = useTheme();
-  const {isSuccess} = useGetBlockQuery("finalized");
-  const blocks = useSelector(selectAll)
+  const {isSuccess} = useGetBlocksQuery({session: sessionIndex, show_stats: true});
+  const blocks = useSelector(state => selectBlocksBySession(state, sessionIndex))
   
   if (!isSuccess) {
     return null
   }
-
+  
+  const filtered = blocks.filter(b => !isUndefined(b._mvr))
+  
   // Minimum of 4 blocks to draw a trend
-  if (blocks.length < 4 ) {
+  if (filtered.length < 4 ) {
     return null
   }
   
-  const filtered = blocks.slice(0, blocks.length-1)
-  const timelineData = filtered.map(o => ({
-    block: o.bix.format(),
-    mvr: 1 - o._mvr
+  const lastBlocks = filtered.slice(filtered.length > 128 ? filtered.length - 129 : 0, filtered.length-1)
+  const timelineData = lastBlocks.map(o => ({
+    block: o.block_number.format(),
+    bvr: 1 - o._mvr
   }))
 
-  // console.log("___timelineData", timelineData);
   return (
     <Paper
       sx={{
@@ -52,7 +53,7 @@ export default function SessionPerformanceTimeline() {
       >
       <Box sx={{ p:`16px 24px`, display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption">Backing Subsystem trend from the last {blocks.length} blocks</Typography>
+          <Typography variant="caption">Backing Subsystem trend from the last {lastBlocks.length} blocks</Typography>
         </Box>
       </Box>
         <ResponsiveContainer width="100%" height="100%" sx={{borderRadius: 30}}>
@@ -84,7 +85,7 @@ export default function SessionPerformanceTimeline() {
               tickLine={false}
               axisLine={false} />
             {/* <Tooltip /> */}
-            <Line isAnimationActive={false} type="monotone" dataKey="mvr" 
+            <Line isAnimationActive={false} type="monotone" dataKey="bvr" 
               strokeWidth={2} stroke="#0B1317" fill="#F1F1F0" dot={false} />
           </LineChart>
         </ResponsiveContainer>
