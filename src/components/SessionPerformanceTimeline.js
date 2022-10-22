@@ -13,6 +13,7 @@ import {
   selectBlocksBySession,
  } from '../features/api/blocksSlice'
 
+
 export default function SessionPerformanceTimeline({sessionIndex}) {
   // const theme = useTheme();
   const {isSuccess} = useGetBlocksQuery({session: sessionIndex, show_stats: true});
@@ -29,8 +30,7 @@ export default function SessionPerformanceTimeline({sessionIndex}) {
     return null
   }
   
-  const lastBlocks = filtered.slice(filtered.length > 128 ? filtered.length - 129 : 0, filtered.length-1)
-  const timelineData = lastBlocks.map(o => ({
+  const timelineData = filtered.map(o => ({
     block: o.block_number.format(),
     bvr: 1 - o._mvr
   }))
@@ -53,7 +53,7 @@ export default function SessionPerformanceTimeline({sessionIndex}) {
       >
       <Box sx={{ p:`16px 24px`, display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption">Backing Subsystem trend from the last {lastBlocks.length} blocks</Typography>
+          <Typography variant="caption">Backing Subsystem Trend ({filtered.length} blocks)</Typography>
         </Box>
       </Box>
         <ResponsiveContainer width="100%" height="100%" sx={{borderRadius: 30}}>

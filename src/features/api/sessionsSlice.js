@@ -25,6 +25,9 @@ import {
   selectValidatorsBySessionAndGroupId,
   selectValidatorIdsBySessionAndGroupId,
 } from './valGroupsSlice'
+import { 
+  selectFinalizedBlock 
+} from './blocksSlice'
 import { calculateMvr } from '../../util/mvr'
 
 export const extendedApi = apiSlice.injectEndpoints({
@@ -79,6 +82,7 @@ export const socketSessionsReceived = createAction(
 // Slice
 const adapter = createEntityAdapter({
   selectId: (data) => data.six,
+  sortComparer: (a, b) => a.six > b.six,
 })
 
 const matchSessionReceived = isAnyOf(
@@ -269,13 +273,20 @@ export const  selectAuthoredBlocksBySessions = (state, sessionIds = []) => sessi
 export const selectEraPointsBySession = (state, sessionId) => {
   const session = selectSessionByIndex(state, sessionId)
   if (!isUndefined(session)) {
-    console.log("__session", session.esix);
+    // Calculate previous sessions points
     let sessionIds = []
     for (let i = 1; i < session.esix; i++) {
       sessionIds.push(session.six - i);
     }
-    let points = selectTotalPointsBySessions(state, sessionIds).reduce((a, b) => a + b, 0);
-    console.log("__points", points);
+    let previousSessionsPoints = selectTotalPointsBySessions(state, sessionIds).reduce((a, b) => a + b, 0);
+    // Get current session points from last finalized block
+    const block = selectFinalizedBlock(state)
+    if (!isUndefined(block)) {
+      if (!isUndefined(block.stats)) {
+        return previousSessionsPoints + block.stats.pt
+      }
+    }
+    return previousSessionsPoints
   }
   return 0
 }

@@ -6,32 +6,22 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import {
-  selectValidatorBySessionAndAddress,
-} from '../features/api/validatorsSlice';
+  selectFinalizedBlock,
+} from '../features/api/blocksSlice';
 import {
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
-import {
-  selectValProfileByAddress,
-} from '../features/api/valProfilesSlice';
+import { nameDisplay } from '../util/display'
 
-export default function ValAuthoredBlocksBox({address}) {
+export default function AuthoredBlocksBox() {
   // const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
-  const valProfile = useSelector(state => selectValProfileByAddress(state, address));
-
-  if (isUndefined(validator) || isUndefined(valProfile)) {
-    return null
-  }
-
-  if (!validator.is_auth) {
-    return null
-  }
-
-  const total = validator.auth.ab.length;
-  const description = total > 0 ? `Last # ${validator.auth.ab[total - 1].format()}` : '';
+  const block = useSelector(selectFinalizedBlock);
   
+  if (isUndefined(block) || isUndefined(block.stats)) {
+    return null
+  }
+
   return (
     <Paper sx={{
         p: 2,
@@ -47,10 +37,10 @@ export default function ValAuthoredBlocksBox({address}) {
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Authored Blocks</Typography>
         <Typography variant="h5">
-          {!isUndefined(total) ? total : '-'}
+          {!isUndefined(block.stats.ab) ? block.stats.ab : '-'}
         </Typography>
         <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
-          {description}
+          {`Last #${block.block_number.format()}`}
         </Typography>
       </Box>
     </Paper>

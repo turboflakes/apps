@@ -47,7 +47,6 @@ export default function ValGroupCoreAssignmentBox({groupId, sessionIndex}) {
   const theme = useTheme();
   const selectedChain = useSelector(selectChain);
   const coreAssignments = useSelector(state => selectValGroupCoreAssignmentsBySessionAndGroupId(state, sessionIndex,  groupId));
-  
   const caTarget = getCoreAssignmentsTarget(selectedChain);
   
   const data = [

@@ -11,17 +11,13 @@ import {
 import {
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
-import {
-  selectValProfileByAddress,
-} from '../features/api/valProfilesSlice';
 
-export default function ValAuthoredBlocksBox({address}) {
+export default function ValSessionPointsBox({address}) {
   // const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
-  const valProfile = useSelector(state => selectValProfileByAddress(state, address));
-
-  if (isUndefined(validator) || isUndefined(valProfile)) {
+  
+  if (isUndefined(validator)) {
     return null
   }
 
@@ -29,8 +25,7 @@ export default function ValAuthoredBlocksBox({address}) {
     return null
   }
 
-  const total = validator.auth.ab.length;
-  const description = total > 0 ? `Last # ${validator.auth.ab[total - 1].format()}` : '';
+  const total = validator.auth.ep - validator.auth.sp > 0 ? validator.auth.ep - validator.auth.sp : 0;
   
   return (
     <Paper sx={{
@@ -45,12 +40,12 @@ export default function ValAuthoredBlocksBox({address}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Authored Blocks</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Session Points</Typography>
         <Typography variant="h5">
-          {!isUndefined(total) ? total : '-'}
+          {!isUndefined(total) ? total.format() : '-'}
         </Typography>
         <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
-          {description}
+          {`Since session ${currentSession.format()} started`}
         </Typography>
       </Box>
     </Paper>

@@ -11,7 +11,7 @@ import ValMvrHistoryBox from './ValMvrHistoryBox';
 import ValBackingPointsBox from './ValBackingPointsBox';
 import ValBackingPointsHistoryBox from './ValBackingPointsHistoryBox';
 import ValAuthoredBlocksBox from './ValAuthoredBlocksBox';
-import ValTotalPointsBox from './ValTotalPointsBox';
+import ValSessionPointsBox from './ValSessionPointsBox';
 import ValEraPointsBox from './ValEraPointsBox';
 import ValEraPointsHistoryBox from './ValEraPointsHistoryBox';
 import ValAuthoredBlocksHistoryBox from './ValAuthoredBlocksHistoryBox';
@@ -92,7 +92,7 @@ export default function ValHeaderBox({address, sessionIndex}) {
               </Grid>
               <Grid item xs={12} md={isLiveMode ? 3 : 3}>
                   {isLiveMode ? 
-                    <ValTotalPointsBox address={address} /> :
+                    <ValSessionPointsBox address={address} /> :
                     <ValEraPointsHistoryBox address={address} maxSessions={maxHistorySessions} /> }
               </Grid>
               <Grid item xs={12} md={3}>

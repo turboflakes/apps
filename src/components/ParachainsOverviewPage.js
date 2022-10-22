@@ -8,6 +8,9 @@ import SessionPerformancePieChart from './SessionPerformancePieChart';
 import SessionPerformanceTimeline from './SessionPerformanceTimeline';
 import ParachainsOverviewTabs from './ParachainsOverviewTabs';
 import EraPointsBox from './EraPointsBox';
+import SessionPointsBox from './SessionPointsBox';
+import AuthoredBlocksBox from './AuthoredBlocksBox';
+import BackingPointsBox from './BackingPointsBox';
 import GradesBox from './GradesBox';
 
 import { 
@@ -51,7 +54,19 @@ export const ParachainsOverviewPage = ({tab}) => {
           <SessionBox sessionIndex={sessionIndex} />
         </Grid>
         <Grid item xs={12} md={4}>
-          <EraPointsBox sessionIndex={sessionIndex} />
+          
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <AuthoredBlocksBox />
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <BackingPointsBox />
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <SessionPointsBox />
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <EraPointsBox />
         </Grid>
         <Grid item xs={12}>
           {!!sessionIndex ? <ParachainsOverviewTabs sessionIndex={sessionIndex} tab={tab} /> : null}

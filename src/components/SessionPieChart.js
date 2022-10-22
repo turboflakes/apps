@@ -117,7 +117,7 @@ export default function SessionPieChart({sessionIndex}) {
             dataKey="value" 
             cx="50%" 
             cy="50%" 
-            // innerRadius={70} 
+            innerRadius={2} 
             outerRadius={16}
             startAngle={90}
             endAngle={-360}

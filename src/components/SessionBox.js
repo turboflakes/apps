@@ -60,7 +60,7 @@ export default function SessionBox({sessionIndex, dark}) {
           </Box>
         </Box>
         {isLiveMode ?
-          <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : 'default'}>{isFinalizedBlockSuccess ? `${diff.format()} finalized blocks since #${session.sbix.format()}` : `-`}</Typography> : 
+          <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : 'default'}>{isFinalizedBlockSuccess ? `${diff.format()} finalized blocks since session first block #${session.sbix.format()}` : `-`}</Typography> : 
           <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : 'default'}>{`${diff.format()} blocks from #${session.sbix.format()} to #${session.ebix.format()}`}</Typography>
         }
       </Box>

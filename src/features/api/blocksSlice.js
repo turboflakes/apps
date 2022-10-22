@@ -12,7 +12,6 @@ import { socketActions } from './socketSlice'
 import { selectSessionByIndex } from './sessionsSlice'
 import { calculateMvr } from '../../util/mvr'
 
-
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Blocks'],
   endpoints: (builder) => ({
@@ -29,12 +28,17 @@ export const extendedApi = apiSlice.injectEndpoints({
         params: { show_stats }
       }),
       providesTags: (result, error, arg) => [{ type: 'Blocks', id: arg }],
-      async onQueryStarted(params, { dispatch, queryFulfilled }) {
+      async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
         try {
-          await queryFulfilled
+          const { data } = await queryFulfilled
           // `onSuccess` subscribe for updates
-          if (params.blockId === "finalized" || params.blockId === "best") {
-            const msg = JSON.stringify({ method: "subscribe_block", params: [params.blockId.toString()] });
+          if (params.blockId === "finalized") {
+            // subscribe to finalized block and from previous session at the same index
+            let msg = JSON.stringify({ method: "subscribe_block", params: ["finalized", "1"] });
+            dispatch(socketActions.messageQueued(msg))
+          }
+          else if (params.blockId === "best") {
+            const msg = JSON.stringify({ method: "subscribe_block", params: ["best"] });
             dispatch(socketActions.messageQueued(msg))
           }
         } catch (err) {
@@ -75,10 +79,6 @@ export const matchBlocksReceived = isAnyOf(
   socketBlocksReceived,
   extendedApi.endpoints.getBlocks.matchFulfilled
 )
-
-function createValidityData(e, i, m) {
-  return { e, i, m };
-}
 
 const blocksSlice = createSlice({
   name: 'blocks',
@@ -129,6 +129,7 @@ export const selectBestBlock = (state) => {
     }
   }
 };
+
 export const selectFinalizedBlock = (state) => {
   if (!!state.blocks.ids.length) {
     const block = findLast(selectAll(state), block => !isUndefined(block.is_finalized) && block.is_finalized)

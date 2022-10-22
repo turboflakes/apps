@@ -6,18 +6,20 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
-import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, Tooltip as ChartTooltip } from 'recharts';
 import {
-  selectValidatorBySessionAndAddress
-} from '../features/api/validatorsSlice';
+  selectFinalizedBlock,
+  selectBlockById,
+} from '../features/api/blocksSlice';
 import {
-  selectBackingPointsBySession,
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
 import {
-  selectValProfileByAddress,
-} from '../features/api/valProfilesSlice';
-import { nameDisplay } from '../util/display'
+  selectChain,
+} from '../features/chain/chainSlice';
+import {
+  getBlocksPerSessionTarget
+} from '../constants'
 
 const renderTooltip = (props, theme) => {
   const { active, payload } = props;
@@ -30,7 +32,7 @@ const renderTooltip = (props, theme) => {
           p: 2,
           m: 0,
           borderRadius: 1,
-          minWidth: '272px',
+          minWidth: '368px',
           boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px'
          }}
       >
@@ -41,10 +43,10 @@ const renderTooltip = (props, theme) => {
           <i>Session {data.session.format()}</i>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          <span style={{ marginRight: '8px', color: theme.palette.text.primary }}>❚</span>{data.name}: <b>{data.value}</b>
+          <span style={{ marginRight: '8px', color: theme.palette.text.primary }}>❚</span>At block #{data.currentBlock.format()}: <b>{data.value.format()}</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>❚</span>All Para-Authorities: <b>{data.avg}</b>
+          <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>❚</span>At block #{data.previousBlock.format()} (previous session): <b>{data.previous.format()}</b>
         </Typography>
       </Box>
     );
@@ -53,32 +55,29 @@ const renderTooltip = (props, theme) => {
   return null;
 };
 
-export default function ValBackingPointsBox({address}) {
+export default function BackingPointsBox() {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
-  const allBackingPoints = useSelector(state => selectBackingPointsBySession(state, currentSession));
-  const valProfile = useSelector(state => selectValProfileByAddress(state, address));
-
-  if (isUndefined(validator) || isUndefined(valProfile)) {
+  const block = useSelector(selectFinalizedBlock);
+  const selectedChain = useSelector(selectChain);
+  const nBlocksTarget = getBlocksPerSessionTarget(selectedChain);
+  const previousBlock = useSelector(state => selectBlockById(state, !isUndefined(block) ? block.block_number - nBlocksTarget : 0));
+  
+  if (isUndefined(currentSession) || currentSession === "current" || 
+    isUndefined(block) || isUndefined(block.stats)) {
     return null
   }
 
-  if (!validator.is_para) {
-    return null
-  }
+  const backingPoints = block.stats.pt - (block.stats.ab * 20);
+  const previousBackingPoints = !isUndefined(previousBlock) ? (previousBlock.stats.pt - (previousBlock.stats.ab * 20)) : undefined;
+  const diff = !isUndefined(previousBackingPoints) ? Math.round(((backingPoints * 100 / previousBackingPoints) - 100) * 10) / 10 : 0;
 
-  const backingPoints = (validator.auth.ep - validator.auth.sp) - (validator.auth.ab.length * 20) > 0 ? (validator.auth.ep - validator.auth.sp) - (validator.auth.ab.length * 20) : 0;
-  const avg = !!allBackingPoints.length ? Math.round(allBackingPoints.reduce((a, b) => a + b, 0) / (allBackingPoints.length)) : 0;
-  const diff = !!avg ? Math.round(((backingPoints * 100 / avg) - 100) * 10) / 10 : 0;
-  
-  const data = [
-    {name: nameDisplay(valProfile._identity, 12), value: backingPoints, avg, session: currentSession},
-  ];
-  
+  const data = !isUndefined(previousBackingPoints) ? [
+    {value: backingPoints, currentBlock: block.block_number, previous: previousBackingPoints, previousBlock: previousBlock.block_number, session: currentSession},
+  ] : [];
+
   return (
-    <Paper 
-      sx={{
+    <Paper sx={{
         p: 2,
         display: 'flex',
         // flexDirection: 'column',
@@ -92,7 +91,7 @@ export default function ValBackingPointsBox({address}) {
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Backing Points</Typography>
         <Typography variant="h5">
-          {!isUndefined(backingPoints) ? backingPoints.format() : '-'}
+          {backingPoints.format()}
         </Typography>
         <Tooltip title={`${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of Backing Points collected by all Para-Authorities in the current session.`} arrow>
           <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 
@@ -102,8 +101,9 @@ export default function ValBackingPointsBox({address}) {
           </Typography>
         </Tooltip>
       </Box>
-      <ResponsiveContainer height='100%' sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-        <BarChart data={data}
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
+        <BarChart width={64} height={64}
+          data={data}
           margin={{
             top: 4,
             right: 0,
@@ -111,14 +111,14 @@ export default function ValBackingPointsBox({address}) {
             bottom: 4,
           }}>
           <Bar dataKey="value" barSize={12} fill={theme.palette.text.primary} />
-          <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
+          <Bar dataKey="previous" barSize={12} fill={theme.palette.grey[200]} />
           <ChartTooltip 
                 cursor={{fill: 'transparent'}}
                 offset={24}
                 wrapperStyle={{ zIndex: 100 }} 
                 content={props => renderTooltip(props, theme)} />
         </BarChart>
-      </ResponsiveContainer>
+      </Box>
     </Paper>
   );
 }

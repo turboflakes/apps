@@ -6,9 +6,6 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import {
-  selectValidatorBySessionAndAddress,
-} from '../features/api/validatorsSlice';
-import {
   selectSessionByIndex,
   selectSessionCurrent,
   selectEraPointsBySession
@@ -17,17 +14,13 @@ import {
 export default function EraPointsBox() {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  // const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
   const session = useSelector(state => selectSessionByIndex(state, currentSession))
   const eraPoints = useSelector(state => selectEraPointsBySession(state, currentSession))
 
   if (isUndefined(session)) {
     return null
   }
-
-  console.log("__eraPoints", eraPoints);
-  // const total = validator.auth.ep;
-  const total = 0 
+  
   return (
     <Paper sx={{
         p: 2,
@@ -45,7 +38,7 @@ export default function EraPointsBox() {
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
         <Typography variant="caption" color="textSecondary" sx={{whiteSpace: 'nowrap'}}>Era Points</Typography>
         <Typography variant="h5" color="textSecondary">
-          {!isUndefined(total) ? total.format() : '-'}
+          {!isUndefined(eraPoints) ? eraPoints.format() : '-'}
         </Typography>
         <Typography variant="subtitle2" color="textSecondary" sx={{ whiteSpace: 'nowrap' }}>
           {`Since era ${session.eix.format()} started`}

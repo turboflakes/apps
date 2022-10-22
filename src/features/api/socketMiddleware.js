@@ -23,10 +23,11 @@ import {
 } from '../chain/chainSlice';
 import {
   selectPage,
-  selectIsHistoryMode,
 } from '../layout/layoutSlice';
 // import apiSlice from './apiSlice';
-import { getNetworkHost } from '../../constants'
+import { 
+  getNetworkHost
+} from '../../constants'
 
 
 const dispatchValidator = (store, address, method = 'subscribe') => {

@@ -6,27 +6,21 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import {
-  selectValidatorBySessionAndAddress,
-} from '../features/api/validatorsSlice';
+  selectFinalizedBlock,
+} from '../features/api/blocksSlice';
 import {
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
 
-export default function ValTotalPointsBox({address}) {
+export default function SessionPointsBox() {
   // const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
+  const block = useSelector(selectFinalizedBlock);
   
-  if (isUndefined(validator)) {
+  if (isUndefined(currentSession) || currentSession === "current" || isUndefined(block) || isUndefined(block.stats)) {
     return null
   }
 
-  if (!validator.is_auth) {
-    return null
-  }
-
-  const total = validator.auth.ep - validator.auth.sp > 0 ? validator.auth.ep - validator.auth.sp : 0;
-  
   return (
     <Paper sx={{
         p: 2,
@@ -42,7 +36,7 @@ export default function ValTotalPointsBox({address}) {
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Session Points</Typography>
         <Typography variant="h5">
-          {!isUndefined(total) ? total : '-'}
+          {!isUndefined(block.stats.pt) ? block.stats.pt.format() : '-'}
         </Typography>
         <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
           {`Since session ${currentSession.format()} started`}
