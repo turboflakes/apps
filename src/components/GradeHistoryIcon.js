@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { useTheme } from '@mui/material/styles';
+// import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import {
@@ -35,7 +35,7 @@ const GRADES = {
 }
 
 export default function GradeHistoryIcon({address, maxSessions, size = 96}) {
-  const theme = useTheme();
+  // const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
@@ -63,7 +63,7 @@ export default function GradeHistoryIcon({address, maxSessions, size = 96}) {
       <Tooltip title={`Para-Authority grade for the last ${maxSessions} sessions.`} arrow>
         <img src={GRADES[gradeValue]} style={{ 
             width: size,
-            height: size }} alt={`Grade: ${gradeValue}`}/>
+            height: "auto" }} alt={`Grade: ${gradeValue}`}/>
       </Tooltip>
     </Box>
   );
