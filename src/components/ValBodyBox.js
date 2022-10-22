@@ -32,10 +32,10 @@ export default function ValBodyBox({address, sessionIndex}) {
         <Grid item xs={12} md={isLiveMode ? 6 : 7}>
         {isLiveMode ? 
           <Box sx={{ p: 2, display: 'flex', alignItems: 'center'}}>
-            <span style={{ width: '16px', height: '16px', marginBottom: '8px', marginRight: '16px', borderRadius: '50%', 
-                animation: "pulse 1s infinite ease-in-out alternate",
-                backgroundColor: theme.palette.semantics.green, 
-                display: "inline-block" }}></span>
+            <Box style={{ width: '16px', height: '16px', marginBottom: '8px', marginRight: '16px', borderRadius: '50%', 
+              animation: "pulse 1s infinite ease-in-out alternate",
+              backgroundColor: theme.palette.semantics.green, 
+              display: "inline-block" }}></Box>
             <Typography variant="h3">Live Performance</Typography>
           </Box> 
           : 

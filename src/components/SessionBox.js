@@ -50,12 +50,12 @@ export default function SessionBox({sessionIndex, dark}) {
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
         <Box sx={{ display: 'flex', alignItems: 'flex-end'}}>
           <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-            <Typography variant="caption" color={dark ? theme.palette.text.secondary : 'default'}>era</Typography>
+            <Typography variant="caption" color={dark ? theme.palette.text.secondary : 'default'}>Era</Typography>
             <Typography variant="h5" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{isSessionSuccess ? session.eix.format() : '-'}</Typography>
           </Box>
           <Typography sx={{ml: 1, mr: 1}} variant="h5" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{'//'}</Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-            <Typography variant="caption" color={dark ? theme.palette.text.secondary : 'default'}>session</Typography>
+            <Typography variant="caption" color={dark ? theme.palette.text.secondary : 'default'}>Session</Typography>
             <Typography variant="h5" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{isSessionSuccess ? session.six.format() : '-'}</Typography>
           </Box>
         </Box>
@@ -66,9 +66,9 @@ export default function SessionBox({sessionIndex, dark}) {
       </Box>
       {isLiveMode ? 
         <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'flex-start'}}>
-          <Typography variant="caption" align='right' color={dark ? theme.palette.text.secondary : 'default'}>finalized block</Typography>
+          <Typography variant="caption" align='right' color={dark ? theme.palette.text.secondary : 'default'}>Finalized block</Typography>
           <Typography variant="h5" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{isFinalizedBlockSuccess ? `# ${finalized.block_number.format()}` : '-'}</Typography>
-          <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{isBestBlockSuccess ? `best #${best.block_number.format()}` : '-'}</Typography>
+          <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{isBestBlockSuccess ? `Best #${best.block_number.format()}` : '-'}</Typography>
         </Box> : null}
     </Paper>
   );

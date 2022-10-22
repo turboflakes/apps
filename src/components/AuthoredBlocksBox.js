@@ -8,14 +8,9 @@ import Typography from '@mui/material/Typography';
 import {
   selectFinalizedBlock,
 } from '../features/api/blocksSlice';
-import {
-  selectSessionCurrent,
-} from '../features/api/sessionsSlice';
-import { nameDisplay } from '../util/display'
 
 export default function AuthoredBlocksBox() {
   // const theme = useTheme();
-  const currentSession = useSelector(selectSessionCurrent);
   const block = useSelector(selectFinalizedBlock);
   
   if (isUndefined(block) || isUndefined(block.stats)) {
