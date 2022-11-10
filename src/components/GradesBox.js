@@ -65,7 +65,7 @@ export default function GradesBox({sessionIndex}) {
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
           <Box>
             <Typography variant="h6">Grades</Typography>
-            <Typography variant="subtitle2">Validators by grade</Typography>
+            <Typography variant="subtitle2">Para-Authorities by grade</Typography>
           </Box>
           <CustomTooltip
             disableFocusListener

@@ -30,7 +30,7 @@ export default function BlockFinalizedBox() {
   return (
     <Paper
       sx={{
-        p: `16px 24px`,
+        p: 2,
         display: 'flex',
         justifyContent: 'space-between',
         // alignItems: 'center',

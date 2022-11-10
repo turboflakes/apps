@@ -47,7 +47,7 @@ export default function BlockBox() {
   return (
     <Paper
       sx={{
-        p: `16px 24px`,
+        p: 2,
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -57,7 +57,7 @@ export default function BlockBox() {
         // background: "#FFF"
       }}
       >
-        <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+        <Box sx={{ px: 1, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
           <Box sx={{ display: 'flex', alignItems: 'flex-end'}}>
             <Typography variant="h4" sx={{mr: 2}}>#</Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>

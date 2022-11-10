@@ -33,13 +33,13 @@ export default function SessionPointsBox() {
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
-      <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Session Points</Typography>
+      <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>session points</Typography>
         <Typography variant="h5">
           {!isUndefined(block.stats.pt) ? block.stats.pt.format() : '-'}
         </Typography>
         <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
-          {`Since session ${currentSession.format()} started`}
+          {`since session ${currentSession.format()} started`}
         </Typography>
       </Box>
     </Paper>

@@ -37,7 +37,7 @@ export default function SessionPerformancePieChart() {
   return (
     <Paper
       sx={{
-        p: `16px 24px`,
+        p: 2,
         display: 'flex',
         alignItems: 'flex-start',
         // justifyContent: 'space-between',
@@ -49,9 +49,9 @@ export default function SessionPerformancePieChart() {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       }}
       >
-      <Box sx={{ width: '50%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
+      <Box sx={{ px: 1, width: '50%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption">Backing Subsystem Performance</Typography>
+          <Typography variant="caption">network performance</Typography>
           <Typography variant="h5">{!isUndefined(finalized._mvr) ? `${Math.round((1 - finalized._mvr) * 100)}%` : '-'}</Typography>
           <Typography variant="subtitle2" 
               sx={{color: Math.sign(trendPer) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red}}>
@@ -59,7 +59,7 @@ export default function SessionPerformancePieChart() {
           </Typography>
         </Box>
       </Box>
-      <Box sx={{ width: '50%', display: 'flex', justifyContent: 'flex-end'}}>
+      <Box sx={{ px: 1, width: '50%', display: 'flex', justifyContent: 'flex-end'}}>
         <PieChart width={100} height={80} margin={{top: 40}}>
           <Pie
               dataKey="value"

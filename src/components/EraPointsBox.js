@@ -35,13 +35,13 @@ export default function EraPointsBox() {
         bgcolor: theme.palette.background.secondary,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
-      <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" color="textSecondary" sx={{whiteSpace: 'nowrap'}}>Era Points</Typography>
+      <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+        <Typography variant="caption" color="textSecondary" sx={{whiteSpace: 'nowrap'}}>era points</Typography>
         <Typography variant="h5" color="textSecondary">
           {!isUndefined(eraPoints) ? eraPoints.format() : '-'}
         </Typography>
         <Typography variant="subtitle2" color="textSecondary" sx={{ whiteSpace: 'nowrap' }}>
-          {`Since era ${session.eix.format()} started`}
+          {`since era ${session.eix.format()} started`}
         </Typography>
       </Box>
     </Paper>

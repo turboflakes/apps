@@ -38,7 +38,7 @@ export default function SessionPerformanceTimeline({sessionIndex}) {
   return (
     <Paper
       sx={{
-        // p: `16px 24px`,
+        p: 2,
         display: 'flex',
         // justifyContent: 'space-between',
         flexDirection: 'column',
@@ -51,22 +51,23 @@ export default function SessionPerformanceTimeline({sessionIndex}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       }}
       >
-      <Box sx={{ p:`16px 24px`, display: 'flex', justifyContent: 'space-between' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption">Backing Subsystem Trend ({filtered.length} blocks)</Typography>
+          <Typography variant="caption" gutterBottom>network trend in the last {filtered.length} finalized blocks</Typography>
         </Box>
       </Box>
-        <ResponsiveContainer width="100%" height="100%" sx={{borderRadius: 30}}>
+      <Box sx={{height: '100%'}}>
+        <ResponsiveContainer width="100%" height="100%" sx={{ py: 1}}>
           <LineChart
             ani
             // width="100%"
-            // height={300}
+            height="100%"
             data={timelineData}
             margin={{
               top: 5,
               right: 20,
               left: -50,
-              bottom: -10,
+              bottom: -20,
             }}
           >
             <defs>
@@ -89,6 +90,7 @@ export default function SessionPerformanceTimeline({sessionIndex}) {
               strokeWidth={2} stroke="#0B1317" fill="#F1F1F0" dot={false} />
           </LineChart>
         </ResponsiveContainer>
+      </Box>
     </Paper>
   );
 }

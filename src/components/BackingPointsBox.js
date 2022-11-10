@@ -88,8 +88,8 @@ export default function BackingPointsBox() {
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
-      <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Backing Points</Typography>
+      <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>backing points</Typography>
         <Typography variant="h5">
           {backingPoints.format()}
         </Typography>
@@ -101,7 +101,7 @@ export default function BackingPointsBox() {
           </Typography>
         </Tooltip>
       </Box>
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
+      <Box sx={{ px: 1, width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
         <BarChart width={64} height={64}
           data={data}
           margin={{

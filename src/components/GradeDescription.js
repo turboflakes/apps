@@ -14,7 +14,7 @@ export default function GradeDescription({sessionIndex, good, poor, verbose}) {
   if (!mvrs.length) {
     return null
   }
-  const classifications = poor ? ["D+", "D", "F"] : ["A+", "A", "B+", "B"];
+  const classifications = poor ? ["F"] : ["A+", "A", "B+", "B"];
   const grades = mvrs.filter(mvr => classifications.includes(grade(1 - mvr)))
   const percent = (grades.length * 100)  / mvrs.length
   const average = Math.round((grades.reduce((a, b) => a + b, 0) / grades.length) * 10000) / 10000
@@ -23,7 +23,7 @@ export default function GradeDescription({sessionIndex, good, poor, verbose}) {
     <React.Fragment>
     { poor && grades.length > 0 ? 
       <Typography variant="subtitle2" sx={{ color: theme.palette.semantics.red}}>
-        {`${grades.length} Para-Authorities needs attention!`}  
+        <b>{`${grades.length} of ${mvrs.length} validators need attention!`}</b>
       </Typography> : null }
     { good && grades.length > 0 ?
       <Typography variant="subtitle2">

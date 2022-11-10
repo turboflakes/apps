@@ -72,7 +72,7 @@ export default function SessionPieChart({sessionIndex}) {
   return (
     <Paper
       sx={{
-        p: `16px 24px`,
+        p: 2,
         display: 'flex',
         alignItems: 'flex-start',
         width: '100%',
@@ -81,9 +81,9 @@ export default function SessionPieChart({sessionIndex}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       }}
       >
-      <Box sx={{ width: '50%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
+      <Box sx={{ px: 1, width: '50%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption">Epoch countdown</Typography>
+          <Typography variant="caption">epoch countdown</Typography>
           <Typography variant="h5">{min > 0 ? `${min} mins` : ` ${sec} secs`}</Typography>
           <Typography variant="subtitle2">
             {`${eraPercentage}% era completed`}
@@ -95,7 +95,7 @@ export default function SessionPieChart({sessionIndex}) {
           </Typography> */}
         </Box>
       </Box>
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
+      <Box sx={{ px: 1, width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
         <PieChart width={64} height={64}>
           <Pie
               data={pieEpochData}

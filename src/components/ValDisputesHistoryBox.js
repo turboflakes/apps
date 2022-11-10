@@ -50,13 +50,13 @@ export default function ValDisputesHistoryBox({address, maxSessions}) {
         bgcolor: theme.palette.semantics.red,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
-      <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" color="textSecondary" sx={{whiteSpace: 'nowrap'}}>Disputes Initiated</Typography>
+      <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+        <Typography variant="caption" color="textSecondary" sx={{whiteSpace: 'nowrap'}}>disputes initiated</Typography>
         <Typography variant="h5" color="textSecondary">
           {!isUndefined(disputesTotal) ? disputesTotal : '-'}
         </Typography>
           <Typography variant="subtitle2" color="textSecondary" sx={{ whiteSpace: 'nowrap' }}>
-            Last #{lastDispute.para.disputes[lastDispute.para.disputes.length-1][0]}
+            last #{lastDispute.para.disputes[lastDispute.para.disputes.length-1][0]}
           </Typography>
       </Box>
     </Paper>

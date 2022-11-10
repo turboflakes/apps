@@ -29,13 +29,13 @@ export default function AuthoredBlocksBox() {
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
-      <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Authored Blocks</Typography>
+      <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>authored blocks</Typography>
         <Typography variant="h5">
           {!isUndefined(block.stats.ab) ? block.stats.ab : '-'}
         </Typography>
         <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
-          {`Last #${block.block_number.format()}`}
+          {`last #${block.block_number.format()}`}
         </Typography>
       </Box>
     </Paper>

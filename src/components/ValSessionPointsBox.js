@@ -45,7 +45,7 @@ export default function ValSessionPointsBox({address}) {
           {!isUndefined(total) ? total.format() : '-'}
         </Typography>
         <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
-          {`Since session ${currentSession.format()} started`}
+          {`since session ${currentSession.format()} started`}
         </Typography>
       </Box>
     </Paper>

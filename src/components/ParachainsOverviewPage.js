@@ -12,6 +12,7 @@ import SessionPointsBox from './SessionPointsBox';
 import AuthoredBlocksBox from './AuthoredBlocksBox';
 import BackingPointsBox from './BackingPointsBox';
 import AuthoritiesBox from './AuthoritiesBox';
+import GradesSmallBox from './GradesSmallBox';
 import GradesBox from './GradesBox';
 
 import { 
@@ -55,10 +56,10 @@ export const ParachainsOverviewPage = ({tab}) => {
           <SessionBox sessionIndex={sessionIndex} />
         </Grid>
         <Grid item xs={12} md={2}>
-          <AuthoritiesBox />
+          <AuthoritiesBox sessionIndex={sessionIndex} />
         </Grid>
         <Grid item xs={12} md={2}>
-          
+          <GradesSmallBox sessionIndex={sessionIndex} />
         </Grid>
         <Grid item xs={12} md={2}>
           <AuthoredBlocksBox />
@@ -72,8 +73,6 @@ export const ParachainsOverviewPage = ({tab}) => {
         <Grid item xs={12} md={2}>
           <EraPointsBox />
         </Grid>
-        
-        
         <Grid item xs={12}>
           {!!sessionIndex ? <ParachainsOverviewTabs sessionIndex={sessionIndex} tab={tab} /> : null}
         </Grid>
