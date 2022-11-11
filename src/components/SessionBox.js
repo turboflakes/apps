@@ -20,15 +20,17 @@ import {
 
 export default function SessionBox({sessionIndex, dark}) {
   const theme = useTheme();
-  const {isSuccess: isFinalizedBlockSuccess} = useGetBlockQuery({blockId: "finalized", show_stats: true});
-  const {isSuccess: isBestBlockSuccess} = useGetBlockQuery({blockId: "best"});
+  const {isSuccess: isFinalizedBlockSuccess} = useGetBlockQuery({blockId: "finalized", show_stats: true}, {refetchOnMountOrArgChange: true});
+  const {isSuccess: isBestBlockSuccess} = useGetBlockQuery({blockId: "best"}, {refetchOnMountOrArgChange: true});
   const {isSuccess: isSessionSuccess } = useGetSessionByIndexQuery(sessionIndex);
   const best = useSelector(selectBestBlock)
   const finalized = useSelector(selectFinalizedBlock)
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex))
   const isLiveMode = useSelector(selectIsLiveMode)
   
-  if (!isFinalizedBlockSuccess || !isBestBlockSuccess || !isSessionSuccess || isUndefined(session)) {
+  if (!isFinalizedBlockSuccess || !isBestBlockSuccess || 
+    !isSessionSuccess || isUndefined(session) ||
+    isUndefined(best) || isUndefined(finalized)) {
     return null
   }
 
