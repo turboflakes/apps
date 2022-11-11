@@ -45,7 +45,7 @@ export default function ValParaInclusionBox({address, maxSessions}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Para-Authority Inclusion</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>para-authority inclusion</Typography>
         <Typography variant="h5">
           {!isUndefined(paraInclusion) ? `${paraInclusion}%` : '-'}
         </Typography>

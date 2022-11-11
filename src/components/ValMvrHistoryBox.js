@@ -104,7 +104,7 @@ export default function ValMvrHistoryBox({address, maxSessions}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left', maxWidth: '128px'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Missed Vote Ratio</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>missed vote ratio</Typography>
         <Typography variant="h5">
           {!isUndefined(mvr) ? Math.round(mvr * 10000) / 10000 : '-'}
         </Typography>

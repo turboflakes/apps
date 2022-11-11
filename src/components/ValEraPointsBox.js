@@ -44,7 +44,7 @@ export default function ValEraPointsBox({address}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" color="textSecondary" sx={{whiteSpace: 'nowrap'}}>Era Points</Typography>
+        <Typography variant="caption" color="textSecondary" sx={{whiteSpace: 'nowrap'}}>era points</Typography>
         <Typography variant="h5" color="textSecondary">
           {!isUndefined(total) ? total.format() : '-'}
         </Typography>

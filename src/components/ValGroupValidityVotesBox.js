@@ -81,7 +81,7 @@ export default function ValGroupValidityVotesBox({groupId, sessionIndex}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Validity Statements (x̅)</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>validity statements (x̅)</Typography>
         <Typography variant="h4">
           {validityVotes}
         </Typography>

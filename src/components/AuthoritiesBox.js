@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, styled } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Tooltip from '@mui/material/Tooltip';
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import {
   selectFinalizedBlock,
 } from '../features/api/blocksSlice';
@@ -18,9 +18,39 @@ import {
 
 import { grade } from '../util/grade';
 
+const CustomTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: 'transparent',
+    padding: 0,
+  },
+}));
+
+const customTitle = (data, theme) => {
+  return (
+    <Box
+        sx={{ 
+          bgcolor: theme.palette.semantics.red,
+          p: 2,
+          m: 0,
+          borderRadius: 1,
+          minWidth: '144px',
+          boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px'
+         }}
+      >
+        <Typography variant="h6" color="textSecondary">
+          <b>{data.value} validators need attention!</b>
+        </Typography>
+        <Typography component="div" variant="caption" color="textSecondary" gutterBottom>
+          <span style={{color: theme.palette.text.primary }}></span>MVR average: <b>{data.average}</b>
+        </Typography>
+      </Box>
+  )
+}
+
 export default function AuthoritiesBox({sessionIndex, dark}) {
   const theme = useTheme();
-  const currentSession = useSelector(selectSessionCurrent);
   const block = useSelector(selectFinalizedBlock);
   const mvrs = useSelector(state => selectMVRsBySession(state, sessionIndex));
   
@@ -29,7 +59,9 @@ export default function AuthoritiesBox({sessionIndex, dark}) {
   }
 
   const poorGrades = mvrs.filter(mvr => grade(1 - mvr) === "F");
+  const pgAverage = Math.round((poorGrades.reduce((a, b) => a + b, 0) / poorGrades.length) * 10000) / 10000;
   const pgPercentage = poorGrades.length * 100 / mvrs.length;
+  const tooltipData = {value: poorGrades.length, percentage: pgPercentage, average: pgAverage, session: sessionIndex};
 
   return (
     <Paper sx={{
@@ -44,42 +76,47 @@ export default function AuthoritiesBox({sessionIndex, dark}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>para-authorities</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>validators</Typography>
         <Typography variant="h5">
-          {!isUndefined(block.stats.npa) ? block.stats.npa : '-'}
+          {!isUndefined(block.stats.npa) ? block.stats.na : '-'}
         </Typography>
         <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
-          {!isUndefined(block.stats.na) ? `${block.stats.na} authorities` : '-'}
+          {!isUndefined(block.stats.npa) ? `${block.stats.npa} para-authorities` : '-'}
         </Typography>
       </Box>
       {poorGrades.length > 0 ?
         <Box sx={{px: 1, display: 'flex', flexDirection: 'column',  alignItems: 'flex-end', justifyContent: 'flex-start'}}>
-          <Typography variant="caption" color={theme.palette.semantics.red}>
+          {/* <Typography variant="caption" color={theme.palette.semantics.red}>
             needs attention
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right' }}>
-            <Box sx={{width: '16px'}}>
-              <Box sx={{ 
-                animation: "pulse 1s infinite ease-in-out alternate",
-                borderRadius: '50%',
-                boxShadow: 'rgba(223, 35, 38, 0.8) 0px 0px 16px'
-              }}>
+          </Typography> */}
+          <CustomTooltip
+            disableFocusListener
+            placement="bottom-start"
+            title={customTitle(tooltipData, theme)}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right' }} >
+              <Box sx={{width: '16px'}}>
                 <Box sx={{ 
-                  width: '16px', height: '16px', 
-                  bgcolor: theme.palette.semantics.red,
+                  animation: "pulse 1s infinite ease-in-out alternate",
                   borderRadius: '50%',
-                  textAlign: 'center',
-                  }} >
+                  boxShadow: 'rgba(223, 35, 38, 0.8) 0px 0px 16px'
+                }}>
+                  <Box sx={{ 
+                    width: '16px', height: '16px', 
+                    bgcolor: theme.palette.semantics.red,
+                    borderRadius: '50%',
+                    textAlign: 'center',
+                    }} >
+                  </Box>
                 </Box>
               </Box>
+              <Typography sx={{ ml: 1 }} variant="h5" color={theme.palette.semantics.red} >
+                {poorGrades.length}
+              </Typography>
             </Box>
-            <Typography sx={{ ml: 1 }} variant="h5" color={theme.palette.semantics.red} >
-              {poorGrades.length}
-            </Typography>
-          </Box>
-          <Typography variant="subtitle2" color={theme.palette.semantics.red}>
+          </CustomTooltip>
+          {/* <Typography variant="subtitle2" color={theme.palette.semantics.red}>
             {`${pgPercentage}%` }
-          </Typography>
+          </Typography> */}
         </Box> : null}
     </Paper>
   );

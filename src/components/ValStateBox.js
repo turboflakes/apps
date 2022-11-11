@@ -41,7 +41,7 @@ export default function ValStateBox({address, sessionIndex, dark}) {
       }}
       >
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column'}}>
-        <Typography variant="caption" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>Validator status</Typography>
+        <Typography variant="caption" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>validator status</Typography>
         <Typography variant="h5" sx={{ whiteSpace: 'nowrap' }} 
           color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{status}</Typography>
         <Typography variant="subtitle2"

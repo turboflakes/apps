@@ -99,7 +99,7 @@ export default function GradesSmallBox({sessionIndex}) {
           <Typography variant="caption">session grade majority</Typography>
           <Typography variant="h5">{`${topGrade.name}`}</Typography>
           <Typography variant="subtitle2">
-            {`${topGrade.quantity} (${topGrade.value}%) validators`}
+            {`${topGrade.quantity} para-authorities`}
           </Typography>
         </Box>
       </Box>

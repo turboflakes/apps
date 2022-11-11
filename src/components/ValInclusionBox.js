@@ -45,7 +45,7 @@ export default function ValInclusionBox({address, maxSessions}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Authority Inclusion</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>authority inclusion</Typography>
         <Typography variant="h5">
           {!isUndefined(inclusion) ? `${inclusion}%` : '-'}
         </Typography>

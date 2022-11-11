@@ -90,7 +90,7 @@ export default function ValBackingPointsBox({address}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Backing Points</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>backing points</Typography>
         <Typography variant="h5">
           {!isUndefined(backingPoints) ? backingPoints.format() : '-'}
         </Typography>

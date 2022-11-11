@@ -88,7 +88,7 @@ export default function ValGroupPointsChart({sessionIndex, groupId}) {
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
-          <Typography variant="h6">Session Points</Typography>
+          <Typography variant="h6">Session points</Typography>
           {/* <Typography variant="caption"><i>Points under the current session</i></Typography> */}
           {/* <Typography variant="subtitle2">(+4%) than previous session</Typography> */}
         </Box>

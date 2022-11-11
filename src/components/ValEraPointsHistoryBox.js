@@ -102,7 +102,7 @@ export default function ValTotalPointsHistoryBox({address, maxSessions}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left', maxWidth: '128px'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>Era Points (x̅)</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>era points (x̅)</Typography>
         <Typography variant="h5">
           {!isUndefined(avgPoints) ? avgPoints : '-'}
         </Typography>

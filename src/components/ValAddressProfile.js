@@ -80,13 +80,13 @@ export default function ValAddressProfile({address, maxSessions, showGrade}) {
               }} />
             <Box sx={{ display: 'flex'}}>
               <Box sx={{ mr: 3,  display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>Commission</Typography>
+                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>commission</Typography>
                 <Box>
                   <Typography variant="h5" component="span">{valProfile._commission}</Typography>
                 </Box>
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>Bonded</Typography>
+                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>bonded</Typography>
                 <Box>
                   <Typography variant="h5" component="span">{stakeDisplay(valProfile.own_stake, chainInfo)}</Typography>
                 </Box>
