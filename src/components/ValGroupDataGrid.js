@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
-import { useSearchParams } from "react-router-dom";
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -14,8 +14,12 @@ import {
 } from '../features/api/valGroupsSlice'
 import {
   addressChanged,
+  selectChain,
   selectAddress
 } from '../features/chain/chainSlice';
+import {
+  pageChanged
+} from '../features/layout/layoutSlice';
 import { stashDisplay, nameDisplay } from '../util/display'
 
 // const codes = ['★', 'A', 'B', 'C', 'D']
@@ -145,9 +149,10 @@ function createDataGridRows(id, identity, address, b, i, e, m, p) {
 export default function ValGroupDataGrid({sessionIndex, groupId}) {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const selectedChain = useSelector(selectChain);
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
   const selectedAddress = useSelector(selectAddress);
-  let [_, setSearchParams] = useSearchParams();
   if (!validators.length || validators.length !== validators.filter(v => !!v.para_stats).length) {
     return null
   }
@@ -175,8 +180,9 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
   const handleOnRowClick = ({row}) => {
     const address = row.address;
     if (selectedAddress !== address) {
-      setSearchParams({address});
       dispatch(addressChanged(address));
+      dispatch(pageChanged(`validator/${address}`));
+      navigate(`/one-t/${selectedChain}/validator/${address}`)
     }
   };
 

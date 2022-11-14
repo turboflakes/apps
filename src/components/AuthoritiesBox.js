@@ -10,9 +10,6 @@ import {
   selectFinalizedBlock,
 } from '../features/api/blocksSlice';
 import { 
-  selectSessionCurrent,
- } from '../features/api/sessionsSlice';
-import { 
   selectMVRsBySession
  } from '../features/api/sessionsSlice';
 

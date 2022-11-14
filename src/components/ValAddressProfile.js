@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
-import { useTheme } from '@mui/material/styles';
+// import { useTheme } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -11,8 +11,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWallet } from '@fortawesome/free-solid-svg-icons'
 import GradeIcon from './GradeIcon';
 import GradeHistoryIcon from './GradeHistoryIcon';
-import tvpValid from '../assets/tvp_valid.svg';
-import tvpInvalid from '../assets/tvp_invalid.svg';
+// import tvpValid from '../assets/tvp_valid.svg';
+// import tvpInvalid from '../assets/tvp_invalid.svg';
 import {
   selectSessionCurrent,
   selectSessionHistory
@@ -30,7 +30,7 @@ import {
 import { stakeDisplay } from '../util/display'
 
 export default function ValAddressProfile({address, maxSessions, showGrade}) {
-  const theme = useTheme();
+  // const theme = useTheme();
   const {isSuccess} = useGetValidatorProfileByAddressQuery(address)
   const isLiveMode = useSelector(selectIsLiveMode);
   const historySession = useSelector(selectSessionHistory);

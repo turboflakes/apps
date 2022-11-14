@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import orderBy from 'lodash/orderBy'
 import { useTheme } from '@mui/material/styles';
@@ -29,7 +29,7 @@ const gradeValue = (v) => grade(1-calculateMvr(v.para_summary.ev, v.para_summary
 export default function ValGroupList({sessionIndex, groupId}) {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const selectedChain = useSelector(selectChain);
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex, groupId));  
   const validatorsOrderedByPoints = orderBy(validators, o => o.auth.ep - o.auth.sp, "desc");  
