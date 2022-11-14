@@ -1,14 +1,10 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
-import SessionPieChart from './SessionPieChart';
-import SessionBox from './SessionBox';
 import ValGroupBox from './ValGroupBox';
-import ValAddressProfile from './ValAddressProfile';
 import SearchSmall from './SearchSmall';
 import ValHeaderBox from './ValHeaderBox';
 import ValBodyBox from './ValBodyBox';
@@ -22,7 +18,6 @@ import {
  } from '../features/api/sessionsSlice';
 import { 
   selectIsLiveMode,
-  selectIsHistoryMode,
 } from '../features/layout/layoutSlice';
 import { 
   selectIsSocketConnected,
@@ -30,23 +25,20 @@ import {
 
 export default function ValidatorPage() {
 	// const theme = useTheme();
+  const { stash } = useParams();
   const dispatch = useDispatch();
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const selectedAddress = useSelector(selectAddress);
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
   const isLiveMode = useSelector(selectIsLiveMode);
-  const isHistoryMode = useSelector(selectIsHistoryMode);
-  let [searchParams] = useSearchParams();
-  const searchAddress = searchParams.get("address");
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
   
-
   React.useEffect(() => {
-    if (searchAddress && searchAddress !== selectedAddress) {
-      dispatch(addressChanged(searchAddress));
+    if (stash && stash !== selectedAddress) {
+      dispatch(addressChanged(stash));
     }
-  }, [searchAddress, selectedAddress]);
+  }, [stash, selectedAddress]);
 
   if (!isSocketConnected) {
     // TODO websocket/network disconnected page
