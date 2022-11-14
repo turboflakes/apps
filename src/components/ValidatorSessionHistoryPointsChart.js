@@ -8,8 +8,6 @@ import { ComposedChart, Bar, Line, Area, XAxis, YAxis, Cell, ReferenceLine,
   CartesianGrid, Tooltip, ResponsiveContainer, Rectangle, Legend } from 'recharts';
 import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import { Spinner } from './Spinner';
-import SessionSlider from './SessionSlider';
 import {
   useGetValidatorsQuery,
   selectValidatorsByAddressAndSessions,

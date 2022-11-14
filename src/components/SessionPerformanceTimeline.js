@@ -17,7 +17,6 @@ import {
   const { active, payload } = props;
   if (active && payload && payload.length) {
     const data = payload[0] && payload[0].payload;
-    console.log("__data", data);
     return (
       <Box
         sx={{ 
