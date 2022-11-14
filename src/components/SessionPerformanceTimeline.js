@@ -39,6 +39,9 @@ import {
           <Typography component="div" variant="caption" color="inherit">
             Backing vote ratio: <b>{Math.round(data.bvr * 1000000) / 1000000}</b>
           </Typography>
+          <Typography component="div" variant="caption" color="inherit">
+            Total votes: <b>{data.votes}</b>
+          </Typography>
         </Box>
         
         
@@ -58,22 +61,24 @@ export default function SessionPerformanceTimeline({sessionIndex}) {
     return null
   }
   
-  const filtered = blocks.filter(b => !isUndefined(b._mvr))
-  
   // Minimum of 4 blocks to draw a trend
-  if (filtered.length < 4 ) {
+  if (blocks.length < 2 ) {
     return null
   }
   
-  const timelineData = filtered.map(o => ({
+  const timelineData = blocks.map((o, i) => ({
     block: o.block_number.format(),
-    bvr: 1 - o._mvr
+    bvr: 1 - o._mvr,
+    votes: !isUndefined(o.stats) ? (i > 0 ? 
+      ((o.stats.ev + o.stats.iv + o.stats.mv) - (blocks[i-1].stats.ev + blocks[i-1].stats.iv + blocks[i-1].stats.mv)) : 
+      (o.stats.ev + o.stats.iv + o.stats.mv))  : undefined
   }))
 
   return (
     <Paper
       sx={{
-        p: 2,
+        pt: 2,
+        pl: 2,
         display: 'flex',
         // justifyContent: 'space-between',
         flexDirection: 'column',
@@ -88,15 +93,14 @@ export default function SessionPerformanceTimeline({sessionIndex}) {
       >
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption" gutterBottom>network trend in the last {filtered.length} finalized blocks</Typography>
+          <Typography variant="caption" gutterBottom>network trend in the last {blocks.length} finalized blocks</Typography>
         </Box>
       </Box>
-      <Box sx={{height: '100%'}}>
-        <ResponsiveContainer width="100%" height="100%" sx={{ py: 1}}>
+      <Box sx={{ height: '100%'}}>
+        <ResponsiveContainer width="100%" height="100%">
           <LineChart
-            ani
             // width="100%"
-            height="100%"
+            // height="100"
             data={timelineData}
             margin={{
               top: 5,

@@ -80,6 +80,38 @@ export const matchBlocksReceived = isAnyOf(
   extendedApi.endpoints.getBlocks.matchFulfilled
 )
 
+const _calculateBlockMvr = (previousBlock, currentBlock) => {
+  if (isUndefined(currentBlock)) {
+    return -4
+  }
+  if (isUndefined(currentBlock.stats)) {
+    return -1;
+  }
+  if (isUndefined(previousBlock)) {
+    return calculateMvr(currentBlock.stats.ev, currentBlock.stats.iv, currentBlock.stats.mv)
+  } else {
+    if (isUndefined(previousBlock.stats)) {
+      return -1;
+    }
+    const votes = currentBlock.stats.ev - previousBlock.stats.ev + currentBlock.stats.iv - previousBlock.stats.iv + currentBlock.stats.mv - previousBlock.stats.mv;
+    if (votes === 0) {
+      return -1;
+    }
+    return calculateMvr(
+      currentBlock.stats.ev - previousBlock.stats.ev, 
+      currentBlock.stats.iv - previousBlock.stats.iv, 
+      currentBlock.stats.mv - previousBlock.stats.mv);
+  }
+}
+
+const calculateBlockMvr = (state, block) => {
+  const mvr = _calculateBlockMvr(state.entities[block.block_number - 1], block);
+  if (mvr === -1){
+    return calculateBlockMvr(state, state.entities[block.block_number - 1]);
+  }
+  return mvr
+}
+
 const blocksSlice = createSlice({
   name: 'blocks',
   initialState: blocksAdapter.getInitialState(),
@@ -95,16 +127,17 @@ const blocksSlice = createSlice({
         blocksAdapter.removeOne(state, currentState.ids[0])
       }
       const block = action.payload;
-      blocksAdapter.addOne(state, { 
+      blocksAdapter.upsertOne(state, { 
         ...action.payload, 
-        _mvr: !isUndefined(block.stats) ? calculateMvr(block.stats.ev, block.stats.iv, block.stats.mv) : undefined,
+        _mvr: !isUndefined(block.stats) ? calculateBlockMvr(currentState, block) : undefined,
         _ts: + new Date()
       })
     })
     .addMatcher(matchBlocksReceived, (state, action) => {
+      let currentState = current(state);
       const blocks = action.payload.data.map(block => ({
         ...block,
-        _mvr: !isUndefined(block.stats) ? calculateMvr(block.stats.ev, block.stats.iv, block.stats.mv) : undefined,
+        _mvr: !isUndefined(block.stats) ? calculateBlockMvr(currentState, block) : undefined,
         _ts: + new Date()
       }))
       blocksAdapter.upsertMany(state, blocks)
@@ -149,7 +182,7 @@ export const selectPreviousFinalizedBlock = (state) => {
 export const selectBlocksBySession = (state, sessionIndex) => {
   const session = selectSessionByIndex(state, sessionIndex)
   if (!isUndefined(session)) {
-    return selectAll(state).filter(b => b.block_number >= session.sbix)
+    return selectAll(state).filter(b => b.is_finalized && b.block_number >= session.sbix)
   }
   return []
 };
