@@ -30,7 +30,7 @@ export default function GradesSmallBox({sessionIndex}) {
 
   const gradesData = grades.map(g => {
     const quantity = mvrs.filter(mvr => grade(1 - mvr) === g).length;
-    const percentage = quantity * 100 / mvrs.length;
+    const percentage = Math.round(quantity * 100 / mvrs.length);
     return {
       name: g,
       value: percentage,
