@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux'
-// import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 import { Typography } from '@mui/material';
 import { 
@@ -13,8 +13,45 @@ import {
  } from '../features/api/blocksSlice'
 
 
+ const renderTooltip = (props, identiy, theme) => {
+  const { active, payload } = props;
+  if (active && payload && payload.length) {
+    const data = payload[0] && payload[0].payload;
+    console.log("__data", data);
+    return (
+      <Box
+        sx={{ 
+          bgcolor: '#fff',
+          p: 2,
+          m: 0,
+          borderRadius: 1,
+          boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px'
+         }}
+      >
+        <Box sx={{mb: 2}}>
+          <Typography component="div" variant="caption" color="inherit">
+            <b>Finalized block</b>
+          </Typography>
+          <Typography component="div" variant="caption" color="inherit">
+            <i>{`# ${data.block}`}</i>
+          </Typography>
+        </Box>
+        <Box sx={{ minWidth: '192px'}}>
+          <Typography component="div" variant="caption" color="inherit">
+            Backing vote ratio: <b>{Math.round(data.bvr * 1000000) / 1000000}</b>
+          </Typography>
+        </Box>
+        
+        
+      </Box>
+    );
+  }
+
+  return null;
+};
+
 export default function SessionPerformanceTimeline({sessionIndex}) {
-  // const theme = useTheme();
+  const theme = useTheme();
   const {isSuccess} = useGetBlocksQuery({session: sessionIndex, show_stats: true});
   const blocks = useSelector(state => selectBlocksBySession(state, sessionIndex))
   
@@ -84,7 +121,11 @@ export default function SessionPerformanceTimeline({sessionIndex}) {
               tick={false}
               tickLine={false}
               axisLine={false} />
-            {/* <Tooltip /> */}
+            <Tooltip 
+                cursor={{fill: theme.palette.divider}}
+                offset={24}
+                wrapperStyle={{ zIndex: 100 }} 
+                content={props => renderTooltip(props, theme)} />
             <Line isAnimationActive={false} type="monotone" dataKey="bvr" 
               strokeWidth={2} stroke="#0B1317" fill="#F1F1F0" dot={false} />
           </LineChart>
