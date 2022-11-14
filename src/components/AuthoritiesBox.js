@@ -76,7 +76,7 @@ export default function AuthoritiesBox({sessionIndex, dark}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>validators</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>active validators</Typography>
         <Typography variant="h5">
           {!isUndefined(block.stats.npa) ? block.stats.na : '-'}
         </Typography>

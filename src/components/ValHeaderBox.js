@@ -19,6 +19,7 @@ import ValInclusionBox from './ValInclusionBox';
 import ValDisputesHistoryBox from './ValDisputesHistoryBox';
 import ValStateBox from './ValStateBox';
 import ValParaInclusionBox from './ValParaInclusionBox';
+import ValAttentionBox from './ValAttentionBox';
 import {
   selectSessionByIndex,
   selectSessionCurrent,
@@ -113,7 +114,7 @@ export default function ValHeaderBox({address, sessionIndex}) {
               </Grid>
               <Grid item xs={12} md={3}>
                 {isLiveMode ? 
-                  null :
+                  <ValAttentionBox address={address} /> :
                   <ValParaInclusionBox address={address} maxSessions={maxHistorySessions} /> }
               </Grid>
               <Grid item xs={12} md={3}>
@@ -121,9 +122,6 @@ export default function ValHeaderBox({address, sessionIndex}) {
                   null :
                   <ValDisputesHistoryBox address={address} maxSessions={maxHistorySessions}/> }
               </Grid>
-              {/* <Grid item xs={12} md={4}>
-                TODO disputes
-              </Grid> */}
             </Grid>
           </Box>
         </Grid>
