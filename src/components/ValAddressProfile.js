@@ -39,7 +39,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade}) {
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
   const chainInfo = useSelector(selectChainInfo)
 
-  if (!isSuccess || isUndefined(chainInfo)) {
+  if (!isSuccess || isUndefined(valProfile) || isUndefined(chainInfo)) {
     return null
   }
   

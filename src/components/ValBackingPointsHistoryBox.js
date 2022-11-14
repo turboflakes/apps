@@ -66,7 +66,7 @@ export default function ValBackingPointsHistoryBox({address, maxSessions}) {
   const allBackingPoints = useSelector(state => selectBackingPointsBySessions(state, historySessionIds));
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
 
-  if (!isSuccess || !isSessionSuccess) {
+  if (!isSuccess || !isSessionSuccess || isUndefined(valProfile)) {
     return null
   }
 

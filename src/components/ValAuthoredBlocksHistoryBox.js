@@ -66,7 +66,7 @@ export default function ValAuthoredBlocksHistoryBox({address, maxSessions}) {
   const allAuthoredBlocks = useSelector(state => selectAuthoredBlocksBySessions(state, historySessionIds));
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
 
-  if (!isSuccess || !isSessionSuccess) {
+  if (!isSuccess || !isSessionSuccess || isUndefined(valProfile)) {
     return null
   }
 

@@ -66,7 +66,7 @@ export default function ValTotalPointsHistoryBox({address, maxSessions}) {
   const allTotalPoints = useSelector(state => selectTotalPointsBySessions(state, historySessionIds));
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
 
-  if (!isSuccess || !isSessionSuccess) {
+  if (!isSuccess || !isSessionSuccess || isUndefined(valProfile)) {
     return null
   }
 
