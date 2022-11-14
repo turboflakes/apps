@@ -83,7 +83,7 @@ const renderTooltip = (props, identiy, theme) => {
                 <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>―</span>MVR (Val. Group {`${data.group}`}): <b>{Math.round(data.valGroupMvr * 10000) / 10000}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
               </Typography>
               <Divider sx={{ my: 1 }} />
               <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -103,7 +103,7 @@ const renderTooltip = (props, identiy, theme) => {
                 <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points: <b>{data.abPoints}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
               </Typography>
               <Divider sx={{ my: 1 }} />
               <Typography component="div" variant="subtitle2" color="inherit">
@@ -114,7 +114,7 @@ const renderTooltip = (props, identiy, theme) => {
           <Box>
             <Box>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
               </Typography>
             </Box>
             <Divider sx={{ my: 1 }} />
@@ -147,7 +147,7 @@ const renderLegend = (theme) => {
         <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>―</span>MVR (Val. Group)
       </Typography>
       <Typography variant="caption" color="inherit">
-        <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>―</span>MVR (All Para-Authorities)
+        <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities)
       </Typography>
     </Box>
   );
@@ -264,7 +264,7 @@ export default function ValidatorSessionHistoryPointsChart({address, maxSessions
             />
           <Line yAxisId="rightMVR" type="monotone" dataKey="valMvr" dot={false} stroke={theme.palette.primary.main} />
           <Line yAxisId="rightMVR" type="monotone" dataKey="valGroupMvr" dot={false} stroke={theme.palette.semantics.purple} />
-          <Line yAxisId="rightMVR" type="monotone" dataKey="sessionMvr" dot={false} stroke={theme.palette.secondary.main} />
+          <Line yAxisId="rightMVR" type="monotone" dataKey="sessionMvr" dot={false} stroke={theme.palette.semantics.amber} />
           
           <Tooltip 
                 cursor={{fill: theme.palette.divider}}
