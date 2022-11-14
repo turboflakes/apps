@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import isUndefined from 'lodash/isUndefined';
+import isNull from 'lodash/isNull';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -31,7 +33,13 @@ const CustomTooltip = styled(({ className, ...props }) => (
 
 export default function GradesBox({sessionIndex}) {
   const theme = useTheme();
-  const mvrs = useSelector(state => selectMVRsBySession(state, sessionIndex));
+  const rawMvrs = useSelector(state => selectMVRsBySession(state, sessionIndex));
+  
+  if (!rawMvrs.length) {
+    return null
+  }
+
+  const mvrs = rawMvrs.filter(mvr => !isUndefined(mvr) && !isNull(mvr))
   
   if (!mvrs.length) {
     return null
