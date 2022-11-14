@@ -35,7 +35,7 @@ export const extendedApi = apiSlice.injectEndpoints({
           // `onError` side-effect
           const parsed = parseInt(params.retry, 10);
           const retry = isNaN(parsed) ? 1 : parsed + 1;
-          if (retry < 6) {
+          if (retry < 60) {
             setTimeout(() => {
               dispatch(extendedApi.endpoints.getParachains.initiate({session: params.session, retry }))
             }, 1000)
