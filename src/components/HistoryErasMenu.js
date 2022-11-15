@@ -12,12 +12,12 @@ import {
 } from '../features/layout/layoutSlice';
 
 const OPTIONS = [
-  {value: 1, description: "1 era"},
+  // {value: 1, description: "1 era"},
   {value: 2, description: "2 eras"},
   {value: 4, description: "4 eras"},
   {value: 8, description: "8 eras"},
-  {value: 16, description: "16 eras"},
-  {value: 32, description: "32 eras"}
+  // {value: 16, description: "16 eras"},
+  // {value: 32, description: "32 eras"}
 ]
 
 const CustomMenu = styled((props) => (

@@ -26,7 +26,8 @@ import {
   selectAddress
 } from '../features/chain/chainSlice';
 import {
-  selectIsLiveMode
+  selectIsLiveMode,
+  selectIsHistoryMode
 } from '../features/layout/layoutSlice';
 import { stashDisplay } from '../util/display'
 import { isChainSupported, getChainName, getChainLogo } from '../constants'
@@ -36,7 +37,8 @@ export default function ValGroupBox({address, sessionIndex}) {
   const {data, isSuccess, isError, error} = useGetValidatorByAddressQuery({address, session: sessionIndex, show_summary: true, show_stats: true});
   const selectedChain = useSelector(selectChain);
   const selectedAddress = useSelector(selectAddress);
-  const isLiveMode = useSelector(selectIsLiveMode)
+  const isLiveMode = useSelector(selectIsLiveMode);
+  const isHistorMode = useSelector(selectIsHistoryMode);
   const groupId = !!data ? (!!data.is_para ? data.para.group : undefined) : undefined;
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
   
@@ -85,7 +87,10 @@ export default function ValGroupBox({address, sessionIndex}) {
       }}
       >
         <Box sx={{ p: 2 }}>
-          <Typography variant="h4" >Val. Group {groupId}</Typography>
+          {isHistorMode ? 
+            <Typography variant="h4" >History of Val. Group {groupId}</Typography> : 
+            <Typography variant="h4" >Val. Group {groupId}</Typography>}
+          {isHistorMode ? <Typography variant="subtitle" >At session {sessionIndex}</Typography> : null}
         </Box>
         <Grid container spacing={2}>
           <Grid item xs={2}>
