@@ -151,7 +151,7 @@ const renderLegend = (theme) => {
   );
 }
 
-export default function ValidatorSessionHistoryPointsChart({address, maxSessions}) {
+export default function ValidatorSessionHistoryTimelineChart({address, maxSessions}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const currentSession = useSelector(selectSessionCurrent);

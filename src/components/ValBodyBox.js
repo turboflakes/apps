@@ -8,7 +8,7 @@ import SessionPieChart from './SessionPieChart';
 import SessionBox from './SessionBox';
 import ValStateBox from './ValStateBox';
 import SessionSlider from './SessionSlider';
-import ValidatorSessionHistoryPointsChart from './ValidatorSessionHistoryPointsChart';
+import ValidatorSessionHistoryTimelineChart from './ValidatorSessionHistoryTimelineChart';
 import {
   selectIsLiveMode,
   selectMaxHistorySessions,
@@ -65,7 +65,7 @@ export default function ValBodyBox({address, sessionIndex}) {
 
         {!isLiveMode ?
           <Grid item xs={12}>
-            <ValidatorSessionHistoryPointsChart address={address} maxSessions={maxHistorySessions} />
+            <ValidatorSessionHistoryTimelineChart address={address} maxSessions={maxHistorySessions} />
           </Grid> : null}
       </Grid>
 		</Box>
