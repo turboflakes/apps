@@ -105,6 +105,12 @@ const _calculateBlockMvr = (previousBlock, currentBlock) => {
 }
 
 const calculateBlockMvr = (state, block) => {
+  if (isUndefined(block)) {
+    return undefined
+  }
+  if (isUndefined(block.block_number)) {
+    return undefined
+  }
   const mvr = _calculateBlockMvr(state.entities[block.block_number - 1], block);
   if (mvr === -1){
     return calculateBlockMvr(state, state.entities[block.block_number - 1]);
