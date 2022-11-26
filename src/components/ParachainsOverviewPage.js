@@ -13,7 +13,7 @@ import AuthoredBlocksBox from './AuthoredBlocksBox';
 import BackingPointsBox from './BackingPointsBox';
 import AuthoritiesBox from './AuthoritiesBox';
 import GradesSmallBox from './GradesSmallBox';
-import GradesBox from './GradesBox';
+import SessionHistoryTimelineChart from './SessionHistoryTimelineChart';
 
 import { 
   selectSessionHistory,
@@ -21,15 +21,21 @@ import {
  } from '../features/api/sessionsSlice'
 import { 
   selectIsLiveMode,
+  selectIsHistoryMode,
+  selectMaxHistorySessions,
+  selectMaxHistoryEras
 } from '../features/layout/layoutSlice'
 import { 
   selectIsSocketConnected,
 } from '../features/api/socketSlice'
 
 export const ParachainsOverviewPage = ({tab}) => {
-	// const theme = useTheme();
+  // const theme = useTheme();
   const isSocketConnected = useSelector(selectIsSocketConnected);
+  const maxHistorySessions = useSelector(selectMaxHistorySessions);
+  const maxHistoryEras = useSelector(selectMaxHistoryEras);
   const isLiveMode = useSelector(selectIsLiveMode);
+  const isHistoryMode = useSelector(selectIsHistoryMode);
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
   
@@ -41,19 +47,19 @@ export const ParachainsOverviewPage = ({tab}) => {
   }
 
   return (
-		<Box sx={{ m: 2, minHeight: '100vh', mt: isLiveMode ? '16px' : '112px' }}>
+		<Box sx={{ m: 2, minHeight: '100vh', mt: '16px' }}>
       <Grid container spacing={2}>
         <Grid item xs={6} md={4}>
-          <SessionPerformanceTimeline sessionIndex={sessionIndex} />
+          {isLiveMode ? <SessionPerformanceTimeline sessionIndex={sessionIndex} /> : null}
         </Grid>
         <Grid item xs={12} md={2}>
-          <SessionPerformancePieChart />
+          {isLiveMode ? <SessionPerformancePieChart /> : null}
         </Grid>
         <Grid item xs={12} md={2}>
-          <SessionPieChart sessionIndex={sessionIndex} /> 
+          {isLiveMode ? <SessionPieChart sessionIndex={sessionIndex} /> : null}
         </Grid>
         <Grid item xs={12} md={4}>
-          <SessionBox sessionIndex={sessionIndex} />
+          <SessionBox sessionIndex={sessionIndex} dark={!isLiveMode} />
         </Grid>
         <Grid item xs={12} md={2}>
           <AuthoritiesBox sessionIndex={sessionIndex} />
@@ -73,6 +79,10 @@ export const ParachainsOverviewPage = ({tab}) => {
         <Grid item xs={12} md={2}>
           <EraPointsBox />
         </Grid>
+        {isHistoryMode ?
+          <Grid item xs={12}>
+            <SessionHistoryTimelineChart maxSessions={maxHistorySessions} />
+          </Grid> : null}
         <Grid item xs={12}>
           {!!sessionIndex ? <ParachainsOverviewTabs sessionIndex={sessionIndex} tab={tab} /> : null}
         </Grid>
