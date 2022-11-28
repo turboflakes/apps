@@ -81,14 +81,17 @@ export default function AuthoritiesBox({sessionIndex, dark}) {
         width: '100%',
         height: 96,
         borderRadius: 3,
-        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
+        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+        bgcolor: dark ? theme.palette.background.secondary : 'default'
       }}>
       <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>active validators</Typography>
-        <Typography variant="h5">
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}
+          color={dark ? theme.palette.text.secondary : 'default'}>active validators</Typography>
+        <Typography variant="h5" color={dark ? theme.palette.text.secondary : 'default'}>
           {!isUndefined(block.stats.npa) ? block.stats.na : '-'}
         </Typography>
-        <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
+        <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}
+          color={dark ? theme.palette.text.secondary : 'default'}>
           {!isUndefined(block.stats.npa) ? `${block.stats.npa} para-authorities` : '-'}
         </Typography>
       </Box>

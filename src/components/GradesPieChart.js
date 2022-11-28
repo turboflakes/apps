@@ -35,7 +35,7 @@ const renderTooltip = (props) => {
   return null;
 };
 
-export default function GradesPieChart({data, size}) {
+export default function GradesPieChart({data, size, dark}) {
   const theme = useTheme();
   return (
     <Box
@@ -67,17 +67,19 @@ export default function GradesPieChart({data, size}) {
                 labelLine={false}
               >
                 {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={theme.palette.grade[entry.name]} />
+                  <Cell key={`cell-${index}`} fill={theme.palette.grade[entry.name]} borderRadius 
+                  stroke={dark ? theme.palette.background.secondary : theme.palette.background.paper} strokeWidth={1} />
                 ))}
               </Pie>
               {size === "md" ?
-                <text x="50%" y="50%" fill="#343434" style={{ 
+                <text x="50%" y="50%" fill={dark ? theme.palette.text.secondary : '#343434'} style={{ 
                   fontFamily: theme.typography.h2.fontFamily,
-                  fontSize: theme.typography.h2.fontSize
+                  fontSize: theme.typography.h2.fontSize,
+                  color: dark ? theme.palette.text.secondary : 'default'
                   }} textAnchor={'middle'} dominantBaseline="central">
                   {data.slice().sort((a, b) => b.value - a.value)[0].name}
                 </text> : 
-                <text x="50%" y="50%" fill="#343434" style={{ 
+                <text x="50%" y="50%" fill={dark ? theme.palette.text.secondary : '#343434'} style={{ 
                   fontFamily: theme.typography.caption.fontFamily,
                   fontSize: theme.typography.caption.fontSize,
                   fontWeight: 'bold'

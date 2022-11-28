@@ -7,24 +7,18 @@ import Box from '@mui/material/Box';
 import { ComposedChart, Bar, Line, Area, XAxis, YAxis, Cell, ReferenceLine, 
   CartesianGrid, Tooltip, ResponsiveContainer, Rectangle, Legend } from 'recharts';
 import { Typography } from '@mui/material';
-import Divider from '@mui/material/Divider';
 import {
-  useGetValidatorsQuery,
-  selectValidatorsByAddressAndSessions,
   buildSessionIdsArrayHelper
 } from '../features/api/validatorsSlice';
 import {
   selectSessionCurrent,
   selectSessionHistory,
   selectMvrBySessions,
+  selectBackingPointsBySessions,
+  selectAuthoredBlocksBySessions,
   sessionHistoryChanged,
 } from '../features/api/sessionsSlice';
-import {
-  selectValProfileByAddress,
-} from '../features/api/valProfilesSlice';
 import { grade } from '../util/grade'
-import { calculateMvr } from '../util/mvr'
-import { nameDisplay } from '../util/display'
 
 const renderTooltip = (props, theme) => {
   const { active, payload } = props;
@@ -48,80 +42,19 @@ const renderTooltip = (props, theme) => {
             <i>Session // {data.session}</i>
           </Typography>
         </Box>
-        {data.isAuth ? 
           <Box sx={{ minWidth: '192px'}}>
-            {/* <Typography component="div" variant="caption" color="inherit" gutterBottom>
-              <b>Backing subsystem</b>
-            </Typography>
-            <Typography component="div" variant="caption" color="inherit">
-              (✓i) Seconded: {data.iv}
-            </Typography>
-            <Typography component="div" variant="caption" color="inherit">
-              (✓e) Valid: {data.ev}
-            </Typography>
-            <Typography component="div" variant="caption" color="inherit">
-              (✗) Missed: {data.mv}
-            </Typography>
-            <Divider sx={{ my: 1 }} /> */}
-            {/* <Typography component="div" variant="caption" color="inherit" gutterBottom>
-              <b>Legend</b>
-            </Typography> */}
-            {data.isPara ?
             <Box>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.grade[data.gradeValue]}}>❚</span>Backing Points: <b>{data.pvPoints}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.grade[data.gradeValue]}}>❚</span>Backing Points: <b>{!isUndefined(data.pvPoints) ? data.pvPoints.format() : ''}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points: <b>{data.abPoints}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points: <b>{!isUndefined(data.abPoints) ? data.abPoints.format() : ''}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.primary.main }}>―</span>MVR: <b>{Math.round(data.valMvr * 10000) / 10000}</b>
-              </Typography>
-              <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>―</span>MVR (Val. Group {`${data.group}`}): <b>{Math.round(data.valGroupMvr * 10000) / 10000}</b>
-              </Typography>
-              <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
-              </Typography>
-              <Divider sx={{ my: 1 }} />
-              <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <Typography component="div" variant="subtitle2" color="inherit">
-                Para-Authority
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center'}}>
-                  <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 
-                              bgcolor: theme.palette.grade[data.gradeValue] }}>
-                  </Box>
-                  <Typography variant="caption" sx={{ml: 1}}><b>{data.gradeValue}</b></Typography>
-                </Box>
-              </Box>
-            </Box> : 
-            <Box>
-              <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points: <b>{data.abPoints}</b>
-              </Typography>
-              <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
-              </Typography>
-              <Divider sx={{ my: 1 }} />
-              <Typography component="div" variant="subtitle2" color="inherit">
-                Authority
-              </Typography>
-            </Box>}
-          </Box> : 
-          <Box>
-            <Box>
-              <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.mvr * 10000) / 10000}</b>
               </Typography>
             </Box>
-            <Divider sx={{ my: 1 }} />
-            <Typography component="div" variant="subtitle2" color="inherit">
-              Not Authority
-            </Typography>
           </Box>
-        }
-        
       </Box>
     );
   }
@@ -138,12 +71,6 @@ const renderLegend = (theme) => {
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
         <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points
       </Typography>
-      <Typography variant="caption" color="inherit" sx={{mr: 1}}>
-        <span style={{ marginRight: '8px', color: theme.palette.primary.main }}>―</span>MVR
-      </Typography>
-      <Typography variant="caption" color="inherit" sx={{mr: 1}}>
-        <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>―</span>MVR (Val. Group)
-      </Typography>
       <Typography variant="caption" color="inherit">
         <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities)
       </Typography>
@@ -157,7 +84,8 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
   const currentSession = useSelector(selectSessionCurrent);
   const historySession = useSelector(selectSessionHistory);
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1 , maxSessions);
-  const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds));
+  const allBackingPoints = useSelector(state => selectBackingPointsBySessions(state, historySessionIds));
+  const allAuthoredBlocks = useSelector(state => selectAuthoredBlocksBySessions(state, historySessionIds));
   const allMvrs = useSelector(state => selectMvrBySessions(state, historySessionIds));
   
   // if (!isSuccess) {
@@ -168,18 +96,26 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
   //   return null
   // }
 
-  const data = validators.map((v, i) => ({
-    session: v.session,
-    isAuth: v.is_auth ? 1 : 0,
-    isPara: v.is_para ? 1 : 0,
-    abPoints: v.is_auth ? v.auth.ab.length * 20 : 0,
-    pvPoints: v.is_para && (v.auth.ep - v.auth.sp) >= (v.auth.ab.length * 20) ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0,
-    gradeValue: v.is_para ? grade(1 - calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)) : '',
-    valMvr: v.is_para ? calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv) : 0,
-    valGroupMvr: v.is_para ? v._val_group_mvr : 0,  
-    group: v.is_para ? v.para.group : '',
-    sessionMvr: allMvrs[i]
-  }))
+  // const data = validators.map((v, i) => ({
+  //   session: v.session,
+  //   isAuth: v.is_auth ? 1 : 0,
+  //   isPara: v.is_para ? 1 : 0,
+  //   abPoints: v.is_auth ? v.auth.ab.length * 20 : 0,
+  //   pvPoints: v.is_para && (v.auth.ep - v.auth.sp) >= (v.auth.ab.length * 20) ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0,
+  //   gradeValue: v.is_para ? grade(1 - calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)) : '',
+  //   valMvr: v.is_para ? calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv) : 0,
+  //   valGroupMvr: v.is_para ? v._val_group_mvr : 0,  
+  //   group: v.is_para ? v.para.group : '',
+  //   sessionMvr: allMvrs[i]
+  // }))
+
+  const data = historySessionIds.map((sessionId, i) => ({
+    session: sessionId,
+    gradeValue: grade(1 - allMvrs[i]),
+    pvPoints: allBackingPoints[i],
+    abPoints: allAuthoredBlocks[i] * 20,
+    mvr: allMvrs[i]
+  }));
 
   const handleClick = (data) => {
     if (historySession !== data.session) {
@@ -239,18 +175,20 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
             style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}
             axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}} 
             />
-          <Bar dataKey="abPoints" stackId="points" barSize={12} fill={theme.palette.secondary.main} />
+          {/* <Bar dataKey="abPoints" stackId="points" barSize={12} fill={theme.palette.secondary.main} />
           <Bar dataKey="pvPoints" stackId="points" barSize={12} shape={<Rectangle radius={[8, 8, 0, 0]} />} 
             onClick={handleClick} >
             {
               data.map((entry, index) => (
                 <Cell key={`cell-${index}`} cursor="pointer" 
                   stroke={theme.palette.neutrals[300]}
-                  strokeWidth={historySession === entry.session ? 2 : 0}
+                  strokeWidth={historySession === entry.session ? 4 : 0}
                   fill={theme.palette.grade[entry.gradeValue]} />
                 ))
             }
-          </Bar>
+          </Bar> */}
+          <Line type="monotone" dataKey="pvPoints" dot={false} 
+            stroke={theme.palette.secondary.main} strokeWidth={2} />
 
           {/* mvr & group mvr */}
           <YAxis yAxisId="rightMVR" orientation="right"
@@ -258,9 +196,10 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
             style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}
             axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}} 
             />
-          <Line yAxisId="rightMVR" type="monotone" dataKey="valMvr" dot={false} stroke={theme.palette.primary.main} />
-          <Line yAxisId="rightMVR" type="monotone" dataKey="valGroupMvr" dot={false} stroke={theme.palette.semantics.purple} />
-          <Line yAxisId="rightMVR" type="monotone" dataKey="sessionMvr" dot={false} stroke={theme.palette.semantics.amber} />
+          {/* <Line yAxisId="rightMVR" type="monotone" dataKey="valMvr" dot={false} stroke={theme.palette.primary.main} />
+          <Line yAxisId="rightMVR" type="monotone" dataKey="valGroupMvr" dot={false} stroke={theme.palette.semantics.purple} /> */}
+          <Line yAxisId="rightMVR" type="monotone" dataKey="mvr" dot={false} 
+            stroke={theme.palette.semantics.amber} strokeWidth={2} />
           
           <Tooltip 
                 cursor={{fill: theme.palette.divider}}

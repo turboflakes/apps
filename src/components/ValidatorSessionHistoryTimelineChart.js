@@ -69,10 +69,10 @@ const renderTooltip = (props, identiy, theme) => {
             {data.isPara ?
             <Box>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.grade[data.gradeValue]}}>❚</span>Backing Points: <b>{data.pvPoints}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.grade[data.gradeValue]}}>❚</span>Backing Points: <b>{data.pvPoints.format()}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points: <b>{data.abPoints}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points: <b>{data.abPoints.format()}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
                 <span style={{ marginRight: '8px', color: theme.palette.primary.main }}>―</span>MVR: <b>{Math.round(data.valMvr * 10000) / 10000}</b>
@@ -231,7 +231,8 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
             activeDot={false} dot={false} 
             fill={theme.palette.neutrals[100]} strokeWidth={0} />
 
-          <ReferenceLine x={historySession} stroke={theme.palette.neutrals[300]} strokeWidth={2}/>
+          <ReferenceLine x={historySession} stroke={theme.palette.neutrals[300]} 
+            strokeWidth={2}/>
 
           {/* points */}
           <XAxis style={{ fontSize: '0.8rem' }} dataKey="session" type="category" 
@@ -248,7 +249,7 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
               data.map((entry, index) => (
                 <Cell key={`cell-${index}`} cursor="pointer" 
                   stroke={theme.palette.neutrals[300]}
-                  strokeWidth={historySession === entry.session ? 2 : 0}
+                  strokeWidth={historySession === entry.session ? 4 : 0}
                   fill={theme.palette.grade[entry.gradeValue]} />
                 ))
             }
@@ -260,9 +261,12 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
             style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}
             axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}} 
             />
-          <Line yAxisId="rightMVR" type="monotone" dataKey="valMvr" dot={false} stroke={theme.palette.primary.main} />
-          <Line yAxisId="rightMVR" type="monotone" dataKey="valGroupMvr" dot={false} stroke={theme.palette.semantics.purple} />
-          <Line yAxisId="rightMVR" type="monotone" dataKey="sessionMvr" dot={false} stroke={theme.palette.semantics.amber} />
+          <Line yAxisId="rightMVR" type="monotone" dataKey="valMvr" dot={false} 
+            stroke={theme.palette.primary.main} strokeWidth={2} />
+          <Line yAxisId="rightMVR" type="monotone" dataKey="valGroupMvr" dot={false} 
+            stroke={theme.palette.semantics.purple} strokeWidth={2} />
+          <Line yAxisId="rightMVR" type="monotone" dataKey="sessionMvr" dot={false} 
+            stroke={theme.palette.semantics.amber} strokeWidth={2} />
           
           <Tooltip 
                 cursor={{fill: theme.palette.divider}}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-// import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined';
 import isNull from 'lodash/isNull';
 import Paper from '@mui/material/Paper';
@@ -14,8 +14,8 @@ import { grade } from '../util/grade'
 
 const grades = ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "F"]
 
-export default function GradesSmallBox({sessionIndex}) {
-  // const theme = useTheme();
+export default function GradesSmallBox({sessionIndex, dark}) {
+  const theme = useTheme();
   const rawMvrs = useSelector(state => selectMVRsBySession(state, sessionIndex));
   
   if (!rawMvrs.length) {
@@ -51,18 +51,19 @@ export default function GradesSmallBox({sessionIndex}) {
         height: 96,
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px', 
+        bgcolor: dark ? theme.palette.background.secondary : 'default'
       }}>
       <Box sx={{ px: 1, width: '50%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption">session grade majority</Typography>
-          <Typography variant="h5">{`${topGrade.name}`}</Typography>
-          <Typography variant="subtitle2">
+          <Typography variant="caption" color={dark ? theme.palette.text.secondary : 'default'}>session grade majority</Typography>
+          <Typography variant="h5" color={dark ? theme.palette.text.secondary : 'default'}>{`${topGrade.name}`}</Typography>
+          <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : 'default'}>
             {`${topGrade.quantity} para-authorities`}
           </Typography>
         </Box>
       </Box>
       <Box sx={{ px: 1, width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
-        <GradesPieChart data={gradesData} size="sm" />
+        <GradesPieChart data={gradesData} size="sm" dark={dark} />
       </Box>
     </Paper>
   );
