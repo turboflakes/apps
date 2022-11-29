@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-// import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -37,6 +37,7 @@ import { isChainSupported, getChainName, getChainLogo } from '../constants'
 
 
 export default function ValGroupBox({address, sessionIndex}) {
+  const theme = useTheme();
   const {data, isSuccess, isError, error} = useGetValidatorByAddressQuery({address, session: sessionIndex, show_summary: true, show_stats: true});
   const selectedChain = useSelector(selectChain);
   const selectedAddress = useSelector(selectAddress);
@@ -80,8 +81,8 @@ export default function ValGroupBox({address, sessionIndex}) {
   return (
     <Box
       sx={{
-        p: 2,
-        // m: 2,
+        // p: 2,
+        m: 0,
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
@@ -91,10 +92,17 @@ export default function ValGroupBox({address, sessionIndex}) {
       }}
       >
         <Box sx={{ p: 2 }}>
+          <Typography variant="h4" >Val. Group {groupId}</Typography>
           {isHistorMode ? 
-            <Typography variant="h4" >History of Val. Group {groupId}</Typography> : 
-            <Typography variant="h4" >Val. Group {groupId}</Typography>}
-          {isHistorMode ? <Typography variant="subtitle" >At era {session.eix} session {sessionIndex}</Typography> : null}
+            <Typography variant="subtitle" >At history [{session.eix} // {sessionIndex}]</Typography> : 
+              <Box sx={{ display: 'flex', alignItems: 'center'}}>
+                <Typography variant="subtitle">Performance Live</Typography>
+                <Box style={{ width: '8px', height: '8px', 
+                  marginLeft: '8px', borderRadius: '50%', 
+                  animation: "pulse 1s infinite ease-in-out alternate",
+                  backgroundColor: theme.palette.semantics.green, 
+                  display: "inline-block" }}></Box>
+            </Box>}
         </Box>
         <Grid container spacing={2}>
           <Grid item xs={2}>

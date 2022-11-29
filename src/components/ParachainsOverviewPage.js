@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import SessionPieChart from './SessionPieChart';
 import SessionBox from './SessionBox';
+import SessionPieChart from './SessionPieChart';
 import SessionPerformancePieChart from './SessionPerformancePieChart';
 import SessionPerformanceTimeline from './SessionPerformanceTimeline';
 import ParachainsOverviewTabs from './ParachainsOverviewTabs';
@@ -17,7 +17,6 @@ import BackingPointsHistoryBox from './BackingPointsHistoryBox';
 import AuthoritiesBox from './AuthoritiesBox';
 import GradesSmallBox from './GradesSmallBox';
 import SessionHistoryTimelineChart from './SessionHistoryTimelineChart';
-import SessionSlider from './SessionSlider';
 
 import { 
   selectSessionHistory,
