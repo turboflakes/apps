@@ -14,18 +14,35 @@ import { grade } from '../util/grade'
 
 const grades = ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "F"]
 
+const emptyBox = ({theme, dark}) => {
+  return (
+    <Paper sx={{
+      p: 2,
+      display: 'flex',
+      // flexDirection: 'column',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+      height: 96,
+      borderRadius: 3,
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: dark ? theme.palette.background.secondary : 'default'
+    }} />
+  )
+}
+
 export default function GradesSmallBox({sessionIndex, dark}) {
   const theme = useTheme();
   const rawMvrs = useSelector(state => selectMVRsBySession(state, sessionIndex));
   
   if (!rawMvrs.length) {
-    return null
+    return emptyBox({theme, dark})
   }
 
   const mvrs = rawMvrs.filter(mvr => !isUndefined(mvr) && !isNull(mvr))
 
   if (!mvrs.length) {
-    return null
+    return emptyBox({theme, dark})
   }
 
   const gradesData = grades.map(g => {

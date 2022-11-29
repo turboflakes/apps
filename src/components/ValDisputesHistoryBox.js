@@ -36,6 +36,7 @@ export default function ValDisputesHistoryBox({address, maxSessions}) {
 
   const disputesTotal = filtered.map(v => v.para.disputes.length).reduce((a, b) => a + b, 0);
   const lastDispute = filtered[filtered.length - 1];
+  const lastDisputeBlock = lastDispute.para.disputes[lastDispute.para.disputes.length-1][0];
   
   return (
     <Paper sx={{
@@ -56,7 +57,7 @@ export default function ValDisputesHistoryBox({address, maxSessions}) {
           {!isUndefined(disputesTotal) ? disputesTotal : '-'}
         </Typography>
           <Typography variant="subtitle2" color="textSecondary" sx={{ whiteSpace: 'nowrap' }}>
-            last #{lastDispute.para.disputes[lastDispute.para.disputes.length-1][0]}
+            last #{!isUndefined(lastDisputeBlock) ? lastDisputeBlock.format() : '-'}
           </Typography>
       </Box>
     </Paper>

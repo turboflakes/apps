@@ -74,20 +74,37 @@ function valueLabelFormat(value) {
   return value.format();
 }
 
+function useSessionIndex(sessionIndex) {
+  const [value, setValue] = React.useState(sessionIndex);
+
+  React.useEffect(() => {
+    if (value !== sessionIndex) {
+      setValue(sessionIndex);
+    }
+  }, [sessionIndex]);
+
+  return [value, setValue];
+}
+
 export default function SessionSlider({maxSessions}) {
   // const theme = useTheme();
   const dispatch = useDispatch();
   const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true}, {refetchOnMountOrArgChange: true});
   const historySession = useSelector(selectSessionHistory);
-  
+  const [sessionIndex, setSessionIndex] = useSessionIndex(historySession);
+
   if (!isSessionSuccess) {
     return null
   }
+
   let currentSession = data[data.length - 1].six;
   let defaultSession = !!historySession ? historySession : currentSession;
 
-  const handleChange = (event, val) => {
-    dispatch(sessionHistoryChanged(val))
+  const handleChange = (event, value) => {
+    setSessionIndex(value);
+  }
+  const handleChangeCommitted = (event, value) => {
+    dispatch(sessionHistoryChanged(value))
   }
 
   let marks = data.map(session => {
@@ -133,9 +150,10 @@ export default function SessionSlider({maxSessions}) {
         <Typography variant="caption" sx={{ ml: 3 }}>past</Typography>
         <CustomSlider
           aria-label="session slider"
-          // defaultValue={defaultSession}
-          value={defaultSession}
+          // defaultValue={sessionIndex}
+          value={sessionIndex}
           onChange={handleChange}
+          onChangeCommitted={handleChangeCommitted}
           step={1}
           min={currentSession - maxSessions + 1}
           max={currentSession}

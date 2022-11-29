@@ -47,23 +47,40 @@ const customTitle = (data, theme) => {
   )
 }
 
+const emptyBox = ({theme, dark}) => {
+  return (
+    <Paper sx={{
+      p: 2,
+      display: 'flex',
+      // flexDirection: 'column',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+      height: 96,
+      borderRadius: 3,
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: dark ? theme.palette.background.secondary : 'default'
+    }} />
+  )
+}
+
 export default function AuthoritiesBox({sessionIndex, dark}) {
   const theme = useTheme();
   const block = useSelector(selectFinalizedBlock);
   const rawMvrs = useSelector(state => selectMVRsBySession(state, sessionIndex));
   
   if (!rawMvrs.length) {
-    return null
+    return emptyBox({theme, dark})
   }
   
   const mvrs = rawMvrs.filter(mvr => !isUndefined(mvr) && !isNull(mvr))
 
   if (!mvrs.length) {
-    return null
+    return emptyBox({theme, dark})
   }
 
   if (isUndefined(block) || isUndefined(block.stats) || !mvrs.length) {
-    return null
+    return emptyBox({theme, dark})
   }
 
   const poorGrades = mvrs.filter(mvr => grade(1 - mvr) === "F");

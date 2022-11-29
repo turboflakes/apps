@@ -11,7 +11,9 @@ import ParachainsOverviewTabs from './ParachainsOverviewTabs';
 import EraPointsBox from './EraPointsBox';
 import SessionPointsBox from './SessionPointsBox';
 import AuthoredBlocksBox from './AuthoredBlocksBox';
+import AuthoredBlocksHistoryBox from './AuthoredBlocksHistoryBox';
 import BackingPointsBox from './BackingPointsBox';
+import BackingPointsHistoryBox from './BackingPointsHistoryBox';
 import AuthoritiesBox from './AuthoritiesBox';
 import GradesSmallBox from './GradesSmallBox';
 import SessionHistoryTimelineChart from './SessionHistoryTimelineChart';
@@ -49,7 +51,7 @@ export const ParachainsOverviewPage = ({tab}) => {
   }
 
   return (
-		<Box sx={{ m: 2, minHeight: '100vh', mt: '16px' }}>
+		<Box sx={{ m: 2, minHeight: '100vh', mt: isLiveMode ? 2 : 12 }}>
       <Grid container spacing={2}>
         {isLiveMode ? 
           <Grid item xs={6} md={4}>
@@ -66,13 +68,14 @@ export const ParachainsOverviewPage = ({tab}) => {
             <SessionPieChart sessionIndex={sessionIndex} />
           </Grid> : null}
         {isHistoryMode ? 
-        <Grid item xs={12} md={8} >
-          <Box sx={{  p: 2 }}>
-            <Typography variant="h3">Performance History</Typography>
-            <Typography variant="subtitle" color="secondary">Previous {maxHistorySessions} sessions ({maxHistoryEras} eras).</Typography>
-          </Box>
-        </Grid> : null}
-        <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={9} >
+            <Box sx={{  p: 2 }}>
+              <Typography variant="h3">Performance History</Typography>
+              <Typography variant="subtitle" color="secondary">Available for the last {maxHistorySessions} sessions ({maxHistoryEras} eras).</Typography>
+            </Box>
+          </Grid> : null}
+        
+        <Grid item xs={12} md={isHistoryMode ? 3 : 4}>
           <SessionBox sessionIndex={sessionIndex} dark={isHistoryMode} />
         </Grid>
         <Grid item xs={12} md={2}>
@@ -82,22 +85,24 @@ export const ParachainsOverviewPage = ({tab}) => {
           <GradesSmallBox sessionIndex={sessionIndex} dark={isHistoryMode} />
         </Grid>
         <Grid item xs={12} md={2}>
-          <AuthoredBlocksBox />
+          {isLiveMode ? <AuthoredBlocksBox /> : <AuthoredBlocksHistoryBox sessionIndex={sessionIndex} />}
         </Grid>
         <Grid item xs={12} md={2}>
-          <BackingPointsBox />
+          {isLiveMode ? <BackingPointsBox /> : <BackingPointsHistoryBox sessionIndex={sessionIndex} />}
         </Grid>
-        <Grid item xs={12} md={2}>
-          <SessionPointsBox />
-        </Grid>
-        <Grid item xs={12} md={2}>
-          <EraPointsBox />
-        </Grid>
-
-        {isHistoryMode ?
-          <Grid item xs={12}>
-            <SessionSlider maxSessions={maxHistorySessions} /> 
+        {/* {isHistoryMode ? 
+          <Grid item xs={12} md={4}>
+            <SessionBox sessionIndex={sessionIndex} dark={isHistoryMode} />
+          </Grid> : null} */}
+        {isLiveMode ?
+          <Grid item xs={12} md={2}>
+            <SessionPointsBox />
           </Grid> : null}
+        {isLiveMode ?
+          <Grid item xs={12} md={2}>
+            <EraPointsBox />
+          </Grid> : null}
+
         {isHistoryMode ?
           <Grid item xs={12}>
             <SessionHistoryTimelineChart maxSessions={maxHistorySessions} />

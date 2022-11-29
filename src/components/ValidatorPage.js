@@ -46,7 +46,7 @@ export default function ValidatorPage() {
   }
 
   return (
-		<Box sx={{ m: 2, minHeight: '100vh' }}>
+		<Box sx={{ m: 2, mt: isLiveMode ? 2 : 12, minHeight: '100vh' }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <ValHeaderBox address={selectedAddress} sessionIndex={sessionIndex} />

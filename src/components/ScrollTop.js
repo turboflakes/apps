@@ -8,7 +8,7 @@ export const ScrollTop = (props) => {
   const { children } = props;
 
   useEffect(() => {
-	// Guarantee that the pages loads from the top
+	  // Guarantee that the pages loads from the top
     handleClick();
   }, []);
   

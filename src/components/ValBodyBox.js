@@ -41,7 +41,7 @@ export default function ValBodyBox({address, sessionIndex}) {
           : 
           <Box sx={{  p: 2 }}>
             <Typography variant="h3">Performance History</Typography>
-            <Typography variant="subtitle" color="secondary">Previous {maxHistorySessions} sessions ({maxHistoryEras} eras).</Typography>
+            <Typography variant="subtitle" color="secondary">Available for the previous {maxHistorySessions} sessions ({maxHistoryEras} eras).</Typography>
           </Box>
         }
         </Grid>
@@ -58,10 +58,10 @@ export default function ValBodyBox({address, sessionIndex}) {
           <SessionBox sessionIndex={sessionIndex} address={address} dark={!isLiveMode} />
         </Grid>
         
-        {!isLiveMode ?
+        {/* {!isLiveMode ?
           <Grid item xs={12}>
             <SessionSlider maxSessions={maxHistorySessions} /> 
-          </Grid> : null}
+          </Grid> : null} */}
 
         {!isLiveMode ?
           <Grid item xs={12}>

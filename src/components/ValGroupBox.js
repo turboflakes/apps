@@ -29,6 +29,9 @@ import {
   selectIsLiveMode,
   selectIsHistoryMode
 } from '../features/layout/layoutSlice';
+import {
+  selectSessionByIndex,
+} from '../features/api/sessionsSlice';
 import { stashDisplay } from '../util/display'
 import { isChainSupported, getChainName, getChainLogo } from '../constants'
 
@@ -39,6 +42,7 @@ export default function ValGroupBox({address, sessionIndex}) {
   const selectedAddress = useSelector(selectAddress);
   const isLiveMode = useSelector(selectIsLiveMode);
   const isHistorMode = useSelector(selectIsHistoryMode);
+  const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
   const groupId = !!data ? (!!data.is_para ? data.para.group : undefined) : undefined;
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
   
@@ -90,7 +94,7 @@ export default function ValGroupBox({address, sessionIndex}) {
           {isHistorMode ? 
             <Typography variant="h4" >History of Val. Group {groupId}</Typography> : 
             <Typography variant="h4" >Val. Group {groupId}</Typography>}
-          {isHistorMode ? <Typography variant="subtitle" >At session {sessionIndex}</Typography> : null}
+          {isHistorMode ? <Typography variant="subtitle" >At era {session.eix} session {sessionIndex}</Typography> : null}
         </Box>
         <Grid container spacing={2}>
           <Grid item xs={2}>
