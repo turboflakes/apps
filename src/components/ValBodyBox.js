@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 // import { useTheme } from '@mui/material/styles';
+import isUndefined from 'lodash/isUndefined'
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import SessionPieChart from './SessionPieChart';
-import SessionBox from './SessionBox';
-import ValStateBox from './ValStateBox';
 import ValidatorSessionHistoryTimelineChart from './ValidatorSessionHistoryTimelineChart';
 import ValGroupBoxHistoryTabs from './ValGroupBoxHistoryTabs';
 import ValGroupBox from './ValGroupBox';
@@ -17,9 +15,9 @@ import {
   selectMaxHistoryEras
 } from '../features/layout/layoutSlice';
 import { 
-  useGetValidatorByAddressQuery,
   selectValidatorBySessionAndAddress,
 } from '../features/api/validatorsSlice';
+import onetSVG from '../assets/onet.svg';
 
 export default function ValBodyBox({address, sessionIndex}) {
 	// const theme = useTheme();
@@ -27,13 +25,17 @@ export default function ValBodyBox({address, sessionIndex}) {
   const maxHistoryEras = useSelector(selectMaxHistoryEras);
   const isLiveMode = useSelector(selectIsLiveMode);
   const isHistoryMode = useSelector(selectIsHistoryMode);
-  const {data, isSuccess, isError, error} = useGetValidatorByAddressQuery({address, session: sessionIndex, show_summary: true, show_stats: true}, {refetchOnMountOrArgChange: true});
+  const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, address))
   
-  if (!isSuccess) {
+  if (isUndefined(validator)) {
     return null
   }
 
-  console.log("___data", data);
+  const status = validator.is_auth && validator.is_para ? 
+    `The validator is PARA-AUTHORITY at session ${validator.session}.` : 
+      (validator.is_auth ? 
+        `The validator is AUTHORITY at session ${validator.session}.`  : 
+          `The validator is NOT AUTHORITY at session ${validator.session}.`);
 
   return (
 		<Box sx={{ 
@@ -61,17 +63,24 @@ export default function ValBodyBox({address, sessionIndex}) {
             <ValGroupBoxHistoryTabs address={address} maxSessions={maxHistorySessions} />
           </Grid> : null}
           
-        {isLiveMode && data.is_auth && data.is_para ?
+        {isLiveMode && validator.is_auth && validator.is_para ?
           <Grid item xs={12}>
             <ValGroupBox address={address} sessionIndex={sessionIndex} />
-          </Grid> : null}
-
-        {isLiveMode && data.is_auth && !data.is_para ? 
-          <Grid item xs={12}>AUTHORITY</Grid> : null}
-
-        {isLiveMode && !data.is_auth && !data.is_para ? 
-          <Grid item xs={12}>NOT AUTGHORITY</Grid> : null}
-
+          </Grid> : 
+          <Grid item xs={12}>
+            <Box sx={{display: "flex", justifyContent:"center", 
+              alignItems: "center", height: "50vh", }}>
+              <Box sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                <img src={onetSVG} style={{ 
+                    margin: "32px",
+                    opacity: 0.1,
+                    width: 256,
+                    height: 256 }} alt={"ONE-T logo"}/>
+                <Typography variant="h6" color="secondary">{status}</Typography>
+              </Box>
+            </Box>
+          </Grid>
+        }
       </Grid>
 		</Box>
   );

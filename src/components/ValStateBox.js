@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 import {
   selectSessionByIndex,
-  selectSessionCurrent,
+  // selectSessionCurrent,
 } from '../features/api/sessionsSlice';
 import { 
   selectValidatorBySessionAndAddress,
