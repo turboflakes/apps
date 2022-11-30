@@ -31,7 +31,6 @@ export default function SearchSmall(props) {
   }
 
   const handleSubmit = (event) => {
-    console.log("___handleSubmit", event);
     event.preventDefault()
     if (isValidAddress(address) && currentSelected !== address) {
       // setSearchParams({address});

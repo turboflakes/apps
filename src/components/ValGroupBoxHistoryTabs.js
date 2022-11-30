@@ -69,7 +69,7 @@ export default function ValGroupBoxHistoryTabs({address, maxSessions}) {
     return null
   }
 
-  if (sessions.length > 0 && prevCount !== sessions.length) {
+  if (!isUndefined(prevCount) && sessions.length > 0 && prevCount !== sessions.length) {
     dispatch(sessionHistoryChanged(sessions[sessions.length - 1]));
   }
 
