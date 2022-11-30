@@ -10,13 +10,18 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { isValidAddress } from '../util/crypto'
 import {
   addressChanged,
+  selectChain,
   selectAddress
 } from '../features/chain/chainSlice';
+import {
+  pageChanged
+} from '../features/layout/layoutSlice';
 
 export default function SearchSmall(props) {
   // const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const selectedChain = useSelector(selectChain);
   const currentSelected = useSelector(selectAddress);
   const [address, setAddress] = React.useState("");
   let [searchParams, setSearchParams] = useSearchParams();
@@ -26,10 +31,15 @@ export default function SearchSmall(props) {
   }
 
   const handleSubmit = (event) => {
+    console.log("___handleSubmit", event);
     event.preventDefault()
     if (isValidAddress(address) && currentSelected !== address) {
-      setSearchParams({address});
+      // setSearchParams({address});
+      // dispatch(addressChanged(address));
+      // setAddress("");
       dispatch(addressChanged(address));
+      dispatch(pageChanged(`validator/${address}`));
+      navigate(`/one-t/${selectedChain}/validator/${address}`);
       setAddress("");
     }
   }
@@ -67,7 +77,10 @@ export default function SearchSmall(props) {
               borderRadius: 30,
               paddingLeft: '4px',
               '> .MuiOutlinedInput-input': {
-                fontSize: "1rem",
+                fontSize: "0.925rem",
+                height: "36px",
+                // fontSize: "0.825rem",
+                // lineHeight: "1rem",
               },
             }
           }}
