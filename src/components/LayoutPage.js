@@ -278,7 +278,7 @@ export const LayoutPage = ({api}) => {
                 {/* </Box> */}
                 <Typography sx={{visibility: open ? 'visible': 'hidden'}} variant="h4">ONE-T</Typography>
                 <Typography sx={{visibility: open ? 'visible': 'hidden'}} variant="caption">{`${selectedChain[0].toUpperCase()}${selectedChain.slice(1)} Performance Bot`}</Typography>
-                <Chip sx={{ my: 1 }} label="alpha version" color='primary'/>
+                <Chip sx={{ my: 1 }} label="beta version" color='primary'/>
               </Box>
               <Box sx={{display: !open ? 'contents': 'none'}}>
                 <Typography variant="h5">O</Typography>
