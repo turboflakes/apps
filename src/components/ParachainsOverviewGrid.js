@@ -10,8 +10,12 @@ import SortIcon from '@mui/icons-material/Sort';
 import ParachainCard from './ParachainCard';
 import { 
   useGetParachainsQuery,
- } from '../features/api/parachainsSlice'
+ } from '../features/api/parachainsSlice';
+import {
+  selectIsLiveMode,
+} from '../features/layout/layoutSlice';
 import { 
+  selectSessionByIndex,
   selectParachainIdsBySessionSortedBy,
   selectScheduledParachainsBySession
 } from '../features/api/sessionsSlice';
@@ -23,6 +27,8 @@ export default function ParachainsOverviewGrid({sessionIndex}) {
   const {isSuccess} = useGetParachainsQuery({session: sessionIndex}, {refetchOnMountOrArgChange: true});
   const paraIds = useSelector(state => selectParachainIdsBySessionSortedBy(state, sessionIndex, sortBy));
   const nScheduled = useSelector(state => selectScheduledParachainsBySession(state, sessionIndex, sortBy));
+  const isLiveMode = useSelector(selectIsLiveMode);
+  const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
   
   if (!isSuccess) {
     return null
@@ -39,7 +45,13 @@ export default function ParachainsOverviewGrid({sessionIndex}) {
       <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Parachains</Typography>
-          <Typography variant="subtitle" color="secondary">Attestations of Validity by Parachain</Typography>
+          {isLiveMode ? 
+            <Typography variant="subtitle" color="secondary">
+              Attestations of Validity by Parachain
+            </Typography> :
+            <Typography variant="subtitle" color="secondary">
+              Attestations of Validity by Parachain at history [{session.eix} // {sessionIndex}]
+            </Typography>}
         </Box>
         <ToggleButtonGroup
             value={sortBy}

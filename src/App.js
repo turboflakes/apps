@@ -9,6 +9,9 @@ import {
   useParams
 } from "react-router-dom";
 import { ApiPromise, WsProvider } from '@polkadot/api';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { getNetworkExternalWSS } from './constants';
 import { LayoutPage } from './components/LayoutPage'
 import { ParachainsOverviewPage } from './components/ParachainsOverviewPage'
@@ -18,6 +21,7 @@ import {
   selectChain,
 } from './features/chain/chainSlice';
 import {isNetworkSupported} from './constants'
+import onetSVG from './assets/onet.svg';
 
 function useWeb3Api(chain) {
   const [api, setApi] = React.useState(undefined);
@@ -48,6 +52,24 @@ const ValidateChain = () => {
 const App = () => {
   const selectedChain = useSelector(selectChain);
   const [api] = useWeb3Api(selectedChain);
+
+  const matches = useMediaQuery('(max-width: 1440px)');
+
+  if (matches) {
+    return (
+      <Box sx={{p: 2, display: "flex", justifyContent:"center", 
+        alignItems: "center", height: "100vh", }}>
+        <Box sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+          <img src={onetSVG} style={{ 
+              margin: "32px",
+              opacity: 0.1,
+              width: 128,
+              height: 128 }} alt={"ONE-T logo"}/>
+          <Typography variant="h6" color="secondary" align="center">Reach a BIGGER screen to get full experience :)</Typography>
+        </Box>
+      </Box>
+    )
+  }
   
   return (
       <Router>

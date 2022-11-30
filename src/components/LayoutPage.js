@@ -137,7 +137,7 @@ export const LayoutPage = ({api}) => {
   const web3Account = useSelector(selectAccount);
 	useWeb3ChainInfo(api);
 
-	const handleChainSelection = (ev, chain) => {
+  const handleChainSelection = (ev, chain) => {
 		if (chain === null) {
 			return;
 		}

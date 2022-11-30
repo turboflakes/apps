@@ -8,13 +8,19 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import SortIcon from '@mui/icons-material/Sort';
 import ValGroupCard from './ValGroupCard';
 import { 
+  selectSessionByIndex,
   selectValGroupIdsBySessionSortedBy
- } from '../features/api/sessionsSlice'
+ } from '../features/api/sessionsSlice';
+import {
+  selectIsLiveMode,
+} from '../features/layout/layoutSlice';
 
 export default function ValGroupsGrid({sessionIndex}) {
   const [sortBy, setSortBy] = React.useState('');
 	const groupIds = useSelector(state => selectValGroupIdsBySessionSortedBy(state, sessionIndex, sortBy));
-  
+  const isLiveMode = useSelector(selectIsLiveMode);
+  const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
+
   const handleSort = (event, newSortBy) => {
     setSortBy(newSortBy);
   };
@@ -24,7 +30,13 @@ export default function ValGroupsGrid({sessionIndex}) {
       <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Val. Groups</Typography>
-          <Typography variant="subtitle" color="secondary">Attestations of Validity by Val. Groups</Typography>
+          {isLiveMode ? 
+            <Typography variant="subtitle" color="secondary">
+              Attestations of Validity by Val. Groups
+            </Typography> :
+            <Typography variant="subtitle" color="secondary">
+              Attestations of Validity by Val. Groups at history [{session.eix} // {sessionIndex}]
+            </Typography>}
         </Box>
         <ToggleButtonGroup
             value={sortBy}

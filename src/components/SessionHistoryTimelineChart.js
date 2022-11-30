@@ -45,10 +45,10 @@ const renderTooltip = (props, theme) => {
           <Box sx={{ minWidth: '192px'}}>
             <Box>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.grade[data.gradeValue]}}>❚</span>Backing Points: <b>{!isUndefined(data.pvPoints) ? data.pvPoints.format() : ''}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.secondary.main}}>―</span>Backing Points: <b>{!isUndefined(data.pvPoints) ? data.pvPoints.format() : ''}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points: <b>{!isUndefined(data.abPoints) ? data.abPoints.format() : ''}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>―</span>Authored Block Points: <b>{!isUndefined(data.abPoints) ? data.abPoints.format() : ''}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
                 <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.mvr * 10000) / 10000}</b>
@@ -66,10 +66,10 @@ const renderLegend = (theme) => {
   return (
     <Box sx={{mt: -1, mr: 9, display: 'flex', justifyContent: 'flex-end'}}>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
-        <span style={{ marginRight: '8px', color: theme.palette.secondary.main}}>⚝</span>Backing Points
+        <span style={{ marginRight: '8px', color: theme.palette.secondary.main}}>―</span>Backing Points
       </Typography>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
-        <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points
+        <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>―</span>Authored Block Points
       </Typography>
       <Typography variant="caption" color="inherit">
         <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities)
@@ -189,6 +189,8 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
           </Bar> */}
           <Line type="monotone" dataKey="pvPoints" dot={false} 
             stroke={theme.palette.secondary.main} strokeWidth={2} />
+          <Line type="monotone" dataKey="abPoints" dot={false} 
+            stroke={theme.palette.semantics.purple} strokeWidth={2} />
 
           {/* mvr & group mvr */}
           <YAxis yAxisId="rightMVR" orientation="right"
