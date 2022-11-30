@@ -1,67 +1,61 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import groupBy from 'lodash/groupBy'
-import isNumber from 'lodash/isNumber'
-import isUndefined from 'lodash/isUndefined'
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import SortIcon from '@mui/icons-material/Sort';
 import ValGroupCard from './ValGroupCard';
 import { 
-  selectValidatorsAll
- } from '../features/api/validatorsSlice'
-import { calculateMvr } from '../util/mvr'
-import { grade } from '../util/grade'
+  selectValGroupIdsBySessionSortedBy
+ } from '../features/api/sessionsSlice'
 
 export default function ValGroupsGrid({sessionIndex}) {
-	// const theme = useTheme();
-  const allValidators = useSelector(selectValidatorsAll)
-
-  // Filter validators by authority, p/v and session
-  const filtered = allValidators.filter(o => o.is_auth && o.is_para && o.session === sessionIndex);
-  // Group validators by groupID
-  const groups = groupBy(filtered, (o) => o.para.group)
-
-  // Calculate mvr to get number of validators A+ and F
-  const mvrs = filtered.map(o => {
-    const stats = Object.values(o.para.stats)
-    const e = stats.map(o => o.ev).reduce((p, c) => p + c, 0)
-    const i = stats.map(o => o.iv).reduce((p, c) => p + c, 0)
-    const m = stats.map(o => o.mv).reduce((p, c) => p + c, 0)
-    return calculateMvr(e, i, m)
-  })
-  // filter A+ validators
-  const gradeAplus = mvrs.filter(mvr => grade(1 - mvr) === "A+")
-  // const averageMvrGradeAplus = Math.round((gradeAplus.reduce((p, c) => p + c, 0) / gradeAplus.length) * 10000) / 10000
-  // filter F validators
-  const gradeF = mvrs.filter(mvr => grade(1-mvr) === "F")
-  const averageMvrGradeF = Math.round((gradeF.reduce((p, c) => p + c, 0) / gradeF.length) * 10000) / 10000
+  const [sortBy, setSortBy] = React.useState('');
+	const groupIds = useSelector(state => selectValGroupIdsBySessionSortedBy(state, sessionIndex, sortBy));
   
+  const handleSort = (event, newSortBy) => {
+    setSortBy(newSortBy);
+  };
+
   return (
 		<Box sx={{ m: 0 }}>
-      <Box
-        sx={{
-          p: 2,
-          // m: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          width: '70%',
-          height: 120,
-          // borderRadius: 3,
-          // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
-        }}
-        >
-        <Typography variant="h4">Val. Groups</Typography>
-        {!isUndefined(gradeAplus) && !isUndefined(gradeF) ? 
-          <Typography variant="subtitle2">{(gradeAplus.length * 100) / filtered.length}% of para validators in the current session have an exceptional performance (A+)</Typography> : null}
-          <Typography variant="subtitle2">{(gradeF.length * 100) / filtered.length}% have a low performance (F) with an average missed vote ratio of {averageMvrGradeF}</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+        <Box sx={{ p: 2 }}>
+          <Typography variant="h4">Val. Groups</Typography>
+          <Typography variant="subtitle" color="secondary">Attestations of Validity by Val. Groups</Typography>
+        </Box>
+        <ToggleButtonGroup
+            value={sortBy}
+            size="small"
+            exclusive
+            onChange={handleSort}
+            sx={{ display: 'flex', alignItems: 'center'	}}
+          >
+          <ToggleButton value="backing_points" aria-label="Sort by Backing Points" 
+            disableRipple
+            disableFocusRipple
+            sx={{ px: 2, mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
+            <Box sx={{mr: 1}}>Sort by Backing Points</Box><SortIcon />
+          </ToggleButton>
+          <ToggleButton value="mvr" aria-label="Sort by Missed Vote Ratio" 
+            disableRipple
+            disableFocusRipple
+            sx={{ px: 2, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
+            <Box sx={{mr: 1}}>Sort by Missed Vote Ratio</Box><SortIcon />
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
+      <Box sx={{ px: 2, display: 'flex', justifyContent: 'flex-end'}}>
+        <Typography variant="caption" paragraph>Val. Groups total: {groupIds.length}</Typography>
       </Box>
       <Grid container spacing={2}>
-          {Object.values(groups).map((g, i) => (
-            <Grid item xs={12} md={3} key={i}>
-              <ValGroupCard groupId={i} validators={g} />
-            </Grid>
-          ))}
+        {groupIds.map(groupId => (
+          <Grid item xs={12} md={3} key={groupId}>
+            <ValGroupCard sessionIndex={sessionIndex} groupId={groupId} />
+          </Grid>
+        ))}
       </Grid>
 		</Box>
   );

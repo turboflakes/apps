@@ -1,36 +1,47 @@
+import isUndefined from 'lodash/isUndefined'
 import { socketActions, selectIsSocketConnected, selectMessagesInQueue } from './socketSlice'
-import { socketBlockReceived } from './blocksSlice'
-import { selectSessionsAll, socketSessionReceived } from './sessionsSlice'
+import { 
+  socketBlockReceived,
+  socketBlocksReceived } from './blocksSlice'
+import { 
+  selectSessionCurrent,
+  socketSessionReceived } from './sessionsSlice'
 import { 
   socketValidatorReceived,
   socketValidatorsReceived,
-  selectValidatorsAll } from './validatorsSlice'
+  selectValidatorBySessionAndAddress,
+} from './validatorsSlice'
+import { 
+  socketParachainsReceived,
+} from './parachainsSlice'
+import {
+  selectValidatorBySessionAndAuthId
+} from './authoritiesSlice';
 import {
   selectAddress,
   selectChain
 } from '../chain/chainSlice';
 import {
-  selectPage
+  selectPage,
 } from '../layout/layoutSlice';
-import { getNetworkHost } from '../../constants'
+// import apiSlice from './apiSlice';
+import { 
+  getNetworkHost
+} from '../../constants'
 
 
-const unsubscribeValidator = (store) => {
-  const previous_address = selectAddress(store.getState())
-  const allValidators = selectValidatorsAll(store.getState())
-  if (previous_address) {
-    const principal = allValidators.find(o => o.address === previous_address)
-    if (!!principal && principal.is_para) {
-      const addresses = [
-        previous_address,
-        ...allValidators.filter(o => principal.para.peers.includes(o.auth.aix)).map(o => o.address)
-      ];
-      const msg = JSON.stringify({ method: "unsubscribe_validator", params: addresses });
-      store.dispatch(socketActions.messageQueued(msg))
-    } else {
-      const msg = JSON.stringify({ method: "unsubscribe_validator", params: [previous_address] });
-      store.dispatch(socketActions.messageQueued(msg))
-    }
+const dispatchValidator = (store, address, method = 'subscribe') => {
+  const msg = JSON.stringify({ method: `${method}_validator`, params: [address] });
+  store.dispatch(socketActions.messageQueued(msg));
+  const currentSession = selectSessionCurrent(store.getState());
+  const validator = selectValidatorBySessionAndAddress(store.getState(), currentSession, address);
+  if (!!validator && validator.is_para) {
+    const addresses = validator.para.peers.map((peer) => {
+      const validatorPeer = selectValidatorBySessionAndAuthId(store.getState(), currentSession, peer);
+      return validatorPeer.address
+    })
+    const msg = JSON.stringify({ method: `${method}_validator`, params: addresses });
+    store.dispatch(socketActions.messageQueued(msg))
   }
 }
 
@@ -61,8 +72,12 @@ const initWebsocket = (store) => {
       if (event.data){
         const message = JSON.parse(event.data)
         switch (message.type) {
-          case 'best_block': {
+          case 'block': {
             store.dispatch(socketBlockReceived(message.result))
+            break
+          }
+          case 'blocks': {
+            store.dispatch(socketBlocksReceived(message.result))
             break
           }
           case 'session': {
@@ -75,6 +90,10 @@ const initWebsocket = (store) => {
           }
           case 'validators': {
             store.dispatch(socketValidatorsReceived(message.result))
+            break
+          }
+          case 'parachains': {
+            store.dispatch(socketParachainsReceived(message.result))
             break
           }
           default:
@@ -119,30 +138,126 @@ const socketMiddleware = (store) => {
       return (action) => {
         // unsubscribe to address and peers previously subscribed
         if (action.type === 'chain/addressChanged') {
+          const currentSession = selectSessionCurrent(store.getState());
+          const previousAddress = selectAddress(store.getState())
+          const previousValidator = selectValidatorBySessionAndAddress(store.getState(), currentSession, previousAddress);
+          const nextAddress = action.payload;
+          const nextValidator = selectValidatorBySessionAndAddress(store.getState(), currentSession, nextAddress);
           const isConnected = selectIsSocketConnected(store.getState())
           if (isConnected) {
-            unsubscribeValidator(store)
+            if (previousAddress !== nextAddress.payload && 
+              !isUndefined(previousValidator) && 
+              !isUndefined(nextValidator) && 
+              previousValidator.is_para && nextValidator.is_para && 
+              previousValidator.para.group !== nextValidator.para.group) {
+              // NOTE: Only unsubscribe if address is in a different val. group
+              dispatchValidator(store, previousAddress, "unsubscribe");
+            }
           }
         }
         // unsubscribe to address and peers previously subscribed
         if (action.type === 'layout/pageChanged') {
-          const previous_page = selectPage(store.getState())
-          const sessions = selectSessionsAll(store.getState())
-          const session = sessions[sessions.length-1]
-          switch (previous_page) {
+          const nextPage = action.payload;
+          const previousPage = selectPage(store.getState())
+          const currentSession = selectSessionCurrent(store.getState());
+          const currentAddress = selectAddress(store.getState())
+          switch (previousPage) {
             case 'parachains/overview': {
-              const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [session.six.toString()] });
+              const msg = JSON.stringify({ method: 'unsubscribe_parachains', params: [currentSession.toString()] });
               store.dispatch(socketActions.messageQueued(msg))
               break
             }
-            case 'parachains/val-group': {
-              unsubscribeValidator(store)
+            case 'parachains/val-groups': {
+              break
+            }
+            case `validator/${currentAddress}`: {
+              dispatchValidator(store, currentAddress, "unsubscribe");
               break
             }
             default:
               break
           }
+          // switch (nextPage) {
+          //   case 'parachains/val-group': {
+          //     const isHistoryMode = selectIsHistoryMode(store.getState());
+          //     if (isHistoryMode) {
+          //       // get summary data for the selected address for the last X sessions
+          //       // const selectedAddress = selectAddress(store.getState())
+          //       // const chainName = selectChain(store.getState())
+          //       // const maxSessions = getMaxHistorySessions(chainName);
+          //       // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
+          //       // // get all validators summary for the selected session (useful to get the comparison stats)
+          //       // const historySession = selectSessionHistory(store.getState());
+          //       // store.dispatch(apiSlice.endpoints.getValidators.initiate({session: historySession, role: "para_authority", show_summary: true}, {forceRefetch: true}));
+          //     }
+          //     break
+          //   }
+          //   default:
+          //     break
+          // }
         }
+        // subscribe/unsubscribe all subscriptions
+        if (action.type === 'layout/modeChanged') {
+          const currentSession = selectSessionCurrent(store.getState());
+          const currentPage = selectPage(store.getState());
+          switch (currentPage) {
+            case 'parachains/overview': {
+              // if (action.payload === 'History') {
+              //   let msg = JSON.stringify({ method: 'unsubscribe_para_authorities_summary', params: [currentSession.toString()] });
+              //   store.dispatch(socketActions.messageQueued(msg))
+              //   msg = JSON.stringify({ method: 'unsubscribe_parachains', params: [currentSession.toString()] });
+              //   store.dispatch(socketActions.messageQueued(msg))
+              // } else if (action.payload === 'Live') {
+              //   let msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [currentSession.toString()] });
+              //   store.dispatch(socketActions.messageQueued(msg));
+              //   msg = JSON.stringify({ method: 'subscribe_parachains', params: [currentSession.toString()] });
+              //   store.dispatch(socketActions.messageQueued(msg))
+              // }
+              break
+            }
+            case 'parachains/val-groups': {
+              // if (action.payload === 'History') {
+              //   let msg = JSON.stringify({ method: 'unsubscribe_para_authorities_summary', params: [currentSession.toString()] });
+              //   store.dispatch(socketActions.messageQueued(msg))
+              // } else if (action.payload === 'Live') {
+              //   let msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [currentSession.toString()] });
+              //   store.dispatch(socketActions.messageQueued(msg));
+              // }
+              break
+            }
+            // case 'parachains/val-group': {
+            //   if (action.payload === 'History') {
+            //     // // unsubscribe
+            //     // dispatchValidator(store, "unsubscribe");
+            //     // let msg = JSON.stringify({ method: 'unsubscribe_para_authorities_summary', params: [currentSession.toString()] });
+            //     // store.dispatch(socketActions.messageQueued(msg))
+
+            //     // get summary data for the selected address for the last X sessions
+            //     // const selectedAddress = selectAddress(store.getState())
+            //     // const chainName = selectChain(store.getState())
+            //     // const maxSessions = getMaxHistorySessions(chainName);
+            //     // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
+
+            //   } else if (action.payload === 'Live') {
+            //     // dispatchValidator(store, "subscribe");
+            //     // let msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [currentSession.toString()] });
+            //     // store.dispatch(socketActions.messageQueued(msg));
+            //   }
+            //   break
+            // }
+            default:
+              break
+          }
+        }
+        // unsubscribe to address and peers previously subscribed
+        // if (action.type === 'sessions/sessionChanged') {
+        //   const sessionSelected = selectSessionSelected(store.getState())
+        //   const session_index = !!sessionSelected ? sessionSelected : "current"
+        //   const msg = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [session_index.toString()] });
+        //   store.dispatch(socketActions.messageQueued(msg))
+        // }
+
+
         const result = next(action);
         // console.log('next state', store.getState());
         return result;

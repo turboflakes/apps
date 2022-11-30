@@ -5,23 +5,42 @@ import {
   isAnyOf,
   current
 } from '@reduxjs/toolkit'
+import isUndefined from 'lodash/isUndefined'
+import findLast from 'lodash/findLast'
 import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
-import { matchValidatorsReceived } from './validatorsSlice'
+import { selectSessionByIndex } from './sessionsSlice'
 import { calculateMvr } from '../../util/mvr'
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Blocks'],
   endpoints: (builder) => ({
-    getBlock: builder.query({
-      query: (blockId) => `/blocks/${blockId}`,
+    getBlocks: builder.query({
+      query: ({session, show_stats}) => ({
+        url: `/blocks`,
+        params: { session, show_stats }
+      }),
       providesTags: (result, error, arg) => [{ type: 'Blocks', id: arg }],
-      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+    }),
+    getBlock: builder.query({
+      query: ({blockId, show_stats}) => ({
+        url: `/blocks/${blockId}`,
+        params: { show_stats }
+      }),
+      providesTags: (result, error, arg) => [{ type: 'Blocks', id: arg }],
+      async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
         try {
-          await queryFulfilled
+          const { data } = await queryFulfilled
           // `onSuccess` subscribe for updates
-          const msg = JSON.stringify({ method: "subscribe_block", params: [id] });
-          dispatch(socketActions.messageQueued(msg))
+          if (params.blockId === "finalized") {
+            // subscribe to finalized block and from previous session at the same index
+            let msg = JSON.stringify({ method: "subscribe_block", params: ["finalized", "1"] });
+            dispatch(socketActions.messageQueued(msg))
+          }
+          else if (params.blockId === "best") {
+            const msg = JSON.stringify({ method: "subscribe_block", params: ["best"] });
+            dispatch(socketActions.messageQueued(msg))
+          }
         } catch (err) {
           // `onError` side-effect
           // dispatch(socketActions.messageQueued(msg))
@@ -33,6 +52,7 @@ export const extendedApi = apiSlice.injectEndpoints({
 
 export const {
   useGetBlockQuery,
+  useGetBlocksQuery,
 } = extendedApi
 
 // Actions
@@ -40,9 +60,14 @@ export const socketBlockReceived = createAction(
   'blocks/blockReceived'
 )
 
+export const socketBlocksReceived = createAction(
+  'blocks/blocksReceived'
+)
+
 // Slice
 const blocksAdapter = createEntityAdapter({
-  selectId: (data) => data.bix,
+  selectId: (data) => data.block_number,
+  sortComparer: (a, b) => a.block_number > b.block_number,
 })
 
 const matchBlockReceived = isAnyOf(
@@ -50,8 +75,47 @@ const matchBlockReceived = isAnyOf(
   extendedApi.endpoints.getBlock.matchFulfilled
 )
 
-function createValidityData(e, i, m) {
-  return { e, i, m };
+export const matchBlocksReceived = isAnyOf(
+  socketBlocksReceived,
+  extendedApi.endpoints.getBlocks.matchFulfilled
+)
+
+const _calculateBlockMvr = (previousBlock, currentBlock) => {
+  if (isUndefined(currentBlock)) {
+    return -4
+  }
+  if (isUndefined(currentBlock.stats)) {
+    return -1;
+  }
+  if (isUndefined(previousBlock)) {
+    return calculateMvr(currentBlock.stats.ev, currentBlock.stats.iv, currentBlock.stats.mv)
+  } else {
+    if (isUndefined(previousBlock.stats)) {
+      return -1;
+    }
+    const votes = currentBlock.stats.ev - previousBlock.stats.ev + currentBlock.stats.iv - previousBlock.stats.iv + currentBlock.stats.mv - previousBlock.stats.mv;
+    if (votes === 0) {
+      return -1;
+    }
+    return calculateMvr(
+      currentBlock.stats.ev - previousBlock.stats.ev, 
+      currentBlock.stats.iv - previousBlock.stats.iv, 
+      currentBlock.stats.mv - previousBlock.stats.mv);
+  }
+}
+
+const calculateBlockMvr = (state, block) => {
+  if (isUndefined(block)) {
+    return undefined
+  }
+  if (isUndefined(block.block_number)) {
+    return undefined
+  }
+  const mvr = _calculateBlockMvr(state.entities[block.block_number - 1], block);
+  if (mvr === -1){
+    return calculateBlockMvr(state, state.entities[block.block_number - 1]);
+  }
+  return mvr
 }
 
 const blocksSlice = createSlice({
@@ -63,34 +127,26 @@ const blocksSlice = createSlice({
   extraReducers(builder) {
     builder
     .addMatcher(matchBlockReceived, (state, action) => {
-      // Only kept the last 8 blocks in the store
+      // Only kept the last 1000 blocks in the store
       let currentState = current(state);
-      if (currentState.ids.length >= 32) {
+      if (currentState.ids.length >= 1000) {
         blocksAdapter.removeOne(state, currentState.ids[0])
       }
-      blocksAdapter.addOne(state, { ...action.payload, _ts: + new Date()})
-    })
-    .addMatcher(matchValidatorsReceived, (state, action) => {
-      // get latest block
-      const s = current(state)
-      const latest_block = s.ids[s.ids.length-1]
-      // calculate mvr based on latest validators received data
-      const data = action.payload.map(o => { if (o.is_auth && o.is_para) { 
-          const stats = Object.values(o.para.stats)
-          const explicit_votes = stats.map(o => o.ev).reduce((p, c) => p + c, 0)
-          const implicit_votes = stats.map(o => o.iv).reduce((p, c) => p + c, 0)
-          const missed_votes = stats.map(o => o.mv).reduce((p, c) => p + c, 0)
-          return createValidityData(explicit_votes, implicit_votes, missed_votes)
-        } else {
-          return createValidityData(0, 0, 0)
-        }
+      const block = action.payload;
+      blocksAdapter.upsertOne(state, { 
+        ...action.payload, 
+        _mvr: !isUndefined(block.stats) ? calculateBlockMvr(currentState, block) : undefined,
+        _ts: + new Date()
       })
-      const mvr = calculateMvr(
-        data.map(o => o.e).reduce((p, c) => p + c, 0),
-        data.map(o => o.i).reduce((p, c) => p + c, 0),
-        data.map(o => o.m).reduce((p, c) => p + c, 0),
-      )
-      blocksAdapter.upsertOne(state, { bix: latest_block, _mvr: mvr})
+    })
+    .addMatcher(matchBlocksReceived, (state, action) => {
+      let currentState = current(state);
+      const blocks = action.payload.data.map(block => ({
+        ...block,
+        _mvr: !isUndefined(block.stats) ? calculateBlockMvr(currentState, block) : undefined,
+        _ts: + new Date()
+      }))
+      blocksAdapter.upsertMany(state, blocks)
     })
   }
 })
@@ -100,4 +156,39 @@ export default blocksSlice;
 // Selectors
 export const { 
   selectAll,
+  selectById: selectBlockById,
 } = blocksAdapter.getSelectors(state => state.blocks)
+
+export const selectBlock = (state) => !!state.blocks.ids.length ? state.blocks.entities[state.blocks.ids[state.blocks.ids.length-1]] : undefined;
+export const selectBestBlock = (state) => {
+  if (!!state.blocks.ids.length) {
+    const block = findLast(selectAll(state), block => isUndefined(block.is_finalized))
+    if (!isUndefined(block)) {
+      return block
+    }
+  }
+};
+
+export const selectFinalizedBlock = (state) => {
+  if (!!state.blocks.ids.length) {
+    const block = findLast(selectAll(state), block => !isUndefined(block.is_finalized) && block.is_finalized)
+    if (!isUndefined(block)) {
+      return block
+    }
+  }
+};
+
+export const selectPreviousFinalizedBlock = (state) => {
+  const finalized = selectFinalizedBlock(state)
+  if (!isUndefined(finalized)) {
+    return selectBlockById(state, finalized.block_number - 1)
+  }
+};
+
+export const selectBlocksBySession = (state, sessionIndex) => {
+  const session = selectSessionByIndex(state, sessionIndex)
+  if (!isUndefined(session)) {
+    return selectAll(state).filter(b => b.is_finalized && b.block_number >= session.sbix)
+  }
+  return []
+};

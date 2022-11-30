@@ -4,36 +4,48 @@ import {
   createEntityAdapter,
   isAnyOf
 } from '@reduxjs/toolkit'
+import isUndefined from 'lodash/isUndefined'
 import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
+import { 
+  selectSessionByIndex } from './sessionsSlice'
+import {
+  selectIsLiveMode
+} from '../layout/layoutSlice'
+import {
+  selectValGroupMvrBySessionAndGroupId
+} from './valGroupsSlice'
+
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Validators'],
   endpoints: (builder) => ({
     getValidators: builder.query({
-      query: ({session, role}) => ({
+      query: ({address, session, role, number_last_sessions, show_summary, show_stats, show_profile, fetch_peers}) => ({
         url: `/validators`,
-        params: { session, role }
+        params: { address, session, role, number_last_sessions, show_summary, show_stats, show_profile, fetch_peers }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
-      transformResponse: responseData => {
-        return responseData.data
-      },
-      async onQueryStarted(params, { dispatch, queryFulfilled }) {
+      async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
           // `onSuccess` subscribe for updates
-          if (params.role === "para_authority") {
-            const msg1 = JSON.stringify({ method: 'subscribe_para_authorities', params: [params.session.toString()] });
-            dispatch(socketActions.messageQueued(msg1))
-            // TODO see how to better unsubscribe previous session.. for now just be explicit here
-            // NOTE: wait for at least one block so that is_para returns to false for validators no longer in session
-            setTimeout(() => {
-              const msg2 = JSON.stringify({ method: 'unsubscribe_para_authorities', params: [(params.session - 1).toString()] });
-              dispatch(socketActions.messageQueued(msg2))
-            }, 12000)
-            
-          }
+          const session = selectSessionByIndex(getState(), params.session)
+          if (params.role === "para_authority" && session.is_current) {
+            if (params.show_summary) {
+              let msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [params.session.toString()] });
+              dispatch(socketActions.messageQueued(msg))
+              // NOTE: always unsubscribe previous session
+              msg = JSON.stringify({ method: 'unsubscribe_para_authorities_summary', params: [(params.session - 1).toString()] });
+              dispatch(socketActions.messageQueued(msg))
+            } else if (params.show_stats) {
+              let msg = JSON.stringify({ method: 'subscribe_para_authorities_stats', params: [params.session.toString()] });
+              dispatch(socketActions.messageQueued(msg))
+              // NOTE: always unsubscribe previous session
+              msg = JSON.stringify({ method: 'unsubscribe_para_authorities_stats', params: [(params.session - 1).toString()] });
+              dispatch(socketActions.messageQueued(msg))
+            }
+          }         
         } catch (err) {
           // `onError` side-effect
           // dispatch(socketActions.messageQueued(msg))
@@ -41,17 +53,23 @@ export const extendedApi = apiSlice.injectEndpoints({
       },
     }),
     getValidatorByAddress: builder.query({
-      query: (address) => `/validators/${address}`,
+      query: ({address, session, show_summary, show_stats}) => ({
+        url: `/validators/${address}`,
+        params: { session, show_summary, show_stats }
+      }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
-      async onQueryStarted(address, { dispatch, queryFulfilled }) {
+      async onQueryStarted({address, session, show_summary, show_stats}, { getState, dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
           // `onSuccess` subscribe for updates
-          const msg = JSON.stringify({ method: "subscribe_validator", params: [address] });
-          dispatch(socketActions.messageQueued(msg))
+          const isLiveMode = selectIsLiveMode(getState())
+          if (isLiveMode) {
+            const msg = JSON.stringify({ method: "subscribe_validator", params: [address.toString()] });
+            dispatch(socketActions.messageQueued(msg))
+          }
           if (data.is_para) {
             data.para.peers.forEach((peer) => {
-              dispatch(extendedApi.endpoints.getValidatorPeerByAuthority.initiate({address, peer}, {forceRefetch: true}))
+              dispatch(extendedApi.endpoints.getValidatorPeerByAuthority.initiate({address, peer, session, show_summary, show_stats }, {forceRefetch: true}))
             })
           }
         } catch (err) {
@@ -61,14 +79,18 @@ export const extendedApi = apiSlice.injectEndpoints({
       },
     }),
     getValidatorPeerByAuthority: builder.query({
-      query: ({address, peer}) => `/validators/${address}/peers/${peer}`,
+      query: ({address, peer, session, show_summary, show_stats}) => ({
+        url: `/validators/${address}/peers/${peer}`,
+        params: { session, show_summary, show_stats }
+      }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
-      async onQueryStarted({ address }, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_, { getState, dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
           // `onSuccess` subscribe for updates
-          if (data.is_auth) {
-            const msg = JSON.stringify({ method: "subscribe_validator", params: [data.address] });
+          const isLiveMode = selectIsLiveMode(getState())
+          if (isLiveMode && data.is_auth) {
+            const msg = JSON.stringify({ method: "subscribe_validator", params: [data.address.toString()] });
             dispatch(socketActions.messageQueued(msg))
           }
         } catch (err) {
@@ -100,7 +122,7 @@ const adapter = createEntityAdapter({
   selectId: (data) => `${data.session}_${data.address}`,
 })
 
-const matchValidatorReceived = isAnyOf(
+export const matchValidatorReceived = isAnyOf(
   socketValidatorReceived,
   extendedApi.endpoints.getValidatorByAddress.matchFulfilled,
   extendedApi.endpoints.getValidatorPeerByAuthority.matchFulfilled
@@ -121,8 +143,9 @@ const validatorsSlice = createSlice({
       adapter.upsertOne(state, { ...action.payload, _ts: + new Date()})
     })
     .addMatcher(matchValidatorsReceived, (state, action) => {
-      const validators = action.payload.map(validator => ({
+      const validators = action.payload.data.map(validator => ({
         ...validator,
+        session: !!validator.session ? validator.session : action.payload.session,
         _ts: + new Date()
       }))
       adapter.upsertMany(state, validators)
@@ -135,5 +158,42 @@ export default validatorsSlice;
 // Selectors
 export const { 
   selectAll: selectValidatorsAll,
-  selectById: selectValidatorByAddress
+  selectById: selectValidatorById,
 } = adapter.getSelectors(state => state.validators)
+
+export const selectValidatorBySessionAndAddress = (state, session, address) => selectValidatorById(state, `${session}_${address}`)
+export const selectValidatorsByAddressAndSessions = (state, address, sessions = [], exclude_partial_sessions = false) => 
+  sessions.map(sessionId => {
+    if (exclude_partial_sessions) {
+      const session = selectSessionByIndex(state, sessionId);
+      if (isUndefined(session)) return
+    }
+    const validator = selectValidatorById(state, `${sessionId}_${address}`);
+    if (!isUndefined(validator)) {
+      if (validator.is_para) {
+        return {
+          ...validator,
+          _val_group_mvr: selectValGroupMvrBySessionAndGroupId(state, sessionId, validator.para.group)
+        }
+      }
+      return {
+        ...validator
+      }
+    }
+  }).filter(v => !isUndefined(v))
+
+export const selectParaAuthoritySessionsByAddressAndSessions = (state, address, sessions = []) => 
+  selectValidatorsByAddressAndSessions(state, address, sessions)
+    .filter(v => v.is_auth && v.is_para)
+    .map(v => v.session);
+  
+
+// export const selectValidatorsAllBySessionAndAddress = (state, session, address) => selectValidatorById(state, `${session}_${address}`)
+
+export const buildSessionIdsArrayHelper = (startSession, max = 0) => {
+  let out = [];
+  for (let i = max - 1; i >= 0; i--) {
+    out.push(startSession-i);
+  }
+  return out;
+}

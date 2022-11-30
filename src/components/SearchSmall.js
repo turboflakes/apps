@@ -10,13 +10,18 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { isValidAddress } from '../util/crypto'
 import {
   addressChanged,
+  selectChain,
   selectAddress
 } from '../features/chain/chainSlice';
+import {
+  pageChanged
+} from '../features/layout/layoutSlice';
 
 export default function SearchSmall(props) {
   // const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const selectedChain = useSelector(selectChain);
   const currentSelected = useSelector(selectAddress);
   const [address, setAddress] = React.useState("");
   let [searchParams, setSearchParams] = useSearchParams();
@@ -26,54 +31,60 @@ export default function SearchSmall(props) {
   }
 
   const handleSubmit = (event) => {
+    console.log("___handleSubmit", event);
     event.preventDefault()
     if (isValidAddress(address) && currentSelected !== address) {
-      setSearchParams({address});
+      // setSearchParams({address});
+      // dispatch(addressChanged(address));
+      // setAddress("");
       dispatch(addressChanged(address));
+      dispatch(pageChanged(`validator/${address}`));
+      navigate(`/one-t/${selectedChain}/validator/${address}`);
       setAddress("");
     }
   }
 
     return (
-      <Box>
-        <form style={{ display: "flex", alignItems: "center"}} 
-          noValidate autoComplete="off"
-          onSubmit={handleSubmit}>
-          <TextField
-            sx={{
-              // backgroundColor: theme.palette.neutrals[100],
+      <form style={{ display: "flex", alignItems: "center"}} 
+        noValidate autoComplete="off"
+        onSubmit={handleSubmit}>
+        <TextField
+          sx={{
+            // backgroundColor: theme.palette.neutrals[100],
+            borderRadius: 30,
+            width: 512
+          }}
+          variant="outlined"
+          placeholder="Search by validator address"
+          color="primary"
+          value={address}
+          onChange={handleChange}
+          size="small"
+          fullWidth
+          // error={!isValidAddress(this.state.address)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconButton onClick={handleSubmit} size="small"
+                  color="primary" 
+                  // disabled={!isValidAddress(this.state.address)}
+                  >
+                  <SearchIcon color="primary" />
+                </IconButton>
+              </InputAdornment>
+            ),
+            sx: {
               borderRadius: 30,
-              width: 512
-            }}
-            variant="outlined"
-            placeholder="Search by validator address"
-            color="primary"
-            value={address}
-            onChange={handleChange}
-            size="small"
-            fullWidth
-            // error={!isValidAddress(this.state.address)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconButton onClick={handleSubmit} size="small"
-                    color="primary" 
-                    // disabled={!isValidAddress(this.state.address)}
-                    >
-                    <SearchIcon color="primary" />
-                  </IconButton>
-                </InputAdornment>
-              ),
-              sx: {
-                borderRadius: 30,
-                paddingLeft: '4px',
-                '> .MuiOutlinedInput-input': {
-                  fontSize: "1rem",
-                },
-              }
-            }}
-        />
-        </form>
-      </Box>
+              paddingLeft: '4px',
+              '> .MuiOutlinedInput-input': {
+                fontSize: "0.925rem",
+                height: "36px",
+                // fontSize: "0.825rem",
+                // lineHeight: "1rem",
+              },
+            }
+          }}
+      />
+      </form>
     )
 }

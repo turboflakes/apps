@@ -21,6 +21,8 @@ const networkSettings = {
     url: "https://polkadot.network",
     maxValidators: 16,
     maxHistoryEras: 4,
+    coreAssignmentsTarget: 240,
+    blocksPerSessionTarget: 2400,  
     poolIds: [process.env.REACT_APP_POLKADOT_POOL_ID_1, process.env.REACT_APP_POLKADOT_POOL_ID_2],
     chains: prodParasPolkadot
   },
@@ -32,7 +34,10 @@ const networkSettings = {
     logo: logoKusamaSVG,
     url: "https://kusama.network",
     maxValidators: 24,
-    maxHistoryEras: 8,
+    // maxHistoryEras: 16,
+    maxHistoryEras: 32,
+    coreAssignmentsTarget: 60,
+    blocksPerSessionTarget: 600, 
     poolIds: [process.env.REACT_APP_KUSAMA_POOL_ID_1, process.env.REACT_APP_KUSAMA_POOL_ID_2],
     chains: prodParasKusama
   },
@@ -45,6 +50,8 @@ const networkSettings = {
     url: "https://polkadot.network",
     maxValidators: 16,
     maxHistoryEras: 4,
+    coreAssignmentsTarget: 60, 
+    blocksPerSessionTarget: 600, 
     poolIds: [process.env.REACT_APP_WESTEND_POOL_ID_1, process.env.REACT_APP_WESTEND_POOL_ID_2],
   }
 }
@@ -57,6 +64,9 @@ export const getNetworkIcon = (network) => networkSettings[network].icon
 export const getNetworkLogo = (network) => networkSettings[network].logo
 export const getNetworkURL = (network) => networkSettings[network].url
 export const getMaxHistoryEras = (network) => networkSettings[network].maxHistoryEras
+export const getMaxHistorySessions = (network) => networkSettings[network].maxHistoryEras * 6
+export const getCoreAssignmentsTarget = (network) => networkSettings[network].coreAssignmentsTarget
+export const getBlocksPerSessionTarget = (network) => networkSettings[network].blocksPerSessionTarget
 export const getNetworkPoolId = (network, index) => networkSettings[network].poolIds[index]
 // Useful for the leaderboard tabs selection
 export const getNetworkIndex = (network) => Object.keys(networkSettings).findIndex(n => n === network)

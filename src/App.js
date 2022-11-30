@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   HashRouter as Router,
   Routes,
@@ -12,7 +12,7 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { getNetworkExternalWSS } from './constants';
 import { LayoutPage } from './components/LayoutPage'
 import { ParachainsOverviewPage } from './components/ParachainsOverviewPage'
-import { ValGroupPage } from './components/ValGroupPage'
+import ValidatorPage from './components/ValidatorPage'
 import withTheme from './theme/withTheme'
 import {
   selectChain,
@@ -59,8 +59,12 @@ const App = () => {
               <Route path=":chainName" element={<ValidateChain />}>
               <Route index element={<Navigate to="/one-t/kusama/parachains/overview" />} />
                 <Route path="parachains">
-                  <Route path="overview" element={<ParachainsOverviewPage />} />
-                  <Route path="val-group" element={<ValGroupPage />} />
+                  <Route path="overview" element={<ParachainsOverviewPage tab={0} />} />
+                  <Route path="val-groups" element={<ParachainsOverviewPage tab={1} />} />
+                  {/* <Route path="val-group" element={<ValGroupPage />} /> */}
+                </Route>
+                <Route path="validator">
+                  <Route path=":stash" element={<ValidatorPage />} />
                 </Route>
               </Route>
             </Route>

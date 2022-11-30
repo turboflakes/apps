@@ -1,43 +1,69 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux'
+import { useTheme } from '@mui/material/styles';
+import isUndefined from 'lodash/isUndefined';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell } from 'recharts';
 import { Typography } from '@mui/material';
 import { 
   useGetBlockQuery,
-  selectAll,
+  selectFinalizedBlock,
  } from '../features/api/blocksSlice'
-
- import { 
+import { 
   useGetSessionByIndexQuery,
-  selectSessionsAll,
+  selectSessionByIndex,
  } from '../features/api/sessionsSlice'
+import {
+  selectIsLiveMode
+} from '../features/layout/layoutSlice';
 
 function createData(name, value) {
   return { name, value };
 }
 
-const COLORS = ['#343434', '#C8C9CC'];
+export default function SessionPieChart({sessionIndex}) {
+  const theme = useTheme();
+  const {isSuccess: isFinalizedBlockSuccess} = useGetBlockQuery({blockId: "finalized", show_stats: true});
+  const {isSuccess: isSessionSuccess } = useGetSessionByIndexQuery(sessionIndex);
+  const finalized = useSelector(selectFinalizedBlock)
+  const session = useSelector(state => selectSessionByIndex(state, sessionIndex))
+  const isLiveMode = useSelector(selectIsLiveMode)
 
-export default function SessionPieChart() {
-  const {isSuccess} = useGetBlockQuery("best");
-  const {isSuccess: isSessionSuccess } = useGetSessionByIndexQuery("current", {refetchOnMountOrArgChange: true});
-
-  const blocks = useSelector(selectAll)
-  const sessions = useSelector(selectSessionsAll)
-  if (!isSuccess || !isSessionSuccess) {
+  if (!isFinalizedBlockSuccess || !isSessionSuccess || isUndefined(session)) {
     return null
   }
 
-  const session = sessions[sessions.length-1]
-  const block = blocks[blocks.length-1]
-  const diff = block.bix - session.sbix
-  const pieData = [
-    createData('done', Math.round((diff * 100)/600)),
+  const diff = isLiveMode ? finalized.block_number - session.sbix : session.ebix - session.sbix;
+  const donePercentage = Math.round((diff * 100)/600);
+  const pieEpochData = [
+    createData('done', donePercentage),
     createData('progress', Math.round(((600-diff) * 100)/600)),
-  ];
+  ]
+  const eraPercentage = Math.round(donePercentage * (session.esix / 6));
+  
+  let pieEraData = [];
+  for (let i = 1; i <= 6; i++) {
+    if (session.esix === i) {
+      pieEraData.push({
+        name: `S${i}.1`,
+        status: "done",
+        index: i, 
+        value: donePercentage,
+
+      })
+      pieEraData.push({
+        name: `S${i}.0`,
+        status: "progress",
+        index: i, 
+        value: 100 - donePercentage
+      })
+    } else if (session.esix < i) {
+      pieEraData.push({ name: `S${i}.0`, status: "pending", index: i, value: 100 });
+    } else {
+      pieEraData.push({ name: `S${i}.1`, status: "done", index: i, value: 100 });
+    }
+  }
 
   const min = Math.floor(((600-diff)*6)/60)
   const dec = (((600-diff)*6)/60) % 1
@@ -46,65 +72,75 @@ export default function SessionPieChart() {
   return (
     <Paper
       sx={{
-        p: `16px 24px`,
+        p: 2,
         display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         width: '100%',
-        height: 112,
+        height: 96,
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       }}
       >
-      <Grid container>
-        <Grid item xs={12} sm={7} sx={{display: 'flex', alignItems: 'center',}}>
-          <Box>
-            <Box sx={{ display: 'flex', alignItems: 'flex-end'}}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-                <Typography variant="caption">era</Typography>
-                <Typography variant="h5">{isSessionSuccess ? session.eix : '-'}</Typography>
-              </Box>
-              <Typography sx={{ml: 1, mr: 1}} variant="h5">{'//'}</Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-                <Typography variant="caption">session</Typography>
-                <Typography variant="h5">{isSessionSuccess ? session.six : '-'}</Typography>
-              </Box>
-            </Box>
-            <Typography variant="subtitle2">{isSuccess ? `${diff.format()} blocks since #${session.sbix.format()}` : `-`}</Typography>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={5} sx={{width: '100%', height: 84, display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
-          <Box sx={{ mr: 1, display: 'flex', flexDirection: 'column'}}>
-            <Typography variant="caption" align='right'>epoch</Typography>
-            <Typography variant="h5" align='right' sx={{fontFamily: "'Roboto', sans-serif"}}>1 hr</Typography>
-            <Typography variant="subtitle2" align='right'>
-              {min > 0 ? <span style={{ marginRight: '4px'}}>{`${min} mins`}</span> : null}
-              {sec > 0 ? <span>{`${sec} s`}</span> : null}
-            </Typography>
-          </Box>
-          <ResponsiveContainer width='40%' height='100%'>
-            <PieChart>
-            <Pie
-                dataKey="value"
-                data={pieData}
-                cx="50%"
-                cy="50%"
-                outerRadius={36}
-                innerRadius={24}
-                startAngle={90}
-                endAngle={-360}
-              >
-                {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <text x="50%" y="50%" fill="#343434" style={{ fontSize: '1rem' }} textAnchor={'middle'} dominantBaseline="central">
-                {pieData[0].value}%
-              </text>
-            </PieChart>
-          </ResponsiveContainer>
-        </Grid>
-      </Grid>
+      <Box sx={{ px: 1, width: '50%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
+          <Typography variant="caption">epoch countdown</Typography>
+          <Typography variant="h5">{min > 0 ? `${min} mins` : ` ${sec} secs`}</Typography>
+          <Typography variant="subtitle2">
+            {`${eraPercentage}% era completed`}
+          </Typography>
+          {/* <Typography variant="subtitle2">
+              {min > 0 ? <span>{`${min} mins`}</span> : null}
+              {sec > 0 ? <span>{` ${sec} sec`}</span> : null}
+              {` to finish`}
+          </Typography> */}
+        </Box>
+      </Box>
+      <Box sx={{ px: 1, width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
+        <PieChart width={64} height={64}>
+          <Pie
+              data={pieEpochData}
+              dataKey="value"
+              cx="50%"
+              cy="50%"
+              innerRadius={20}
+              outerRadius={32}
+              startAngle={90}
+              endAngle={-360}
+            >
+            {pieEpochData.map((entry, index) => (
+              <Cell key={`cell-${index}`} strokeWidth={0} stroke={theme.palette.neutrals[300]}
+                fill={index === 0 ? theme.palette.text.primary : theme.palette.grey[200] } />
+            ))}
+          </Pie>
+          <Pie 
+            data={pieEraData} 
+            dataKey="value" 
+            cx="50%" 
+            cy="50%" 
+            innerRadius={2} 
+            outerRadius={16}
+            startAngle={90}
+            endAngle={-360}
+            >
+              {pieEraData.map((entry, index) => {
+                if (entry.status === "done") {
+                  return (<Cell key={`cell-${index}`} strokeWidth={1} stroke={theme.palette.text.secondary}
+                    fill={theme.palette.text.primary} />)
+                } else if (entry.status === "progress") {
+                  return (<Cell key={`cell-${index}`} strokeWidth={0} stroke={theme.palette.text.secondary}
+                    fill={theme.palette.grey[300]} />)
+                } else {
+                  return (<Cell key={`cell-${index}`} strokeWidth={1} stroke={theme.palette.text.secondary}
+                    fill={theme.palette.grey[200]} />)
+                }
+              })}
+            </Pie>
+            {/* <text x="50%" y="50%" fill="#343434" style={{ fontSize: '1rem' }} 
+              textAnchor={'middle'} dominantBaseline="central">
+              {pieData[0].value}%
+            </text> */}
+        </PieChart>
+      </Box>
     </Paper>
   );
 }

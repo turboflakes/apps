@@ -18,35 +18,42 @@ let theme = createTheme({
   palette: {
     primary: {
       // dark automatic calculated
-      main: "#ED1C24",
+      // main: "#ED1C24",
+      main: "#0B1317",
       contrastText: '#FFFFFF',
     },
     secondary: {
       // dark automatic calculated
-      main: "#343434",
+      // main: "#343434",
+      main: "#4D4D4D",
       contrastText: '#FFFFFF',
     },
     semantics: {
-      red: "#E02020",
+      red: "#DF2326",
       amber: "#FA6400",
       green: "#44D7B6",
+      blue: "#86D3E7",
+      purple: "#8B7AB8",
     },
     grade: {
-      "A+": "#6DD400", // Emerald
-      "A": "#44D7B6", // Amazonite
-      "B+": "#8BDCAD", // Apatite
-      "B": "#0091FF", // Sapphire
-      "C+": "#C8C9CC", // Gray
-      "C": "#EEEEEE", // Light Gray
-      "D+": "#F7B500", // Citrine
-      "D": "#FA6400", // Amber
-      "F": "#E02020", // Ruby
-      "-": "#FFF", // White
+      "A+": "#78C143",
+      "A": "#5FC3AD",
+      "B+": "#4DC1EF",
+      "B": "#4787C7",
+      "C+": "#C8C9CB",
+      "C": "#EEEEEE",
+      "D+": "#F6B519",
+      "D": "#F26522",
+      "F": "#DF2326",
+      "-": "#FFFFFF",
     },
     neutrals: {
       100: "#F1F1F0",
-      200: "#4D4D4D",
-      300: "#343434",
+      200: "#C8C9CC",
+      // 200: "#A1A1A1",
+      // 200: "#EEEEEE",
+      300: "#4D4D4D",
+      400: "#343434",
       // 400: "#DFF1FA",
       // 500: "#BBDFF3",
       // 600: "#6F7072",
@@ -66,18 +73,20 @@ let theme = createTheme({
     dividerDark: "rgba(0, 0, 0, 0.04)",
     dividerLight: "rgb(255, 255, 255)",
     gradients: {
-      dark0: "linear-gradient(0deg,rgba(0,0,0,0.6),rgba(0,0,0,0.4))",
-      dark90: "linear-gradient(90deg,rgba(0,0,0,0.6),rgba(0,0,0,0.4))",
-      dark180: "linear-gradient(180deg,rgba(0,0,0,0.6),rgba(0,0,0,0.4))",
-      default0: "linear-gradient(0deg,#85BCE4,#F9FDFF)",
-      default90: "linear-gradient(90deg,#85BCE4,#F9FDFF)",
-      default180: "linear-gradient(180deg,#85BCE4,#F9FDFF)",
-      default270: "linear-gradient(270deg,#DFF1FA,#FFF)",
-      secondary0: "linear-gradient(0deg,#85BCE4,#E86866)",
-      secondary90: "linear-gradient(90deg,#85BCE4,#E86866)",
-      secondary180: "linear-gradient(180deg,#85BCE4,#E86866)",
-      trend: "linear-gradient(180deg,#343434,#FFF)",
-      onet: "linear-gradient(90deg,#45CDE9,#7A8FD3)",
+      light180: "linear-gradient(180deg,#FFFFFF,#F1F1F0)",
+      dark0: "linear-gradient(0deg,#FFFFFF,#C8C9CC)",
+      // dark0: "linear-gradient(0deg,rgba(0,0,0,0.6),rgba(0,0,0,0.4))",
+      // dark90: "linear-gradient(90deg,rgba(0,0,0,0.6),rgba(0,0,0,0.4))",
+      // dark180: "linear-gradient(180deg,rgba(0,0,0,0.6),rgba(0,0,0,0.4))",
+      // default0: "linear-gradient(0deg,#85BCE4,#F9FDFF)",
+      // default90: "linear-gradient(90deg,#85BCE4,#F9FDFF)",
+      // default180: "linear-gradient(180deg,#85BCE4,#F9FDFF)",
+      // default270: "linear-gradient(270deg,#DFF1FA,#FFF)",
+      // secondary0: "linear-gradient(0deg,#85BCE4,#E86866)",
+      // secondary90: "linear-gradient(90deg,#85BCE4,#E86866)",
+      // secondary180: "linear-gradient(180deg,#85BCE4,#E86866)",
+      // trend: "linear-gradient(180deg,#343434,#FFF)",
+      onet: "linear-gradient(90deg, #45CDE9, #7A8FD3)",
     },
     text: {
       primary: "#0B1317",
@@ -95,32 +104,37 @@ let theme = createTheme({
   typography: {
     useNextVariants: true,
     h1: {
-      fontFamily: "'Gilroy-Heavy', 'Helvetica Neue', 'Arial', sans-serif",
+      fontFamily: "'Gilroy', 'Helvetica Neue', 'Arial', sans-serif",
       fontSize: "6rem",
+      fontWeight: 800,
       '@media screen and (max-width: 900px)': {
         fontSize: "3.125rem",
       },
     },
     h2: {
-      fontFamily: "'Gilroy-Heavy', 'Helvetica Neue', 'Arial', sans-serif",
+      fontFamily: "'Gilroy', 'Helvetica Neue', 'Arial', sans-serif",
       fontSize: "3.75rem",
+      fontWeight: 800,
       '@media screen and (max-width: 900px)': {
 
       }
     },
     h3: {
-      fontFamily: "'Gilroy-Heavy', 'Helvetica Neue', 'Arial', sans-serif",
+      fontFamily: "'Gilroy', 'Helvetica Neue', 'Arial', sans-serif",
       fontSize: "3rem",
+      fontWeight: 800,
       '@media screen and (max-width: 900px)': {
         fontSize: "2.5rem",
       }
     },
     h4: {
-      fontFamily: "'Gilroy-Heavy', 'Helvetica Neue', 'Arial', sans-serif",
+      fontFamily: "'Gilroy', 'Helvetica Neue', 'Arial', sans-serif",
+      fontWeight: 800,
       fontSize: "2.125rem",
     },
     h5: {
-      fontFamily: "'Gilroy-Heavy', 'Helvetica Neue', 'Arial', sans-serif",
+      fontFamily: "'Gilroy', 'Helvetica Neue', 'Arial', sans-serif",
+      fontWeight: 800,
       fontSize: "1.5rem",
       '@media screen and (max-width: 900px)': {
         fontSize: "1.125rem",
@@ -133,7 +147,7 @@ let theme = createTheme({
     },
     body1: {
       fontFamily: "'Roboto', sans-serif",
-      fontSize: "1.2rem",
+      fontSize: "1.1rem",
       '@media screen and (max-width: 900px)': {
         fontSize: "1rem",
       }
@@ -144,6 +158,13 @@ let theme = createTheme({
       color: '#4D4D4D',
       lineHeight: 1
     },
+    subtitle: {
+      fontFamily: "'Roboto', sans-serif",
+      fontSize: "1.1rem",
+      '@media screen and (max-width: 900px)': {
+        fontSize: "1rem",
+      }
+    },
     subtitle1: {
       fontFamily: "'Roboto', sans-serif",
       fontSize: "1.5rem",
@@ -153,7 +174,10 @@ let theme = createTheme({
     },
     subtitle2: {
       fontFamily: "'Roboto', sans-serif",
-      fontSize: "1rem"
+      fontSize: "0.825rem",
+      fontStyle: "italic",
+      lineHeight: 0.875,
+      color: '#4D4D4D',
     }, 
   },
   shape: {
