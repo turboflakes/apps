@@ -24,7 +24,7 @@ export default function ValGroupsGrid({sessionIndex}) {
       <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Val. Groups</Typography>
-          <Typography variant="subtitle">Attestations of Validity by Val. Groups</Typography>
+          <Typography variant="subtitle" color="secondary">Attestations of Validity by Val. Groups</Typography>
         </Box>
         <ToggleButtonGroup
             value={sortBy}

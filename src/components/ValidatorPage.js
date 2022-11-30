@@ -8,8 +8,6 @@ import SessionBox from './SessionBox';
 import SessionPieChart from './SessionPieChart';
 import SessionPerformancePieChart from './SessionPerformancePieChart';
 import SessionPerformanceTimeline from './SessionPerformanceTimeline';
-import ValGroupBox from './ValGroupBox';
-import SearchSmall from './SearchSmall';
 import ValHeaderBox from './ValHeaderBox';
 import ValBodyBox from './ValBodyBox';
 import {
@@ -27,6 +25,10 @@ import {
 import { 
   selectIsSocketConnected,
 } from '../features/api/socketSlice';
+import { 
+  useGetValidatorByAddressQuery,
+  selectValidatorBySessionAndAddress,
+} from '../features/api/validatorsSlice';
 
 export default function ValidatorPage() {
 	// const theme = useTheme();
@@ -74,7 +76,7 @@ export default function ValidatorPage() {
           </Grid> : null}
 
 
-        {/* --- validator --- */}
+        {/* --- validator header --- */}
         {isLiveMode ?
           <Grid item xs={12}>
             <Divider sx={{ 
@@ -91,42 +93,12 @@ export default function ValidatorPage() {
           <ValHeaderBox address={selectedAddress} sessionIndex={sessionIndex} />
         </Grid>
 
-        <Grid item xs={12}>
-          <Divider sx={{ 
-            opacity: 0.25,
-            height: '1px',
-            borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-            borderBottom: 'none',
-            backgroundColor: 'transparent',
-            backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-            }} />
-        </Grid>
+        {/* --- validator timeline or group --- */}
 
         <Grid item xs={12}>
           <ValBodyBox address={selectedAddress} sessionIndex={sessionIndex} />
         </Grid>
-        
-         {/* --- validator group --- */}
 
-        <Grid item xs={12}>
-          {!!selectedAddress ? 
-          <Box>
-            {/* <Divider sx={{ 
-            opacity: 0.25,
-            height: '1px',
-            borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-            borderBottom: 'none',
-            backgroundColor: 'transparent',
-            backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-            }} /> */}
-            {/* <ValGroupBox address={selectedAddress} sessionIndex={sessionIndex} /> */}
-          </Box>
-             : 
-          <Box sx={{ height: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <SearchSmall />
-          </Box>
-          }
-        </Grid>
       </Grid>
 		</Box>
   );

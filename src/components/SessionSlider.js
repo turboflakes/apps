@@ -92,7 +92,7 @@ export default function SessionSlider({maxSessions}) {
   const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true}, {refetchOnMountOrArgChange: true});
   const historySession = useSelector(selectSessionHistory);
   const [sessionIndex, setSessionIndex] = useSessionIndex(historySession);
-
+  
   if (!isSessionSuccess) {
     return null
   }

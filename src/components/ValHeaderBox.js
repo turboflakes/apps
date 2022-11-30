@@ -5,6 +5,7 @@ import isUndefined from 'lodash/isUndefined'
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
+import Divider from '@mui/material/Divider';
 import ValAddressProfile from './ValAddressProfile';
 import ValMvrBox from './ValMvrBox';
 import ValMvrHistoryBox from './ValMvrHistoryBox';
@@ -29,6 +30,9 @@ import {
   selectMaxHistorySessions,
   selectMaxHistoryEras
 } from '../features/layout/layoutSlice';
+import { 
+  selectValidatorBySessionAndAddress,
+} from '../features/api/validatorsSlice';
 
 const ORDER = ['1st', '2nd', '3rd', '4th', '5th', '6th'];
 
@@ -39,8 +43,9 @@ export default function ValHeaderBox({address, sessionIndex}) {
   const currentSession = useSelector(selectSessionCurrent);
   const isLiveMode = useSelector(selectIsLiveMode);
   const session = useSelector(state => selectSessionByIndex(state, currentSession))
+  const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, address));
 
-  if (isNaN(sessionIndex) || isUndefined(session)) {
+  if (isNaN(sessionIndex) || isUndefined(session) || isUndefined(validator)) {
     return null
   }
 
@@ -53,9 +58,7 @@ export default function ValHeaderBox({address, sessionIndex}) {
       }}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={5}>
-          <Box sx={{ display: 'flex'}}>
-            <ValAddressProfile address={address} maxSessions={maxHistorySessions} showGrade />
-          </Box>
+          <ValAddressProfile address={address} maxSessions={maxHistorySessions} showGrade />
         </Grid>
         <Grid item xs={12} md={7}>
           <Box sx={{ 
@@ -123,6 +126,16 @@ export default function ValHeaderBox({address, sessionIndex}) {
               </Grid>
             </Grid>
           </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <Divider sx={{ 
+            opacity: 0.25,
+            height: '1px',
+            borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+            borderBottom: 'none',
+            backgroundColor: 'transparent',
+            backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+            }} />
         </Grid>
       </Grid>
 		</Box>

@@ -6,7 +6,6 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
 import ValGroupPieCharts from './ValGroupPieCharts';
 import ValGroupDataGrid from './ValGroupDataGrid';
 import ValGroupPointsChart from './ValGroupPointsChart';
@@ -16,7 +15,7 @@ import ValGroupValidityVotesBox from './ValGroupValidityVotesBox';
 import ValGroupMvrBox from './ValGroupMvrBox';
 import ValGroupBackingPointsBox from './ValGroupBackingPointsBox';
 import { 
-  useGetValidatorByAddressQuery,
+  selectValidatorBySessionAndAddress
 } from '../features/api/validatorsSlice'
  import {
    selectValidatorsBySessionAndGroupId
@@ -32,26 +31,22 @@ import {
 import {
   selectSessionByIndex,
 } from '../features/api/sessionsSlice';
-import { stashDisplay } from '../util/display'
+// import { stashDisplay } from '../util/display'
 import { isChainSupported, getChainName, getChainLogo } from '../constants'
 
 
 export default function ValGroupBox({address, sessionIndex}) {
   const theme = useTheme();
-  const {data, isSuccess, isError, error} = useGetValidatorByAddressQuery({address, session: sessionIndex, show_summary: true, show_stats: true});
+  const primary = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, address));
   const selectedChain = useSelector(selectChain);
   const selectedAddress = useSelector(selectAddress);
   const isLiveMode = useSelector(selectIsLiveMode);
   const isHistorMode = useSelector(selectIsHistoryMode);
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
-  const groupId = !!data ? (!!data.is_para ? data.para.group : undefined) : undefined;
+  const groupId = !isUndefined(primary) ? (primary.is_para ? primary.para.group : undefined) : undefined;
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
-  
-  if (isError) {
-    return (<Typography>! {error}</Typography>)
-  }
-  
-  if (!isSuccess) {
+
+  if (isUndefined(primary)) {
     return null
   }
 
@@ -63,20 +58,9 @@ export default function ValGroupBox({address, sessionIndex}) {
   let filtered = validators.filter(v => v.address !== selectedAddress)
   filtered.splice(0,0, validators.find(v => v.address === selectedAddress));
 
-  if (isUndefined(filtered[0])) {
-    return (<Typography>At the current session the validator {stashDisplay(address)} is not found.</Typography>)
-  }
-
-  if (!filtered[0].is_auth) {
-    return (<Typography>At the current session the validator {stashDisplay(address)} is not Authority.</Typography>)
-  }
-
-  if (!filtered[0].is_para) {
-    return (<Typography>At the current session the validator {stashDisplay(address)} is not Para Validator.</Typography>)
-  }
-
-  const paraId = filtered[0].para.pid;
-  const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
+  const paraId = primary.para.pid;
+  const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? 
+    getChainName(selectedChain, paraId) : paraId) : '';
 
   return (
     <Box
@@ -94,7 +78,7 @@ export default function ValGroupBox({address, sessionIndex}) {
         <Box sx={{ p: 2 }}>
           <Typography variant="h4" >Val. Group {groupId}</Typography>
           {isHistorMode ? 
-            <Typography variant="subtitle" >At history [{session.eix} // {sessionIndex}]</Typography> : 
+            <Typography variant="subtitle" color="secondary">At history [{session.eix} // {sessionIndex}]</Typography> : 
               <Box sx={{ display: 'flex', alignItems: 'center'}}>
                 <Typography variant="subtitle">Performance Live</Typography>
                 <Box style={{ width: '8px', height: '8px', 

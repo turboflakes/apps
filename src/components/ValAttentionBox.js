@@ -51,7 +51,7 @@ export default function AuthoritiesBox({address}) {
         bgcolor: theme.palette.semantics.red
       }}>
         <Typography variant="h6" color="textSecondary" align='center'>
-          <b>Validator need attention!</b>
+          <b>Validator needs attention!</b>
         </Typography>
     </Paper>
   );

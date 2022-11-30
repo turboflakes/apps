@@ -16,6 +16,10 @@ import {
   selectMaxHistorySessions,
   selectMaxHistoryEras
 } from '../features/layout/layoutSlice';
+import { 
+  useGetValidatorByAddressQuery,
+  selectValidatorBySessionAndAddress,
+} from '../features/api/validatorsSlice';
 
 export default function ValBodyBox({address, sessionIndex}) {
 	// const theme = useTheme();
@@ -23,6 +27,13 @@ export default function ValBodyBox({address, sessionIndex}) {
   const maxHistoryEras = useSelector(selectMaxHistoryEras);
   const isLiveMode = useSelector(selectIsLiveMode);
   const isHistoryMode = useSelector(selectIsHistoryMode);
+  const {data, isSuccess, isError, error} = useGetValidatorByAddressQuery({address, session: sessionIndex, show_summary: true, show_stats: true}, {refetchOnMountOrArgChange: true});
+  
+  if (!isSuccess) {
+    return null
+  }
+
+  console.log("___data", data);
 
   return (
 		<Box sx={{ 
@@ -32,13 +43,13 @@ export default function ValBodyBox({address, sessionIndex}) {
         width: '100%',
       }}>
       <Grid container spacing={2}>
-      {isHistoryMode ?
-        <Grid item xs={12} md={7}>
-          <Box sx={{  p: 2 }}>
-            <Typography variant="h3">Performance History</Typography>
-            <Typography variant="subtitle" color="secondary">Covering {maxHistorySessions} sessions ({maxHistoryEras} eras)</Typography>
-          </Box> 
-        </Grid>: null }
+        {isHistoryMode ?
+          <Grid item xs={12} md={7}>
+            <Box sx={{  p: 2 }}>
+              <Typography variant="h3">Performance History</Typography>
+              <Typography variant="subtitle" color="secondary">Covering {maxHistorySessions} sessions ({maxHistoryEras} eras)</Typography>
+            </Box> 
+          </Grid>: null }
         
         {isHistoryMode ?
           <Grid item xs={12}>
@@ -49,11 +60,17 @@ export default function ValBodyBox({address, sessionIndex}) {
           <Grid item xs={12}>
             <ValGroupBoxHistoryTabs address={address} maxSessions={maxHistorySessions} />
           </Grid> : null}
-        
-        {isLiveMode ?
+          
+        {isLiveMode && data.is_auth && data.is_para ?
           <Grid item xs={12}>
             <ValGroupBox address={address} sessionIndex={sessionIndex} />
           </Grid> : null}
+
+        {isLiveMode && data.is_auth && !data.is_para ? 
+          <Grid item xs={12}>AUTHORITY</Grid> : null}
+
+        {isLiveMode && !data.is_auth && !data.is_para ? 
+          <Grid item xs={12}>NOT AUTGHORITY</Grid> : null}
 
       </Grid>
 		</Box>

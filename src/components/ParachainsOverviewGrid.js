@@ -39,7 +39,7 @@ export default function ParachainsOverviewGrid({sessionIndex}) {
       <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Parachains</Typography>
-          <Typography variant="subtitle">Attestations of Validity by Parachain</Typography>
+          <Typography variant="subtitle" color="secondary">Attestations of Validity by Parachain</Typography>
         </Box>
         <ToggleButtonGroup
             value={sortBy}

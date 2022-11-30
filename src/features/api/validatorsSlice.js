@@ -182,6 +182,12 @@ export const selectValidatorsByAddressAndSessions = (state, address, sessions = 
     }
   }).filter(v => !isUndefined(v))
 
+export const selectParaAuthoritySessionsByAddressAndSessions = (state, address, sessions = []) => 
+  selectValidatorsByAddressAndSessions(state, address, sessions)
+    .filter(v => v.is_auth && v.is_para)
+    .map(v => v.session);
+  
+
 // export const selectValidatorsAllBySessionAndAddress = (state, session, address) => selectValidatorById(state, `${session}_${address}`)
 
 export const buildSessionIdsArrayHelper = (startSession, max = 0) => {
