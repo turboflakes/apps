@@ -5,7 +5,13 @@ import {
   isAnyOf
 } from '@reduxjs/toolkit'
 import isUndefined from 'lodash/isUndefined'
+import groupBy from 'lodash/groupBy'
+import mergeWith from 'lodash/mergeWith'
+import isArray from 'lodash/isArray'
+import max from 'lodash/max'
+import min from 'lodash/min'
 import apiSlice from './apiSlice'
+import { calculateMvr } from '../../util/mvr'
 import { socketActions } from './socketSlice'
 import { 
   selectSessionByIndex } from './sessionsSlice'
@@ -15,6 +21,9 @@ import {
 import {
   selectValGroupMvrBySessionAndGroupId
 } from './valGroupsSlice'
+import {
+  selectValProfileByAddress
+} from './valProfilesSlice'
 
 
 export const extendedApi = apiSlice.injectEndpoints({
@@ -45,7 +54,9 @@ export const extendedApi = apiSlice.injectEndpoints({
               msg = JSON.stringify({ method: 'unsubscribe_para_authorities_stats', params: [(params.session - 1).toString()] });
               dispatch(socketActions.messageQueued(msg))
             }
-          }         
+          }
+          
+          console.log("___queryFulfilled");
         } catch (err) {
           // `onError` side-effect
           // dispatch(socketActions.messageQueued(msg))
@@ -186,9 +197,6 @@ export const selectParaAuthoritySessionsByAddressAndSessions = (state, address, 
   selectValidatorsByAddressAndSessions(state, address, sessions)
     .filter(v => v.is_auth && v.is_para)
     .map(v => v.session);
-  
-
-// export const selectValidatorsAllBySessionAndAddress = (state, session, address) => selectValidatorById(state, `${session}_${address}`)
 
 export const buildSessionIdsArrayHelper = (startSession, max = 0) => {
   let out = [];
@@ -196,4 +204,89 @@ export const buildSessionIdsArrayHelper = (startSession, max = 0) => {
     out.push(startSession-i);
   }
   return out;
+}
+
+function mergeArrays(objValue, srcValue) {
+  if (isArray(objValue)) {
+    return objValue.concat(srcValue);
+  }
+}
+
+const selectValidatorsBySessions = (state, sessions = []) => {
+  let validators = {};
+  sessions.forEach(sessionId => {
+    const session = selectSessionByIndex(state, sessionId);
+    if (!isUndefined(session) && !isUndefined(session._stashes)) {
+      const a = session._stashes.map(s => selectValidatorBySessionAndAddress(state, sessionId, s))
+      const b = groupBy(a, v => v.address);
+      mergeWith(validators, b, mergeArrays);
+    }
+    
+  });
+  return Object.values(validators)
+}
+
+function createRows(id, identity, address, subset, 
+  active_sessions, para_sessions, authored_blocks, core_assignments, 
+  explicit_votes, implicit_votes, missed_votes, avg_pts, commission) {
+  return {id, identity, address, subset, 
+    active_sessions, para_sessions, authored_blocks, 
+    core_assignments, explicit_votes, implicit_votes, missed_votes, 
+    avg_pts, commission };
+}
+
+// SCORES
+// https://github.com/turboflakes/one-t/blob/main/SCORES.md
+// 
+// Performance Score
+// performance_score = (1 - mvr) * 0.75 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
+
+// Commission Score
+// commission_score = performance_score * 0.25 + (1 - commission) * 0.75
+
+const performance_score = (mvr, avg_pts, min_avg_pts, max_avg_pts, para_sessions, total_sessions) => {
+  return (1 - mvr) * 0.75 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (para_sessions / total_sessions) * 0.07
+}
+
+export const selectValidatorsInsightsBySessions = (state, sessions = []) => {
+  const validators = selectValidatorsBySessions(state, sessions);
+  const rows = validators.map((x, i) => {
+    const f1 = x.filter(y => y.is_auth);
+    const authored_blocks = f1.map(v => v.auth.ab.length).reduce((a, b) => a + b, 0);
+    const f2 = x.filter(y => y.is_auth && y.is_para);
+    const para_points = f2.map(v => v.para_summary.pt - (v.para_summary.ab * 20)).reduce((a, b) => a + b, 0);
+    const core_assignments = f2.map(v => v.para_summary.ca).reduce((a, b) => a + b, 0);
+    const implicit_votes = f2.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0);
+    const explicit_votes = f2.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0);
+    const missed_votes = f2.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0);
+    const profile = selectValProfileByAddress(state, x[0].address);
+    const avg_pts = para_points / f2.length;
+    return createRows(
+      i+1, 
+      profile._identity,
+      x[0].address,
+      profile.subset, 
+      f1.length,
+      f2.length,
+      authored_blocks, 
+      core_assignments,
+      explicit_votes, 
+      implicit_votes, 
+      missed_votes, 
+      avg_pts,
+      profile.commission
+    )
+  })
+
+  const min_avg_pts = min(rows.map(v => v.avg_pts));
+  const max_avg_pts = max(rows.map(v => v.avg_pts));
+
+  return rows.map(v => {
+    const mvr = calculateMvr(v.explicit_votes, v.implicit_votes, v.missed_votes)
+    return {
+      ...v,
+      mvr,
+      score: performance_score(mvr, v.avg_pts, min_avg_pts, max_avg_pts, v.para_sessions, sessions.length)
+    }
+  })
 }

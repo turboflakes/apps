@@ -139,7 +139,8 @@ const sessionsSlice = createSlice({
         const _mvrs = validators.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
         const _validity_votes = validators.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv);
         const _backing_points = validators.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0);
-        adapter.upsertOne(state, { six: parseInt(session, 10), _group_ids, _mvrs, _validity_votes, _backing_points})
+        const _stashes = validators.map(v => v.address);
+        adapter.upsertOne(state, { six: parseInt(session, 10), _group_ids, _mvrs, _validity_votes, _backing_points, _stashes})
       })
 
     })

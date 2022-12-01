@@ -297,7 +297,7 @@ export const LayoutPage = ({api}) => {
               <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Validators' : 'Val..'}
               </ListSubheader>
-              <ListItemButton selected={selectedPage === 'validators/insights'} disabled
+              <ListItemButton selected={selectedPage === 'validators/insights'}
                 onClick={() => handlePageSelection('validators/insights')}>
                 <ListItemIcon>
                   <FontAwesomeIcon icon={faServer} />

@@ -16,6 +16,7 @@ import { getNetworkExternalWSS } from './constants';
 import { LayoutPage } from './components/LayoutPage'
 import { ParachainsOverviewPage } from './components/ParachainsOverviewPage'
 import ValidatorPage from './components/ValidatorPage'
+import InsightsPage from './components/InsightsPage'
 import withTheme from './theme/withTheme'
 import {
   selectChain,
@@ -87,6 +88,9 @@ const App = () => {
                 </Route>
                 <Route path="validator">
                   <Route path=":stash" element={<ValidatorPage />} />
+                </Route>
+                <Route path="validators">
+                  <Route path="insights" element={<InsightsPage />} />
                 </Route>
               </Route>
             </Route>
