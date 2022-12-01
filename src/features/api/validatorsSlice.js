@@ -228,11 +228,11 @@ const selectValidatorsBySessions = (state, sessions = []) => {
 
 function createRows(id, identity, address, subset, 
   active_sessions, para_sessions, authored_blocks, core_assignments, 
-  explicit_votes, implicit_votes, missed_votes, avg_pts, commission) {
+  explicit_votes, implicit_votes, missed_votes, avg_pts, commission, timeline) {
   return {id, identity, address, subset, 
     active_sessions, para_sessions, authored_blocks, 
     core_assignments, explicit_votes, implicit_votes, missed_votes, 
-    avg_pts, commission };
+    avg_pts, commission, timeline };
 }
 
 // SCORES
@@ -248,6 +248,46 @@ const performance_score = (mvr, avg_pts, min_avg_pts, max_avg_pts, para_sessions
   return (1 - mvr) * 0.75 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (para_sessions / total_sessions) * 0.07
 }
 
+// Timeline 
+// 
+// NOTE: MVR_LEVELS are configurable in ONE-T bot.
+// Default values are: 
+// fn default_mvr_level_1() -> u32 {
+//   2000
+// }
+// fn default_mvr_level_2() -> u32 {
+//   4000
+// }
+// fn default_mvr_level_3() -> u32 {
+//   6000
+// }
+// fn default_mvr_level_4() -> u32 {
+//   9000
+// }
+// They should be in sync to whatever is defined there.
+// 
+const MVR_LEVELS = [9000, 6000, 4000, 2000, -1];
+
+const GLYPHS = {
+  "waiting": "_",
+  "active": "•",
+  "activePVL0": "❚",
+  "activePVL1": "❙",
+  "activePVL2": "❘",
+  "activePVL3": "!",
+  "activePVL4": "¿",
+  "activeIdle": "?",
+  "NA": ".",
+  fromMVR: function (mvr) {
+    if (isUndefined(mvr)) {
+      return this.activeIdle
+    }
+    const rounded = Math.round((1 - mvr) * 10000);
+    const index = MVR_LEVELS.findIndex(l => rounded > l);
+    return this[`activePVL${index}`]
+  }
+}
+
 export const selectValidatorsInsightsBySessions = (state, sessions = []) => {
   const validators = selectValidatorsBySessions(state, sessions);
   const rows = validators.map((x, i) => {
@@ -261,6 +301,23 @@ export const selectValidatorsInsightsBySessions = (state, sessions = []) => {
     const missed_votes = f2.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0);
     const profile = selectValProfileByAddress(state, x[0].address);
     const avg_pts = para_points / f2.length;
+
+    const timeline = sessions.map(s => {
+      const y = x.find(e => e.session === s);
+      if (!isUndefined(y)) {
+        if (y.is_auth && y.is_para) {
+          const mvr = calculateMvr(y.para_summary.ev, y.para_summary.iv, y.para_summary.mv);
+          return GLYPHS.fromMVR(mvr)
+        } else if (y.is_auth) {
+          return GLYPHS.active
+        } else {
+          return GLYPHS.NA
+        }
+      } else {
+        return GLYPHS.waiting
+      }
+    });
+
     return createRows(
       i+1, 
       profile._identity,
@@ -274,7 +331,8 @@ export const selectValidatorsInsightsBySessions = (state, sessions = []) => {
       implicit_votes, 
       missed_votes, 
       avg_pts,
-      profile.commission
+      profile.commission,
+      timeline.join("")
     )
   })
 
