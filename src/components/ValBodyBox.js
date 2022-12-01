@@ -67,19 +67,20 @@ export default function ValBodyBox({address, sessionIndex}) {
           <Grid item xs={12}>
             <ValGroupBox address={address} sessionIndex={sessionIndex} />
           </Grid> : 
-          <Grid item xs={12}>
-            <Box sx={{display: "flex", justifyContent:"center", 
-              alignItems: "center", height: "50vh", }}>
-              <Box sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-                <img src={onetSVG} style={{ 
-                    margin: "32px",
-                    opacity: 0.1,
-                    width: 256,
-                    height: 256 }} alt={"ONE-T logo"}/>
-                <Typography variant="h6" color="secondary">{status}</Typography>
+          (isHistoryMode && validator.is_auth && !validator.is_para || !validator.is_auth ?
+            <Grid item xs={12}>
+              <Box sx={{display: "flex", justifyContent:"center", 
+                alignItems: "center", height: "50vh", }}>
+                <Box sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+                  <img src={onetSVG} style={{ 
+                      margin: "32px",
+                      opacity: 0.1,
+                      width: 256,
+                      height: 256 }} alt={"ONE-T logo"}/>
+                  <Typography variant="h6" color="secondary">{status}</Typography>
+                </Box>
               </Box>
-            </Box>
-          </Grid>
+            </Grid> : null)
         }
       </Grid>
 		</Box>
