@@ -272,7 +272,7 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
                 cursor={{fill: theme.palette.divider}}
                 offset={24}
                 wrapperStyle={{ zIndex: 100 }} 
-                content={props => renderTooltip(props, nameDisplay(valProfile._identity), theme)} />
+                content={props => renderTooltip(props, nameDisplay(!isUndefined(valProfile) ? valProfile._identity : '-'), theme)} />
           <Legend verticalAlign="top" content={() => renderLegend(theme)} height={24} />
         </ComposedChart>
       </ResponsiveContainer>
