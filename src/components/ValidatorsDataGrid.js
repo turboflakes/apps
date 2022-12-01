@@ -28,16 +28,6 @@ import { stashDisplay, nameDisplay } from '../util/display'
 
 const defineColumns = (theme) => {
   return [
-  // { 
-  //   field: 'id', 
-  //   headerName: '#', 
-  //   width: 48,
-  //   sortable: false,
-  //   disableColumnMenu: true,
-  //   valueGetter: (params) => {
-  //     return codes[params.row.id-1]
-  //   },
-  // },
   { 
       field: 'id', 
       headerName: '', 
@@ -63,6 +53,12 @@ const defineColumns = (theme) => {
     disableColumnMenu: true,
   },
   {
+    field: 'subset',
+    headerName: 'Subset',
+    width: 96,
+    disableColumnMenu: true,
+  },
+  {
     field: 'grade',
     headerName: 'Grade',
     width: 64,
@@ -83,8 +79,29 @@ const defineColumns = (theme) => {
     }
   },
   {
+    field: 'active_sessions',
+    headerName: 'Active Sessions',
+    type: 'number',
+    width: 64,
+    disableColumnMenu: true,
+  },
+  {
+    field: 'para_sessions',
+    headerName: 'P/A Sessions',
+    type: 'number',
+    width: 64,
+    disableColumnMenu: true,
+  },
+  {
     field: 'authored_blocks',
     headerName: '❒',
+    type: 'number',
+    width: 64,
+    disableColumnMenu: true,
+  },
+  {
+    field: 'core_assignments',
+    headerName: '↻',
     type: 'number',
     width: 64,
     disableColumnMenu: true,
@@ -122,7 +139,7 @@ const defineColumns = (theme) => {
     field: 'avg_pts',
     headerName: 'Avg. Backing Points',
     type: 'number',
-    width: 128,
+    width: 96,
     disableColumnMenu: true,
     valueGetter: (params) => Math.round(params.row.avg_pts),
   },
@@ -130,9 +147,16 @@ const defineColumns = (theme) => {
     field: 'score',
     headerName: 'Score',
     type: 'number',
-    width: 128,
+    width: 96,
     disableColumnMenu: true,
     sortingOrder: ['asc', 'desc']
+  },
+  {
+    field: 'timeline',
+    headerName: 'Timeline',
+    width: 384,
+    sortable: false,
+    disableColumnMenu: true,
   },
 ]};
 
@@ -145,11 +169,9 @@ export default function ValidatorsDataGrid({sessionIndex}) {
   const {data: data3} = useGetValidatorsQuery({session: sessionIndex - 2, role: "para_authority", show_summary: true, show_profile: true}, {refetchOnMountOrArgChange: true});
   const {data: data2} = useGetValidatorsQuery({session: sessionIndex - 1, role: "para_authority", show_summary: true, show_profile: true}, {refetchOnMountOrArgChange: true});
   const {data: data1, isSuccess} = useGetValidatorsQuery({session: sessionIndex - 3, role: "para_authority", show_summary: true, show_profile: true}, {refetchOnMountOrArgChange: true});
-
-
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex - 1, sessionIndex - 2, sessionIndex - 3]));
 
-  console.log('__validators', rows);
+  // console.log('__validators', rows);
 
   if (isUndefined(rows)) {
     return null
@@ -182,7 +204,48 @@ export default function ValidatorsDataGrid({sessionIndex}) {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: '80vh',
+        height: '2768px',
+        borderRadius: 3,
+        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
+      }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography variant="h6">Validators</Typography>
+          </Box>
+        </Box>
+        <DataGrid
+          sx={{ bgcolor: '#FFF', width: '100%', borderRadius: 0, border: 0,
+          '& .MuiDataGrid-footerContainer': {
+            borderTop: 0
+          } }}
+          initialState={{
+            pagination: {
+              pageSize: 50,
+            },
+            sorting: {
+              sortModel: [{ field: 'score', sort: 'desc' }],
+            },
+          }}
+          // onRowClick={handleOnRowClick}
+          rows={rows}
+          columns={columns}
+          rowsPerPageOptions={[50]}
+          pagination
+          disableSelectionOnClick
+        />
+    </Paper>
+  );
+}
+
+{/* <Paper
+      sx={{
+        p: 2,
+        // m: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '2868px',
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}
@@ -194,14 +257,21 @@ export default function ValidatorsDataGrid({sessionIndex}) {
         </Box>
         <DataGrid
           sx={{ bgcolor: '#FFF', width: '100%', borderRadius: 0, border: 0 }}
+          initialState={{
+            // pagination: {
+            //   pageSize: 50,
+            // },
+            sorting: {
+              sortModel: [{ field: 'score', sort: 'desc' }],
+            },
+          }}
           rows={rows}
           columns={columns}
-          pageSize={50}
-          rowsPerPageOptions={[500]}
+          // pageSize={100}
+          rowsPerPageOptions={[50, 100]}
+          pagination
           hideFooter
           disableSelectionOnClick
           onRowClick={handleOnRowClick}
         />
-    </Paper>
-  );
-}
+    </Paper> */}
