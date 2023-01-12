@@ -9,7 +9,8 @@ import SessionBox from './SessionBox';
 import SessionPieChart from './SessionPieChart';
 import SessionPerformancePieChart from './SessionPerformancePieChart';
 import SessionPerformanceTimeline from './SessionPerformanceTimeline';
-import ValidadtorsDataGrid from './ValidatorsDataGrid';
+import ValidatorsDataGrid from './ValidatorsDataGrid';
+import ValidatorsHistoryDataGrid from './ValidatorsHistoryDataGrid';
 
 import {
   selectAddress,
@@ -91,8 +92,12 @@ export default function InsightsPage() {
 
         {isLiveMode ? 
           <Grid item xs={12}>
-            <ValidadtorsDataGrid sessionIndex={sessionIndex} />
-          </Grid> : null}
+            <ValidatorsDataGrid sessionIndex={sessionIndex} skip={isNaN(sessionIndex)} />
+          </Grid> : 
+          <Grid item xs={12}>
+            <ValidatorsHistoryDataGrid sessionIndex={sessionIndex} skip={isNaN(sessionIndex)} />
+          </Grid>
+        }
 
       </Grid>
 		</Box>

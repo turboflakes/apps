@@ -7,14 +7,13 @@ import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
 import Identicon from '@polkadot/react-identicon';
 import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
 import {
   useGetValidatorsQuery,
   selectValidatorsInsightsBySessions,
+  buildSessionIdsArrayHelper
 } from '../features/api/validatorsSlice'
 import {
   addressChanged,
@@ -24,6 +23,12 @@ import {
 import {
   pageChanged
 } from '../features/layout/layoutSlice';
+import {
+  selectSessionCurrent,
+} from '../features/api/sessionsSlice';
+import { stashDisplay, nameDisplay } from '../util/display'
+
+// const codes = ['★', 'A', 'B', 'C', 'D']
 
 const defineColumns = (theme) => {
   return [
@@ -66,9 +71,6 @@ const defineColumns = (theme) => {
     sortable: false,
     disableColumnMenu: true,
     renderCell: (params) => {
-      if (isNaN(params.row.mvr)) {
-        return "-"
-      }
       const gradeValue = grade(1-params.row.mvr);
       return (
         <Box>
@@ -79,6 +81,20 @@ const defineColumns = (theme) => {
           <Box sx={{ml: 1,  display: "inline-block"}}>{gradeValue}</Box>
         </Box>)
     }
+  },
+  {
+    field: 'active_sessions',
+    headerName: 'Active Sessions',
+    type: 'number',
+    width: 64,
+    disableColumnMenu: true,
+  },
+  {
+    field: 'para_sessions',
+    headerName: 'P/A Sessions',
+    type: 'number',
+    width: 64,
+    disableColumnMenu: true,
   },
   {
     field: 'authored_blocks',
@@ -125,9 +141,9 @@ const defineColumns = (theme) => {
   },
   {
     field: 'avg_pts',
-    headerName: 'Backing Points',
+    headerName: 'Avg. Backing Points',
     type: 'number',
-    width: 128,
+    width: 96,
     disableColumnMenu: true,
     valueGetter: (params) => Math.round(params.row.avg_pts),
   },
@@ -139,6 +155,13 @@ const defineColumns = (theme) => {
     disableColumnMenu: true,
     sortingOrder: ['asc', 'desc']
   },
+  {
+    field: 'timeline',
+    headerName: 'Timeline',
+    width: 384,
+    sortable: false,
+    disableColumnMenu: true,
+  },
 ]};
 
 export default function ValidatorsDataGrid({sessionIndex, skip}) {
@@ -147,12 +170,26 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
   const navigate = useNavigate();
   const selectedChain = useSelector(selectChain);
   const selectedAddress = useSelector(selectAddress);
-  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true, show_profile: true}, {skip});
-  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex]));
+  const historySessionIds = buildSessionIdsArrayHelper(sessionIndex, 48);
+  console.log("__historySessionIds", historySessionIds.join(","));
+  // const {data: data3} = useGetValidatorsQuery({session: sessionIndex - 2, role: "para_authority", show_summary: true, show_profile: true});
+  // const {data: data2} = useGetValidatorsQuery({session: sessionIndex - 1, role: "para_authority", show_summary: true, show_profile: true});
+  const {data, isSuccess} = useGetValidatorsQuery({sessions: historySessionIds.join(","), role: "para_authority", show_summary: true, show_profile: true}, {skip});
+  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, historySessionIds));
 
-  if (isUndefined(rows) && !isSuccess) {
+  console.log('__data', data);
+
+  if (isUndefined(rows)) {
     return null
   }
+
+  // const validators = [data1, data2];
+
+  // // sort by session
+  // const sorted = validators.sort((a, b) => b.session - a.session);
+  // // const groupedByAddress = groupBy(sorted, v => !!v.session ? v.session : action.payload.session)
+  // // console.log('__sorted', sorted);
+
 
   const columns = defineColumns(theme);
 
@@ -164,8 +201,6 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
       navigate(`/one-t/${selectedChain}/validator/${address}`)
     }
   };
-
-  const identities = rows.map(v => ({label: v.identity}))
 
   return (
     <Paper
@@ -185,12 +220,6 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
             <Typography variant="h6">Validators</Typography>
           </Box>
         </Box>
-        <Autocomplete
-          disablePortal
-          options={identities}
-          sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Identity" />}
-        />
         <DataGrid
           sx={{ bgcolor: '#FFF', width: '100%', borderRadius: 0, border: 0,
           '& .MuiDataGrid-footerContainer': {
@@ -204,7 +233,7 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
               sortModel: [{ field: 'score', sort: 'desc' }],
             },
           }}
-          onRowClick={handleOnRowClick}
+          // onRowClick={handleOnRowClick}
           rows={rows}
           columns={columns}
           rowsPerPageOptions={[50]}
@@ -214,3 +243,41 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
     </Paper>
   );
 }
+
+{/* <Paper
+      sx={{
+        p: 2,
+        // m: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '2868px',
+        borderRadius: 3,
+        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
+      }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography variant="h6">Validators</Typography>
+          </Box>
+        </Box>
+        <DataGrid
+          sx={{ bgcolor: '#FFF', width: '100%', borderRadius: 0, border: 0 }}
+          initialState={{
+            // pagination: {
+            //   pageSize: 50,
+            // },
+            sorting: {
+              sortModel: [{ field: 'score', sort: 'desc' }],
+            },
+          }}
+          rows={rows}
+          columns={columns}
+          // pageSize={100}
+          rowsPerPageOptions={[50, 100]}
+          pagination
+          hideFooter
+          disableSelectionOnClick
+          onRowClick={handleOnRowClick}
+        />
+    </Paper> */}

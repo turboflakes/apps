@@ -136,8 +136,8 @@ const sessionsSlice = createSlice({
 
       forEach(groupedBySession, (validators, session) => {
         const _group_ids = uniq(validators.map(v => toNumber(v.para.group))).sort((a, b) => a - b)
-        const _mvrs = validators.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
-        const _validity_votes = validators.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv);
+        const _mvrs = validators.map(v => !isUndefined(v.para_summary) ? calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv) : undefined);
+        const _validity_votes = validators.map(v => !isUndefined(v.para_summary) ? v.para_summary.ev + v.para_summary.iv + v.para_summary.mv : 0);
         const _backing_points = validators.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0);
         const _stashes = validators.map(v => v.address);
         adapter.upsertOne(state, { six: parseInt(session, 10), _group_ids, _mvrs, _validity_votes, _backing_points, _stashes})

@@ -84,7 +84,6 @@ const App = () => {
                 <Route path="parachains">
                   <Route path="overview" element={<ParachainsOverviewPage tab={0} />} />
                   <Route path="val-groups" element={<ParachainsOverviewPage tab={1} />} />
-                  {/* <Route path="val-group" element={<ValGroupPage />} /> */}
                 </Route>
                 <Route path="validator">
                   <Route path=":stash" element={<ValidatorPage />} />

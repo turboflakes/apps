@@ -30,9 +30,9 @@ export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Validators'],
   endpoints: (builder) => ({
     getValidators: builder.query({
-      query: ({address, session, role, number_last_sessions, show_summary, show_stats, show_profile, fetch_peers}) => ({
+      query: ({address, session, sessions, role, number_last_sessions, show_summary, show_stats, show_profile, fetch_peers}) => ({
         url: `/validators`,
-        params: { address, session, role, number_last_sessions, show_summary, show_stats, show_profile, fetch_peers }
+        params: { address, session, sessions, role, number_last_sessions, show_summary, show_stats, show_profile, fetch_peers }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
       async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
@@ -199,6 +199,9 @@ export const selectParaAuthoritySessionsByAddressAndSessions = (state, address, 
     .map(v => v.session);
 
 export const buildSessionIdsArrayHelper = (startSession, max = 0) => {
+  if (isNaN(startSession)) {
+    return []
+  }
   let out = [];
   for (let i = max - 1; i >= 0; i--) {
     out.push(startSession-i);
@@ -289,6 +292,7 @@ const GLYPHS = {
 }
 
 export const selectValidatorsInsightsBySessions = (state, sessions = []) => {
+  console.log("___selectValidatorsInsightsBySessions sessions:", sessions);
   const validators = selectValidatorsBySessions(state, sessions);
   const rows = validators.map((x, i) => {
     const f1 = x.filter(y => y.is_auth);
@@ -320,9 +324,9 @@ export const selectValidatorsInsightsBySessions = (state, sessions = []) => {
 
     return createRows(
       i+1, 
-      profile._identity,
+      !isUndefined(profile) ? profile._identity : '-',
       x[0].address,
-      profile.subset, 
+      !isUndefined(profile) ? profile.subset : '-', 
       f1.length,
       f2.length,
       authored_blocks, 
@@ -331,7 +335,7 @@ export const selectValidatorsInsightsBySessions = (state, sessions = []) => {
       implicit_votes, 
       missed_votes, 
       avg_pts,
-      profile.commission,
+      !isUndefined(profile) ? profile.commission : '-',
       timeline.join("")
     )
   })

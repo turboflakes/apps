@@ -7,9 +7,6 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
 import HistoryErasMenu from './HistoryErasMenu';
-import { 
-  useGetValidatorsQuery,
- } from '../features/api/validatorsSlice';
 import {
   modeChanged,
   selectIsLiveMode
@@ -83,8 +80,6 @@ export default function ModeSwitch({mode}) {
   const isLiveMode = useSelector(selectIsLiveMode);
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
-  // fetch current session validators
-  const {isSuccess} = useGetValidatorsQuery({session: currentSession, role: "para_authority", show_summary: true});
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
 
