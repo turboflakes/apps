@@ -16,6 +16,7 @@ import { getNetworkExternalWSS } from './constants';
 import { LayoutPage } from './components/LayoutPage'
 import { ParachainsOverviewPage } from './components/ParachainsOverviewPage'
 import ValidatorPage from './components/ValidatorPage'
+import InsightsPage from './components/InsightsPage'
 import withTheme from './theme/withTheme'
 import {
   selectChain,
@@ -64,7 +65,7 @@ const App = () => {
               margin: "32px",
               opacity: 0.1,
               width: 128,
-              height: 128 }} alt={"ONE-T logo"}/>
+              height: 128 }} alt={"ONE-T logo"} />
           <Typography variant="h6" color="secondary" align="center">Reach a BIGGER screen to get full experience :)</Typography>
         </Box>
       </Box>
@@ -83,10 +84,12 @@ const App = () => {
                 <Route path="parachains">
                   <Route path="overview" element={<ParachainsOverviewPage tab={0} />} />
                   <Route path="val-groups" element={<ParachainsOverviewPage tab={1} />} />
-                  {/* <Route path="val-group" element={<ValGroupPage />} /> */}
                 </Route>
                 <Route path="validator">
                   <Route path=":stash" element={<ValidatorPage />} />
+                </Route>
+                <Route path="validators">
+                  <Route path="insights" element={<InsightsPage />} />
                 </Route>
               </Route>
             </Route>
