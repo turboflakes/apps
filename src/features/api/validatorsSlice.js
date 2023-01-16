@@ -291,8 +291,7 @@ const GLYPHS = {
   }
 }
 
-export const selectValidatorsInsightsBySessions = (state, sessions = []) => {
-  console.log("___selectValidatorsInsightsBySessions sessions:", sessions);
+export const selectValidatorsInsightsBySessions = (state, sessions = [], identityFilter) => {
   const validators = selectValidatorsBySessions(state, sessions);
   const rows = validators.map((x, i) => {
     const f1 = x.filter(y => y.is_auth);
@@ -350,5 +349,5 @@ export const selectValidatorsInsightsBySessions = (state, sessions = []) => {
       mvr,
       score: performance_score(mvr, v.avg_pts, min_avg_pts, max_avg_pts, v.para_sessions, sessions.length)
     }
-  })
+  }).filter(v => v.identity.toLowerCase().includes(identityFilter.toLowerCase()))
 }

@@ -5,10 +5,14 @@ import isUndefined from 'lodash/isUndefined'
 import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagnifyingGlassChart } from '@fortawesome/free-solid-svg-icons'
 import Identicon from '@polkadot/react-identicon';
 import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
@@ -24,6 +28,28 @@ import {
 import {
   pageChanged
 } from '../features/layout/layoutSlice';
+
+
+function DetailsIcon({address}) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const selectedChain = useSelector(selectChain);
+  const selectedAddress = useSelector(selectAddress);
+
+  const handleOnClick = () => {
+    if (selectedAddress !== address) {
+      dispatch(addressChanged(address));
+      dispatch(pageChanged(`validator/${address}`));
+      navigate(`/one-t/${selectedChain}/validator/${address}`)
+    }
+  };
+
+  return (
+    <IconButton color="primary" onClick={handleOnClick} align="right">
+      <FontAwesomeIcon icon={faMagnifyingGlassChart} />
+    </IconButton>
+  )
+}
 
 const defineColumns = (theme) => {
   return [
@@ -139,16 +165,27 @@ const defineColumns = (theme) => {
     disableColumnMenu: true,
     sortingOrder: ['asc', 'desc']
   },
+  {
+    headerName: '', 
+    width: 96,
+    align: 'right',
+    sortable: false,
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      if (!params.row.address) {
+        return null
+      } 
+      return (
+        <DetailsIcon address={params.row.address} />
+      )
+    }
+  }
 ]};
 
-export default function ValidatorsDataGrid({sessionIndex, skip}) {
+export default function ValidatorsDataGrid({sessionIndex, skip, identityFilter}) {
   const theme = useTheme();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const selectedChain = useSelector(selectChain);
-  const selectedAddress = useSelector(selectAddress);
   const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true, show_profile: true}, {skip});
-  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex]));
+  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex], identityFilter));
 
   if (isUndefined(rows) && !isSuccess) {
     return null
@@ -156,61 +193,53 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
 
   const columns = defineColumns(theme);
 
-  const handleOnRowClick = ({row}) => {
-    const address = row.address;
-    if (selectedAddress !== address) {
-      dispatch(addressChanged(address));
-      dispatch(pageChanged(`validator/${address}`));
-      navigate(`/one-t/${selectedChain}/validator/${address}`)
-    }
-  };
-
-  const identities = rows.map(v => ({label: v.identity}))
+  // const handleOnRowClick = ({row}) => {
+  //   const address = row.address;
+  //   if (selectedAddress !== address) {
+  //     dispatch(addressChanged(address));
+  //     dispatch(pageChanged(`validator/${address}`));
+  //     navigate(`/one-t/${selectedChain}/validator/${address}`)
+  //   }
+  // };
 
   return (
-    <Paper
+    <Box
       sx={{
         p: 2,
         // m: 2,
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: '2768px',
-        borderRadius: 3,
-        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
+        height: '100%'
+        // height: '2768px',
+        // borderRadius: 3,
+        // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box>
-            <Typography variant="h6">Validators</Typography>
-          </Box>
-        </Box>
-        <Autocomplete
-          disablePortal
-          options={identities}
-          sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Identity" />}
-        />
         <DataGrid
           sx={{ bgcolor: '#FFF', width: '100%', borderRadius: 0, border: 0,
           '& .MuiDataGrid-footerContainer': {
             borderTop: 0
-          } }}
+          },
+          '& .MuiDataGrid-cell:focus': {
+            border: 0
+          }
+         }}
           initialState={{
             pagination: {
-              pageSize: 50,
+              pageSize: 20,
             },
             sorting: {
               sortModel: [{ field: 'score', sort: 'desc' }],
             },
           }}
-          onRowClick={handleOnRowClick}
+          // onRowClick={handleOnRowClick}
           rows={rows}
           columns={columns}
-          rowsPerPageOptions={[50]}
+          rowsPerPageOptions={[20]}
           pagination
           disableSelectionOnClick
         />
-    </Paper>
+    </Box>
   );
 }
