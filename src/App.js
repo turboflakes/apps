@@ -65,7 +65,7 @@ const App = () => {
               margin: "32px",
               opacity: 0.1,
               width: 128,
-              height: 128 }} alt={"ONE-T logo"}/>
+              height: 128 }} alt={"ONE-T logo"} />
           <Typography variant="h6" color="secondary" align="center">Reach a BIGGER screen to get full experience :)</Typography>
         </Box>
       </Box>

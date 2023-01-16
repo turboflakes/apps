@@ -298,6 +298,7 @@ export const LayoutPage = ({api}) => {
                 {open ? 'Validators' : 'Val..'}
               </ListSubheader>
               <ListItemButton selected={selectedPage === 'validators/insights'}
+                disabled={isHistoryMode}
                 onClick={() => handlePageSelection('validators/insights')}>
                 <ListItemIcon>
                   <FontAwesomeIcon icon={faServer} />

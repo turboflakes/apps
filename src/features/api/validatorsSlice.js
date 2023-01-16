@@ -56,7 +56,6 @@ export const extendedApi = apiSlice.injectEndpoints({
             }
           }
           
-          console.log("___queryFulfilled");
         } catch (err) {
           // `onError` side-effect
           // dispatch(socketActions.messageQueued(msg))
@@ -349,5 +348,5 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], identit
       mvr,
       score: performance_score(mvr, v.avg_pts, min_avg_pts, max_avg_pts, v.para_sessions, sessions.length)
     }
-  }).filter(v => v.identity.toLowerCase().includes(identityFilter.toLowerCase()))
+  }).filter(v => !isUndefined(v.identity) ? v.identity.toLowerCase().includes(identityFilter.toLowerCase()) : false)
 }

@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
 import HistoryErasMenu from './HistoryErasMenu';
 import {
+  selectPage,
   modeChanged,
   selectIsLiveMode
 } from '../features/layout/layoutSlice';
@@ -82,6 +83,7 @@ export default function ModeSwitch({mode}) {
   const currentSession = useSelector(selectSessionCurrent);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
+  const selectedPage = useSelector(selectPage);
 
   if (isUndefined(block) || isUndefined(session)) {
     return null
@@ -118,6 +120,7 @@ export default function ModeSwitch({mode}) {
       }
       <MaterialUISwitch {...label} 
         checked={checked}
+        disabled={selectedPage === 'validators/insights'}
         onChange={handleChange} />
     </Stack>
   );
