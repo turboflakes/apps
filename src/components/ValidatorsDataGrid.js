@@ -193,6 +193,8 @@ export default function ValidatorsDataGrid({sessionIndex, skip, identityFilter})
 
   const columns = defineColumns(theme);
 
+  const rowsFiltered = rows.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
+
   // const handleOnRowClick = ({row}) => {
   //   const address = row.address;
   //   if (selectedAddress !== address) {
@@ -234,7 +236,7 @@ export default function ValidatorsDataGrid({sessionIndex, skip, identityFilter})
             },
           }}
           // onRowClick={handleOnRowClick}
-          rows={rows}
+          rows={rowsFiltered}
           columns={columns}
           rowsPerPageOptions={[20]}
           pagination
