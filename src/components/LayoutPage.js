@@ -232,7 +232,8 @@ export const LayoutPage = ({api}) => {
 
             {/* search validator */}
             <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}>
-              {selectedPage.startsWith('validator') ? (!!selectedAddress ? <SearchSmall /> : null) : null}
+              {/* {selectedPage.startsWith('validator') ? (!!selectedAddress ? <SearchSmall /> : null) : null} */}
+              { selectedPage !== 'validators/insights' ? <SearchSmall /> : null }
             </Box>
 
             {/* mode switch live/history */}
