@@ -3,19 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
 import { useTheme } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
-import { Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import AnalyticsIcon from '@mui/icons-material/Analytics';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlassChart } from '@fortawesome/free-solid-svg-icons'
 import Identicon from '@polkadot/react-identicon';
 import { grade } from '../util/grade'
-import { calculateMvr } from '../util/mvr'
 import {
   useGetValidatorsQuery,
   selectValidatorsInsightsBySessions,
@@ -166,12 +160,14 @@ const defineColumns = (theme) => {
     sortingOrder: ['asc', 'desc']
   },
   {
+    field: 'options',
     headerName: '', 
     width: 96,
     align: 'right',
     sortable: false,
     disableColumnMenu: true,
     renderCell: (params) => {
+
       if (!params.row.address) {
         return null
       } 
@@ -229,7 +225,7 @@ export default function ValidatorsDataGrid({sessionIndex, skip, identityFilter})
          }}
           initialState={{
             pagination: {
-              pageSize: 20,
+              pageSize: 16,
             },
             sorting: {
               sortModel: [{ field: 'score', sort: 'desc' }],
@@ -238,7 +234,7 @@ export default function ValidatorsDataGrid({sessionIndex, skip, identityFilter})
           // onRowClick={handleOnRowClick}
           rows={rowsFiltered}
           columns={columns}
-          rowsPerPageOptions={[20]}
+          rowsPerPageOptions={[16]}
           pagination
           disableSelectionOnClick
         />

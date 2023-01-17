@@ -11,6 +11,7 @@ import SessionPerformancePieChart from './SessionPerformancePieChart';
 import SessionPerformanceTimeline from './SessionPerformanceTimeline';
 import ValidatorsInsights from './ValidatorsInsights';
 import ValidatorsHistoryDataGrid from './ValidatorsHistoryDataGrid';
+import GradesBox from './GradesBox';
 
 import {
   selectAddress,
@@ -91,13 +92,17 @@ export default function InsightsPage() {
         {/* --- validators data grid --- */}
 
         {isLiveMode ? 
-          <Grid item xs={12}>
+          <Grid item xs={8}>
             <ValidatorsInsights sessionIndex={sessionIndex} skip={isNaN(sessionIndex)} />
-          </Grid> : 
+          </Grid> : null}
+        {isLiveMode ? 
+          <Grid item xs={4}>
+            <GradesBox sessionIndex={sessionIndex} />
+          </Grid> : null}
+        {isHistoryMode ? 
           <Grid item xs={12}>
             <ValidatorsHistoryDataGrid sessionIndex={sessionIndex} skip={isNaN(sessionIndex)} />
-          </Grid>
-        }
+          </Grid> : null}
 
       </Grid>
 		</Box>

@@ -1,29 +1,12 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import isUndefined from 'lodash/isUndefined'
-import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
 import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
-import Autocomplete from '@mui/material/Autocomplete';
-import Identicon from '@polkadot/react-identicon';
 import ValidatorsDataGrid from './ValidatorsDataGrid';
-import { grade } from '../util/grade'
-import { calculateMvr } from '../util/mvr'
-import {
-  useGetValidatorsQuery,
-  selectValidatorsInsightsBySessions,
-} from '../features/api/validatorsSlice'
-
 
 export default function ValidatorsInsights({sessionIndex, skip}) {
-  const theme = useTheme();
+  // const theme = useTheme();
   const [identityFilter, setIdentityFilter] = React.useState("");
   
   const handleChange = (event) => {
@@ -38,14 +21,15 @@ export default function ValidatorsInsights({sessionIndex, skip}) {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: '1360px',
+        height: '1104px',
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
           <Box>
-            <Typography variant="h6" paragraph>Insights</Typography>
+            <Typography variant="h6">Validators</Typography>
+            <Typography variant="subtitle2">Para-Authorities at session {sessionIndex}</Typography>
           </Box>
         </Box>
 
@@ -58,7 +42,7 @@ export default function ValidatorsInsights({sessionIndex, skip}) {
               width: 512
             }}
             variant="outlined"
-            placeholder="Filter by validator identity"
+            placeholder="Filter by Identity or Address"
             color="primary"
             value={identityFilter}
             onChange={handleChange}

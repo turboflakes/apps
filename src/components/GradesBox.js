@@ -110,7 +110,7 @@ export default function GradesBox({sessionIndex}) {
                     '+ :last-child': { borderBottom: 'none'} 
                   }}
                     secondaryAction={
-                      <Typography variant="caption">{`${g.value}%`}</Typography>
+                      <Typography variant="caption">{`${(Math.round(g.value*100)/100) }%`}</Typography>
                     }
                   >
                   <ListItemIcon sx={{ minWidth: '24px'}}>
