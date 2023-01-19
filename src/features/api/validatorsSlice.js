@@ -290,7 +290,7 @@ const GLYPHS = {
   }
 }
 
-export const selectValidatorsInsightsBySessions = (state, sessions = [], filterValue) => {
+export const selectValidatorsInsightsBySessions = (state, sessions = [], filterValue = "") => {
   const validators = selectValidatorsBySessions(state, sessions);
   const rows = validators.map((x, i) => {
     const f1 = x.filter(y => y.is_auth);
@@ -340,7 +340,7 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], filterV
 
   const min_avg_pts = min(rows.map(v => v.avg_pts));
   const max_avg_pts = max(rows.map(v => v.avg_pts));
-
+  
   return rows.map(v => {
     const mvr = calculateMvr(v.explicit_votes, v.implicit_votes, v.missed_votes)
     return {
@@ -348,7 +348,7 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], filterV
       mvr,
       score: performance_score(mvr, v.avg_pts, min_avg_pts, max_avg_pts, v.para_sessions, sessions.length)
     }
-  })
-  .filter(v => !isUndefined(v.identity) ? v.identity.toLowerCase().includes(filterValue.toLowerCase()) 
-    || v.address.toLowerCase().includes(filterValue.toLowerCase()) : false)
+  }).filter(v => (!isUndefined(v.identity) && !isUndefined(v.address)) ? 
+    v.identity.toLowerCase().includes(filterValue.toLowerCase()) || 
+    v.address.toLowerCase().includes(filterValue.toLowerCase()) : false)
 }

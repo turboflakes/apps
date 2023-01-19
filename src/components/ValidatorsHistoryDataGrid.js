@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
 import { useTheme } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
-import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagnifyingGlassChart } from '@fortawesome/free-solid-svg-icons'
 import Identicon from '@polkadot/react-identicon';
 import { grade } from '../util/grade'
-import { calculateMvr } from '../util/mvr'
 import {
   useGetValidatorsQuery,
   selectValidatorsInsightsBySessions,
@@ -23,12 +24,27 @@ import {
 import {
   pageChanged
 } from '../features/layout/layoutSlice';
-import {
-  selectSessionCurrent,
-} from '../features/api/sessionsSlice';
-import { stashDisplay, nameDisplay } from '../util/display'
 
-// const codes = ['★', 'A', 'B', 'C', 'D']
+function DetailsIcon({address}) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const selectedChain = useSelector(selectChain);
+  const selectedAddress = useSelector(selectAddress);
+
+  const handleOnClick = () => {
+    if (selectedAddress !== address) {
+      dispatch(addressChanged(address));
+      dispatch(pageChanged(`validator/${address}`));
+      navigate(`/one-t/${selectedChain}/validator/${address}`)
+    }
+  };
+
+  return (
+    <IconButton color="primary" onClick={handleOnClick} align="right">
+      <FontAwesomeIcon icon={faMagnifyingGlassChart} />
+    </IconButton>
+  )
+}
 
 const defineColumns = (theme) => {
   return [
@@ -162,45 +178,55 @@ const defineColumns = (theme) => {
     sortable: false,
     disableColumnMenu: true,
   },
+  {
+    field: 'options',
+    headerName: '', 
+    width: 96,
+    align: 'right',
+    sortable: false,
+    disableColumnMenu: true,
+    renderCell: (params) => {
+
+      if (!params.row.address) {
+        return null
+      } 
+      return (
+        <DetailsIcon address={params.row.address} />
+      )
+    }
+  }
 ]};
 
-export default function ValidatorsDataGrid({sessionIndex, skip}) {
+export default function ValidatorsHistoryDataGrid({sessionIndex, skip, identityFilter}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const selectedChain = useSelector(selectChain);
   const selectedAddress = useSelector(selectAddress);
-  const historySessionIds = buildSessionIdsArrayHelper(sessionIndex, 48);
+  const historySessionIds = buildSessionIdsArrayHelper(sessionIndex, 6);
   console.log("__historySessionIds", historySessionIds.join(","));
   // const {data: data3} = useGetValidatorsQuery({session: sessionIndex - 2, role: "para_authority", show_summary: true, show_profile: true});
   // const {data: data2} = useGetValidatorsQuery({session: sessionIndex - 1, role: "para_authority", show_summary: true, show_profile: true});
   const {data, isSuccess} = useGetValidatorsQuery({sessions: historySessionIds.join(","), role: "para_authority", show_summary: true, show_profile: true}, {skip});
-  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, historySessionIds));
-
+  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, historySessionIds, identityFilter));
   console.log('__data', data);
 
-  if (isUndefined(rows)) {
+  if (isUndefined(rows) && !isSuccess) {
     return null
   }
 
-  // const validators = [data1, data2];
-
-  // // sort by session
-  // const sorted = validators.sort((a, b) => b.session - a.session);
-  // // const groupedByAddress = groupBy(sorted, v => !!v.session ? v.session : action.payload.session)
-  // // console.log('__sorted', sorted);
-
-
   const columns = defineColumns(theme);
 
-  const handleOnRowClick = ({row}) => {
-    const address = row.address;
-    if (selectedAddress !== address) {
-      dispatch(addressChanged(address));
-      dispatch(pageChanged(`validator/${address}`));
-      navigate(`/one-t/${selectedChain}/validator/${address}`)
-    }
-  };
+  const rowsFiltered = rows.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
+  
+  // const handleOnRowClick = ({row}) => {
+  //   const address = row.address;
+  //   if (selectedAddress !== address) {
+  //     dispatch(addressChanged(address));
+  //     dispatch(pageChanged(`validator/${address}`));
+  //     navigate(`/one-t/${selectedChain}/validator/${address}`)
+  //   }
+  // };
 
   return (
     <Paper
@@ -210,74 +236,35 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: '2768px',
-        borderRadius: 3,
-        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
+        height: '100%',
+        // borderRadius: 3,
+        // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box>
-            <Typography variant="h6">Validators</Typography>
-          </Box>
-        </Box>
         <DataGrid
           sx={{ bgcolor: '#FFF', width: '100%', borderRadius: 0, border: 0,
-          '& .MuiDataGrid-footerContainer': {
-            borderTop: 0
-          } }}
+            '& .MuiDataGrid-footerContainer': {
+              borderTop: 0
+            },
+            '& .MuiDataGrid-cell:focus': {
+              border: 0
+            }
+          }}
           initialState={{
             pagination: {
-              pageSize: 50,
+              pageSize: 16,
             },
             sorting: {
               sortModel: [{ field: 'score', sort: 'desc' }],
             },
           }}
           // onRowClick={handleOnRowClick}
-          rows={rows}
+          rows={rowsFiltered}
           columns={columns}
-          rowsPerPageOptions={[50]}
+          rowsPerPageOptions={[16]}
           pagination
           disableSelectionOnClick
         />
     </Paper>
   );
 }
-
-{/* <Paper
-      sx={{
-        p: 2,
-        // m: 2,
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        height: '2868px',
-        borderRadius: 3,
-        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
-      }}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box>
-            <Typography variant="h6">Validators</Typography>
-          </Box>
-        </Box>
-        <DataGrid
-          sx={{ bgcolor: '#FFF', width: '100%', borderRadius: 0, border: 0 }}
-          initialState={{
-            // pagination: {
-            //   pageSize: 50,
-            // },
-            sorting: {
-              sortModel: [{ field: 'score', sort: 'desc' }],
-            },
-          }}
-          rows={rows}
-          columns={columns}
-          // pageSize={100}
-          rowsPerPageOptions={[50, 100]}
-          pagination
-          hideFooter
-          disableSelectionOnClick
-          onRowClick={handleOnRowClick}
-        />
-    </Paper> */}

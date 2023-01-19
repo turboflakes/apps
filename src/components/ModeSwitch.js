@@ -120,7 +120,7 @@ export default function ModeSwitch({mode}) {
       }
       <MaterialUISwitch {...label} 
         checked={checked}
-        disabled={selectedPage === 'validators/insights'}
+        // disabled={selectedPage === 'validators/insights'}
         onChange={handleChange} />
     </Stack>
   );

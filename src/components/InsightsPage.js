@@ -10,7 +10,7 @@ import SessionPieChart from './SessionPieChart';
 import SessionPerformancePieChart from './SessionPerformancePieChart';
 import SessionPerformanceTimeline from './SessionPerformanceTimeline';
 import ValidatorsInsights from './ValidatorsInsights';
-import ValidatorsHistoryDataGrid from './ValidatorsHistoryDataGrid';
+import ValidatorsHistoryInsights from './ValidatorsHistoryInsights';
 import GradesBox from './GradesBox';
 
 import {
@@ -101,7 +101,7 @@ export default function InsightsPage() {
           </Grid> : null}
         {isHistoryMode ? 
           <Grid item xs={12}>
-            <ValidatorsHistoryDataGrid sessionIndex={sessionIndex} skip={isNaN(sessionIndex)} />
+            <ValidatorsHistoryInsights sessionIndex={sessionIndex} skip={isNaN(sessionIndex)} />
           </Grid> : null}
 
       </Grid>
