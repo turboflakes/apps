@@ -119,7 +119,7 @@ export default function ValidatorsHistoryInsights({sessionIndex, skip}) {
           </Button>
         </form>
         <ValidatorsHistoryDataGrid sessionIndex={sessionIndex} skip={skip} 
-          identityFilter={identityFilter}
+          identityFilter={identityFilter} subsetFilter={subsetFilter}
           maxSessions={maxSessions} isFetching={isFetching} />
     </Paper>
   );
