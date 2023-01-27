@@ -117,7 +117,10 @@ export default function ModeSwitch({mode}) {
             <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
               {`[ ${session.eix.format()} // ${session.six.format()} ]`}
             </Typography>
-          </Box> : null)
+          </Box> : 
+            <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
+              History
+            </Typography>)
       }
       <MaterialUISwitch {...label} 
         checked={checked}
