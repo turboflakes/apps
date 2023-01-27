@@ -101,8 +101,8 @@ export default function ValAddressProfile({address, maxSessions, showGrade}) {
         </Box>
         {showGrade ? (
             isLiveMode ? 
-              <GradeIcon sessionIndex={sessionIndex} address={address} size={96} /> :
-              <GradeHistoryIcon address={address} maxSessions={maxSessions} size={96} />
+              <GradeIcon sessionIndex={sessionIndex} address={address} size={72} /> :
+              <GradeHistoryIcon address={address} maxSessions={maxSessions} size={72} />
             )
            : null}
       </Box>

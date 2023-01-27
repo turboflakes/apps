@@ -6,8 +6,7 @@ import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlassChart } from '@fortawesome/free-solid-svg-icons'
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import Identicon from '@polkadot/react-identicon';
 import { grade } from '../util/grade'
 import {
@@ -40,7 +39,7 @@ function DetailsIcon({address}) {
 
   return (
     <IconButton color="primary" onClick={handleOnClick} align="right">
-      <FontAwesomeIcon icon={faMagnifyingGlassChart} />
+      <ZoomInIcon />
     </IconButton>
   )
 }
@@ -72,16 +71,10 @@ const defineColumns = (theme) => {
     disableColumnMenu: true,
   },
   {
-    field: 'subset',
-    headerName: 'Subset',
-    width: 96,
-    disableColumnMenu: true,
-  },
-  {
     field: 'grade',
     headerName: 'Grade',
     width: 64,
-    headerAlign: 'right',
+    headerAlign: 'left',
     align: 'left',
     sortable: false,
     disableColumnMenu: true,
@@ -99,6 +92,15 @@ const defineColumns = (theme) => {
           <Box sx={{ml: 1,  display: "inline-block"}}>{gradeValue}</Box>
         </Box>)
     }
+  },
+  {
+    field: 'subset',
+    headerName: 'Subset',
+    width: 96,
+    headerAlign: 'left',
+    align: 'left',
+    sortable: false,
+    disableColumnMenu: true,
   },
   {
     field: 'authored_blocks',
@@ -178,10 +180,10 @@ const defineColumns = (theme) => {
   }
 ]};
 
-export default function ValidatorsDataGrid({sessionIndex, skip, identityFilter}) {
+export default function ValidatorsDataGrid({sessionIndex, skip, identityFilter, subsetFilter}) {
   const theme = useTheme();
   const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true, show_profile: true}, {skip});
-  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex], identityFilter));
+  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex], identityFilter, subsetFilter));
 
   if (isUndefined(rows) && !isSuccess) {
     return null

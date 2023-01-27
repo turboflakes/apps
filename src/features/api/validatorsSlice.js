@@ -290,7 +290,13 @@ const GLYPHS = {
   }
 }
 
-export const selectValidatorsInsightsBySessions = (state, sessions = [], filterValue = "") => {
+const SUBSET = { 
+  "TVP": "TVP",
+  "NONTVP": "Others",
+  "C100": "C100%"
+}
+
+export const selectValidatorsInsightsBySessions = (state, sessions = [], identityFilter = "", subsetFilter = "", isFetching) => {
   const validators = selectValidatorsBySessions(state, sessions);
   const rows = validators.map((x, i) => {
     const f1 = x.filter(y => y.is_auth);
@@ -324,7 +330,7 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], filterV
       i+1, 
       !isUndefined(profile) ? profile._identity : '-',
       x[0].address,
-      !isUndefined(profile) ? profile.subset : '-', 
+      !isUndefined(profile) ? SUBSET[profile.subset] : '-', 
       f1.length,
       f2.length,
       authored_blocks, 
@@ -340,15 +346,22 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], filterV
 
   const min_avg_pts = min(rows.map(v => v.avg_pts));
   const max_avg_pts = max(rows.map(v => v.avg_pts));
-  
-  return rows.map(v => {
+
+  const filteredRows = rows.map(v => {
     const mvr = calculateMvr(v.explicit_votes, v.implicit_votes, v.missed_votes)
     return {
       ...v,
       mvr,
-      score: performance_score(mvr, v.avg_pts, min_avg_pts, max_avg_pts, v.para_sessions, sessions.length)
+      score: performance_score(mvr, v.avg_pts, min_avg_pts, max_avg_pts, v.para_sessions, sessions.length),
+      isFetching
     }
   }).filter(v => (!isUndefined(v.identity) && !isUndefined(v.address)) ? 
-    v.identity.toLowerCase().includes(filterValue.toLowerCase()) || 
-    v.address.toLowerCase().includes(filterValue.toLowerCase()) : false)
+    v.identity.toLowerCase().includes(identityFilter.toLowerCase()) || 
+    v.address.toLowerCase().includes(identityFilter.toLowerCase()) : false)
+  
+  if (subsetFilter !== '') {
+    return filteredRows.filter(v => (!isUndefined(v.subset) ? v.subset === subsetFilter : false))
+  } 
+  return filteredRows
+    
 }

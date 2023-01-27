@@ -111,12 +111,13 @@ export default function ModeSwitch({mode}) {
             {`${mode} [ ${session.eix.format()} // ${session.six.format()} ]`}
           </Typography>
         </Box> : 
-        <Box sx={{ display: 'flex', alignItems: 'center'}}>
-          <HistoryErasMenu />
-          <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
-            {`[ ${session.eix.format()} // ${session.six.format()} ]`}
-          </Typography>
-        </Box>
+        (selectedPage !== 'validators/insights' ? 
+          <Box sx={{ display: 'flex', alignItems: 'center'}}>
+            <HistoryErasMenu />
+            <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
+              {`[ ${session.eix.format()} // ${session.six.format()} ]`}
+            </Typography>
+          </Box> : null)
       }
       <MaterialUISwitch {...label} 
         checked={checked}

@@ -3,15 +3,22 @@ import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ValidatorsDataGrid from './ValidatorsDataGrid';
 
 export default function ValidatorsInsights({sessionIndex, skip}) {
   // const theme = useTheme();
-  const [identityFilter, setIdentityFilter] = React.useState("");
+  const [identityFilter, setIdentityFilter] = React.useState('');
+  const [subsetFilter, setSubsetFilter] = React.useState('');
   
-  const handleChange = (event) => {
+  const handleIdentityFilter = (event) => {
     setIdentityFilter(event.target.value)
   }
+
+  const handleSubsetFilter = (event, newFilter) => {
+   setSubsetFilter(newFilter);
+  };
 
   return (
     <Paper
@@ -29,7 +36,7 @@ export default function ValidatorsInsights({sessionIndex, skip}) {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
           <Box>
             <Typography variant="h6">Validators</Typography>
-            <Typography variant="subtitle2">Para-Authorities at session {sessionIndex}</Typography>
+            <Typography variant="subtitle2">Selected to para-validate in the current session ({sessionIndex})</Typography>
           </Box>
         </Box>
 
@@ -45,7 +52,7 @@ export default function ValidatorsInsights({sessionIndex, skip}) {
             placeholder="Filter by Identity or Address"
             color="primary"
             value={identityFilter}
-            onChange={handleChange}
+            onChange={handleIdentityFilter}
             size="small"
             fullWidth
             InputProps={{
@@ -61,8 +68,31 @@ export default function ValidatorsInsights({sessionIndex, skip}) {
               }
             }}
           />
+        
+          {/* subset filter */}
+          <ToggleButtonGroup
+            sx={{mx: 2}}
+            value={subsetFilter}
+            exclusive
+            onChange={handleSubsetFilter}
+            aria-label="text alignment"
+          >
+            <ToggleButton value="" aria-label="left aligned">
+              All
+            </ToggleButton>
+            <ToggleButton value="C100%" aria-label="justified">
+              100% Commission
+            </ToggleButton>
+            <ToggleButton value="Others" aria-label="right aligned">
+              Others
+            </ToggleButton>
+            <ToggleButton value="TVP" aria-label="centered">
+              <b>TVP</b>
+            </ToggleButton>
+          </ToggleButtonGroup>
         </form>
-        <ValidatorsDataGrid sessionIndex={sessionIndex} skip={skip} identityFilter={identityFilter} />
+        <ValidatorsDataGrid sessionIndex={sessionIndex} skip={skip} 
+          identityFilter={identityFilter} subsetFilter={subsetFilter} />
     </Paper>
   );
 }

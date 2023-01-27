@@ -25,6 +25,7 @@ import HubIcon from '@mui/icons-material/Hub';
 import SearchSmall from './SearchSmall'
 import Footer from './Footer'
 import SessionSlider from './SessionSlider';
+import SessionSliderRange from './SessionSliderRange';
 import ModeSwitch from './ModeSwitch';
 import { getNetworkIcon } from '../constants'
 import polkadotJsSVG from '../assets/polkadot_js_logo.svg';
@@ -248,7 +249,8 @@ export const LayoutPage = ({api}) => {
                 alignItems: 'center',
                 width: '100%',
               }}>
-              <SessionSlider maxSessions={maxHistorySessions} /> 
+              {selectedPage !== 'validators/insights' ? 
+                <SessionSlider maxSessions={maxHistorySessions} /> : null}
             </Box> : null}
         </Toolbar>
       </AppBar>
@@ -299,7 +301,6 @@ export const LayoutPage = ({api}) => {
                 {open ? 'Validators' : 'Val..'}
               </ListSubheader>
               <ListItemButton selected={selectedPage === 'validators/insights'}
-                disabled={isHistoryMode}
                 onClick={() => handlePageSelection('validators/insights')}>
                 <ListItemIcon>
                   <FontAwesomeIcon icon={faServer} />

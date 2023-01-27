@@ -105,6 +105,9 @@ const sessionsSlice = createSlice({
     sessionHistoryChanged: (state, action) => {
       state.history = action.payload;
     },
+    sessionHistoryRangeChanged: (state, action) => {
+      state.history_range = action.payload;
+    },
     sessionChanged: (state, action) => {
       state.current = action.payload;
     },
@@ -129,16 +132,16 @@ const sessionsSlice = createSlice({
     })
     .addMatcher(matchValidatorsReceived, (state, action) => {
       // Filter validators if authority and p/v
-      const filtered = action.payload.data.filter(v => v.is_auth && v.is_para);
+      const filtered = action.payload.data.filter(v => v.is_auth);
 
       // Group validators by session first
       const groupedBySession = groupBy(filtered, v => !!v.session ? v.session : action.payload.session)
 
       forEach(groupedBySession, (validators, session) => {
-        const _group_ids = uniq(validators.map(v => toNumber(v.para.group))).sort((a, b) => a - b)
-        const _mvrs = validators.map(v => !isUndefined(v.para_summary) ? calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv) : undefined);
-        const _validity_votes = validators.map(v => !isUndefined(v.para_summary) ? v.para_summary.ev + v.para_summary.iv + v.para_summary.mv : 0);
-        const _backing_points = validators.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0);
+        const _group_ids = uniq(validators.filter(v => v.is_auth && v.is_para).map(v => toNumber(v.para.group))).sort((a, b) => a - b)
+        const _mvrs = validators.filter(v => v.is_auth && v.is_para).map(v => !isUndefined(v.para_summary) ? calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv) : undefined);
+        const _validity_votes = validators.filter(v => v.is_auth && v.is_para).map(v => !isUndefined(v.para_summary) ? v.para_summary.ev + v.para_summary.iv + v.para_summary.mv : 0);
+        const _backing_points = validators.filter(v => v.is_auth && v.is_para).map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0);
         const _stashes = validators.map(v => v.address);
         adapter.upsertOne(state, { six: parseInt(session, 10), _group_ids, _mvrs, _validity_votes, _backing_points, _stashes})
       })
@@ -157,6 +160,7 @@ export const {
 } = adapter.getSelectors(state => state.sessions)
 
 export const selectSessionHistory = (state) => state.sessions.history;
+export const selectSessionHistoryRange = (state) => state.sessions.history_range;
 export const selectSessionCurrent = (state) => state.sessions.current;
 
 export const selectValGroupIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
@@ -292,6 +296,6 @@ export const selectEraPointsBySession = (state, sessionId) => {
   return 0
 }
 
-export const { sessionHistoryChanged } = sessionsSlice.actions;
+export const { sessionHistoryChanged, sessionHistoryRangeChanged } = sessionsSlice.actions;
 
 export default sessionsSlice;

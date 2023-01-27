@@ -7,8 +7,10 @@ import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlassChart } from '@fortawesome/free-solid-svg-icons'
+import Button from '@mui/material/Button';
+import SendIcon from '@mui/icons-material/Send';
+import Skeleton from '@mui/material/Skeleton';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import Identicon from '@polkadot/react-identicon';
 import { grade } from '../util/grade'
 import {
@@ -16,6 +18,10 @@ import {
   selectValidatorsInsightsBySessions,
   buildSessionIdsArrayHelper
 } from '../features/api/validatorsSlice'
+import { 
+  selectSessionHistoryRange,
+  selectSessionHistory
+} from '../features/api/sessionsSlice'
 import {
   addressChanged,
   selectChain,
@@ -41,7 +47,7 @@ function DetailsIcon({address}) {
 
   return (
     <IconButton color="primary" onClick={handleOnClick} align="right">
-      <FontAwesomeIcon icon={faMagnifyingGlassChart} />
+      <ZoomInIcon />
     </IconButton>
   )
 }
@@ -73,12 +79,6 @@ const defineColumns = (theme) => {
     disableColumnMenu: true,
   },
   {
-    field: 'subset',
-    headerName: 'Subset',
-    width: 96,
-    disableColumnMenu: true,
-  },
-  {
     field: 'grade',
     headerName: 'Grade',
     width: 64,
@@ -97,6 +97,15 @@ const defineColumns = (theme) => {
           <Box sx={{ml: 1,  display: "inline-block"}}>{gradeValue}</Box>
         </Box>)
     }
+  },
+  {
+    field: 'subset',
+    headerName: 'Subset',
+    width: 96,
+    headerAlign: 'left',
+    align: 'left',
+    sortable: false,
+    disableColumnMenu: true,
   },
   {
     field: 'active_sessions',
@@ -177,6 +186,12 @@ const defineColumns = (theme) => {
     width: 384,
     sortable: false,
     disableColumnMenu: true,
+    renderCell: (params) => {
+      if (params.row.isFetching) {
+        return (<Skeleton variant="text" sx={{ width: 384, fontSize: '0.825rem' }} />)
+      }
+      return (<span>{params.row.timeline}</span>)
+    }
   },
   {
     field: 'options',
@@ -197,21 +212,19 @@ const defineColumns = (theme) => {
   }
 ]};
 
-export default function ValidatorsHistoryDataGrid({sessionIndex, skip, identityFilter}) {
+export default function ValidatorsHistoryDataGrid({sessionIndex, skip, identityFilter, subsetFilter, maxSessions, isFetching}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const selectedChain = useSelector(selectChain);
   const selectedAddress = useSelector(selectAddress);
-  const historySessionIds = buildSessionIdsArrayHelper(sessionIndex, 6);
-  console.log("__historySessionIds", historySessionIds.join(","));
-  // const {data: data3} = useGetValidatorsQuery({session: sessionIndex - 2, role: "para_authority", show_summary: true, show_profile: true});
-  // const {data: data2} = useGetValidatorsQuery({session: sessionIndex - 1, role: "para_authority", show_summary: true, show_profile: true});
-  const {data, isSuccess} = useGetValidatorsQuery({sessions: historySessionIds.join(","), role: "para_authority", show_summary: true, show_profile: true}, {skip});
-  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, historySessionIds, identityFilter));
-  console.log('__data', data);
+  const historySessionIds = buildSessionIdsArrayHelper(sessionIndex, maxSessions);
+  const historySessionRange = useSelector(selectSessionHistoryRange);
+  const historySession = useSelector(selectSessionHistory);
+  // const {isSuccess} = useGetValidatorsQuery({sessions: (isUndefined(historySessionRange) ? [historySession-6, historySession]: historySessionRange).join(","), show_summary: true, show_profile: true}, {skip});  
+  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, historySessionIds, identityFilter, subsetFilter, isFetching));
 
-  if (isUndefined(rows) && !isSuccess) {
+  if (isUndefined(rows)) {
     return null
   }
 
@@ -229,7 +242,7 @@ export default function ValidatorsHistoryDataGrid({sessionIndex, skip, identityF
   // };
 
   return (
-    <Paper
+    <Box
       sx={{
         p: 2,
         // m: 2,
@@ -265,6 +278,6 @@ export default function ValidatorsHistoryDataGrid({sessionIndex, skip, identityF
           pagination
           disableSelectionOnClick
         />
-    </Paper>
+    </Box>
   );
 }

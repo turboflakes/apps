@@ -187,17 +187,22 @@ let theme = createTheme({
   button: {
     padding: "18px 26px"
   },
-  overrides: {
+  components: {
     MuiButton: {
-      outlined: {
-        // borderRadius: 30,
-        borderWidth: 2,
-        padding: `8px 16px`
-      },
-      contained: {
-        borderRadius: 30,
-        padding: `8px 16px`
-      },
+      styleOverrides: {
+        root: {
+          borderRadius: 30,
+          padding: `8px 16px`
+        },
+      }
+    },
+    MuiToggleButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 30,
+          padding: `8px 16px`
+        },
+      }
     },
     MuiInputBase: {
       input: {
