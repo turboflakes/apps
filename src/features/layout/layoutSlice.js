@@ -14,7 +14,7 @@ const initializePage = () => {
 const initialState = {
   page: initializePage(),
   mode: 'Live',
-  maxHistoryEras: 16
+  maxHistoryEras: 8
 };
 
 const layoutSlice = createSlice({
