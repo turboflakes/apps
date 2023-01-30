@@ -15,6 +15,8 @@ import {
 } from '../features/api/validatorsSlice'
 import { 
   selectSessionHistoryIds,
+  selectSessionHistoryRange,
+  selectSessionHistoryRangeIds,
 } from '../features/api/sessionsSlice'
 import {
   addressChanged,
@@ -206,10 +208,10 @@ const defineColumns = (theme) => {
   }
 ]};
 
-export default function ValidatorsHistoryDataGrid({sessionIndex, skip, identityFilter, subsetFilter, maxSessions, isFetching}) {
+export default function ValidatorsHistoryDataGrid({sessionIndex, skip, identityFilter, subsetFilter, isFetching}) {
   const theme = useTheme();
-  const historySessionIds = useSelector(selectSessionHistoryIds);
-  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, historySessionIds, true, identityFilter, subsetFilter, isFetching));
+  const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
+  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, historySessionRangeIds, true, identityFilter, subsetFilter, isFetching));
 
   if (isUndefined(rows)) {
     return null

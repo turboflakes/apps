@@ -250,7 +250,7 @@ export const LayoutPage = ({api}) => {
                 width: '100%',
               }}>
               {selectedPage !== 'validators/insights' ? 
-                <SessionSlider maxSessions={maxHistorySessions} /> : null}
+                <SessionSlider maxSessions={maxHistorySessions} /> : <SessionSliderRange />}
             </Box> : null}
         </Toolbar>
       </AppBar>

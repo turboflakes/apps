@@ -10,8 +10,12 @@ import { Typography } from '@mui/material';
 import { 
   useGetSessionsQuery, 
   sessionHistoryRangeChanged,
+  sessionHistoryIdsChanged,
   selectSessionHistoryRange,
-  selectSessionHistory
+  selectSessionHistoryIds,
+  selectSessionsByIds,
+  selectSessionHistory,
+  buildSessionIdsArrayHelper
 } from '../features/api/sessionsSlice'
 
 const CustomSlider = styled(Slider)(({ theme }) => ({
@@ -89,19 +93,18 @@ function useSessionRange(range) {
   return [value, setValue];
 }
 
-export default function SessionSliderRange({maxSessions}) {
+export default function SessionSliderRange() {
   // const theme = useTheme();
   const dispatch = useDispatch();
-  const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true}, {refetchOnMountOrArgChange: true});
+  // const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true}, {refetchOnMountOrArgChange: true});
+  const historySessionIds = useSelector(selectSessionHistoryIds);
+  const historySessions = useSelector(state => selectSessionsByIds(state, historySessionIds));
   const historySessionRange = useSelector(selectSessionHistoryRange);
-  const historySession = useSelector(selectSessionHistory);
-  const [sessionRange, setSessionRange] = useSessionRange(isUndefined(historySessionRange) ? [historySession-6, historySession]: historySessionRange);
+  const [sessionRange, setSessionRange] = useSessionRange(historySessionRange);
   
-  if (!isSessionSuccess) {
-    return null
-  }
-
-  let currentSession = data[data.length - 1].six;
+  // if (!isSessionSuccess) {
+  //   return null
+  // }
 
   const handleChange = (event, range) => {
     setSessionRange(range);
@@ -110,7 +113,7 @@ export default function SessionSliderRange({maxSessions}) {
     dispatch(sessionHistoryRangeChanged(range))
   }
 
-  let marks = data.map(session => {
+  let marks = historySessions.filter(s => !isUndefined(s)).map(session => {
     
     if (session.esix === 1) {
       return {
@@ -158,8 +161,8 @@ export default function SessionSliderRange({maxSessions}) {
           onChange={handleChange}
           onChangeCommitted={handleChangeCommitted}
           step={1}
-          min={currentSession - maxSessions + 1}
-          max={currentSession}
+          min={historySessionIds[0]}
+          max={historySessionIds[historySessionIds.length - 1]}
           marks={marks}
           valueLabelFormat={valueLabelFormat}
           valueLabelDisplay="on"/>

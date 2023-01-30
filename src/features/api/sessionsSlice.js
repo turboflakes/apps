@@ -34,9 +34,9 @@ export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Sessions'],
   endpoints: (builder) => ({
     getSessions: builder.query({
-      query: ({number_last_sessions, show_stats}) => ({
+      query: ({number_last_sessions, from, to, show_stats}) => ({
         url: `/sessions`,
-        params: { number_last_sessions, show_stats }
+        params: { number_last_sessions, from, to, show_stats }
       }),
       providesTags: (result, error, arg) => [{ type: 'Sessions', id: arg }],
       transformResponse: responseData => {
@@ -183,10 +183,15 @@ export const {
   selectById: selectSessionByIndex
 } = adapter.getSelectors(state => state.sessions)
 
-export const selectSessionHistory = (state) => state.sessions.history;
-export const selectSessionHistoryRange = (state) => state.sessions.history_range;
-export const selectSessionHistoryIds = (state) => isUndefined(state.sessions.history_ids) ? buildSessionIdsArrayHelper(state.sessions.current - 1, 6) : state.sessions.history_ids;
 export const selectSessionCurrent = (state) => state.sessions.current;
+export const selectSessionHistory = (state) => state.sessions.history;
+export const selectSessionHistoryRange = (state) => isUndefined(state.sessions.history_range) ?
+  [state.sessions.current - 7, state.sessions.current - 1] : state.sessions.history_range;
+export const selectSessionHistoryRangeIds = (state) => buildSessionIdsArrayHelper(selectSessionHistoryRange(state)[1], selectSessionHistoryRange(state)[1] - selectSessionHistoryRange(state)[0])
+export const selectSessionHistoryIds = (state) => isUndefined(state.sessions.history_ids) ? 
+  buildSessionIdsArrayHelper(state.sessions.current - 1, 6) : state.sessions.history_ids;
+export const selectSessionsByIds = (state, sessionIds = []) => sessionIds.map(id => selectSessionByIndex(state, id));
+
 
 export const selectValGroupIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
   (isArray(selectSessionByIndex(state, session)._group_ids) ? 

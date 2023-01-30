@@ -14,7 +14,7 @@ import {
   useGetSessionsQuery, 
   sessionHistoryIdsChanged,
   selectSessionHistoryIds,
-  selectSessionHistory,
+  selectSessionHistoryRange,
   buildSessionIdsArrayHelper
 } from '../features/api/sessionsSlice'
 import {
@@ -45,9 +45,12 @@ export default function ValidatorsHistoryInsights({sessionIndex, skip}) {
   const dispatch = useDispatch();
   const [identityFilter, setIdentityFilter] = React.useState('');
   const [subsetFilter, setSubsetFilter] = React.useState('');
-  const [maxSessions, setMaxSessions] = React.useState(6);
   const historySessionIds = useSelector(selectSessionHistoryIds);
-  const {isSuccess, isFetching} = useGetValidatorsQuery({sessions: [historySessionIds[0], historySessionIds[5]].join(","), show_summary: true, show_profile: true}, {skip});
+  const historySessionRange = useSelector(selectSessionHistoryRange);
+  const {isFetching: isFetchingValidators} = useGetValidatorsQuery({sessions: [historySessionIds[0], historySessionIds[5]].join(","), show_summary: true, show_profile: true}, {skip});
+  const {isFetching: isFetchingSessions } = useGetSessionsQuery({from: historySessionIds[0], to: historySessionIds[5], show_stats: true}, {skip});
+
+  const isFetching = isFetchingValidators || isFetchingSessions;
 
   const handleIdentityFilter = (event) => {
     setIdentityFilter(event.target.value)
@@ -78,7 +81,7 @@ export default function ValidatorsHistoryInsights({sessionIndex, skip}) {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
           <Box>
             <Typography variant="h6">Validators</Typography>
-            <Typography variant="subtitle2">Selected to para-validate in the last {historySessionIds.length} sessions</Typography>
+            <Typography variant="subtitle2">Selected to para-validate between {historySessionRange[0].format()} and {historySessionRange[1].format()} sessions</Typography>
           </Box>
           <Box>
           {isFetching ? <Spinner /> : null}
@@ -136,14 +139,13 @@ export default function ValidatorsHistoryInsights({sessionIndex, skip}) {
               </ToggleButton>
             </ToggleButtonGroup>
           </Box>
-          <Button variant='contained' endIcon={<AddIcon />} onClick={handleLoadTimeline}
+          <Button variant='contained' endIcon={<AddIcon />} onClick={handleLoadTimeline} small
             disabled={isFetching} disableRipple>
             Load more sessions
           </Button>
         </form>
         <ValidatorsHistoryDataGrid sessionIndex={sessionIndex} skip={skip} 
-          identityFilter={identityFilter} subsetFilter={subsetFilter}
-          maxSessions={maxSessions} isFetching={isFetching} />
+          identityFilter={identityFilter} subsetFilter={subsetFilter} isFetching={isFetching} />
     </Paper>
   );
 }

@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
 import HistoryErasMenu from './HistoryErasMenu';
-import Spinner from './Spinner';
+import Skeleton from '@mui/material/Skeleton';
 import {
   selectPage,
   modeChanged,
@@ -19,6 +19,7 @@ import {
 import { 
   useGetSessionByIndexQuery,
   selectSessionHistory,
+  selectSessionHistoryIds,
   selectSessionCurrent,
   selectSessionByIndex,
   sessionHistoryChanged,
@@ -87,6 +88,10 @@ export default function ModeSwitch({mode}) {
   const { isFetching } = useGetSessionByIndexQuery(sessionIndex);
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
   const selectedPage = useSelector(selectPage);
+  // Note: the following selects are only applied if route 'validators/insights'
+  const historySessionIds = useSelector(selectSessionHistoryIds);
+  const from_session = useSelector(state => selectSessionByIndex(state, historySessionIds[0]));
+  const to_session = useSelector(state => selectSessionByIndex(state, historySessionIds[historySessionIds.length - 1]));
   
   if (isUndefined(block) || isUndefined(session)) {
     return null
@@ -121,13 +126,15 @@ export default function ModeSwitch({mode}) {
             { !isFetching ? `[ ${session.eix.format()} // ${session.six.format()} ]` : ''}
             </Typography>
           </Box> : 
+          (!isUndefined(from_session) && !isUndefined(to_session) ?
             <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
-              History
-            </Typography>)
+              {`${mode} [ ${from_session.eix.format()} // ${from_session.six.format()} → ${to_session.eix.format()} // ${to_session.six.format()} ]`}
+            </Typography> :
+            <Skeleton variant="text" sx={{ width: 128, fontSize: '0.825rem' }} />
+          ))
       }
       <MaterialUISwitch {...label} 
         checked={checked}
-        // disabled={selectedPage === 'validators/insights'}
         onChange={handleChange} />
     </Stack>
   );
