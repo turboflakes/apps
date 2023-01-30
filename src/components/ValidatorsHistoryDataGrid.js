@@ -209,7 +209,7 @@ const defineColumns = (theme) => {
 export default function ValidatorsHistoryDataGrid({sessionIndex, skip, identityFilter, subsetFilter, maxSessions, isFetching}) {
   const theme = useTheme();
   const historySessionIds = useSelector(selectSessionHistoryIds);
-  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, historySessionIds, identityFilter, subsetFilter, isFetching));
+  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, historySessionIds, true, identityFilter, subsetFilter, isFetching));
 
   if (isUndefined(rows)) {
     return null

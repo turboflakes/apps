@@ -14,7 +14,6 @@ import apiSlice from './apiSlice'
 import { calculateMvr } from '../../util/mvr'
 import { socketActions } from './socketSlice'
 import { 
-  buildSessionIdsArrayHelper,
   selectSessionByIndex } from './sessionsSlice'
 import {
   selectIsLiveMode
@@ -36,7 +35,7 @@ export const extendedApi = apiSlice.injectEndpoints({
         params: { address, session, sessions, role, number_last_sessions, show_summary, show_stats, show_profile, fetch_peers }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
-      async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
+      async onQueryStarted(params, { getState, extra, dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
           // `onSuccess` subscribe for updates
@@ -204,12 +203,13 @@ function mergeArrays(objValue, srcValue) {
   }
 }
 
-const selectValidatorsBySessions = (state, sessions = []) => {
+const selectValidatorsBySessions = (state, sessions = [], suffix = "") => {
   let validators = {};
   sessions.forEach(sessionId => {
     const session = selectSessionByIndex(state, sessionId);
-    if (!isUndefined(session) && !isUndefined(session._stashes)) {
-      const a = session._stashes.map(s => selectValidatorBySessionAndAddress(state, sessionId, s))
+    const key = `_stashes${suffix}`;
+    if (!isUndefined(session) && !isUndefined(session[key])) {
+      const a = session[key].map(s => selectValidatorBySessionAndAddress(state, sessionId, s))
       const b = groupBy(a, v => v.address);
       mergeWith(validators, b, mergeArrays);
     }
@@ -286,8 +286,8 @@ const SUBSET = {
   "C100": "C100%"
 }
 
-export const selectValidatorsInsightsBySessions = (state, sessions = [], identityFilter = "", subsetFilter = "", isFetching) => {
-  const validators = selectValidatorsBySessions(state, sessions);
+export const selectValidatorsInsightsBySessions = (state, sessions = [], isHistory = false, identityFilter = "", subsetFilter = "", isFetching) => {
+  const validators = selectValidatorsBySessions(state, sessions, isHistory ? "_insights" : "");
   const rows = validators.map((x, i) => {
     const f1 = x.filter(y => y.is_auth);
     const authored_blocks = f1.map(v => v.auth.ab.length).reduce((a, b) => a + b, 0);

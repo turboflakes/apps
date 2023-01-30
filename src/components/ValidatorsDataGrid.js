@@ -183,7 +183,7 @@ const defineColumns = (theme) => {
 export default function ValidatorsDataGrid({sessionIndex, skip, identityFilter, subsetFilter}) {
   const theme = useTheme();
   const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true, show_profile: true}, {skip});
-  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex], identityFilter, subsetFilter));
+  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex], false, identityFilter, subsetFilter));
 
   if (isUndefined(rows) && !isSuccess) {
     return null

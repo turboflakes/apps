@@ -134,6 +134,21 @@ const sessionsSlice = createSlice({
       adapter.upsertMany(state, sessions)
     })
     .addMatcher(matchValidatorsReceived, (state, action) => {
+      
+     const setKey = (action, prefix) => {
+        if (!isUndefined(action)) {
+          if (!isUndefined(action.meta)) {
+            if (!isUndefined(action.meta.arg)) {
+              if (!isUndefined(action.meta.arg.originalArgs)) {
+                if (!isUndefined(action.meta.arg.originalArgs.sessions)) {
+                  return `${prefix}_insights`
+                }
+              }
+            }
+          }
+        }
+        return prefix
+      }
       // Filter validators if authority and p/v
       const filtered = action.payload.data.filter(v => v.is_auth);
 
@@ -146,7 +161,13 @@ const sessionsSlice = createSlice({
         const _validity_votes = validators.filter(v => v.is_auth && v.is_para).map(v => !isUndefined(v.para_summary) ? v.para_summary.ev + v.para_summary.iv + v.para_summary.mv : 0);
         const _backing_points = validators.filter(v => v.is_auth && v.is_para).map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0);
         const _stashes = validators.map(v => v.address);
-        adapter.upsertOne(state, { six: parseInt(session, 10), _group_ids, _mvrs, _validity_votes, _backing_points, _stashes})
+        adapter.upsertOne(state, { six: parseInt(session, 10), 
+          [setKey(action, "_group_ids")]: _group_ids, 
+          [setKey(action, "_mvrs")]: _mvrs, 
+          [setKey(action, "_validity_votes")]: _validity_votes, 
+          [setKey(action, "_backing_points")]: _backing_points, 
+          [setKey(action, "_stashes")]: _stashes, 
+        })
       })
 
     })
