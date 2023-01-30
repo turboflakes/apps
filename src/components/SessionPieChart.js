@@ -4,6 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import Skeleton from '@mui/material/Skeleton';
 import { PieChart, Pie, Cell } from 'recharts';
 import { Typography } from '@mui/material';
 import { 
@@ -24,13 +25,27 @@ function createData(name, value) {
 
 export default function SessionPieChart({sessionIndex}) {
   const theme = useTheme();
-  const {isSuccess: isFinalizedBlockSuccess} = useGetBlockQuery({blockId: "finalized", show_stats: true});
-  const {isSuccess: isSessionSuccess } = useGetSessionByIndexQuery(sessionIndex);
+  const {
+    isSuccess: isSuccessFinalizedBlock, 
+    isFetching: isFetchingBlockSuccess} = useGetBlockQuery({blockId: "finalized", show_stats: true});
+  const {
+    isSuccess: isSuccessSession,
+    isFetching: isFetchingSession } = useGetSessionByIndexQuery(sessionIndex);
   const finalized = useSelector(selectFinalizedBlock)
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex))
   const isLiveMode = useSelector(selectIsLiveMode)
 
-  if (!isFinalizedBlockSuccess || !isSessionSuccess || isUndefined(session)) {
+  if (isFetchingBlockSuccess || isFetchingSession || isUndefined(session)) {
+    return (<Skeleton variant="rounded" sx={{
+      width: '100%',
+      height: 96,
+      borderRadius: 3,
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: 'white'
+    }} />)
+  }
+
+  if (!isSuccessFinalizedBlock || !isSuccessSession) {
     return null
   }
 

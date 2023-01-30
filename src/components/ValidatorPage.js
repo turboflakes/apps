@@ -42,8 +42,8 @@ export default function ValidatorPage() {
   const isLiveMode = useSelector(selectIsLiveMode);
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
-  const {data: validator, isSuccess, isError} = useGetValidatorByAddressQuery({address: stash, session: sessionIndex, show_summary: true, show_stats: true}, {refetchOnMountOrArgChange: true});
-  
+  const {data: validator, isSuccess, isError} = useGetValidatorByAddressQuery({address: stash, session: sessionIndex, show_summary: true, show_stats: true});
+
   React.useEffect(() => {
     if (stash && stash !== selectedAddress) {
       dispatch(addressChanged(stash));
@@ -94,7 +94,7 @@ export default function ValidatorPage() {
         {isError ?
           <Grid item xs={12}>
             <Box sx={{display: "flex", justifyContent:"center", 
-              alignItems: "center", height: "100vh", }}>
+              alignItems: "center", height: "80vh", }}>
               <Box sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
                 <img src={onetSVG} style={{ 
                     margin: "32px",

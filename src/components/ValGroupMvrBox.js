@@ -6,7 +6,11 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
+import Skeleton from '@mui/material/Skeleton';
 import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
+import { 
+  useGetValidatorsQuery,
+ } from '../features/api/validatorsSlice';
 import {
   selectValGroupMvrBySessionAndGroupId
 } from '../features/api/valGroupsSlice';
@@ -47,10 +51,21 @@ const renderTooltip = (props, theme) => {
 
 export default function ValGroupMvrBox({groupId, sessionIndex}) {
   const theme = useTheme();
+  const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
   const _mvr = useSelector(state => selectValGroupMvrBySessionAndGroupId(state, sessionIndex,  groupId));
   const mvr = Math.round(_mvr * 10000) / 10000;
   const allMVRs = useSelector(state => selectMVRsBySession(state, sessionIndex));
-  
+
+  if (isFetching) {
+    return (<Skeleton variant="rounded" sx={{
+      width: '100%',
+      height: 96,
+      borderRadius: 3,
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: 'white'
+    }} />)
+  }
+
   const avg = Math.round((!!allMVRs.length ? allMVRs.reduce((a, b) => a + b, 0) / allMVRs.length : 0) * 10000) / 10000;
 
   const diff = !!avg && !!mvr ? Math.round(((mvr * 100 / avg) - 100) * 10) / 10 : 0;

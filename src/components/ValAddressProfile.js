@@ -6,6 +6,7 @@ import { Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
+import Skeleton from '@mui/material/Skeleton';
 import Identicon from '@polkadot/react-identicon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWallet } from '@fortawesome/free-solid-svg-icons'
@@ -31,7 +32,7 @@ import { stakeDisplay } from '../util/display'
 
 export default function ValAddressProfile({address, maxSessions, showGrade}) {
   // const theme = useTheme();
-  const {isSuccess} = useGetValidatorProfileByAddressQuery(address)
+  const {isSuccess, isFetching} = useGetValidatorProfileByAddressQuery(address)
   const isLiveMode = useSelector(selectIsLiveMode);
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
@@ -39,7 +40,17 @@ export default function ValAddressProfile({address, maxSessions, showGrade}) {
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
   const chainInfo = useSelector(selectChainInfo)
 
-  if (!isSuccess || isUndefined(valProfile) || isUndefined(chainInfo)) {
+  if (isFetching || isUndefined(valProfile) || isUndefined(chainInfo)) {
+    return (<Skeleton variant="rounded" sx={{
+      width: '100%',
+      height: 208,
+      borderRadius: 3,
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: 'white'
+    }} />)
+  }
+
+  if (!isSuccess) {
     return null
   }
   

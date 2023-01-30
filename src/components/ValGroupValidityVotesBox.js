@@ -5,10 +5,11 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
+import Skeleton from '@mui/material/Skeleton';
 import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
 import { 
   useGetValidatorsQuery,
- } from '../features/api/validatorsSlice'
+ } from '../features/api/validatorsSlice';
 import {
   selectValGroupValidityVotesBySessionAndGroupId,
   selectValidatorIdsBySessionAndGroupId
@@ -51,13 +52,19 @@ const renderTooltip = (props, theme) => {
 export default function ValGroupValidityVotesBox({groupId, sessionIndex}) {
   const theme = useTheme();
   // fetch history summary for all validators in the selected history session
-  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
+  const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
   const _validityVotes = useSelector(state => selectValGroupValidityVotesBySessionAndGroupId(state, sessionIndex,  groupId));
   const validatorIds = useSelector(state => selectValidatorIdsBySessionAndGroupId(state, sessionIndex,  groupId));
   const allValidityVotes = useSelector(state => selectValidityVotesBySession(state, sessionIndex));
   
-  if (!isSuccess && validatorIds.length > 0) {
-    return null
+  if (isFetching || validatorIds.length === 0) {
+    return (<Skeleton variant="rounded" sx={{
+      width: '100%',
+      height: 96,
+      borderRadius: 3,
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: 'white'
+    }} />)
   }
   
   const validityVotes = _validityVotes / validatorIds.length;

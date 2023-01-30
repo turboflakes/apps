@@ -4,7 +4,11 @@ import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Skeleton from '@mui/material/Skeleton';
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from 'recharts';
+import { 
+  useGetValidatorsQuery,
+ } from '../features/api/validatorsSlice';
 import {
   selectValGroupCoreAssignmentsBySessionAndGroupId
 } from '../features/api/valGroupsSlice'
@@ -45,10 +49,21 @@ const renderTooltip = (props, theme) => {
 
 export default function ValGroupCoreAssignmentBox({groupId, sessionIndex}) {
   const theme = useTheme();
+  const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
   const selectedChain = useSelector(selectChain);
   const coreAssignments = useSelector(state => selectValGroupCoreAssignmentsBySessionAndGroupId(state, sessionIndex,  groupId));
   const caTarget = getCoreAssignmentsTarget(selectedChain);
   
+  if (isFetching) {
+    return (<Skeleton variant="rounded" sx={{
+      width: '100%',
+      height: 96,
+      borderRadius: 3,
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: 'white'
+    }} />)
+  }
+
   const data = [
     {name: 'Done', value: coreAssignments, percentage: Math.round((coreAssignments * 100)/caTarget)},
     {name: 'Progress', value: caTarget - coreAssignments, percentage: Math.round(((caTarget - coreAssignments) * 100)/caTarget)}

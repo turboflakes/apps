@@ -4,6 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import Skeleton from '@mui/material/Skeleton';
 import { Typography } from '@mui/material';
 import { 
   useGetBlockQuery,
@@ -20,17 +21,33 @@ import {
 
 export default function SessionBox({sessionIndex, dark}) {
   const theme = useTheme();
-  const {isSuccess: isFinalizedBlockSuccess} = useGetBlockQuery({blockId: "finalized", show_stats: true}, {refetchOnMountOrArgChange: true});
-  const {isSuccess: isBestBlockSuccess} = useGetBlockQuery({blockId: "best"}, {refetchOnMountOrArgChange: true});
-  const {isSuccess: isSessionSuccess } = useGetSessionByIndexQuery(sessionIndex);
+  const {
+    isSuccess: isFinalizedBlockSuccess,
+    isFetching: isFetchingFinalizedBlock} = useGetBlockQuery({blockId: "finalized", show_stats: true}, {refetchOnMountOrArgChange: true});
+  const {
+    isSuccess: isBestBlockSuccess,
+    isFetching: isFetchingBlockSuccess} = useGetBlockQuery({blockId: "best"}, {refetchOnMountOrArgChange: true});
+  const {
+    isSuccess: isSessionSuccess,
+    isFetching: isFetchingSession } = useGetSessionByIndexQuery(sessionIndex);
   const best = useSelector(selectBestBlock)
   const finalized = useSelector(selectFinalizedBlock)
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex))
   const isLiveMode = useSelector(selectIsLiveMode)
   
+  if (isFetchingFinalizedBlock || isFetchingBlockSuccess || isFetchingSession
+     || isUndefined(session) || isUndefined(best) || isUndefined(finalized)) {
+      return (<Skeleton variant="rounded" sx={{
+        width: '100%',
+        height: 96,
+        borderRadius: 3,
+        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+        bgcolor: 'white'
+      }} />)
+  }
+
   if (!isFinalizedBlockSuccess || !isBestBlockSuccess || 
-    !isSessionSuccess || isUndefined(session) ||
-    isUndefined(best) || isUndefined(finalized)) {
+    !isSessionSuccess) {
     return null
   }
 

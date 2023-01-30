@@ -8,6 +8,7 @@ import { ComposedChart, Bar, Line, Area, XAxis, YAxis, Cell, ReferenceLine,
   CartesianGrid, Tooltip, ResponsiveContainer, Rectangle, Legend } from 'recharts';
 import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
+import Skeleton from '@mui/material/Skeleton';
 import {
   useGetValidatorsQuery,
   selectValidatorsByAddressAndSessions,
@@ -156,11 +157,21 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
   const dispatch = useDispatch();
   const currentSession = useSelector(selectSessionCurrent);
   const historySession = useSelector(selectSessionHistory);
-  const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
+  const {isSuccess, isFetching} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1 , maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds));
   const allMvrs = useSelector(state => selectMvrBySessions(state, historySessionIds));
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
+
+  if (isFetching) {
+    return (<Skeleton variant="rounded" sx={{
+      width: '100%',
+      height: 302,
+      borderRadius: 3,
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: 'white'
+    }} />)
+  }
 
   if (!isSuccess) {
     return null

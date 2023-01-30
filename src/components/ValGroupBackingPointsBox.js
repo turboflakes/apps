@@ -5,7 +5,11 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
+import Skeleton from '@mui/material/Skeleton';
 import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
+import { 
+  useGetValidatorsQuery,
+ } from '../features/api/validatorsSlice';
 import {
   selectValGroupBackingPointsBySessionAndGroupId
 } from '../features/api/valGroupsSlice';
@@ -46,9 +50,20 @@ const renderTooltip = (props, theme) => {
 
 export default function ValGroupBackingPointsBox({groupId, sessionIndex}) {
   const theme = useTheme();
+  const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
   const backingPoints = useSelector(state => selectValGroupBackingPointsBySessionAndGroupId(state, sessionIndex,  groupId));
   const all = useSelector(state => selectBackingPointsBySession(state, sessionIndex));
   
+  if (isFetching) {
+    return (<Skeleton variant="rounded" sx={{
+      width: '100%',
+      height: 96,
+      borderRadius: 3,
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: 'white'
+    }} />)
+  }
+
   const avg = !!all.length ? Math.round(all.reduce((a, b) => a + b, 0) / all.length) : 0;
   const diff = !!avg ? Math.round(((backingPoints * 100 / avg) - 100) * 10) / 10 : 0;
 

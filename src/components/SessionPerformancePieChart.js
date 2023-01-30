@@ -5,6 +5,7 @@ import isUndefined from 'lodash/isUndefined'
 import isNaN from 'lodash/isNaN'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import Skeleton from '@mui/material/Skeleton';
 import { PieChart, Pie, Cell } from 'recharts';
 import { Typography } from '@mui/material';
 import { 
@@ -18,11 +19,21 @@ function createData(name, value) {
 
 export default function SessionPerformancePieChart() {
   const theme = useTheme();
-  const {isSuccess} = useGetBlockQuery({blockId: "finalized", show_stats: true});
+  const {isSuccess, isFetching} = useGetBlockQuery({blockId: "finalized", show_stats: true});
   const finalized = useSelector(selectFinalizedBlock)
   const previousFinalized = useSelector(selectPreviousFinalizedBlock)
   
-  if (!isSuccess || isUndefined(finalized) || isUndefined(previousFinalized)) {
+  if (isFetching || isUndefined(finalized) || isUndefined(previousFinalized)) {
+    return (<Skeleton variant="rounded" sx={{
+      width: '100%',
+      height: 96,
+      borderRadius: 3,
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: 'white'
+    }} />)
+  }
+
+  if (!isSuccess) {
     return null
   }
 

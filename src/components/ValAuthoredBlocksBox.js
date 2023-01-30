@@ -11,17 +11,13 @@ import {
 import {
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
-import {
-  selectValProfileByAddress,
-} from '../features/api/valProfilesSlice';
 
 export default function ValAuthoredBlocksBox({address}) {
   // const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
-  const valProfile = useSelector(state => selectValProfileByAddress(state, address));
-
-  if (isUndefined(validator) || isUndefined(valProfile)) {
+  
+  if (isUndefined(validator)) {
     return null
   }
 

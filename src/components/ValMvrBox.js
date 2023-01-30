@@ -6,7 +6,11 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
+import Skeleton from '@mui/material/Skeleton';
 import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
+import { 
+  useGetValidatorsQuery,
+ } from '../features/api/validatorsSlice';
 import {
   selectValidatorBySessionAndAddress,
 } from '../features/api/validatorsSlice';
@@ -57,12 +61,19 @@ const renderTooltip = (props, theme) => {
 export default function ValMvrBox({address}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
+  const {isFetching} = useGetValidatorsQuery({session: currentSession, role: "para_authority", show_summary: true});
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
   const allMvrs = useSelector(state => selectMVRsBySession(state, currentSession));
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
   
-  if (isUndefined(validator) || isUndefined(valProfile)) {
-    return null
+  if (isFetching || isUndefined(validator) || isUndefined(valProfile)) {
+    return (<Skeleton variant="rounded" sx={{
+      width: '100%',
+      height: 96,
+      borderRadius: 3,
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: 'white'
+    }} />)
   }
 
   if (!validator.is_para) {

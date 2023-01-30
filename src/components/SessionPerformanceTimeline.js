@@ -4,6 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import Skeleton from '@mui/material/Skeleton';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 import { Typography } from '@mui/material';
@@ -54,8 +55,18 @@ import {
 
 export default function SessionPerformanceTimeline({sessionIndex}) {
   const theme = useTheme();
-  const {isSuccess} = useGetBlocksQuery({session: sessionIndex, show_stats: true});
+  const {isSuccess, isFetching} = useGetBlocksQuery({session: sessionIndex, show_stats: true});
   const blocks = useSelector(state => selectBlocksBySession(state, sessionIndex))
+
+  if (isFetching) {
+    return (<Skeleton variant="rounded" sx={{
+      width: '100%',
+      height: 96,
+      borderRadius: 3,
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: 'white'
+    }} />)
+  }
   
   if (!isSuccess) {
     return null
