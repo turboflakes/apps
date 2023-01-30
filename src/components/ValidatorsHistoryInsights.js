@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useSelector, useDispatch } from 'react-redux'
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -9,24 +10,45 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ValidatorsHistoryDataGrid from './ValidatorsHistoryDataGrid';
 import Spinner from './Spinner';
-
+import { 
+  useGetSessionsQuery, 
+  sessionHistoryIdsChanged,
+  selectSessionHistoryIds,
+  selectSessionHistory,
+  buildSessionIdsArrayHelper
+} from '../features/api/sessionsSlice'
 import {
   useGetValidatorsQuery,
-  buildSessionIdsArrayHelper
 } from '../features/api/validatorsSlice'
+
+
+// function useWeb3Api(chain) {
+//   const [ids, setIds] = React.useState(undefined);
+
+//   React.useEffect(() => {
+    
+//     const createWeb3Api = async (provider) => {
+//       return await ApiPromise.create({ provider });
+//     }
+
+//     if (chain) {
+//       const wsProvider = new WsProvider(getNetworkExternalWSS(chain));
+//       createWeb3Api(wsProvider).then((api) => setApi(api));
+//     }
+//   }, [chain]);
+
+//   return [api];
+// }
 
 export default function ValidatorsHistoryInsights({sessionIndex, skip}) {
   // const theme = useTheme();
+  const dispatch = useDispatch();
   const [identityFilter, setIdentityFilter] = React.useState('');
   const [subsetFilter, setSubsetFilter] = React.useState('');
   const [maxSessions, setMaxSessions] = React.useState(6);
-  const historySessionIds = buildSessionIdsArrayHelper(sessionIndex, maxSessions);
+  const historySessionIds = useSelector(selectSessionHistoryIds);
   const {isSuccess, isFetching} = useGetValidatorsQuery({sessions: [historySessionIds[0], historySessionIds[5]].join(","), show_summary: true, show_profile: true}, {skip});
 
-  // if (!isSuccess) {
-  //   return null
-  // }
-  
   const handleIdentityFilter = (event) => {
     setIdentityFilter(event.target.value)
   }
@@ -36,7 +58,8 @@ export default function ValidatorsHistoryInsights({sessionIndex, skip}) {
   };
 
   const handleLoadTimeline = (event) => {
-    setMaxSessions(maxSessions + 6)
+    const newIds = buildSessionIdsArrayHelper(historySessionIds[0] - 1, 6);
+    dispatch(sessionHistoryIdsChanged([...newIds, ...historySessionIds]))
   }
 
   return (

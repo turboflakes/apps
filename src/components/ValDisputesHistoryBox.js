@@ -8,11 +8,11 @@ import Typography from '@mui/material/Typography';
 import {
   useGetValidatorsQuery,
   selectValidatorsByAddressAndSessions,
-  buildSessionIdsArrayHelper
 } from '../features/api/validatorsSlice';
 import {
   useGetSessionsQuery,
   selectSessionCurrent,
+  buildSessionIdsArrayHelper
 } from '../features/api/sessionsSlice';
 
 

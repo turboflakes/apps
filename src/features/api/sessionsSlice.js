@@ -108,6 +108,9 @@ const sessionsSlice = createSlice({
     sessionHistoryRangeChanged: (state, action) => {
       state.history_range = action.payload;
     },
+    sessionHistoryIdsChanged: (state, action) => {
+      state.history_ids = action.payload;
+    },
     sessionChanged: (state, action) => {
       state.current = action.payload;
     },
@@ -161,6 +164,7 @@ export const {
 
 export const selectSessionHistory = (state) => state.sessions.history;
 export const selectSessionHistoryRange = (state) => state.sessions.history_range;
+export const selectSessionHistoryIds = (state) => isUndefined(state.sessions.history_ids) ? buildSessionIdsArrayHelper(state.sessions.current, 6) : state.sessions.history_ids;
 export const selectSessionCurrent = (state) => state.sessions.current;
 
 export const selectValGroupIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
@@ -296,6 +300,17 @@ export const selectEraPointsBySession = (state, sessionId) => {
   return 0
 }
 
-export const { sessionHistoryChanged, sessionHistoryRangeChanged } = sessionsSlice.actions;
+export const buildSessionIdsArrayHelper = (startSession, max = 0) => {
+  if (isNaN(startSession)) {
+    return []
+  }
+  let out = [];
+  for (let i = max - 1; i >= 0; i--) {
+    out.push(startSession-i);
+  }
+  return out;
+}
+
+export const { sessionHistoryChanged, sessionHistoryRangeChanged, sessionHistoryIdsChanged } = sessionsSlice.actions;
 
 export default sessionsSlice;

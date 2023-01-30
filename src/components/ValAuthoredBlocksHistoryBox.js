@@ -10,12 +10,12 @@ import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'rec
 import {
   useGetValidatorsQuery,
   selectValidatorsByAddressAndSessions,
-  buildSessionIdsArrayHelper
 } from '../features/api/validatorsSlice';
 import {
   useGetSessionsQuery,
   selectAuthoredBlocksBySessions,
   selectSessionCurrent,
+  buildSessionIdsArrayHelper
 } from '../features/api/sessionsSlice';
 import {
   selectValProfileByAddress,

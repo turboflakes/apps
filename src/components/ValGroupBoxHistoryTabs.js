@@ -10,21 +10,17 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ValGroupBox from './ValGroupBox';
 import { 
-  useGetValidatorsQuery,
   selectParaAuthoritySessionsByAddressAndSessions,
-  buildSessionIdsArrayHelper
  } from '../features/api/validatorsSlice';
 import {
   selectSessionCurrent,
   selectSessionHistory,
-  sessionHistoryChanged
+  sessionHistoryChanged,
+  buildSessionIdsArrayHelper
 } from '../features/api/sessionsSlice';
 import {
   pageChanged,
 } from '../features/layout/layoutSlice';
-// import {
-//   selectChain,
-// } from '../features/chain/chainSlice';
 
 function a11yProps(index) {
   return {

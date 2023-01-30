@@ -5,9 +5,9 @@ import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import {
   selectValidatorsByAddressAndSessions,
-  buildSessionIdsArrayHelper
 } from '../features/api/validatorsSlice';
 import {
+  buildSessionIdsArrayHelper,
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
 import { grade } from '../util/grade'

@@ -4,23 +4,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
-import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
-import Button from '@mui/material/Button';
-import SendIcon from '@mui/icons-material/Send';
 import Skeleton from '@mui/material/Skeleton';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import Identicon from '@polkadot/react-identicon';
 import { grade } from '../util/grade'
 import {
-  useGetValidatorsQuery,
   selectValidatorsInsightsBySessions,
-  buildSessionIdsArrayHelper
 } from '../features/api/validatorsSlice'
 import { 
-  selectSessionHistoryRange,
-  selectSessionHistory
+  selectSessionHistoryIds,
 } from '../features/api/sessionsSlice'
 import {
   addressChanged,
@@ -214,14 +208,7 @@ const defineColumns = (theme) => {
 
 export default function ValidatorsHistoryDataGrid({sessionIndex, skip, identityFilter, subsetFilter, maxSessions, isFetching}) {
   const theme = useTheme();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const selectedChain = useSelector(selectChain);
-  const selectedAddress = useSelector(selectAddress);
-  const historySessionIds = buildSessionIdsArrayHelper(sessionIndex, maxSessions);
-  const historySessionRange = useSelector(selectSessionHistoryRange);
-  const historySession = useSelector(selectSessionHistory);
-  // const {isSuccess} = useGetValidatorsQuery({sessions: (isUndefined(historySessionRange) ? [historySession-6, historySession]: historySessionRange).join(","), show_summary: true, show_profile: true}, {skip});  
+  const historySessionIds = useSelector(selectSessionHistoryIds);
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, historySessionIds, identityFilter, subsetFilter, isFetching));
 
   if (isUndefined(rows)) {

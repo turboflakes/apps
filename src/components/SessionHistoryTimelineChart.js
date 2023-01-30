@@ -8,15 +8,13 @@ import { ComposedChart, Bar, Line, Area, XAxis, YAxis, Cell, ReferenceLine,
   CartesianGrid, Tooltip, ResponsiveContainer, Rectangle, Legend } from 'recharts';
 import { Typography } from '@mui/material';
 import {
-  buildSessionIdsArrayHelper
-} from '../features/api/validatorsSlice';
-import {
   selectSessionCurrent,
   selectSessionHistory,
   selectMvrBySessions,
   selectBackingPointsBySessions,
   selectAuthoredBlocksBySessions,
   sessionHistoryChanged,
+  buildSessionIdsArrayHelper
 } from '../features/api/sessionsSlice';
 import { grade } from '../util/grade'
 

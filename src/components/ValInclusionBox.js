@@ -9,11 +9,11 @@ import Tooltip from '@mui/material/Tooltip';
 import {
   useGetValidatorsQuery,
   selectValidatorsByAddressAndSessions,
-  buildSessionIdsArrayHelper
 } from '../features/api/validatorsSlice';
 import {
   useGetSessionsQuery,
   selectSessionCurrent,
+  buildSessionIdsArrayHelper
 } from '../features/api/sessionsSlice';
 
 export default function ValInclusionBox({address, maxSessions}) {

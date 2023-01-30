@@ -14,6 +14,7 @@ import apiSlice from './apiSlice'
 import { calculateMvr } from '../../util/mvr'
 import { socketActions } from './socketSlice'
 import { 
+  buildSessionIdsArrayHelper,
   selectSessionByIndex } from './sessionsSlice'
 import {
   selectIsLiveMode
@@ -196,17 +197,6 @@ export const selectParaAuthoritySessionsByAddressAndSessions = (state, address, 
   selectValidatorsByAddressAndSessions(state, address, sessions)
     .filter(v => v.is_auth && v.is_para)
     .map(v => v.session);
-
-export const buildSessionIdsArrayHelper = (startSession, max = 0) => {
-  if (isNaN(startSession)) {
-    return []
-  }
-  let out = [];
-  for (let i = max - 1; i >= 0; i--) {
-    out.push(startSession-i);
-  }
-  return out;
-}
 
 function mergeArrays(objValue, srcValue) {
   if (isArray(objValue)) {

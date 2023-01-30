@@ -12,13 +12,13 @@ import Skeleton from '@mui/material/Skeleton';
 import {
   useGetValidatorsQuery,
   selectValidatorsByAddressAndSessions,
-  buildSessionIdsArrayHelper
 } from '../features/api/validatorsSlice';
 import {
   selectSessionCurrent,
   selectSessionHistory,
   selectMvrBySessions,
   sessionHistoryChanged,
+  buildSessionIdsArrayHelper
 } from '../features/api/sessionsSlice';
 import {
   selectValProfileByAddress,
