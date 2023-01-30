@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
 import HistoryErasMenu from './HistoryErasMenu';
+import Spinner from './Spinner';
 import {
   selectPage,
   modeChanged,
@@ -16,6 +17,7 @@ import {
   selectBlock,
  } from '../features/api/blocksSlice'
 import { 
+  useGetSessionByIndexQuery,
   selectSessionHistory,
   selectSessionCurrent,
   selectSessionByIndex,
@@ -82,9 +84,10 @@ export default function ModeSwitch({mode}) {
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
+  const { isFetching } = useGetSessionByIndexQuery(sessionIndex);
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
   const selectedPage = useSelector(selectPage);
-
+  
   if (isUndefined(block) || isUndefined(session)) {
     return null
   }
@@ -108,14 +111,14 @@ export default function ModeSwitch({mode}) {
                   backgroundColor: theme.palette.semantics.green, 
                   display: "inline-block" }}></span>
           <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
-            {`${mode} [ ${session.eix.format()} // ${session.six.format()} ]`}
+            {!isFetching ? `${mode} [ ${session.eix.format()} // ${session.six.format()} ]` : ''}
           </Typography>
         </Box> : 
         (selectedPage !== 'validators/insights' ? 
           <Box sx={{ display: 'flex', alignItems: 'center'}}>
             <HistoryErasMenu />
             <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
-              {`[ ${session.eix.format()} // ${session.six.format()} ]`}
+            { !isFetching ? `[ ${session.eix.format()} // ${session.six.format()} ]` : ''}
             </Typography>
           </Box> : 
             <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
