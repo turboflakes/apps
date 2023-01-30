@@ -164,7 +164,7 @@ export const {
 
 export const selectSessionHistory = (state) => state.sessions.history;
 export const selectSessionHistoryRange = (state) => state.sessions.history_range;
-export const selectSessionHistoryIds = (state) => isUndefined(state.sessions.history_ids) ? buildSessionIdsArrayHelper(state.sessions.current, 6) : state.sessions.history_ids;
+export const selectSessionHistoryIds = (state) => isUndefined(state.sessions.history_ids) ? buildSessionIdsArrayHelper(state.sessions.current - 1, 6) : state.sessions.history_ids;
 export const selectSessionCurrent = (state) => state.sessions.current;
 
 export const selectValGroupIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
