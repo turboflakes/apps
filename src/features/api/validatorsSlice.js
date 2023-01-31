@@ -283,7 +283,7 @@ const GLYPHS = {
 const SUBSET = { 
   "TVP": "TVP",
   "NONTVP": "Others",
-  "C100": "C100%"
+  "C100": "C100"
 }
 
 export const selectValidatorsInsightsBySessions = (state, sessions = [], isHistory = false, identityFilter = "", subsetFilter = "", isFetching) => {

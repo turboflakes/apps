@@ -2,23 +2,12 @@ import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ValidatorsDataGrid from './ValidatorsDataGrid';
+import IdentityFilter from './IdentityFilter';
+import SubsetFilter from './SubsetFilter';
 
 export default function ValidatorsInsights({sessionIndex, skip}) {
   // const theme = useTheme();
-  const [identityFilter, setIdentityFilter] = React.useState('');
-  const [subsetFilter, setSubsetFilter] = React.useState('');
-  
-  const handleIdentityFilter = (event) => {
-    setIdentityFilter(event.target.value)
-  }
-
-  const handleSubsetFilter = (event, newFilter) => {
-   setSubsetFilter(newFilter);
-  };
 
   return (
     <Paper
@@ -40,59 +29,11 @@ export default function ValidatorsInsights({sessionIndex, skip}) {
           </Box>
         </Box>
 
-        <form style={{ display: "flex", alignItems: "center"}} 
-          noValidate autoComplete="off">
-          <TextField
-            sx={{
-              // backgroundColor: theme.palette.neutrals[100],
-              borderRadius: 30,
-              width: 512
-            }}
-            variant="outlined"
-            placeholder="Filter by Identity or Address"
-            color="primary"
-            value={identityFilter}
-            onChange={handleIdentityFilter}
-            size="small"
-            fullWidth
-            InputProps={{
-              sx: {
-                borderRadius: 30,
-                paddingLeft: '4px',
-                '> .MuiOutlinedInput-input': {
-                  fontSize: "0.925rem",
-                  height: "24px",
-                  // fontSize: "0.825rem",
-                  // lineHeight: "1rem",
-                },
-              }
-            }}
-          />
-        
-          {/* subset filter */}
-          <ToggleButtonGroup
-            sx={{mx: 2}}
-            value={subsetFilter}
-            exclusive
-            onChange={handleSubsetFilter}
-            aria-label="text alignment"
-          >
-            <ToggleButton value="" aria-label="left aligned">
-              All
-            </ToggleButton>
-            <ToggleButton value="C100%" aria-label="justified">
-              100% Commission
-            </ToggleButton>
-            <ToggleButton value="Others" aria-label="right aligned">
-              Others
-            </ToggleButton>
-            <ToggleButton value="TVP" aria-label="centered">
-              <b>TVP</b>
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </form>
-        <ValidatorsDataGrid sessionIndex={sessionIndex} skip={skip} 
-          identityFilter={identityFilter} subsetFilter={subsetFilter} />
+        <Box style={{ display: "flex", alignItems: "center"}} >
+          <IdentityFilter />
+          <SubsetFilter />
+        </Box>
+        <ValidatorsDataGrid sessionIndex={sessionIndex} skip={skip} />
     </Paper>
   );
 }

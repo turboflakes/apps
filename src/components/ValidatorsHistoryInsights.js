@@ -4,11 +4,10 @@ import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import AddIcon from '@mui/icons-material/PlaylistAdd';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ValidatorsHistoryDataGrid from './ValidatorsHistoryDataGrid';
+import IdentityFilter from './IdentityFilter';
+import SubsetFilter from './SubsetFilter';
 import Spinner from './Spinner';
 import { 
   useGetSessionsQuery, 
@@ -43,22 +42,12 @@ import {
 export default function ValidatorsHistoryInsights({sessionIndex, skip}) {
   // const theme = useTheme();
   const dispatch = useDispatch();
-  const [identityFilter, setIdentityFilter] = React.useState('');
-  const [subsetFilter, setSubsetFilter] = React.useState('');
   const historySessionIds = useSelector(selectSessionHistoryIds);
   const historySessionRange = useSelector(selectSessionHistoryRange);
   const {isFetching: isFetchingValidators} = useGetValidatorsQuery({sessions: [historySessionIds[0], historySessionIds[5]].join(","), show_summary: true, show_profile: true}, {skip});
   const {isFetching: isFetchingSessions } = useGetSessionsQuery({from: historySessionIds[0], to: historySessionIds[5], show_stats: true}, {skip});
 
   const isFetching = isFetchingValidators || isFetchingSessions;
-
-  const handleIdentityFilter = (event) => {
-    setIdentityFilter(event.target.value)
-  }
-
-  const handleSubsetFilter = (event, newFilter) => {
-    setSubsetFilter(newFilter);
-  };
 
   const handleLoadTimeline = (event) => {
     const newIds = buildSessionIdsArrayHelper(historySessionIds[0] - 1, 6);
@@ -88,64 +77,17 @@ export default function ValidatorsHistoryInsights({sessionIndex, skip}) {
           </Box>
         </Box>
 
-        <form style={{ display: "flex", alignItems: "center", justifyContent: 'space-between'}} 
-          noValidate autoComplete="off">
+        <Box style={{ display: "flex", alignItems: "center", justifyContent: 'space-between'}} >
           <Box>
-            <TextField
-              sx={{
-                // backgroundColor: theme.palette.neutrals[100],
-                borderRadius: 30,
-                width: 512
-              }}
-              variant="outlined"
-              placeholder="Filter by Identity or Address"
-              color="primary"
-              value={identityFilter}
-              onChange={handleIdentityFilter}
-              size="small"
-              fullWidth
-              InputProps={{
-                sx: {
-                  borderRadius: 30,
-                  paddingLeft: '4px',
-                  '> .MuiOutlinedInput-input': {
-                    fontSize: "0.925rem",
-                    height: "24px",
-                    // fontSize: "0.825rem",
-                    // lineHeight: "1rem",
-                  },
-                }
-              }}
-            />
-            {/* subset filter */}
-            <ToggleButtonGroup
-              sx={{mx: 2}}
-              value={subsetFilter}
-              exclusive
-              onChange={handleSubsetFilter}
-              aria-label="text alignment"
-            >
-              <ToggleButton value="" aria-label="left aligned">
-                All
-              </ToggleButton>
-              <ToggleButton value="C100%" aria-label="justified">
-                100% Commission
-              </ToggleButton>
-              <ToggleButton value="Others" aria-label="right aligned">
-                Others
-              </ToggleButton>
-              <ToggleButton value="TVP" aria-label="centered">
-                <b>TVP</b>
-              </ToggleButton>
-            </ToggleButtonGroup>
+            <IdentityFilter />
+            <SubsetFilter />
           </Box>
           <Button variant='contained' endIcon={<AddIcon />} onClick={handleLoadTimeline} small
             disabled={isFetching} disableRipple>
             Load more sessions
           </Button>
-        </form>
-        <ValidatorsHistoryDataGrid sessionIndex={sessionIndex} skip={skip} 
-          identityFilter={identityFilter} subsetFilter={subsetFilter} isFetching={isFetching} />
+        </Box>
+        <ValidatorsHistoryDataGrid isFetching={isFetching} />
     </Paper>
   );
 }

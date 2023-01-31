@@ -14,8 +14,6 @@ import {
   selectValidatorsInsightsBySessions,
 } from '../features/api/validatorsSlice'
 import { 
-  selectSessionHistoryIds,
-  selectSessionHistoryRange,
   selectSessionHistoryRangeIds,
 } from '../features/api/sessionsSlice'
 import {
@@ -24,6 +22,8 @@ import {
   selectAddress
 } from '../features/chain/chainSlice';
 import {
+  selectIdentityFilter,
+  selectSubsetFilter,
   pageChanged
 } from '../features/layout/layoutSlice';
 
@@ -177,23 +177,10 @@ const defineColumns = (theme) => {
     sortingOrder: ['asc', 'desc']
   },
   {
-    field: 'timeline',
-    headerName: 'Timeline',
-    width: 384,
-    sortable: false,
-    disableColumnMenu: true,
-    renderCell: (params) => {
-      if (params.row.isFetching) {
-        return (<Skeleton variant="text" sx={{ width: 384, fontSize: '0.825rem' }} />)
-      }
-      return (<span>{params.row.timeline}</span>)
-    }
-  },
-  {
     field: 'options',
     headerName: '', 
-    width: 96,
-    align: 'right',
+    width: 80,
+    align: 'center',
     sortable: false,
     disableColumnMenu: true,
     renderCell: (params) => {
@@ -205,11 +192,26 @@ const defineColumns = (theme) => {
         <DetailsIcon address={params.row.address} />
       )
     }
+  },
+  {
+    field: 'timeline',
+    headerName: 'Timeline',
+    width: 320,
+    sortable: false,
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      if (params.row.isFetching) {
+        return (<Skeleton variant="text" sx={{ minWidth: 128, fontSize: '0.825rem' }} />)
+      }
+      return (<span>{params.row.timeline}</span>)
+    }
   }
 ]};
 
-export default function ValidatorsHistoryDataGrid({sessionIndex, skip, identityFilter, subsetFilter, isFetching}) {
+export default function ValidatorsHistoryDataGrid({isFetching}) {
   const theme = useTheme();
+  const identityFilter = useSelector(selectIdentityFilter);
+  const subsetFilter = useSelector(selectSubsetFilter);
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, historySessionRangeIds, true, identityFilter, subsetFilter, isFetching));
 

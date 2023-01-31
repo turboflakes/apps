@@ -12,6 +12,7 @@ import SessionPerformanceTimeline from './SessionPerformanceTimeline';
 import ValidatorsInsights from './ValidatorsInsights';
 import ValidatorsHistoryInsights from './ValidatorsHistoryInsights';
 import GradesBox from './GradesBox';
+import GradesWithFilterBox from './GradesWithFilterBox';
 
 import {
   selectAddress,
@@ -97,7 +98,7 @@ export default function InsightsPage() {
           </Grid> : null}
         {isLiveMode ? 
           <Grid item xs={4}>
-            <GradesBox sessionIndex={sessionIndex} />
+            <GradesWithFilterBox sessionIndex={sessionIndex} />
           </Grid> : null}
         {isHistoryMode ? 
           <Grid item xs={12}>

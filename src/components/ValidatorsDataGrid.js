@@ -19,7 +19,9 @@ import {
   selectAddress
 } from '../features/chain/chainSlice';
 import {
-  pageChanged
+  selectIdentityFilter,
+  selectSubsetFilter,
+  pageChanged,
 } from '../features/layout/layoutSlice';
 
 
@@ -180,10 +182,13 @@ const defineColumns = (theme) => {
   }
 ]};
 
-export default function ValidatorsDataGrid({sessionIndex, skip, identityFilter, subsetFilter}) {
+export default function ValidatorsDataGrid({sessionIndex, skip}) {
   const theme = useTheme();
+  const identityFilter = useSelector(selectIdentityFilter);
+  const subsetFilter = useSelector(selectSubsetFilter);
   const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true, show_profile: true}, {skip});
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex], false, identityFilter, subsetFilter));
+  
 
   if (isUndefined(rows) && !isSuccess) {
     return null

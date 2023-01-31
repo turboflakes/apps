@@ -14,7 +14,9 @@ const initializePage = () => {
 const initialState = {
   page: initializePage(),
   mode: 'Live',
-  maxHistoryEras: 8
+  maxHistoryEras: 8,
+  identityFilter: '',
+  subsetFilter: ''
 };
 
 const layoutSlice = createSlice({
@@ -30,6 +32,12 @@ const layoutSlice = createSlice({
     maxHistoryErasChanged: (state, action) => {
       state.maxHistoryEras = action.payload;
     },
+    identityFilterChanged: (state, action) => {
+      state.identityFilter = action.payload;
+    },
+    subsetFilterChanged: (state, action) => {
+      state.subsetFilter = action.payload;
+    },
   },
 });
 
@@ -39,10 +47,15 @@ export const selectIsLiveMode = (state) => state.layout.mode === 'Live';
 export const selectIsHistoryMode = (state) => state.layout.mode === 'History';
 export const selectMaxHistoryEras = (state) => state.layout.maxHistoryEras;
 export const selectMaxHistorySessions = (state) => state.layout.maxHistoryEras * 6;
+export const selectIdentityFilter = (state) => state.layout.identityFilter;
+export const selectSubsetFilter = (state) => state.layout.subsetFilter;
 
 export const { 
   pageChanged, 
   modeChanged, 
-  maxHistoryErasChanged } = layoutSlice.actions;
+  maxHistoryErasChanged,
+  identityFilterChanged,
+  subsetFilterChanged
+ } = layoutSlice.actions;
 
 export default layoutSlice;

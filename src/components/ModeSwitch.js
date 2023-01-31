@@ -111,10 +111,12 @@ export default function ModeSwitch({mode}) {
     <Stack spacing={1} direction="row" alignItems="center">
       {isLiveMode ? 
         <Box sx={{ display: 'flex', alignItems: 'center'}}>
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', 
+          {isFetching ? 
+            <Skeleton variant="text" sx={{ width: 128, fontSize: '0.825rem' }} /> :
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', 
                   animation: "pulse 1s infinite ease-in-out alternate",
                   backgroundColor: theme.palette.semantics.green, 
-                  display: "inline-block" }}></span>
+                  display: "inline-block" }}></span>}
           <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
             {!isFetching ? `${mode} [ ${session.eix.format()} // ${session.six.format()} ]` : ''}
           </Typography>

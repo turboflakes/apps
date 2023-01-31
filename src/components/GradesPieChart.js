@@ -87,6 +87,15 @@ export default function GradesPieChart({data, size, dark}) {
                   {`${Math.floor(data.slice().sort((a, b) => b.value - a.value)[0].value)}%`}
                 </text>
               }
+              {size === "md" ?
+                <text x="50%" y="58%" fill={dark ? theme.palette.text.secondary : '#343434'} style={{ 
+                  fontFamily: theme.typography.caption.fontFamily,
+                  fontSize: theme.typography.caption.fontSize,
+                  color: dark ? theme.palette.text.secondary : 'default'
+                  }} textAnchor={'middle'} dominantBaseline="central">
+                  majority
+                </text> :  null
+              }
               <Tooltip 
                 cursor={{fill: 'transparent'}}
                 wrapperStyle={{ zIndex: 100 }} 
