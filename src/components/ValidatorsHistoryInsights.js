@@ -39,7 +39,7 @@ import {
 //   return [api];
 // }
 
-export default function ValidatorsHistoryInsights({sessionIndex, skip}) {
+export default function ValidatorsHistoryInsights({skip}) {
   // const theme = useTheme();
   const dispatch = useDispatch();
   const historySessionIds = useSelector(selectSessionHistoryIds);
@@ -62,7 +62,7 @@ export default function ValidatorsHistoryInsights({sessionIndex, skip}) {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: '1104px',
+        height: '1144px',
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}

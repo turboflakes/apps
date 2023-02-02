@@ -96,15 +96,15 @@ export default function InsightsPage() {
           <Grid item xs={8}>
             <ValidatorsInsights sessionIndex={sessionIndex} skip={isNaN(sessionIndex)} />
           </Grid> : null}
-        {isLiveMode ? 
-          <Grid item xs={4}>
-            <GradesWithFilterBox sessionIndex={sessionIndex} />
-          </Grid> : null}
         {isHistoryMode ? 
-          <Grid item xs={12}>
-            <ValidatorsHistoryInsights sessionIndex={sessionIndex} skip={isNaN(sessionIndex)} />
+          <Grid item xs={8}>
+            <ValidatorsHistoryInsights skip={isNaN(sessionIndex)} />
           </Grid> : null}
-
+          {/* {isLiveMode ?  */}
+          <Grid item xs={4}>
+            <GradesWithFilterBox sessionIndex={sessionIndex} isHistoryMode={isHistoryMode}/>
+          </Grid> 
+          {/* : null} */}
       </Grid>
 		</Box>
   );

@@ -5,6 +5,10 @@ import isUndefined from 'lodash/isUndefined'
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormHelperText from '@mui/material/FormHelperText';
+import Switch from '@mui/material/Switch';
 import { DataGrid } from '@mui/x-data-grid';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import Identicon from '@polkadot/react-identicon';
@@ -188,7 +192,7 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
   const subsetFilter = useSelector(selectSubsetFilter);
   const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true, show_profile: true}, {skip});
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex], false, identityFilter, subsetFilter));
-  
+  const [viewAll, setViewAll] = React.useState(false);
 
   if (isUndefined(rows) && !isSuccess) {
     return null
@@ -196,16 +200,12 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
 
   const columns = defineColumns(theme);
 
-  const rowsFiltered = rows.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
+  const rowsFiltered = viewAll ? rows : rows.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
+  const gradeFsCounter = rows.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) === 'F' : false).length;
 
-  // const handleOnRowClick = ({row}) => {
-  //   const address = row.address;
-  //   if (selectedAddress !== address) {
-  //     dispatch(addressChanged(address));
-  //     dispatch(pageChanged(`validator/${address}`));
-  //     navigate(`/one-t/${selectedChain}/validator/${address}`)
-  //   }
-  // };
+  const handleViewAllChange = (event) => {
+    setViewAll(event.target.checked);
+  };
 
   return (
     <Box
@@ -245,6 +245,19 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
           pagination
           disableSelectionOnClick
         />
+        {(gradeFsCounter) ?
+          <FormGroup disabled>
+            <FormControlLabel control={
+              <Switch size="small" checked={viewAll} onChange={handleViewAllChange}/>
+            } 
+            label="View All" 
+            sx={{
+              '& .MuiFormControlLabel-label' : {
+                ...theme.typography.caption
+              }
+            }}/>
+            <FormHelperText sx={{}}>Note: {gradeFsCounter} validators with grade <b>F</b> are hidden by default</FormHelperText>
+          </FormGroup> : null}
     </Box>
   );
 }

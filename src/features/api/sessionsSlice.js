@@ -186,8 +186,8 @@ export const {
 export const selectSessionCurrent = (state) => state.sessions.current;
 export const selectSessionHistory = (state) => state.sessions.history;
 export const selectSessionHistoryRange = (state) => isUndefined(state.sessions.history_range) ?
-  [state.sessions.current - 7, state.sessions.current - 1] : state.sessions.history_range;
-export const selectSessionHistoryRangeIds = (state) => buildSessionIdsArrayHelper(selectSessionHistoryRange(state)[1], selectSessionHistoryRange(state)[1] - selectSessionHistoryRange(state)[0])
+  [state.sessions.current - 6, state.sessions.current - 1] : state.sessions.history_range;
+export const selectSessionHistoryRangeIds = (state) => buildSessionIdsArrayHelper(selectSessionHistoryRange(state)[1], 1 + selectSessionHistoryRange(state)[1] - selectSessionHistoryRange(state)[0])
 export const selectSessionHistoryIds = (state) => isUndefined(state.sessions.history_ids) ? 
   buildSessionIdsArrayHelper(state.sessions.current - 1, 6) : state.sessions.history_ids;
 export const selectSessionsByIds = (state, sessionIds = []) => sessionIds.map(id => selectSessionByIndex(state, id));

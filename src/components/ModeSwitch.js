@@ -113,27 +113,36 @@ export default function ModeSwitch({mode}) {
         <Box sx={{ display: 'flex', alignItems: 'center'}}>
           {isFetching ? 
             <Skeleton variant="text" sx={{ width: 128, fontSize: '0.825rem' }} /> :
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', 
+            <Box sx={{ display: 'flex', alignItems: 'center'}}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', 
                   animation: "pulse 1s infinite ease-in-out alternate",
                   backgroundColor: theme.palette.semantics.green, 
-                  display: "inline-block" }}></span>}
-          <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
-            {!isFetching ? `${mode} [ ${session.eix.format()} // ${session.six.format()} ]` : ''}
-          </Typography>
+                  display: "inline-block" }}></span>
+              <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
+                {!isFetching ? `${mode} [ ${session.eix.format()} // ${session.six.format()} ]` : ''}
+              </Typography>
+            </Box>
+          }
         </Box> : 
         (selectedPage !== 'validators/insights' ? 
-          <Box sx={{ display: 'flex', alignItems: 'center'}}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <HistoryErasMenu />
-            <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
-            { !isFetching ? `[ ${session.eix.format()} // ${session.six.format()} ]` : ''}
-            </Typography>
+            { isFetching ?
+              <Skeleton variant="text" sx={{ width: 128, fontSize: '0.825rem' }} /> :
+              <Typography variant="caption" align='right' sx={{ width: 128, fontWeight: '600' }} color="textPrimary">
+                {`[ ${session.eix.format()} // ${session.six.format()} ]`}
+              </Typography>
+            }
           </Box> : 
-          (!isUndefined(from_session) && !isUndefined(to_session) ?
-            <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
-              {`${mode} [ ${from_session.eix.format()} // ${from_session.six.format()} → ${to_session.eix.format()} // ${to_session.six.format()} ]`}
-            </Typography> :
-            <Skeleton variant="text" sx={{ width: 128, fontSize: '0.825rem' }} />
-          ))
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+            {!isUndefined(from_session) && !isUndefined(to_session) ?
+              <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
+                {`${mode} [ ${from_session.eix.format()} // ${from_session.six.format()} → ${to_session.eix.format()} // ${to_session.six.format()} ]`}
+              </Typography> :
+              <Skeleton variant="text" sx={{ width: 128, fontSize: '0.825rem' }} />
+            }
+          </Box>
+        )
       }
       <MaterialUISwitch {...label} 
         checked={checked}

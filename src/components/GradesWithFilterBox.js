@@ -16,10 +16,13 @@ import GradesPieChart from './GradesPieChart';
 import {
   selectValidatorsInsightsBySessions,
 } from '../features/api/validatorsSlice'
- import { 
+import { 
   selectIdentityFilter,
   selectSubsetFilter
  } from '../features/layout/layoutSlice'
+import { 
+  selectSessionHistoryRangeIds,
+} from '../features/api/sessionsSlice'
 import { grade } from '../util/grade'
 
 const grades = ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "F"]
@@ -35,12 +38,12 @@ const CustomTooltip = styled(({ className, ...props }) => (
   },
 }));
 
-export default function GradesWithFilterBox({sessionIndex}) {
+export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
   const theme = useTheme();
   const identityFilter = useSelector(selectIdentityFilter);
   const subsetFilter = useSelector(selectSubsetFilter);
-  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex], false, identityFilter, subsetFilter));
-  
+  const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
+  const rows = useSelector(state => selectValidatorsInsightsBySessions(state, isHistoryMode ? historySessionRangeIds : [sessionIndex], isHistoryMode, identityFilter, subsetFilter));
   
   if (!rows.length) {
     return null
@@ -79,7 +82,7 @@ export default function GradesWithFilterBox({sessionIndex}) {
       <Box sx={{p: 2}}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
           <Box>
-            <Typography variant="h6">Grades</Typography>
+            <Typography variant="h6">Validator Grades Distribution</Typography>
             <Typography variant="subtitle2">Para-Authorities by grade {subsetFilter !== '' ? <span>for subset {subsetFilter}</span>: null} </Typography>
           </Box>
           <CustomTooltip

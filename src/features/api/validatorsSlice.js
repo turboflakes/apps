@@ -5,6 +5,7 @@ import {
   isAnyOf
 } from '@reduxjs/toolkit'
 import isUndefined from 'lodash/isUndefined'
+import isNull from 'lodash/isNull'
 import groupBy from 'lodash/groupBy'
 import mergeWith from 'lodash/mergeWith'
 import isArray from 'lodash/isArray'
@@ -292,13 +293,13 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
     const f1 = x.filter(y => y.is_auth);
     const authored_blocks = f1.map(v => v.auth.ab.length).reduce((a, b) => a + b, 0);
     const f2 = x.filter(y => y.is_auth && y.is_para);
-    const para_points = f2.map(v => v.para_summary.pt - (v.para_summary.ab * 20)).reduce((a, b) => a + b, 0);
-    const core_assignments = f2.map(v => v.para_summary.ca).reduce((a, b) => a + b, 0);
-    const implicit_votes = f2.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0);
-    const explicit_votes = f2.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0);
-    const missed_votes = f2.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0);
+    const para_points = f2.length > 0 ? f2.map(v => v.para_summary.pt - (v.para_summary.ab * 20)).reduce((a, b) => a + b, 0) : null;
+    const core_assignments = f2.length > 0 ? f2.map(v => v.para_summary.ca).reduce((a, b) => a + b, 0) : null;
+    const implicit_votes = f2.length > 0 ? f2.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0) : null;
+    const explicit_votes = f2.length > 0 ? f2.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0) : null;
+    const missed_votes = f2.length > 0 ? f2.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0) : null;
+    const avg_pts = f2.length > 0 ? para_points / f2.length : null;
     const profile = selectValProfileByAddress(state, x[0].address);
-    const avg_pts = para_points / f2.length;
 
     const timeline = sessions.map(s => {
       const y = x.find(e => e.session === s);
@@ -318,9 +319,9 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
 
     return createRows(
       i+1, 
-      !isUndefined(profile) ? profile._identity : '-',
+      !isUndefined(profile) ? profile._identity : null,
       x[0].address,
-      !isUndefined(profile) ? SUBSET[profile.subset] : '-', 
+      !isUndefined(profile) ? SUBSET[profile.subset] : null, 
       f1.length,
       f2.length,
       authored_blocks, 
@@ -329,20 +330,21 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
       implicit_votes, 
       missed_votes, 
       avg_pts,
-      !isUndefined(profile) ? profile.commission : '-',
+      !isUndefined(profile) ? profile.commission : null,
       timeline.join("")
     )
   })
 
-  const min_avg_pts = min(rows.map(v => v.avg_pts));
-  const max_avg_pts = max(rows.map(v => v.avg_pts));
+  const min_avg_pts = min(rows.filter(v => !isNull(v.avg_pts)).map(v => v.avg_pts));
+  const max_avg_pts = max(rows.filter(v => !isNull(v.avg_pts)).map(v => v.avg_pts));
 
   const filteredRows = rows.map(v => {
-    const mvr = calculateMvr(v.explicit_votes, v.implicit_votes, v.missed_votes)
+    const mvr = v.para_sessions > 0 ? calculateMvr(v.explicit_votes, v.implicit_votes, v.missed_votes) : null;
+    const score = v.para_sessions > 0 ? performance_score(mvr, v.avg_pts, min_avg_pts, max_avg_pts, v.para_sessions, sessions.length) : null;
     return {
       ...v,
       mvr,
-      score: performance_score(mvr, v.avg_pts, min_avg_pts, max_avg_pts, v.para_sessions, sessions.length),
+      score,
       isFetching
     }
   }).filter(v => (!isUndefined(v.identity) && !isUndefined(v.address)) ? 

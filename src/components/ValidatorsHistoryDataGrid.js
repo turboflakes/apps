@@ -2,9 +2,14 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
+import isNull from 'lodash/isNull'
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormHelperText from '@mui/material/FormHelperText';
+import Switch from '@mui/material/Switch';
 import { DataGrid } from '@mui/x-data-grid';
 import Skeleton from '@mui/material/Skeleton';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
@@ -83,15 +88,18 @@ const defineColumns = (theme) => {
     sortable: false,
     disableColumnMenu: true,
     renderCell: (params) => {
-      const gradeValue = grade(1-params.row.mvr);
-      return (
-        <Box>
-          <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 
-                      bgcolor: theme.palette.grade[gradeValue], 
-                      display: "inline-block" }}>
-          </Box>
-          <Box sx={{ml: 1,  display: "inline-block"}}>{gradeValue}</Box>
-        </Box>)
+      if (!isNull(params.row.mvr)) {
+        const gradeValue = grade(1-params.row.mvr);
+        return (
+          <Box>
+            <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 
+                        bgcolor: theme.palette.grade[gradeValue], 
+                        display: "inline-block" }}>
+            </Box>
+            <Box sx={{ml: 1,  display: "inline-block"}}>{gradeValue}</Box>
+          </Box>)
+      } 
+      return ('-')
     }
   },
   {
@@ -158,7 +166,7 @@ const defineColumns = (theme) => {
     type: 'number',
     width: 96,
     disableColumnMenu: true,
-    valueGetter: (params) => Math.round(params.row.mvr * 10000) / 10000,
+    valueGetter: (params) => (!isNull(params.row.mvr) ? Math.round(params.row.mvr * 10000) / 10000 : null),
   },
   {
     field: 'avg_pts',
@@ -166,7 +174,7 @@ const defineColumns = (theme) => {
     type: 'number',
     width: 96,
     disableColumnMenu: true,
-    valueGetter: (params) => Math.round(params.row.avg_pts),
+    valueGetter: (params) => (!isNull(params.row.avg_pts) ? Math.round(params.row.avg_pts) : null),
   },
   {
     field: 'score',
@@ -214,6 +222,7 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
   const subsetFilter = useSelector(selectSubsetFilter);
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, historySessionRangeIds, true, identityFilter, subsetFilter, isFetching));
+  const [viewAll, setViewAll] = React.useState(false);
 
   if (isUndefined(rows)) {
     return null
@@ -221,7 +230,12 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
 
   const columns = defineColumns(theme);
 
-  const rowsFiltered = rows.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
+  const rowsFiltered = viewAll ? rows : rows.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
+  const gradeFsCounter = rows.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) === 'F' : false).length;
+
+  const handleViewAllChange = (event) => {
+    setViewAll(event.target.checked);
+  };
   
   // const handleOnRowClick = ({row}) => {
   //   const address = row.address;
@@ -269,6 +283,19 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
           pagination
           disableSelectionOnClick
         />
+        {(gradeFsCounter) ?
+          <FormGroup disabled>
+            <FormControlLabel control={
+              <Switch size="small" checked={viewAll} onChange={handleViewAllChange}/>
+            } 
+            label="View All" 
+            sx={{
+              '& .MuiFormControlLabel-label' : {
+                ...theme.typography.caption
+              }
+            }}/>
+            <FormHelperText sx={{}}>Note: {gradeFsCounter} validators with grade <b>F</b> are hidden by default as well as all validators that did not validate parachain blocks.</FormHelperText>
+          </FormGroup> : null}
     </Box>
   );
 }
