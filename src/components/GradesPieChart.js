@@ -43,16 +43,16 @@ export default function GradesPieChart({data, size, dark}) {
           // p: 2,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: size === "md" ? '304px' : '64px',
+          justifyContent: 'flex-end',
+          alignItems: 'flex-end',
+          width: size === "md" ? '288px' : '64px',
           // height: '100%',
           // borderRadius: 3,
           // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
         }}
         >
-          <ResponsiveContainer width='100%' height={ size === "md" ? '100%' : 64} >
-            <PieChart width='100%' height={size === "md" ? '100%' : 64}>
+          <ResponsiveContainer width='100%' height={ size === "md" ? 272 : 64} >
+            <PieChart >
             <Pie
                 isAnimationActive={false}
                 dataKey="value"

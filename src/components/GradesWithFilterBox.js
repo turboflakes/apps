@@ -10,6 +10,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import IconButton from '@mui/material/IconButton';
+import PieChartIcon from '@mui/icons-material/PieChart';
+import ListIcon from '@mui/icons-material/List';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { styled, useTheme } from '@mui/material/styles';
 import GradesPieChart from './GradesPieChart';
@@ -44,6 +47,7 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
   const subsetFilter = useSelector(selectSubsetFilter);
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, isHistoryMode ? historySessionRangeIds : [sessionIndex], isHistoryMode, identityFilter, subsetFilter));
+  const [showPie, setShowPie] = React.useState(true);
   
   if (!rows.length) {
     return null
@@ -65,7 +69,9 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
     }
   });
   
-  // const pieChartData = grades.map((g, i) => ({name: g, value: gradesPercentages[i], }))
+  const handleView = () => {
+    setShowPie(!showPie);
+  }
   
   return (
     <Paper sx={{ 
@@ -76,64 +82,86 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
       // justifyContent: 'center',
       // alignItems: 'center',
       width: '100%',
-      height: 320,
+      // width: 352,
+      height: 352,
       borderRadius: 3,
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
-      <Box sx={{p: 2}}>
+      <Box sx={{p: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
-          <Box>
-            <Typography variant="h6">Validator Grades Distribution</Typography>
-            <Typography variant="subtitle2">Para-Authorities by grade {subsetFilter !== '' ? <span>for subset {subsetFilter}</span>: null} </Typography>
-          </Box>
-          <CustomTooltip
-            disableFocusListener
-            placement="bottom-end"
-            title={
-              <Box>
-                <Typography variant="caption" color="inherit" >A grade reflects the backing votes ratio (BVR) of one or a set of validators:</Typography>
-                <ul>
-                  <li>{"A+ = BVR > 99%"}</li>
-                  <li>{"A = BVR > 95%"}</li>
-                  <li>{"B+ = BVR > 90%"}</li>
-                  <li>{"B = BVR > 80%"}</li>
-                  <li>{"C+ = BVR > 70%"}</li>
-                  <li>{"C = BVR > 60%"}</li>
-                  <li>{"D+ = BVR > 50%"}</li>
-                  <li>{"D = BVR > 40%"}</li>
-                  <li>{"F = BVR <= 40%"}</li>
-                </ul>
-                <i>Note: BVR = 1 - MVR</i>
-              </Box>
-            }
-            >
-            <InfoOutlinedIcon sx={{ color: theme.palette.neutrals[300]}}/>
-          </CustomTooltip>
-        </Box>
-        <Box sx={{ mt: '-24px', display: 'flex', justifyContent: 'space-between'}}>
-          <GradesPieChart data={gradesData} size="md" />
-          <Box sx={{ display: 'flex', flexDirection: 'column', width: '256px'}}>
-            <List dense >
-              {gradesData.map((g, i) => (
-                <ListItem key={i} sx={{ 
-                    // bgcolor: theme.palette.grade[g],
-                    borderBottom: `1px solid ${theme.palette.divider}`, 
-                    '+ :last-child': { borderBottom: 'none'} 
-                  }}
-                    secondaryAction={
-                      <Typography variant="caption">{`${(Math.round(g.value*100)/100) }%`}</Typography>
-                    }
-                  >
-                  <ListItemIcon sx={{ minWidth: '24px'}}>
-                    <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 
-                      bgcolor: theme.palette.grade[g.name], 
-                      display: "inline-block" }}>
+          <Box sx={{ display: 'flex', width: "80%"}}>
+            <Box sx={{mr: 1,
+              whiteSpace: "nowrap", 
+              overflow: "hidden", 
+              textOverflow: "ellipsis"
+            }}>
+              <Box sx={{ display: 'flex'}}>
+                <Typography variant="h6" sx={{ mr: 1, overflow: "hidden", textOverflow: "ellipsis" }}>
+                  Validator Grades
+                </Typography>
+                <CustomTooltip
+                  disableFocusListener
+                  placement="bottom-end"
+                  title={
+                    <Box>
+                      <Typography variant="caption" color="inherit" >A grade reflects the backing votes ratio (BVR) of one or a set of validators:</Typography>
+                      <ul>
+                        <li>{"A+ = BVR > 99%"}</li>
+                        <li>{"A = BVR > 95%"}</li>
+                        <li>{"B+ = BVR > 90%"}</li>
+                        <li>{"B = BVR > 80%"}</li>
+                        <li>{"C+ = BVR > 70%"}</li>
+                        <li>{"C = BVR > 60%"}</li>
+                        <li>{"D+ = BVR > 50%"}</li>
+                        <li>{"D = BVR > 40%"}</li>
+                        <li>{"F = BVR <= 40%"}</li>
+                      </ul>
+                      <i>Note: BVR = 1 - MVR</i>
                     </Box>
-                  </ListItemIcon>
-                  <ListItemText sx={{ m: 0 }} primary={`${g.name}`} />
-                </ListItem>
-              ))}
-            </List>
+                  }
+                  >
+                  <InfoOutlinedIcon sx={{ color: theme.palette.neutrals[300]}}/>
+                </CustomTooltip>
+              </Box>
+              <Typography variant="subtitle2" sx={{ height: 16, overflow: "hidden", textOverflow: "ellipsis" }}>
+                Distribution by grade {subsetFilter !== '' ? <span>for subset {subsetFilter}</span>: null}
+              </Typography>
+            </Box>
           </Box>
+          <Box>
+          <IconButton aria-label="grade-details" onClick={handleView}>
+            { !showPie ? <PieChartIcon fontSize="small" /> : <ListIcon fontSize="small" /> }
+          </IconButton>
+          </Box>
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center'}}>
+          { showPie ? 
+          
+            <GradesPieChart data={gradesData} size="md"  /> :
+           
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: '256px'}}>
+              <List dense >
+                {gradesData.map((g, i) => (
+                  <ListItem key={i} sx={{ 
+                      // bgcolor: theme.palette.grade[g],
+                      borderBottom: `1px solid ${theme.palette.divider}`, 
+                      '+ :last-child': { borderBottom: 'none'} 
+                    }}
+                      secondaryAction={
+                        <Typography variant="caption">{`${(Math.round(g.value*100)/100) }%`}</Typography>
+                      }
+                    >
+                    <ListItemIcon sx={{ minWidth: '24px'}}>
+                      <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 
+                        bgcolor: theme.palette.grade[g.name], 
+                        display: "inline-block" }}>
+                      </Box>
+                    </ListItemIcon>
+                    <ListItemText sx={{ m: 0 }} primary={`${g.name}`} />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+          }
         </Box>
       </Box>
     </Paper>
