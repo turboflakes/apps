@@ -283,19 +283,18 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
           pagination
           disableSelectionOnClick
         />
-        {(gradeFsCounter) ?
-          <FormGroup disabled>
-            <FormControlLabel control={
-              <Switch size="small" checked={viewAll} onChange={handleViewAllChange}/>
-            } 
-            label="View All" 
-            sx={{
-              '& .MuiFormControlLabel-label' : {
-                ...theme.typography.caption
-              }
-            }}/>
-            <FormHelperText sx={{}}>Note: {gradeFsCounter} validators with grade <b>F</b> are hidden by default as well as all validators that did not validate parachain blocks.</FormHelperText>
-          </FormGroup> : null}
+        <FormGroup>
+          <FormControlLabel control={
+            <Switch size="small" disabled={gradeFsCounter === 0} checked={viewAll} onChange={handleViewAllChange}/>
+          } 
+          label="View All" 
+          sx={{
+            '& .MuiFormControlLabel-label' : {
+              ...theme.typography.caption
+            }
+          }}/>
+          <FormHelperText>Note: {gradeFsCounter} validators with grade <b>F</b> are hidden by default</FormHelperText>
+        </FormGroup>
     </Box>
   );
 }
