@@ -293,7 +293,8 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
     const f1 = x.filter(y => y.is_auth);
     const authored_blocks = f1.map(v => v.auth.ab.length).reduce((a, b) => a + b, 0);
     const f2 = x.filter(y => y.is_auth && y.is_para);
-    const para_points = f2.length > 0 ? f2.map(v => v.para_summary.pt - (v.para_summary.ab * 20)).reduce((a, b) => a + b, 0) : null;
+    // const para_points = f2.length > 0 ? f2.map(v => v.para_summary.pt - (v.para_summary.ab * 20)).reduce((a, b) => a + b, 0) : null;
+    const para_points = f2.length > 0 ? f2.map(v => v.auth.ep - v.auth.sp - (v.auth.ab.length * 20)).reduce((a, b) => a + b, 0) : null;
     const core_assignments = f2.length > 0 ? f2.map(v => v.para_summary.ca).reduce((a, b) => a + b, 0) : null;
     const implicit_votes = f2.length > 0 ? f2.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0) : null;
     const explicit_votes = f2.length > 0 ? f2.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0) : null;
