@@ -27,6 +27,7 @@ import {
   selectSubsetFilter,
   pageChanged,
 } from '../features/layout/layoutSlice';
+import { scoreDisplay } from '../util/display';
 
 
 function DetailsIcon({address}) {
@@ -165,7 +166,9 @@ const defineColumns = (theme) => {
     type: 'number',
     width: 96,
     disableColumnMenu: true,
-    sortingOrder: ['asc', 'desc']
+    sortingOrder: ['asc', 'desc'],
+    valueGetter: (params) => (scoreDisplay(params.row.score)),
+    
   },
   {
     field: 'options',
