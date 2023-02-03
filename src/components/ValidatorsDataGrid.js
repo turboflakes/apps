@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormHelperText from '@mui/material/FormHelperText';
+// import FormHelperText from '@mui/material/FormHelperText';
 import Switch from '@mui/material/Switch';
 import { DataGrid } from '@mui/x-data-grid';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
@@ -202,7 +202,7 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
   const theme = useTheme();
   const identityFilter = useSelector(selectIdentityFilter);
   const subsetFilter = useSelector(selectSubsetFilter);
-  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "authority", show_summary: true, show_profile: true}, {skip});
+  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "authority", show_summary: true, show_profile: true}, {refetchOnMountOrArgChange: true, skip});
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex], false, identityFilter, subsetFilter));
   const [viewAll, setViewAll] = React.useState(false);
 
@@ -259,17 +259,17 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
         />
         <FormGroup>
           <FormControlLabel control={
-            <Switch size="small" disabled={gradeFsCounter === 0} checked={viewAll} onChange={handleViewAllChange}/>
+            <Switch size="small" disabled={gradeFsCounter === 0} checked={viewAll} onChange={handleViewAllChange} title="teste" />
           } 
-          label="Show all validator grades" 
+          label="Show all grades" 
           sx={{
             '& .MuiFormControlLabel-label' : {
               ...theme.typography.caption
             }
           }}/>
-          {gradeFsCounter !== 0 ?
+          {/* {gradeFsCounter !== 0 ?
             <FormHelperText>Note: {gradeFsCounter} validators with grade <b>F</b> are hidden.</FormHelperText>
-            : null}
+            : null} */}
         </FormGroup>
     </Box>
   );

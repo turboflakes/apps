@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import ValidatorsDataGrid from './ValidatorsDataGrid';
 import IdentityFilter from './IdentityFilter';
 import SubsetFilter from './SubsetFilter';
-import GradesWithFilterBox from './GradesWithFilterBox';
 
 export default function ValidatorsInsights({sessionIndex, skip}) {
   // const theme = useTheme();

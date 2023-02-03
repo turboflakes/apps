@@ -45,7 +45,8 @@ export default function GradesPieChart({data, size, dark}) {
           flexDirection: 'column',
           justifyContent: 'flex-end',
           alignItems: 'flex-end',
-          width: size === "md" ? '288px' : '64px',
+          width: '100%'
+          // width: size === "md" ? '288px' : '64px',
           // height: '100%',
           // borderRadius: 3,
           // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'

@@ -17,6 +17,7 @@ import AuthoredBlocksBox from './AuthoredBlocksBox';
 import BackingPointsBox from './BackingPointsBox';
 import AuthoritiesBox from './AuthoritiesBox';
 import GradesSmallBox from './GradesSmallBox';
+import SubsetBox from './SubsetBox';
 
 import GradesWithFilterBox from './GradesWithFilterBox';
 
@@ -133,7 +134,14 @@ export default function InsightsPage() {
             <ValidatorsHistoryInsights skip={isNaN(sessionIndex)} />
           </Grid> : null}
           <Grid item xs={2}>
-            <GradesWithFilterBox sessionIndex={sessionIndex} isHistoryMode={isHistoryMode}/>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <GradesWithFilterBox sessionIndex={sessionIndex} isHistoryMode={isHistoryMode}/>
+              </Grid>
+              <Grid item xs={12}>
+                <SubsetBox sessionIndex={sessionIndex} isHistoryMode={isHistoryMode}/>
+              </Grid>
+            </Grid>            
           </Grid> 
       </Grid>
 		</Box>

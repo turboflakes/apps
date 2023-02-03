@@ -95,8 +95,8 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
               textOverflow: "ellipsis"
             }}>
               <Box sx={{ display: 'flex'}}>
-                <Typography variant="h6" sx={{ mr: 1, overflow: "hidden", textOverflow: "ellipsis" }}>
-                  Validator Grades
+                <Typography variant="h6" sx={{ mr: 1, overflow: "hidden", textOverflow: "ellipsis" }} title="Distribution by grade">
+                Distribution by grade
                 </Typography>
                 <CustomTooltip
                   disableFocusListener
@@ -123,7 +123,7 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
                 </CustomTooltip>
               </Box>
               <Typography variant="subtitle2" sx={{ height: 16, overflow: "hidden", textOverflow: "ellipsis" }}>
-                Distribution by grade {subsetFilter !== '' ? <span>for subset {subsetFilter}</span>: null}
+                {subsetFilter !== '' ? <span>Only for subset {subsetFilter}</span> : 'All validators'}
               </Typography>
             </Box>
           </Box>

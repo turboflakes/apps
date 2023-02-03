@@ -21,24 +21,6 @@ import {
 } from '../features/api/validatorsSlice'
 
 
-// function useWeb3Api(chain) {
-//   const [ids, setIds] = React.useState(undefined);
-
-//   React.useEffect(() => {
-    
-//     const createWeb3Api = async (provider) => {
-//       return await ApiPromise.create({ provider });
-//     }
-
-//     if (chain) {
-//       const wsProvider = new WsProvider(getNetworkExternalWSS(chain));
-//       createWeb3Api(wsProvider).then((api) => setApi(api));
-//     }
-//   }, [chain]);
-
-//   return [api];
-// }
-
 export default function ValidatorsHistoryInsights({skip}) {
   // const theme = useTheme();
   const dispatch = useDispatch();

@@ -159,7 +159,6 @@ const sessionsSlice = createSlice({
 
 
       let currentState = current(state);
-      console.log("__currentState", currentState);
 
       forEach(groupedBySession, (validators, session) => {
         const _group_ids = uniq(validators.filter(v => v.is_auth && v.is_para).map(v => toNumber(v.para.group))).sort((a, b) => a - b)
