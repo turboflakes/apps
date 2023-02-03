@@ -11,7 +11,13 @@ import SessionPerformancePieChart from './SessionPerformancePieChart';
 import SessionPerformanceTimeline from './SessionPerformanceTimeline';
 import ValidatorsInsights from './ValidatorsInsights';
 import ValidatorsHistoryInsights from './ValidatorsHistoryInsights';
-import GradesBox from './GradesBox';
+import EraPointsBox from './EraPointsBox';
+import SessionPointsBox from './SessionPointsBox';
+import AuthoredBlocksBox from './AuthoredBlocksBox';
+import BackingPointsBox from './BackingPointsBox';
+import AuthoritiesBox from './AuthoritiesBox';
+import GradesSmallBox from './GradesSmallBox';
+
 import GradesWithFilterBox from './GradesWithFilterBox';
 
 import {
@@ -29,9 +35,6 @@ import {
 import { 
   selectIsSocketConnected,
 } from '../features/api/socketSlice';
-import { 
-  useGetValidatorByAddressQuery,
-} from '../features/api/validatorsSlice';
 
 export default function InsightsPage() {
 	// const theme = useTheme();
@@ -78,6 +81,35 @@ export default function InsightsPage() {
             <SessionBox sessionIndex={sessionIndex} dark={isHistoryMode} />
           </Grid> : null}
 
+        {/* 2nd row */}
+        
+        { isLiveMode ?
+          <Grid item xs={12} md={2}>
+            <AuthoritiesBox sessionIndex={sessionIndex} dark={isHistoryMode} />
+          </Grid> : null}
+        { isLiveMode ?
+        <Grid item xs={12} md={2}>
+          <GradesSmallBox sessionIndex={sessionIndex} dark={isHistoryMode} />
+        </Grid> : null }
+        { isLiveMode ?
+          <Grid item xs={12} md={2}>
+            <AuthoredBlocksBox />
+          </Grid> : null }
+        { isLiveMode ?
+          <Grid item xs={12} md={2}>
+            <BackingPointsBox />
+          </Grid> : null }
+        {isLiveMode ?
+          <Grid item xs={12} md={2}>
+            <SessionPointsBox />
+          </Grid> : null}
+        {isLiveMode ?
+          <Grid item xs={12} md={2}>
+            <EraPointsBox />
+          </Grid> : null}
+        
+        {/* --- divider line --- */}
+        
         {isLiveMode ?
           <Grid item xs={12}>
             <Divider sx={{ 

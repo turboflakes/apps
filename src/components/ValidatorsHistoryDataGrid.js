@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import isUndefined from 'lodash/isUndefined'
-import isNull from 'lodash/isNull'
+import isUndefined from 'lodash/isUndefined';
+import isNull from 'lodash/isNull';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
@@ -132,6 +132,14 @@ const defineColumns = (theme) => {
     type: 'number',
     width: 64,
     disableColumnMenu: true,
+  },
+  {
+    field: 'authored_pts',
+    headerName: 'Authored Points',
+    type: 'number',
+    width: 128,
+    disableColumnMenu: true,
+    valueGetter: (params) => (!isNull(params.row.authored_blocks) ? params.row.authored_blocks * 20 : null),
   },
   {
     field: 'core_assignments',
@@ -289,13 +297,15 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
           <FormControlLabel control={
             <Switch size="small" disabled={gradeFsCounter === 0} checked={viewAll} onChange={handleViewAllChange}/>
           } 
-          label="View All" 
+          label="Show all validator grades" 
           sx={{
             '& .MuiFormControlLabel-label' : {
               ...theme.typography.caption
             }
           }}/>
-          <FormHelperText>Note: {gradeFsCounter} validators with grade <b>F</b> are hidden by default</FormHelperText>
+          {gradeFsCounter !== 0 ?
+            <FormHelperText>Note: {gradeFsCounter} validators with grade <b>F</b> are hidden.</FormHelperText>
+            : null}
         </FormGroup>
     </Box>
   );

@@ -26,7 +26,7 @@ export default function ValidatorsInsights({sessionIndex, skip}) {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
           <Box>
             <Typography variant="h6">Validators</Typography>
-            <Typography variant="subtitle2">Selected to para-validate in the current session ({sessionIndex})</Typography>
+            <Typography variant="subtitle2">Active validators in the current session {sessionIndex}</Typography>
           </Box>
         </Box>
 

@@ -70,7 +70,7 @@ export default function ValidatorsHistoryInsights({skip}) {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
           <Box>
             <Typography variant="h6">Validators</Typography>
-            <Typography variant="subtitle2">Selected as Authority between {historySessionRange[0].format()} and {historySessionRange[1].format()} sessions</Typography>
+            <Typography variant="subtitle2">Active validators between session {historySessionRange[0].format()} and session {historySessionRange[1].format()} ({historySessionRange[1] - historySessionRange[0] + 1} sessions) </Typography>
           </Box>
           <Box>
           {isFetching ? <Spinner /> : null}

@@ -3,6 +3,7 @@ import {
   createSlice,
   createEntityAdapter,
   isAnyOf,
+  current
 } from '@reduxjs/toolkit'
 import uniq from 'lodash/uniq'
 import isUndefined from 'lodash/isUndefined'
@@ -11,6 +12,7 @@ import toNumber from 'lodash/toNumber'
 import isArray from 'lodash/isArray'
 import forEach from 'lodash/forEach'
 import groupBy from 'lodash/groupBy'
+import union from 'lodash/union'
 import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
 import { 
@@ -155,12 +157,19 @@ const sessionsSlice = createSlice({
       // Group validators by session first
       const groupedBySession = groupBy(filtered, v => !!v.session ? v.session : action.payload.session)
 
+
+      let currentState = current(state);
+      console.log("__currentState", currentState);
+
       forEach(groupedBySession, (validators, session) => {
         const _group_ids = uniq(validators.filter(v => v.is_auth && v.is_para).map(v => toNumber(v.para.group))).sort((a, b) => a - b)
         const _mvrs = validators.filter(v => v.is_auth && v.is_para).map(v => !isUndefined(v.para_summary) ? calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv) : undefined);
         const _validity_votes = validators.filter(v => v.is_auth && v.is_para).map(v => !isUndefined(v.para_summary) ? v.para_summary.ev + v.para_summary.iv + v.para_summary.mv : 0);
         const _backing_points = validators.filter(v => v.is_auth && v.is_para).map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0);
-        const _stashes = validators.map(v => v.address);
+        // const _stashes = validators.map(v => v.address);
+        // const _stashes = validators.map(v => v.address);
+        const _current_stashes = !isUndefined(currentState.entities[session]._stashes) ? currentState.entities[session]._stashes : [];
+        const _stashes  = union(_current_stashes, validators.map(v => v.address));
         adapter.upsertOne(state, { six: parseInt(session, 10), 
           [setKey(action, "_group_ids")]: _group_ids, 
           [setKey(action, "_mvrs")]: _mvrs, 

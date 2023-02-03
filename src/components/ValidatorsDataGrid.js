@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import isUndefined from 'lodash/isUndefined'
+import isUndefined from 'lodash/isUndefined';
+import isNull from 'lodash/isNull';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
@@ -86,18 +87,18 @@ const defineColumns = (theme) => {
     sortable: false,
     disableColumnMenu: true,
     renderCell: (params) => {
-      if (isNaN(params.row.mvr)) {
-        return "-"
-      }
-      const gradeValue = grade(1-params.row.mvr);
-      return (
-        <Box>
-          <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 
-                      bgcolor: theme.palette.grade[gradeValue], 
-                      display: "inline-block" }}>
-          </Box>
-          <Box sx={{ml: 1,  display: "inline-block"}}>{gradeValue}</Box>
-        </Box>)
+      if (!isNull(params.row.mvr)) {
+        const gradeValue = grade(1-params.row.mvr);
+        return (
+          <Box>
+            <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 
+                        bgcolor: theme.palette.grade[gradeValue], 
+                        display: "inline-block" }}>
+            </Box>
+            <Box sx={{ml: 1,  display: "inline-block"}}>{gradeValue}</Box>
+          </Box>)
+      } 
+      return ('-')
     }
   },
   {
@@ -115,6 +116,14 @@ const defineColumns = (theme) => {
     type: 'number',
     width: 64,
     disableColumnMenu: true,
+  },
+  {
+    field: 'authored_pts',
+    headerName: 'Authored Points',
+    type: 'number',
+    width: 128,
+    disableColumnMenu: true,
+    valueGetter: (params) => (!isNull(params.row.authored_blocks) ? params.row.authored_blocks * 20 : null),
   },
   {
     field: 'core_assignments',
@@ -150,7 +159,7 @@ const defineColumns = (theme) => {
     type: 'number',
     width: 96,
     disableColumnMenu: true,
-    valueGetter: (params) => Math.round(params.row.mvr * 10000) / 10000,
+    valueGetter: (params) => (!isNull(params.row.mvr) ? Math.round(params.row.mvr * 10000) / 10000 : null),
   },
   {
     field: 'avg_pts',
@@ -158,7 +167,7 @@ const defineColumns = (theme) => {
     type: 'number',
     width: 128,
     disableColumnMenu: true,
-    valueGetter: (params) => Math.round(params.row.avg_pts),
+    valueGetter: (params) => (!isNull(params.row.avg_pts) ? Math.round(params.row.avg_pts) : null),
   },
   {
     field: 'score',
@@ -193,7 +202,7 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
   const theme = useTheme();
   const identityFilter = useSelector(selectIdentityFilter);
   const subsetFilter = useSelector(selectSubsetFilter);
-  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true, show_profile: true}, {skip});
+  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "authority", show_summary: true, show_profile: true}, {skip});
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex], false, identityFilter, subsetFilter));
   const [viewAll, setViewAll] = React.useState(false);
 
@@ -252,13 +261,15 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
           <FormControlLabel control={
             <Switch size="small" disabled={gradeFsCounter === 0} checked={viewAll} onChange={handleViewAllChange}/>
           } 
-          label="View All" 
+          label="Show all validator grades" 
           sx={{
             '& .MuiFormControlLabel-label' : {
               ...theme.typography.caption
             }
           }}/>
-          <FormHelperText>Note: {gradeFsCounter} validators with grade <b>F</b> are hidden by default</FormHelperText>
+          {gradeFsCounter !== 0 ?
+            <FormHelperText>Note: {gradeFsCounter} validators with grade <b>F</b> are hidden.</FormHelperText>
+            : null}
         </FormGroup>
     </Box>
   );

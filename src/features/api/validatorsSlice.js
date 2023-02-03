@@ -38,10 +38,13 @@ export const extendedApi = apiSlice.injectEndpoints({
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
       async onQueryStarted(params, { getState, extra, dispatch, queryFulfilled }) {
         try {
+
           await queryFulfilled
+          
           // `onSuccess` subscribe for updates
           const session = selectSessionByIndex(getState(), params.session)
-          if (params.role === "para_authority" && session.is_current) {
+          if ((params.role === "authority" || params.role === "para_authority") && session.is_current) {
+
             if (params.show_summary) {
               let msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [params.session.toString()] });
               dispatch(socketActions.messageQueued(msg))
@@ -299,7 +302,7 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
     const implicit_votes = f2.length > 0 ? f2.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0) : null;
     const explicit_votes = f2.length > 0 ? f2.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0) : null;
     const missed_votes = f2.length > 0 ? f2.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0) : null;
-    const avg_pts = f2.length > 0 ? para_points / f2.length : null;
+    const avg_bck_pts = f2.length > 0 ? para_points / f2.length : null;
     const profile = selectValProfileByAddress(state, x[0].address);
 
     const timeline = sessions.map(s => {
@@ -330,7 +333,7 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
       explicit_votes, 
       implicit_votes, 
       missed_votes, 
-      avg_pts,
+      avg_bck_pts,
       !isUndefined(profile) ? profile.commission : null,
       timeline.join("")
     )
