@@ -9,6 +9,7 @@ import EmailIcon from '@mui/icons-material/EmailRounded';
 import logo from '../assets/logo/logo_1_inverted_subtract_turboflakes_.svg';
 import twitterSVG from '../assets/twitter_white.svg';
 import githubSVG from '../assets/github_white.svg';
+import logoKusamaTreasurySVG from '../assets/kusama_logo_treasury_white.svg';
 
 export default function Footer(props) {
 	
@@ -60,6 +61,9 @@ export default function Footer(props) {
 							<Typography color="textSecondary" gutterBottom>
 								<Link href="https://kusama.network/" underline="none" target="_blank" rel="noreferrer" color="inherit">Kusama Network</Link>
 							</Typography>
+							<Box>
+							<img src={logoKusamaTreasurySVG} style={{ height: 64, color: 'white', marginBottom: 24 }} alt={"logo"}/>
+							</Box>
 						</Grid>
 					</Grid>
 					<Box>
@@ -94,7 +98,7 @@ export default function Footer(props) {
 					</Box>
 					<Box sx={{ display: 'flex', padding: '24px 0', alignItems: 'center', flexWrap: 'wrap' }}>
 						<Typography variant="body2" color="textSecondary" sx={{ marginRight: '16px' }}>
-						© 2021 TurboFlakes
+						© 2023 TurboFlakes
 						</Typography>
 						<Typography variant="body2" color="textSecondary" sx={{ marginRight: '16px' }}>
 							<Link href="/#/disclaimer" underline="none" color="inherit" >Disclaimer</Link>
