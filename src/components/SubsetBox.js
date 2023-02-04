@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import groupBy from 'lodash/groupBy';
+import orderBy from 'lodash/orderBy';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -23,7 +24,7 @@ export default function SubsetBox({sessionIndex, isHistoryMode}) {
   }
 
   const groupedBySubset = groupBy(rows, v => v.subset);
-  const data = Object.keys(groupedBySubset).map(subset => ({ subset, value: groupedBySubset[subset].length }));
+  const data = orderBy(Object.keys(groupedBySubset).map(subset => ({ subset, value: groupedBySubset[subset].length })), 'subset');
   
   return (
     <Paper sx={{ 

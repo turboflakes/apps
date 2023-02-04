@@ -113,7 +113,7 @@ export default function SubsetPieChart({data, showLegend, size}) {
                 cursor={{fill: 'transparent'}}
                 wrapperStyle={{ zIndex: 100 }} 
                 content={renderTooltip} />
-                {showLegend ? <Legend verticalAlign="top" content={renderLegend} height={84} /> : null}
+                {showLegend ? <Legend verticalAlign="top" content={renderLegend} height={56} /> : null}
             </PieChart>
           </ResponsiveContainer>
     </Box>
