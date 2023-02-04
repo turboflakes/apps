@@ -76,11 +76,11 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<LayoutPage api={api} />}>
-            <Route index element={<Navigate to="/one-t/kusama/parachains/overview" />} />
+            <Route index element={<Navigate to="/one-t/kusama/validators/insights" />} />
             <Route path="one-t">
-              <Route index element={<Navigate to="/one-t/kusama/parachains/overview" />} />
+              <Route index element={<Navigate to="/one-t/kusama/validators/insights" />} />
               <Route path=":chainName" element={<ValidateChain />} >
-                <Route index element={<Navigate to="/one-t/kusama/parachains/overview" />} />
+                <Route index element={<Navigate to="/one-t/kusama/validators/insights" />} />
                 <Route path="parachains">
                   <Route path="overview" element={<ParachainsOverviewPage tab={0} />} />
                   <Route path="val-groups" element={<ParachainsOverviewPage tab={1} />} />
@@ -93,7 +93,7 @@ const App = () => {
                 </Route>
               </Route>
             </Route>
-            <Route path="*" element={<Navigate to="/one-t/kusama/parachains/overview" />} />
+            <Route path="*" element={<Navigate to="/one-t/kusama/validators/insights" />} />
           </Route>
         </Routes>
       </Router>
