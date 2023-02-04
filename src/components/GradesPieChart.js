@@ -23,7 +23,7 @@ const renderTooltip = (props) => {
           <b>Grade {data.payload.name}</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit" gutterBottom>
-          {data.payload.value}%
+          {Math.round(data.payload.value*100)/100}%
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
           {data.payload.quantity} validators
