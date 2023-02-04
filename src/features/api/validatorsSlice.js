@@ -224,11 +224,11 @@ const selectValidatorsBySessions = (state, sessions = [], suffix = "") => {
 
 function createRows(id, identity, address, subset, 
   active_sessions, para_sessions, authored_blocks, core_assignments, 
-  explicit_votes, implicit_votes, missed_votes, avg_pts, commission, timeline) {
+  explicit_votes, implicit_votes, missed_votes, avg_pts, commission, paraId, timeline) {
   return {id, identity, address, subset, 
     active_sessions, para_sessions, authored_blocks, 
     core_assignments, explicit_votes, implicit_votes, missed_votes, 
-    avg_pts, commission, timeline };
+    avg_pts, commission, paraId, timeline };
 }
 
 // SCORES
@@ -304,6 +304,7 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
     const missed_votes = f2.length > 0 ? f2.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0) : null;
     const avg_bck_pts = f2.length > 0 ? para_points / f2.length : null;
     const profile = selectValProfileByAddress(state, x[0].address);
+    const paraId = f2.length > 0 ? f2.map(v => v.para.pid) : null;
 
     const timeline = sessions.map(s => {
       const y = x.find(e => e.session === s);
@@ -335,6 +336,7 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
       missed_votes, 
       avg_bck_pts,
       !isUndefined(profile) ? profile.commission : null,
+      paraId,
       timeline.join("")
     )
   })

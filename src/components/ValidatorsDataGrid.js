@@ -29,6 +29,7 @@ import {
   pageChanged,
 } from '../features/layout/layoutSlice';
 import { scoreDisplay } from '../util/display';
+import { isChainSupported, getChainName } from '../constants'
 
 
 function DetailsIcon({address}) {
@@ -52,7 +53,7 @@ function DetailsIcon({address}) {
   )
 }
 
-const defineColumns = (theme) => {
+const defineColumns = (theme, chain) => {
   return [
   { 
       field: 'id', 
@@ -75,7 +76,7 @@ const defineColumns = (theme) => {
   {
     field: 'identity',
     headerName: 'Identity',
-    width: 288,
+    width: 256,
     disableColumnMenu: true,
   },
   {
@@ -121,9 +122,16 @@ const defineColumns = (theme) => {
     field: 'authored_pts',
     headerName: 'Authored Points',
     type: 'number',
-    width: 128,
+    width: 64,
     disableColumnMenu: true,
     valueGetter: (params) => (!isNull(params.row.authored_blocks) ? params.row.authored_blocks * 20 : null),
+  },
+  {
+    field: 'paraId',
+    headerName: 'Backing Parachain',
+    width: 128,
+    disableColumnMenu: true,
+    valueGetter: (params) => (!isNull(params.row.paraId) ? (isChainSupported(chain, params.row.paraId) ? getChainName(chain, params.row.paraId) : params.row.paraId) : null),
   },
   {
     field: 'core_assignments',
@@ -182,7 +190,7 @@ const defineColumns = (theme) => {
   {
     field: 'options',
     headerName: '', 
-    width: 96,
+    width: 72,
     align: 'right',
     sortable: false,
     disableColumnMenu: true,
@@ -200,18 +208,19 @@ const defineColumns = (theme) => {
 
 export default function ValidatorsDataGrid({sessionIndex, skip}) {
   const theme = useTheme();
+  const selectedChain = useSelector(selectChain);
   const identityFilter = useSelector(selectIdentityFilter);
   const subsetFilter = useSelector(selectSubsetFilter);
   const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "authority", show_summary: true, show_profile: true}, {refetchOnMountOrArgChange: true, skip});
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex], false, identityFilter, subsetFilter));
   const [onlyPV, setOnlyPV] = React.useState(true);
   const [viewAllGrades, setViewAllGrades] = React.useState(false);
-
+  
   if (isUndefined(rows) && !isSuccess) {
     return null
   }
 
-  const columns = defineColumns(theme);
+  const columns = defineColumns(theme, selectedChain);
 
   const rowsFiltered1 = onlyPV ? rows.filter(v => !isNull(v.mvr)) : rows;
   const rowsFiltered2 = viewAllGrades ? rowsFiltered1 : rowsFiltered1.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
