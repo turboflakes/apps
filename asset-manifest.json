@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.139f3935.js",
+    "main.js": "/static/js/main.2b21b2b9.js",
     "static/js/27.5757e9a4.chunk.js": "/static/js/27.5757e9a4.chunk.js",
     "static/media/manta.png": "/static/media/manta.3172e8ea9964232fe94c.png",
     "static/media/litmus.png": "/static/media/litmus.5ae2bc7c8b3c6b6f5c5a.png",
@@ -98,6 +98,7 @@
     "static/media/rococo.svg": "/static/media/rococo.afea08acb3a8f4600dc104c4fb7f49b2.svg",
     "static/media/composableFinance.png": "/static/media/composableFinance.ec97aa8ec57dc66ea5be.png",
     "static/media/genshiro.svg": "/static/media/genshiro.d36a7fdc2da765c70bfa5c1e6865bdcb.svg",
+    "static/media/kusama_logo_treasury_white.svg": "/static/media/kusama_logo_treasury_white.435d770fbd85cb92b6e3769fb5ce5b9c.svg",
     "static/media/astar.png": "/static/media/astar.b48435e09065b7d91275.png",
     "static/media/pangolin.svg": "/static/media/pangolin.c32b577c2c4e65c59e2bb4a879627072.svg",
     "static/media/polkastats.png": "/static/media/polkastats.c9f709a0f469bfd2f538.png",
@@ -213,6 +214,6 @@
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.139f3935.js"
+    "static/js/main.2b21b2b9.js"
   ]
 }
