@@ -51,9 +51,9 @@ export default function SubsetBox({sessionIndex, isHistoryMode}) {
                 Distribution by subset
                 </Typography>
               </Box>
-              {/* <Typography variant="subtitle2" sx={{ height: 16, overflow: "hidden", textOverflow: "ellipsis" }}>
-                Distribution by subset
-              </Typography> */}
+              <Typography variant="subtitle2" sx={{ height: 16, overflow: "hidden", textOverflow: "ellipsis" }}>
+                All active validators
+              </Typography>
             </Box>
           </Box>
           <Box>

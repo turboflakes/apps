@@ -232,7 +232,8 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
   const subsetFilter = useSelector(selectSubsetFilter);
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, historySessionRangeIds, true, identityFilter, subsetFilter, isFetching));
-  const [viewAll, setViewAll] = React.useState(false);
+  const [onlyPV, setOnlyPV] = React.useState(true);
+  const [viewAllGrades, setViewAllGrades] = React.useState(false);
 
   if (isUndefined(rows)) {
     return null
@@ -240,21 +241,17 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
 
   const columns = defineColumns(theme);
 
-  const rowsFiltered = viewAll ? rows : rows.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
-  const gradeFsCounter = rows.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) === 'F' : false).length;
+  const rowsFiltered1 = onlyPV ? rows.filter(v => !isNull(v.mvr)) : rows;
+  const rowsFiltered2 = viewAllGrades ? rowsFiltered1 : rowsFiltered1.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
+  const gradeFsCounter = rowsFiltered1.filter((v) => !isNull(v.mvr) ? grade(1-v.mvr) === 'F' : false).length;
 
-  const handleViewAllChange = (event) => {
-    setViewAll(event.target.checked);
+  const handleOnlyPVChange = (event) => {
+    setOnlyPV(event.target.checked);
   };
-  
-  // const handleOnRowClick = ({row}) => {
-  //   const address = row.address;
-  //   if (selectedAddress !== address) {
-  //     dispatch(addressChanged(address));
-  //     dispatch(pageChanged(`validator/${address}`));
-  //     navigate(`/one-t/${selectedChain}/validator/${address}`)
-  //   }
-  // };
+
+  const handleViewAllGradesChange = (event) => {
+    setViewAllGrades(event.target.checked);
+  };
 
   return (
     <Box
@@ -287,15 +284,24 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
             },
           }}
           // onRowClick={handleOnRowClick}
-          rows={rowsFiltered}
+          rows={rowsFiltered2}
           columns={columns}
           rowsPerPageOptions={[16]}
           pagination
           disableSelectionOnClick
         />
-        <FormGroup>
+        <FormGroup sx={{ display: 'flex', flexDirection: 'row'}}>
           <FormControlLabel control={
-            <Switch size="small" disabled={gradeFsCounter === 0} checked={viewAll} onChange={handleViewAllChange}/>
+            <Switch size="small" checked={onlyPV} onChange={handleOnlyPVChange} />
+          } 
+          label="Show only active para-validators" 
+          sx={{
+            '& .MuiFormControlLabel-label' : {
+              ...theme.typography.caption
+            }
+          }}/>
+          <FormControlLabel control={
+            <Switch size="small" disabled={gradeFsCounter === 0} checked={viewAllGrades} onChange={handleViewAllGradesChange} />
           } 
           label="Show all grades" 
           sx={{

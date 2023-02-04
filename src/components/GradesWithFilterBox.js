@@ -123,7 +123,7 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
                 </CustomTooltip>
               </Box>
               <Typography variant="subtitle2" sx={{ height: 16, overflow: "hidden", textOverflow: "ellipsis" }}>
-                {subsetFilter !== '' ? <span>Only for subset {subsetFilter}</span> : 'All validators'}
+                {subsetFilter !== '' ? <span>Only for subset {subsetFilter}</span> : 'Only para-validators'}
               </Typography>
             </Box>
           </Box>
