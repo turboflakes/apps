@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.12aad83a.js",
+    "main.js": "/static/js/main.491e0a48.js",
     "static/js/27.5757e9a4.chunk.js": "/static/js/27.5757e9a4.chunk.js",
     "static/media/manta.png": "/static/media/manta.3172e8ea9964232fe94c.png",
     "static/media/litmus.png": "/static/media/litmus.5ae2bc7c8b3c6b6f5c5a.png",
@@ -166,6 +166,7 @@
     "static/media/github_white.svg": "/static/media/github_white.e1c319657ca95e2fdf201928e907e211.svg",
     "static/media/polkadot_icon.svg": "/static/media/polkadot_icon.307bb3eeb029c40621190e34664a5419.svg",
     "static/media/subsocialX.svg": "/static/media/subsocialX.86d61c0ce34b513a4dcd6d30ad78b3b5.svg",
+    "static/media/BridgeHubBlack.svg": "/static/media/BridgeHubBlack.e96e06cfb9b460db558f030745c57079.svg",
     "static/media/crust-maxwell.svg": "/static/media/crust-maxwell.253d6e1a1ad713d58d29abb0af891a9f.svg",
     "static/media/dolphin.svg": "/static/media/dolphin.6d991137f51361d61f325e85f258ffc8.svg",
     "static/media/gamepower.svg": "/static/media/gamepower.f1ecf75eaa1ddbe4296fbb09fa0f2866.svg",
@@ -213,6 +214,6 @@
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.12aad83a.js"
+    "static/js/main.491e0a48.js"
   ]
 }
