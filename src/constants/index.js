@@ -1,3 +1,4 @@
+import isUndefined from 'lodash/isUndefined'
 import iconPolkadotSVG from '../assets/polkadot_icon.svg';
 import logoPolkadotSVG from '../assets/polkadot_logotype_white.svg';
 import iconKusamaSVG from '../assets/kusama_icon.svg';
@@ -8,7 +9,7 @@ import {prodParasKusama} from './productionRelayKusama';
 import {prodParasPolkadot} from './productionRelayPolkadot';
 import {chainColors, nodeColors} from './colors';
 import {chainLogos, nodeLogos, namedLogos} from '../assets/logos';
-import {sanitize} from '../util/sanitize'
+import {sanitize} from '../util/sanitize';
 
 // Define Network settings
 const networkSettings = {
@@ -90,7 +91,17 @@ export const getChainLogo = (network, paraId) => {
   if (!isChainSupported(network, paraId)) {
     return namedLogos.empty
   }
-  const nodeLogo = nodeLogos[sanitize(getChainName(network, paraId))]
-  const chainLogo = chainLogos[sanitize(getChainName(network, paraId))]
-  return nodeLogo ? nodeLogo : (chainLogo ? chainLogo : namedLogos.empty)
+  const namedLogo = namedLogos[getChainInfo(network, paraId)];
+  if (isUndefined(namedLogo)) {
+    const nodeLogo = nodeLogos[sanitize(getChainInfo(network, paraId))];
+    if (isUndefined(nodeLogo)) { 
+      const chainLogo = chainLogos[sanitize(getChainName(network, paraId))];
+      if (isUndefined(nodeLogo)) { 
+        return namedLogos.empty
+      } 
+      return chainLogo
+    }
+    return nodeLogo
+  }
+  return namedLogo 
 }

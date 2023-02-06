@@ -497,6 +497,15 @@ export const prodParasKusama = [
     }
   },
   {
+    homepage: 'https://zero.io',
+    info: 'zero',
+    paraId: 2236,
+    providers: {
+      ZeroNetwork: 'wss://rpc-1.kusama.node.zero.io'
+    },
+    text: 'subzero'
+  },
+  {
     info: 'tanganika',
     homepage: 'https://www.datahighway.com/',
     paraId: 2116,
@@ -565,5 +574,13 @@ export const prodParasKusama = [
       OnFinality: 'wss://encointer.api.onfinality.io/public-ws'
     },
     teleport: [-1]
-  }
+  },
+  {
+    info: 'kusamaBridgeHub',
+    paraId: 1002,
+    providers: {
+      Parity: 'wss://kusama-bridge-hub-rpc.polkadot.io'
+    },
+    text: 'BridgeHub'
+  },
 ];

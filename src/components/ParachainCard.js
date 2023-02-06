@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
-import isUndefined from 'lodash/isUndefined'
-import isNull from 'lodash/isNull'
+import isUndefined from 'lodash/isUndefined';
+import isNull from 'lodash/isNull';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
