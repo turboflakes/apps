@@ -18,6 +18,7 @@ import ListSubheader from '@mui/material/ListSubheader';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import Chip from '@mui/material/Chip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink, faWaterLadder, faServer } from '@fortawesome/free-solid-svg-icons'
@@ -118,7 +119,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 }),
 );
 
-export const LayoutPage = ({api}) => {
+export default function LayoutPage({api}) {
   const theme = useTheme();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -296,7 +297,23 @@ export const LayoutPage = ({api}) => {
 
             {/* menu */}
             <List component="nav" 
-              sx={{ '> .MuiListItemButton-root.Mui-selected': { bgcolor: "rgba(0, 0, 0, 0.12)"}, '> .MuiListItemButton-root.Mui-selected:hover': { bgcolor: "rgba(0, 0, 0, 0.18)"}}}>
+              sx={{ '> .MuiListItemButton-root.Mui-selected': {
+                bgcolor: "rgba(0, 0, 0, 0.12)"}, '> .MuiListItemButton-root.Mui-selected:hover': { bgcolor: "rgba(0, 0, 0, 0.18)"}
+              }}>
+              {/* <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
+                {open ? 'Validators' : 'Val..'}
+              </ListSubheader> */}
+              
+              <ListItemButton selected={selectedPage === 'dashboard'}
+                onClick={() => handlePageSelection('dashboard')}>
+                <ListItemIcon>
+                  <DashboardIcon />
+                </ListItemIcon>
+                <ListItemText primary="Dashboard" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+              </ListItemButton>
+              
+              {/* <Divider sx={{ my: 1 }} /> */}
+
               <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Validators' : 'Val..'}
               </ListSubheader>
@@ -307,7 +324,9 @@ export const LayoutPage = ({api}) => {
                 </ListItemIcon>
                 <ListItemText primary="Insights" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
-              <Divider sx={{ my: 1 }} />
+              
+              {/* <Divider sx={{ my: 1 }} /> */}
+
               <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Parachains' : 'Par..'}
               </ListSubheader>
@@ -328,7 +347,12 @@ export const LayoutPage = ({api}) => {
                   sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
               
-              <Divider sx={{ my: 1 }} />
+              {/* <Divider sx={{ my: 1 }} /> */}
+
+              <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
+                {open ? 'Nomination Pools' : 'Nom..'}
+              </ListSubheader>
+
               <ListItemButton  selected={selectedPage === 'pools'}  disabled
                 onClick={() => handlePageSelection('pools')}>
                 <ListItemIcon>

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import SessionBox from './SessionBox';
 import SessionPieChart from './SessionPieChart';
 import SessionPerformancePieChart from './SessionPerformancePieChart';
@@ -17,7 +16,11 @@ import BackingPointsHistoryBox from './BackingPointsHistoryBox';
 import AuthoritiesBox from './AuthoritiesBox';
 import GradesSmallBox from './GradesSmallBox';
 import SessionHistoryTimelineChart from './SessionHistoryTimelineChart';
-
+import NetTotalValidatorsBox from './NetTotalValidatorsBox';
+import NetActiveValidatorsBox from './NetActiveValidatorsBox';
+import NetOversubscribedValidatorsBox from './NetOversubscribedValidatorsBox';
+import NetPointsValidatorsBox from './NetPointsValidatorsBox';
+import NetOwnStakeValidatorsBox from './NetOwnStakeValidatorsBox';
 import { 
   selectSessionHistory,
   selectSessionCurrent,
@@ -32,8 +35,7 @@ import {
   selectIsSocketConnected,
 } from '../features/api/socketSlice'
 
-export default function ParachainsOverviewPage({tab}) {
-  // const theme = useTheme();
+export default function DashboardPage() {
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
   const maxHistoryEras = useSelector(selectMaxHistoryEras);
@@ -54,10 +56,30 @@ export default function ParachainsOverviewPage({tab}) {
       <Grid container spacing={2}>
         {isLiveMode ? 
           <Grid item xs={6} md={4}>
-            <SessionPerformanceTimeline sessionIndex={sessionIndex} />
+            <NetTotalValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
           </Grid>
         : null}
         {isLiveMode ? 
+          <Grid item xs={6} md={4}>
+            <NetActiveValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+          </Grid>
+        : null}
+        {isLiveMode ? 
+          <Grid item xs={6} md={4}>
+            <NetOversubscribedValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+          </Grid>
+        : null}
+        {isLiveMode ? 
+          <Grid item xs={6} md={4}>
+            <NetPointsValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+          </Grid>
+        : null}
+        {isLiveMode ? 
+          <Grid item xs={6} md={4}>
+            <NetOwnStakeValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+          </Grid>
+        : null}
+        {/* {isLiveMode ? 
           <Grid item xs={12} md={2}>
             <SessionPerformancePieChart />
           </Grid>
@@ -65,13 +87,6 @@ export default function ParachainsOverviewPage({tab}) {
         {isLiveMode ? 
           <Grid item xs={12} md={2}>
             <SessionPieChart sessionIndex={sessionIndex} />
-          </Grid> : null}
-        {isHistoryMode ? 
-          <Grid item xs={12} md={9} >
-            <Box sx={{  p: 2 }}>
-              <Typography variant="h3">Performance History</Typography>
-              <Typography variant="subtitle" color="secondary">Available for the last {maxHistorySessions} sessions ({maxHistoryEras} eras).</Typography>
-            </Box>
           </Grid> : null}
         
         <Grid item xs={12} md={isHistoryMode ? 3 : 4}>
@@ -89,10 +104,6 @@ export default function ParachainsOverviewPage({tab}) {
         <Grid item xs={12} md={2}>
           {isLiveMode ? <BackingPointsBox /> : <BackingPointsHistoryBox sessionIndex={sessionIndex} />}
         </Grid>
-        {/* {isHistoryMode ? 
-          <Grid item xs={12} md={4}>
-            <SessionBox sessionIndex={sessionIndex} dark={isHistoryMode} />
-          </Grid> : null} */}
         {isLiveMode ?
           <Grid item xs={12} md={2}>
             <SessionPointsBox />
@@ -100,15 +111,7 @@ export default function ParachainsOverviewPage({tab}) {
         {isLiveMode ?
           <Grid item xs={12} md={2}>
             <EraPointsBox />
-          </Grid> : null}
-
-        {isHistoryMode ?
-          <Grid item xs={12}>
-            <SessionHistoryTimelineChart maxSessions={maxHistorySessions} />
-          </Grid> : null}
-        <Grid item xs={12}>
-          {!!sessionIndex ? <ParachainsOverviewTabs sessionIndex={sessionIndex} tab={tab} /> : null}
-        </Grid>
+          </Grid> : null} */}
       </Grid>
 		</Box>
   );

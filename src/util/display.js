@@ -14,10 +14,10 @@ export const nameDisplay = (name, len, prefix = '') => {
     return name.length > len ? `${prefix}${name.slice(0, len)}..` : `${prefix}${name}`
 }
 
-export const stakeDisplay = (stake, networkDetails) => {
+export const stakeDisplay = (stake, networkDetails, decimals = 2) => {
     if (!!networkDetails.tokenDecimals[0] && !!networkDetails.tokenSymbol[0]) {
         const networkDecimals = Math.pow(10, parseInt(networkDetails.tokenDecimals[0], 10))
-        return `${parseFloat((stake/networkDecimals).toFixed(2))} ${networkDetails.tokenSymbol[0]}`
+        return `${parseFloat((stake/networkDecimals).toFixed(decimals)).format()} ${networkDetails.tokenSymbol[0]}`
     }
     return stake
 }

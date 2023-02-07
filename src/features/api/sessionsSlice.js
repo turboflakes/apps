@@ -36,9 +36,9 @@ export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Sessions'],
   endpoints: (builder) => ({
     getSessions: builder.query({
-      query: ({number_last_sessions, from, to, show_stats}) => ({
+      query: ({number_last_sessions, from, to, show_stats, show_netstats}) => ({
         url: `/sessions`,
-        params: { number_last_sessions, from, to, show_stats }
+        params: { number_last_sessions, from, to, show_stats, show_netstats }
       }),
       providesTags: (result, error, arg) => [{ type: 'Sessions', id: arg }],
       transformResponse: responseData => {

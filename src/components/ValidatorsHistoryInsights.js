@@ -64,7 +64,7 @@ export default function ValidatorsHistoryInsights({skip}) {
             <IdentityFilter />
             <SubsetFilter />
           </Box>
-          <Button variant='contained' endIcon={<AddIcon />} onClick={handleLoadTimeline} small
+          <Button variant='contained' endIcon={<AddIcon />} onClick={handleLoadTimeline}
             disabled={isFetching} disableRipple>
             Load more sessions
           </Button>
