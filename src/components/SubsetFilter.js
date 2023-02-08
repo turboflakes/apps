@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import Box from '@mui/material/Box';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
@@ -18,6 +19,7 @@ export default function SubsetFilter() {
   };
 
   return (
+    <Box>
       <ToggleButtonGroup
         sx={{mx: 2}}
         value={subsetFilter}
@@ -50,5 +52,6 @@ export default function SubsetFilter() {
           <b>TVP</b>
         </ToggleButton>
       </ToggleButtonGroup>
+    </Box>
   );
 }

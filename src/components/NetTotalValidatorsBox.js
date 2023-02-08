@@ -104,7 +104,7 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
           <Typography variant="caption" gutterBottom>Total Validators</Typography>
           <Typography variant="h4">
-            {mainValue.format()}
+            {!isUndefined(mainValue) ? mainValue.format() : 0}
           </Typography>
         </Box>
       </Box>

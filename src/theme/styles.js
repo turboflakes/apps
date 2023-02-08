@@ -143,7 +143,8 @@ let theme = createTheme({
     h6: {
       fontFamily: "'Roboto', sans-serif",
       fontSize: "1rem",
-      fontWeight: 700
+      fontWeight: 700,
+      // lineHeight: 0
     },
     body1: {
       fontFamily: "'Roboto', sans-serif",
@@ -154,6 +155,12 @@ let theme = createTheme({
     },
     caption: {
       fontSize: "0.825rem",
+      fontFamily: "'Roboto', sans-serif",
+      color: '#4D4D4D',
+      lineHeight: 1
+    },
+    caption1: {
+      fontSize: "0.8rem",
       fontFamily: "'Roboto', sans-serif",
       color: '#4D4D4D',
       lineHeight: 1
@@ -178,6 +185,13 @@ let theme = createTheme({
       fontStyle: "italic",
       lineHeight: 0.875,
       color: '#4D4D4D',
+    }, 
+    subtitle3: {
+      fontFamily: "'Roboto', sans-serif",
+      fontSize: "0.775rem",
+      lineHeight: 0.675,
+      color: '#4D4D4D',
+      fontWeight: 500
     }, 
   },
   shape: {

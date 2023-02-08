@@ -12,17 +12,6 @@ import NetStatToggle from './NetStatToggle';
 import { 
   useGetSessionsQuery,
  } from '../features/api/sessionsSlice'
-import { 
-  useGetBlocksQuery,
-  selectBlocksBySession,
- } from '../features/api/blocksSlice'
-import {
-  selectIsLiveMode,
-  selectMaxHistorySessions,
-  selectMaxHistoryEras
-} from '../features/layout/layoutSlice';
-
-// const COLORS = (theme) => ([theme.palette.grey[900], theme.palette.grey[200], theme.palette.semantics.blue])
 
  const renderTooltip = (props, theme) => {
   const { active, payload } = props;
@@ -123,7 +112,7 @@ export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
           <Typography variant="caption" gutterBottom>Era Points</Typography>
           <Typography variant="h4">
-            {mainValue.format()}
+            {!isUndefined(mainValue) ? mainValue.format() : 0}
           </Typography>
         </Box>
         <NetStatToggle onChange={handleStatChanged} />

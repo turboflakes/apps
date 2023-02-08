@@ -5,8 +5,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import InsightsGrid from './InsightsGrid';
 import ValGroupsGrid from './ValGroupsGrid';
-import ParachainsOverviewGrid from './ParachainsOverviewGrid';
+import ParachainsGrid from './ParachainsGrid';
 import { 
   useGetValidatorsQuery,
  } from '../features/api/validatorsSlice';
@@ -24,9 +26,9 @@ function a11yProps(index) {
   };
 }
 
-const tabPages = ["parachains/overview", "parachains/val-groups"];
+const tabPages = ["insights", "parachains", "val-groups"];
 
-export default function ParachainsOverviewTabs({sessionIndex, tab}) {
+export default function OverviewTabs({sessionIndex, tab}) {
 	// const theme = useTheme();
   const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -34,7 +36,8 @@ export default function ParachainsOverviewTabs({sessionIndex, tab}) {
   const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true, show_profile: true}, {refetchOnMountOrArgChange: true});
   const handleChange = (event, newValue) => {
     dispatch(pageChanged(tabPages[newValue]));
-    navigate(`/one-t/${selectedChain}/${tabPages[newValue]}`)
+    // navigate(`/one-t/${selectedChain}/${tabPages[newValue]}`)
+    navigate(`/${tabPages[newValue]}`)
   };
 
   if (!isSuccess) {
@@ -49,14 +52,15 @@ export default function ParachainsOverviewTabs({sessionIndex, tab}) {
           '& .Mui-selected': { 
             bgcolor: 'rgba(11, 19, 23, 0.08)',
             color: '#0B1317'
-          }}} value={tab} onChange={handleChange} aria-label="Parachains" >
-          <Tab sx={{ my:1, mr: 2,  borderRadius: 3 }} label="Overview" {...a11yProps(0)} disableRipple disableFocusRipple />
-          <Tab sx={{ my:1,  borderRadius: 3 }} label="Val. Groups" {...a11yProps(1)} disableRipple disableFocusRipple />
+          }}} value={tab} onChange={handleChange} aria-label="Overview" >
+          <Tab sx={{ my:1, mr: 2,  borderRadius: 3 }} label="Insights" {...a11yProps(0)} disableRipple disableFocusRipple />
+          <Tab sx={{ my:1, mr: 2,  borderRadius: 3 }} label="Parachains" {...a11yProps(1)} disableRipple disableFocusRipple />
+          <Tab sx={{ my:1,  borderRadius: 3 }} label="Val. Groups" {...a11yProps(2)} disableRipple disableFocusRipple />
         </Tabs>
       </Box>
-      {tab === 0 ? 
-        (<ParachainsOverviewGrid sessionIndex={sessionIndex} />) : 
-        (<ValGroupsGrid sessionIndex={sessionIndex} />)
+      {tab === 0 ? (<InsightsGrid sessionIndex={sessionIndex} />) : (
+        tab === 1 ? (<ParachainsGrid sessionIndex={sessionIndex} />) : 
+        (<ValGroupsGrid sessionIndex={sessionIndex} />))
       }
 		</Box>
   );

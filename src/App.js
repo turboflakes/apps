@@ -15,9 +15,8 @@ import Typography from '@mui/material/Typography';
 import { getNetworkExternalWSS } from './constants';
 import LayoutPage from './components/LayoutPage'
 import DashboardPage from './components/DashboardPage'
-import ParachainsOverviewPage from './components/ParachainsOverviewPage'
+import OverviewPage from './components/OverviewPage'
 import ValidatorPage from './components/ValidatorPage'
-import InsightsPage from './components/InsightsPage'
 import withTheme from './theme/withTheme'
 import {
   selectChain,
@@ -77,6 +76,16 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<LayoutPage api={api} />}>
+            <Route index element={<Navigate to="/dashboard" />} />
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="insights" element={<OverviewPage tab={0} />} />
+            <Route path="parachains" element={<OverviewPage tab={1} />} />
+            <Route path="val-groups" element={<OverviewPage tab={2} />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/dashboard" />} />
+        </Routes>
+        {/* <Routes>
+          <Route path="/" element={<LayoutPage api={api} />}>
             <Route index element={<Navigate to="/one-t/kusama/dashboard" />} />
             <Route path="one-t">
               <Route index element={<Navigate to="/one-t/kusama/dashboard" />} />
@@ -97,7 +106,7 @@ const App = () => {
             </Route>
             <Route path="*" element={<Navigate to="/one-t/kusama/dashboard" />} />
           </Route>
-        </Routes>
+        </Routes> */}
       </Router>
   );
 }

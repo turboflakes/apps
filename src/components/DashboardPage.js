@@ -48,7 +48,7 @@ export default function DashboardPage() {
   return (
 		<Box sx={{ m: 2, minHeight: '100vh', mt: isLiveMode ? 2 : 12 }}>
       <Grid container spacing={2}>
-        <Grid item xs={6} md={4}>
+        {/* <Grid item xs={6} md={4}>
           <SessionPerformanceTimeline sessionIndex={sessionIndex} />
         </Grid>
         <Grid item xs={12} md={2}>
@@ -69,7 +69,7 @@ export default function DashboardPage() {
             backgroundColor: 'transparent',
             backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
             }} />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} md={9} >
           <Box sx={{  p: 2 }}>
             <Typography variant="h3">Network Stats</Typography>

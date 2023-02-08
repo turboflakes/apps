@@ -21,7 +21,7 @@ import {
 } from '../features/api/sessionsSlice';
 
 
-export default function ParachainsOverviewGrid({sessionIndex}) {
+export default function ParachainsGrid({sessionIndex}) {
 	// const theme = useTheme();
   const [sortBy, setSortBy] = React.useState('');
   const {isSuccess} = useGetParachainsQuery({session: sessionIndex}, {refetchOnMountOrArgChange: true});

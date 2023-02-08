@@ -24,6 +24,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink, faWaterLadder, faServer } from '@fortawesome/free-solid-svg-icons'
 import HubIcon from '@mui/icons-material/Hub';
 import SearchSmall from './SearchSmall'
+import SessionPerformancePieChartHeader from './SessionPerformancePieChartHeader';
+import SessionPieChartHeader from './SessionPieChartHeader';
+import SessionBoxHeader from './SessionBoxHeader';
 import Footer from './Footer'
 import SessionSlider from './SessionSlider';
 import SessionSliderRange from './SessionSliderRange';
@@ -151,7 +154,8 @@ export default function LayoutPage({api}) {
 
   const handlePageSelection = (page) => {
     dispatch(pageChanged(page));
-    navigate(`/one-t/${selectedChain}/${page}`)
+    navigate(`/${page}`);
+    // navigate(`/one-t/${selectedChain}/${page}`)
   }
 
   return (
@@ -166,7 +170,7 @@ export default function LayoutPage({api}) {
           pr: '24px', // keep right padding when drawer closed
           bgcolor: "rgba(255, 255, 255, 0.5)", 
           backdropFilter: 'blur(16px)',
-          borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
+          // borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
           }} id="top-toolbar">
             <Box sx={{
               display: 'flex', 
@@ -239,16 +243,20 @@ export default function LayoutPage({api}) {
             </ToggleButtonGroup>
 
             {/* search validator */}
-            <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}>
-              {/* {selectedPage.startsWith('validator') ? (!!selectedAddress ? <SearchSmall /> : null) : null} */}
+            {/* <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}>
               { selectedPage !== 'validators/insights' && selectedPage !== 'dashboard' ? <SearchSmall /> : null }
+            </Box> */}
+            <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}></Box>
+            <Box sx={{ display: 'flex'}}>
+             <SessionPerformancePieChartHeader />
+             <SessionPieChartHeader />
+             <SessionBoxHeader />
             </Box>
-
             {/* mode switch live/history */}
-            { selectedPage !== 'dashboard' ? <ModeSwitch mode={selectedMode} /> : null }
+            {/* { selectedPage !== 'dashboard' ? <ModeSwitch mode={selectedMode} /> : null } */}
 
           </Box>
-          { selectedPage !== 'dashboard' && isHistoryMode ? 
+          {/* { selectedPage !== 'dashboard' && isHistoryMode ? 
             <Box sx={{
                 display: 'flex', 
                 flexDirection: 'column',
@@ -258,7 +266,7 @@ export default function LayoutPage({api}) {
               }}>
               {selectedPage !== 'validators/insights' ? 
                 <SessionSlider maxSessions={maxHistorySessions} /> : <SessionSliderRange />}
-            </Box> : null}
+            </Box> : null} */}
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -320,44 +328,44 @@ export default function LayoutPage({api}) {
               
               {/* <Divider sx={{ my: 1 }} /> */}
 
-              <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
+              {/* <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Validators' : 'Val..'}
-              </ListSubheader>
-              <ListItemButton selected={selectedPage === 'validators/insights'}
-                onClick={() => handlePageSelection('validators/insights')}>
+              </ListSubheader> */}
+              <ListItemButton selected={selectedPage === 'insights'}
+                onClick={() => handlePageSelection('insights')}>
                 <ListItemIcon>
                   <FontAwesomeIcon icon={faServer} />
                 </ListItemIcon>
-                <ListItemText primary="Insights" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+                <ListItemText primary="Validator Insights" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
               
               {/* <Divider sx={{ my: 1 }} /> */}
 
-              <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
+              {/* <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Parachains' : 'Par..'}
-              </ListSubheader>
-              <ListItemButton selected={selectedPage === 'parachains/overview'}
-                onClick={() => handlePageSelection('parachains/overview')}>
+              </ListSubheader> */}
+              <ListItemButton selected={selectedPage === 'parachains'}
+                onClick={() => handlePageSelection('parachains')}>
                 <ListItemIcon>
                   <FontAwesomeIcon icon={faLink} />
                 </ListItemIcon>
-                <ListItemText primary="Overview" 
+                <ListItemText primary="Parachains" 
                   sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
-              <ListItemButton selected={selectedPage === 'parachains/val-groups'}
-                onClick={() => handlePageSelection('parachains/val-groups')}>
+              <ListItemButton selected={selectedPage === 'val-groups'}
+                onClick={() => handlePageSelection('val-groups')}>
                 <ListItemIcon>
                   <HubIcon />
                 </ListItemIcon>
-                <ListItemText primary="Val. Groups" 
+                <ListItemText primary="Validator Groups" 
                   sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
               
               {/* <Divider sx={{ my: 1 }} /> */}
 
-              <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
+              {/* <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Nomination Pools' : 'Nom..'}
-              </ListSubheader>
+              </ListSubheader> */}
 
               <ListItemButton  selected={selectedPage === 'pools'}  disabled
                 onClick={() => handlePageSelection('pools')}>
