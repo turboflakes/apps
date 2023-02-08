@@ -18,6 +18,7 @@ import ListSubheader from '@mui/material/ListSubheader';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import Chip from '@mui/material/Chip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink, faWaterLadder, faServer } from '@fortawesome/free-solid-svg-icons'
@@ -118,7 +119,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 }),
 );
 
-export const LayoutPage = ({api}) => {
+export default function LayoutPage({api}) {
   const theme = useTheme();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -211,13 +212,19 @@ export const LayoutPage = ({api}) => {
                     width: 26,
                     height: 26 }} alt={web3Account.meta.name}/>
                 </Box> : null}
-              <ToggleButton disabled value="polkadot" aria-label="Polkadot Network" sx={{ mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16, pr: 2}, '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
+              <ToggleButton disabled value="polkadot" aria-label="Polkadot Network" 
+                sx={{ mr: 1, border: 0, 
+                  '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
+                  '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
                 <img src={getNetworkIcon("polkadot")}  style={{ 
                   width: 32,
                   height: 32 }} alt={"polkadot"}/>
                 {selectedChain === "polkadot" ? <Typography variant='h5' sx={{ paddingLeft: '8px'}}>Polkadot</Typography> : null}
               </ToggleButton>
-              <ToggleButton value="kusama" aria-label="Kusama Network" sx={{ border: 0, '&.Mui-selected' : {borderRadius: 16, pr: 2}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
+              <ToggleButton value="kusama" aria-label="Kusama Network" 
+                sx={{ border: 0, 
+                  '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
+                  '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
                 <img src={getNetworkIcon("kusama")}  style={{ 
                   width: 32,
                   height: 32 }} alt={"kusama"}/>
@@ -234,14 +241,14 @@ export const LayoutPage = ({api}) => {
             {/* search validator */}
             <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}>
               {/* {selectedPage.startsWith('validator') ? (!!selectedAddress ? <SearchSmall /> : null) : null} */}
-              { selectedPage !== 'validators/insights' ? <SearchSmall /> : null }
+              { selectedPage !== 'validators/insights' && selectedPage !== 'dashboard' ? <SearchSmall /> : null }
             </Box>
 
             {/* mode switch live/history */}
-            <ModeSwitch mode={selectedMode} />
+            { selectedPage !== 'dashboard' ? <ModeSwitch mode={selectedMode} /> : null }
 
           </Box>
-          {isHistoryMode ? 
+          { selectedPage !== 'dashboard' && isHistoryMode ? 
             <Box sx={{
                 display: 'flex', 
                 flexDirection: 'column',
@@ -296,7 +303,23 @@ export const LayoutPage = ({api}) => {
 
             {/* menu */}
             <List component="nav" 
-              sx={{ '> .MuiListItemButton-root.Mui-selected': { bgcolor: "rgba(0, 0, 0, 0.12)"}, '> .MuiListItemButton-root.Mui-selected:hover': { bgcolor: "rgba(0, 0, 0, 0.18)"}}}>
+              sx={{ '> .MuiListItemButton-root.Mui-selected': {
+                bgcolor: "rgba(0, 0, 0, 0.12)"}, '> .MuiListItemButton-root.Mui-selected:hover': { bgcolor: "rgba(0, 0, 0, 0.18)"}
+              }}>
+              {/* <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
+                {open ? 'Validators' : 'Val..'}
+              </ListSubheader> */}
+              
+              <ListItemButton selected={selectedPage === 'dashboard'}
+                onClick={() => handlePageSelection('dashboard')}>
+                <ListItemIcon>
+                  <DashboardIcon />
+                </ListItemIcon>
+                <ListItemText primary="Dashboard" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+              </ListItemButton>
+              
+              {/* <Divider sx={{ my: 1 }} /> */}
+
               <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Validators' : 'Val..'}
               </ListSubheader>
@@ -307,7 +330,9 @@ export const LayoutPage = ({api}) => {
                 </ListItemIcon>
                 <ListItemText primary="Insights" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
-              <Divider sx={{ my: 1 }} />
+              
+              {/* <Divider sx={{ my: 1 }} /> */}
+
               <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Parachains' : 'Par..'}
               </ListSubheader>
@@ -328,7 +353,12 @@ export const LayoutPage = ({api}) => {
                   sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
               
-              <Divider sx={{ my: 1 }} />
+              {/* <Divider sx={{ my: 1 }} /> */}
+
+              <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
+                {open ? 'Nomination Pools' : 'Nom..'}
+              </ListSubheader>
+
               <ListItemButton  selected={selectedPage === 'pools'}  disabled
                 onClick={() => handlePageSelection('pools')}>
                 <ListItemIcon>

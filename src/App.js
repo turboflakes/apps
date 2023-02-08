@@ -13,8 +13,9 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { getNetworkExternalWSS } from './constants';
-import { LayoutPage } from './components/LayoutPage'
-import { ParachainsOverviewPage } from './components/ParachainsOverviewPage'
+import LayoutPage from './components/LayoutPage'
+import DashboardPage from './components/DashboardPage'
+import ParachainsOverviewPage from './components/ParachainsOverviewPage'
 import ValidatorPage from './components/ValidatorPage'
 import InsightsPage from './components/InsightsPage'
 import withTheme from './theme/withTheme'
@@ -47,7 +48,7 @@ const ValidateChain = () => {
   if (isNetworkSupported(chainName)) {
     return (<Outlet />)
   }
-  return (<Navigate to="/one-t/kusama/parachains/overview" />)
+  return (<Navigate to="/one-t/kusama/dashboard" />)
 }
 
 const App = () => {
@@ -76,11 +77,12 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<LayoutPage api={api} />}>
-            <Route index element={<Navigate to="/one-t/kusama/validators/insights" />} />
+            <Route index element={<Navigate to="/one-t/kusama/dashboard" />} />
             <Route path="one-t">
-              <Route index element={<Navigate to="/one-t/kusama/validators/insights" />} />
+              <Route index element={<Navigate to="/one-t/kusama/dashboard" />} />
               <Route path=":chainName" element={<ValidateChain />} >
-                <Route index element={<Navigate to="/one-t/kusama/validators/insights" />} />
+                <Route index element={<Navigate to="/one-t/kusama/dashboard" />} />
+                <Route path="dashboard" element={<DashboardPage />} />
                 <Route path="parachains">
                   <Route path="overview" element={<ParachainsOverviewPage tab={0} />} />
                   <Route path="val-groups" element={<ParachainsOverviewPage tab={1} />} />
@@ -93,7 +95,7 @@ const App = () => {
                 </Route>
               </Route>
             </Route>
-            <Route path="*" element={<Navigate to="/one-t/kusama/validators/insights" />} />
+            <Route path="*" element={<Navigate to="/one-t/kusama/dashboard" />} />
           </Route>
         </Routes>
       </Router>

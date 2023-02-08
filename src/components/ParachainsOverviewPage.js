@@ -32,7 +32,7 @@ import {
   selectIsSocketConnected,
 } from '../features/api/socketSlice'
 
-export const ParachainsOverviewPage = ({tab}) => {
+export default function ParachainsOverviewPage({tab}) {
   // const theme = useTheme();
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
