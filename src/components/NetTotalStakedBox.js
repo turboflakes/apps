@@ -9,9 +9,13 @@ import Skeleton from '@mui/material/Skeleton';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { 
   useGetSessionsQuery,
- } from '../features/api/sessionsSlice'
+ } from '../features/api/sessionsSlice';
+import {
+  selectChainInfo
+} from '../features/chain/chainSlice';
+import { stakeDisplay } from '../util/display';
 
- const renderTooltip = (props, theme) => {
+ const renderTooltip = (props, theme, chainInfo) => {
   const { active, payload } = props;
   if (active && payload && payload.length) {
     const data = payload[0] && payload[0].payload;
@@ -27,7 +31,7 @@ import {
       >
         <Box sx={{mb: 2}}>
           <Typography component="div" variant="caption" color="inherit">
-            <b>Total Validators</b>
+            <b>Total Staked</b>
           </Typography>
           <Typography component="div" variant="caption" color="inherit">
             <i>{`session #${data.session.format()}`}</i>
@@ -35,14 +39,11 @@ import {
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>TVP: <b>{data.tvp}</b> ({Math.round((data.tvp * 100 ) / data.total)}%)
+            <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>●</span>Total Issuance: <b>{stakeDisplay(data.total_issuance, chainInfo, 0, true)}</b>
           </Typography>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>100% Com.: <b>{data.c100}</b> ({Math.round((data.c100 * 100 ) / data.total)}%)
+            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>Total Staked: <b>{stakeDisplay(data.total_staked, chainInfo, 0, true)}</b> ({Math.round(data.total_staked / data.total_issuance * 100 )}%)
           </Typography>
-          <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>●</span>Others: <b>{data.others}</b> ({Math.round((data.others * 100 ) / data.total)}%)
-          </Typography>  
         </Box>
         
         
@@ -53,11 +54,12 @@ import {
   return null;
 };
 
-export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
+export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
+  const chainInfo = useSelector(selectChainInfo)
   const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true});
 
-  if (isFetching || isUndefined(data)) {
+  if (isFetching || isUndefined(data) || isUndefined(chainInfo)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
       height: 192,
@@ -72,15 +74,18 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
   }
 
   // 
-  const mainValue = data.filter(s => s.six === sessionIndex - 1)
-    .map(s => !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m.vals_total).reduce((a, b) => a + b, 0) : 0)[0];
+  const total_staked = data.filter(s => s.six === sessionIndex - 1)
+    .map(s => !isUndefined(s.netstats) ? s.netstats.total_staked : 0)[0];
+
+  const total_issuance = data.filter(s => s.six === sessionIndex - 1)
+    .map(s => !isUndefined(s.netstats) ? s.netstats.total_issuance : 0)[0];
+
+  const total_staked_percentage = total_issuance > 0 ? Math.round(total_staked / total_issuance * 100) : undefined;
 
   const timelineData = data.map((s, i) => ({
     session: s.six,
-    total: !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m.vals_total).reduce((a, b) => a + b, 0) : 0,
-    c100: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "C100")[0].vals_total : 0,
-    tvp: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "TVP")[0].vals_total : 0,
-    others: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "NONTVP")[0].vals_total : 0,
+    total_issuance: !isUndefined(s.netstats) ? s.netstats.total_issuance : 0,
+    total_staked: !isUndefined(s.netstats) ? s.netstats.total_staked : 0,
   }))
 
   return (
@@ -102,9 +107,9 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
       >
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption" gutterBottom>Total Validators</Typography>
+          <Typography variant="caption" gutterBottom>Total Staked</Typography>
           <Typography variant="h4">
-            {mainValue.format()}
+            {stakeDisplay(total_staked, chainInfo, 0, true)} {!isUndefined(total_staked_percentage) ? `(${total_staked_percentage}%)` : ''}
           </Typography>
         </Box>
       </Box>
@@ -134,13 +139,11 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
                 cursor={{fill: theme.palette.divider}}
                 offset={24}
                 wrapperStyle={{ zIndex: 100 }} 
-                content={props => renderTooltip(props, theme)} />
-            <Line isAnimationActive={false} type="monotone" dataKey="c100" 
+                content={props => renderTooltip(props, theme, chainInfo)} />
+            <Line isAnimationActive={false} type="monotone" dataKey="total_issuance" 
+              strokeWidth={2} stroke={theme.palette.semantics.red} dot={false} />
+            <Line isAnimationActive={false} type="monotone" dataKey="total_staked" 
               strokeWidth={2} stroke={theme.palette.grey[900]} dot={false} />
-            <Line isAnimationActive={false} type="monotone" dataKey="others" 
-              strokeWidth={2} stroke={theme.palette.grey[200]} dot={false} />
-            <Line isAnimationActive={false} type="monotone" dataKey="tvp" 
-              strokeWidth={2} stroke={theme.palette.semantics.blue} dot={false} />
           </LineChart>
         </ResponsiveContainer>
       </Box>

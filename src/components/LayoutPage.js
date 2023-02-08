@@ -212,13 +212,19 @@ export default function LayoutPage({api}) {
                     width: 26,
                     height: 26 }} alt={web3Account.meta.name}/>
                 </Box> : null}
-              <ToggleButton disabled value="polkadot" aria-label="Polkadot Network" sx={{ mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16, pr: 2}, '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
+              <ToggleButton disabled value="polkadot" aria-label="Polkadot Network" 
+                sx={{ mr: 1, border: 0, 
+                  '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
+                  '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
                 <img src={getNetworkIcon("polkadot")}  style={{ 
                   width: 32,
                   height: 32 }} alt={"polkadot"}/>
                 {selectedChain === "polkadot" ? <Typography variant='h5' sx={{ paddingLeft: '8px'}}>Polkadot</Typography> : null}
               </ToggleButton>
-              <ToggleButton value="kusama" aria-label="Kusama Network" sx={{ border: 0, '&.Mui-selected' : {borderRadius: 16, pr: 2}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
+              <ToggleButton value="kusama" aria-label="Kusama Network" 
+                sx={{ border: 0, 
+                  '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
+                  '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
                 <img src={getNetworkIcon("kusama")}  style={{ 
                   width: 32,
                   height: 32 }} alt={"kusama"}/>
@@ -235,14 +241,14 @@ export default function LayoutPage({api}) {
             {/* search validator */}
             <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}>
               {/* {selectedPage.startsWith('validator') ? (!!selectedAddress ? <SearchSmall /> : null) : null} */}
-              { selectedPage !== 'validators/insights' ? <SearchSmall /> : null }
+              { selectedPage !== 'validators/insights' && selectedPage !== 'dashboard' ? <SearchSmall /> : null }
             </Box>
 
             {/* mode switch live/history */}
-            <ModeSwitch mode={selectedMode} />
+            { selectedPage !== 'dashboard' ? <ModeSwitch mode={selectedMode} /> : null }
 
           </Box>
-          {isHistoryMode ? 
+          { selectedPage !== 'dashboard' && isHistoryMode ? 
             <Box sx={{
                 display: 'flex', 
                 flexDirection: 'column',

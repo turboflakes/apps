@@ -1,17 +1,22 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux'
 import { useTheme } from '@mui/material/styles';
-import isUndefined from 'lodash/isUndefined'
+import isUndefined from 'lodash/isUndefined';
+import groupBy from 'lodash/groupBy';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { ComposedChart, LineChart, Bar, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { 
   useGetSessionsQuery,
- } from '../features/api/sessionsSlice'
+ } from '../features/api/sessionsSlice';
+import {
+  selectChainInfo
+} from '../features/chain/chainSlice';
+import { stakeDisplay } from '../util/display';
 
- const renderTooltip = (props, theme) => {
+ const renderTooltip = (props, theme, chainInfo) => {
   const { active, payload } = props;
   if (active && payload && payload.length) {
     const data = payload[0] && payload[0].payload;
@@ -27,25 +32,17 @@ import {
       >
         <Box sx={{mb: 2}}>
           <Typography component="div" variant="caption" color="inherit">
-            <b>Total Validators</b>
+            <b>Last Reward</b>
           </Typography>
           <Typography component="div" variant="caption" color="inherit">
-            <i>{`session #${data.session.format()}`}</i>
+            <i>{`era #${data.era.format()}`}</i>
           </Typography>
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>TVP: <b>{data.tvp}</b> ({Math.round((data.tvp * 100 ) / data.total)}%)
+            <span style={{ marginRight: '8px', color: theme.palette.semantics.green }}>●</span>Last Reward: <b>{stakeDisplay(data.last_rewarded, chainInfo, 4)}</b>
           </Typography>
-          <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>100% Com.: <b>{data.c100}</b> ({Math.round((data.c100 * 100 ) / data.total)}%)
-          </Typography>
-          <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>●</span>Others: <b>{data.others}</b> ({Math.round((data.others * 100 ) / data.total)}%)
-          </Typography>  
         </Box>
-        
-        
       </Box>
     );
   }
@@ -53,11 +50,12 @@ import {
   return null;
 };
 
-export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
+export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
+  const chainInfo = useSelector(selectChainInfo)
   const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true});
 
-  if (isFetching || isUndefined(data)) {
+  if (isFetching || isUndefined(data) || isUndefined(chainInfo)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
       height: 192,
@@ -71,16 +69,15 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
     return null
   }
 
+  
   // 
-  const mainValue = data.filter(s => s.six === sessionIndex - 1)
-    .map(s => !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m.vals_total).reduce((a, b) => a + b, 0) : 0)[0];
+  const groupedByEra = groupBy(data, v => v.eix);
+  const dataGroupedByEra = Object.keys(groupedByEra).map(k => ({eix: Number(k), value: !isUndefined(groupedByEra[k][0].netstats) ? groupedByEra[k][0].netstats.last_rewarded : 0}))
+  const last_rewarded = dataGroupedByEra[dataGroupedByEra.length - 1].value;
 
-  const timelineData = data.map((s, i) => ({
-    session: s.six,
-    total: !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m.vals_total).reduce((a, b) => a + b, 0) : 0,
-    c100: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "C100")[0].vals_total : 0,
-    tvp: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "TVP")[0].vals_total : 0,
-    others: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "NONTVP")[0].vals_total : 0,
+  const timelineData = dataGroupedByEra.map((s, i) => ({
+    era: s.eix,
+    last_rewarded: s.value
   }))
 
   return (
@@ -102,15 +99,15 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
       >
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption" gutterBottom>Total Validators</Typography>
+          <Typography variant="caption" gutterBottom>Last Reward</Typography>
           <Typography variant="h4">
-            {mainValue.format()}
+            {stakeDisplay(last_rewarded, chainInfo, 4)}
           </Typography>
         </Box>
       </Box>
       <Box sx={{ height: '100%'}}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
+          <ComposedChart
             // width="100%"
             // height="100"
             data={timelineData}
@@ -134,14 +131,13 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
                 cursor={{fill: theme.palette.divider}}
                 offset={24}
                 wrapperStyle={{ zIndex: 100 }} 
-                content={props => renderTooltip(props, theme)} />
-            <Line isAnimationActive={false} type="monotone" dataKey="c100" 
+                content={props => renderTooltip(props, theme, chainInfo)} />
+            <Bar dataKey="last_rewarded" barSize={12} fill={theme.palette.semantics.green} />
+            <Line isAnimationActive={false} type="monotone" dataKey="total_issuance" 
+              strokeWidth={2} stroke={theme.palette.semantics.red} dot={false} />
+            <Line isAnimationActive={false} type="monotone" dataKey="total_staked" 
               strokeWidth={2} stroke={theme.palette.grey[900]} dot={false} />
-            <Line isAnimationActive={false} type="monotone" dataKey="others" 
-              strokeWidth={2} stroke={theme.palette.grey[200]} dot={false} />
-            <Line isAnimationActive={false} type="monotone" dataKey="tvp" 
-              strokeWidth={2} stroke={theme.palette.semantics.blue} dot={false} />
-          </LineChart>
+          </ComposedChart>
         </ResponsiveContainer>
       </Box>
     </Paper>

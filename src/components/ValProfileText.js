@@ -35,8 +35,6 @@ export default function ValProfileText({address}) {
   const {isSuccess} = useGetValidatorProfileByAddressQuery(address)
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
   
-  console.log("___valProfile:", valProfile, isUndefined(valProfile));
-
   if (!isSuccess || isUndefined(valProfile)) {
     return (
       <span>{stashDisplay(address, 4)}</span>

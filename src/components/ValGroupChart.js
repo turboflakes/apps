@@ -84,7 +84,6 @@ const renderTooltip = (props) => {
 
 const renderLegend = (props) => {
   const { payload } = props;
-  console.log("_renderLegend", payload);
   if (payload[1]) {
     return (
       <Box sx={{

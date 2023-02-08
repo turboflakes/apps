@@ -40,10 +40,10 @@ import {
       >
         <Box sx={{mb: 2}}>
           <Typography component="div" variant="caption" color="inherit">
-            <b>Session Points</b>
+            <b>Era Points</b>
           </Typography>
           <Typography component="div" variant="caption" color="inherit">
-            <i>{`session #${data.session.format()}`}</i>
+            <i>{`session #${data.session.format()} (${data.sessionIndex})`}</i>
           </Typography>
         </Box>
         <Box sx={{ minWidth: '192px'}}>
@@ -68,7 +68,7 @@ import {
 
 export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - 12, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true});
+  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true});
   const [key, setKey] = React.useState("vals_points_total");
 
   if (isFetching || isUndefined(data)) {
@@ -86,10 +86,12 @@ export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
   }
 
   // 
-  const mainValue = data.filter(s => s.six === sessionIndex - 1).map(s => s.netstats.subsets.map(m => m[key]).reduce((a, b) => a + b, 0))[0];
+  const mainValue = data.filter(s => s.six === sessionIndex - 1)
+    .map(s => !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m["vals_points_total"]).reduce((a, b) => a + b, 0) : 0)[0];
 
   const timelineData = data.map((s, i) => ({
     session: s.six,
+    sessionIndex: s.esix,
     total: !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m[key]).reduce((a, b) => a + b, 0) : 0,
     c100: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "C100")[0][key] : 0,
     tvp: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "TVP")[0][key] : 0,
@@ -119,8 +121,8 @@ export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
       >
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption" gutterBottom>Session Points</Typography>
-          <Typography variant="h3">
+          <Typography variant="caption" gutterBottom>Era Points</Typography>
+          <Typography variant="h4">
             {mainValue.format()}
           </Typography>
         </Box>

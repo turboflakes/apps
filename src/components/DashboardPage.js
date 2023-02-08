@@ -2,20 +2,14 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
 import SessionBox from './SessionBox';
 import SessionPieChart from './SessionPieChart';
 import SessionPerformancePieChart from './SessionPerformancePieChart';
 import SessionPerformanceTimeline from './SessionPerformanceTimeline';
-import ParachainsOverviewTabs from './ParachainsOverviewTabs';
-import EraPointsBox from './EraPointsBox';
-import SessionPointsBox from './SessionPointsBox';
-import AuthoredBlocksBox from './AuthoredBlocksBox';
-import AuthoredBlocksHistoryBox from './AuthoredBlocksHistoryBox';
-import BackingPointsBox from './BackingPointsBox';
-import BackingPointsHistoryBox from './BackingPointsHistoryBox';
-import AuthoritiesBox from './AuthoritiesBox';
-import GradesSmallBox from './GradesSmallBox';
-import SessionHistoryTimelineChart from './SessionHistoryTimelineChart';
+import NetTotalStakedBox from './NetTotalStakedBox';
+import NetLastRewardBox from './NetLastRewardBox';
 import NetTotalValidatorsBox from './NetTotalValidatorsBox';
 import NetActiveValidatorsBox from './NetActiveValidatorsBox';
 import NetOversubscribedValidatorsBox from './NetOversubscribedValidatorsBox';
@@ -54,31 +48,59 @@ export default function DashboardPage() {
   return (
 		<Box sx={{ m: 2, minHeight: '100vh', mt: isLiveMode ? 2 : 12 }}>
       <Grid container spacing={2}>
-        {isLiveMode ? 
-          <Grid item xs={6} md={4}>
-            <NetTotalValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-          </Grid>
-        : null}
-        {isLiveMode ? 
-          <Grid item xs={6} md={4}>
-            <NetActiveValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-          </Grid>
-        : null}
-        {isLiveMode ? 
-          <Grid item xs={6} md={4}>
-            <NetOversubscribedValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-          </Grid>
-        : null}
-        {isLiveMode ? 
-          <Grid item xs={6} md={4}>
-            <NetPointsValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-          </Grid>
-        : null}
-        {isLiveMode ? 
-          <Grid item xs={6} md={4}>
-            <NetOwnStakeValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-          </Grid>
-        : null}
+        <Grid item xs={6} md={4}>
+          <SessionPerformanceTimeline sessionIndex={sessionIndex} />
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <SessionPerformancePieChart />
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <SessionPieChart sessionIndex={sessionIndex} />
+        </Grid>   
+        <Grid item xs={12} md={isHistoryMode ? 3 : 4}>
+          <SessionBox sessionIndex={sessionIndex} dark={isHistoryMode} />
+        </Grid>
+        <Grid item xs={12}>
+          <Divider sx={{ 
+            opacity: 0.25,
+            height: '1px',
+            borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+            borderBottom: 'none',
+            backgroundColor: 'transparent',
+            backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+            }} />
+        </Grid>
+        <Grid item xs={12} md={9} >
+          <Box sx={{  p: 2 }}>
+            <Typography variant="h3">Network Stats</Typography>
+            <Typography variant="subtitle" color="secondary">Collected from the last {maxHistorySessions} sessions ({maxHistoryEras} eras).</Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={6} md={4}>
+          <NetTotalStakedBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+        </Grid>
+        <Grid item xs={6} md={4}>
+          <NetLastRewardBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+        </Grid>
+        <Grid item xs={6} md={4}>
+        </Grid>
+        <Grid item xs={6} md={4}>
+        </Grid>
+        <Grid item xs={6} md={4}>
+          <NetTotalValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+        </Grid>
+        <Grid item xs={6} md={4}>
+          <NetActiveValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+        </Grid>
+        <Grid item xs={6} md={4}>
+          <NetOversubscribedValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+        </Grid>
+        <Grid item xs={6} md={4}>
+          <NetPointsValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+        </Grid>
+        <Grid item xs={6} md={4}>
+          <NetOwnStakeValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+        </Grid>
         {/* {isLiveMode ? 
           <Grid item xs={12} md={2}>
             <SessionPerformancePieChart />
@@ -88,7 +110,6 @@ export default function DashboardPage() {
           <Grid item xs={12} md={2}>
             <SessionPieChart sessionIndex={sessionIndex} />
           </Grid> : null}
-        
         <Grid item xs={12} md={isHistoryMode ? 3 : 4}>
           <SessionBox sessionIndex={sessionIndex} dark={isHistoryMode} />
         </Grid>

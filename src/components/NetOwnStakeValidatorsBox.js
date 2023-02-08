@@ -11,10 +11,10 @@ import NetStatToggle from './NetStatToggle';
 import { 
   useGetSessionsQuery,
  } from '../features/api/sessionsSlice';
- import {
+import {
   selectChainInfo
 } from '../features/chain/chainSlice';
- import { stakeDisplay } from '../util/display';
+import { stakeDisplay } from '../util/display';
 
 // const COLORS = (theme) => ([theme.palette.grey[900], theme.palette.grey[200], theme.palette.semantics.blue])
 
@@ -42,13 +42,13 @@ import {
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>TVP: <b>{stakeDisplay(data.tvp, chainInfo, 0)}</b> ({Math.round((data.tvp * 100 ) / data.total)}%)
+            <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>TVP: <b>{stakeDisplay(data.tvp, chainInfo, 0, true)}</b> ({Math.round((data.tvp * 100 ) / data.total)}%)
           </Typography>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>100% Com.: <b>{stakeDisplay(data.c100, chainInfo, 0)}</b> ({Math.round((data.c100 * 100 ) / data.total)}%)
+            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>100% Com.: <b>{stakeDisplay(data.c100, chainInfo, 0, true)}</b> ({Math.round((data.c100 * 100 ) / data.total)}%)
           </Typography>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>●</span>Others: <b>{stakeDisplay(data.others, chainInfo, 0)}</b> ({Math.round((data.others * 100 ) / data.total)}%)
+            <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>●</span>Others: <b>{stakeDisplay(data.others, chainInfo, 0, true)}</b> ({Math.round((data.others * 100 ) / data.total)}%)
           </Typography>  
         </Box>
         
@@ -63,7 +63,7 @@ import {
 export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
   const chainInfo = useSelector(selectChainInfo)
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - 12, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true});
+  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true});
   const [key, setKey] = React.useState("vals_own_stake_total");
 
   if (isFetching || isUndefined(data) || isUndefined(chainInfo)) {
@@ -81,7 +81,8 @@ export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
   }
 
   // 
-  const mainValue = data.filter(s => s.six === sessionIndex - 1).map(s => s.netstats.subsets.map(m => m[key]).reduce((a, b) => a + b, 0))[0];
+  const mainValue = data.filter(s => s.six === sessionIndex - 1)
+    .map(s => !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m["vals_own_stake_total"]).reduce((a, b) => a + b, 0) : 0)[0];
 
   const timelineData = data.map((s, i) => ({
     session: s.six,
@@ -118,8 +119,8 @@ export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
             overflow: "hidden", 
             textOverflow: "ellipsis"}}>
           <Typography variant="caption" gutterBottom>Validators Own Stake</Typography>
-          <Typography variant="h3" sx={{overflow: "hidden", textOverflow: "ellipsis"}}>
-            {stakeDisplay(mainValue, chainInfo, 0)}
+          <Typography variant="h4" sx={{overflow: "hidden", textOverflow: "ellipsis"}}>
+            {stakeDisplay(mainValue, chainInfo, 0, true)}
           </Typography>
         </Box>
         <NetStatToggle onChange={handleStatChanged} />

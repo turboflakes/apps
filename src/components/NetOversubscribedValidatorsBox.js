@@ -40,7 +40,7 @@ import {
       >
         <Box sx={{mb: 2}}>
           <Typography component="div" variant="caption" color="inherit">
-            <b>Oversubscribed validators</b>
+            <b>Oversubscribed Validators</b>
           </Typography>
           <Typography component="div" variant="caption" color="inherit">
             <i>{`session #${data.session.format()}`}</i>
@@ -68,9 +68,7 @@ import {
 
 export default function NetOversubscribedValidatorsBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - 12, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true});
-
-  console.log("__data", data);
+  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true});
 
   if (isFetching || isUndefined(data)) {
     return (<Skeleton variant="rounded" sx={{
@@ -87,7 +85,8 @@ export default function NetOversubscribedValidatorsBox({sessionIndex, maxSession
   }
 
   // 
-  const mainValue = data.filter(s => s.six === sessionIndex - 1).map(s => s.netstats.subsets.map(m => m.vals_oversubscribed).reduce((a, b) => a + b, 0))[0];
+  const mainValue = data.filter(s => s.six === sessionIndex - 1)
+    .map(s => !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m.vals_oversubscribed).reduce((a, b) => a + b, 0) : 0)[0];
 
   const timelineData = data.map((s, i) => ({
     session: s.six,
@@ -116,8 +115,8 @@ export default function NetOversubscribedValidatorsBox({sessionIndex, maxSession
       >
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption" gutterBottom>Oversubscribed validators</Typography>
-          <Typography variant="h3">
+          <Typography variant="caption" gutterBottom>Oversubscribed Validators</Typography>
+          <Typography variant="h4">
             {mainValue}
           </Typography>
         </Box>
