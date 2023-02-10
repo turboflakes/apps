@@ -295,8 +295,8 @@ export default function LayoutPage({api}) {
                     width: 96,
                     height: 96 }} alt={"github"}/>
                 {/* </Box> */}
-                <Typography sx={{visibility: open ? 'visible': 'hidden'}} variant="h4">ONE-T</Typography>
-                <Typography sx={{visibility: open ? 'visible': 'hidden'}} variant="caption">{`${selectedChain[0].toUpperCase()}${selectedChain.slice(1)} Performance Bot`}</Typography>
+                {/* <Typography sx={{visibility: open ? 'visible': 'hidden'}} variant="h5">ONE·T</Typography> */}
+                <Typography sx={{visibility: open ? 'visible': 'hidden'}} variant="caption"><b>ONE·T</b> Insights Space</Typography>
                 <Chip sx={{ my: 1 }} label="beta version" color='primary'/>
               </Box>
               <Box sx={{display: !open ? 'contents': 'none'}}>

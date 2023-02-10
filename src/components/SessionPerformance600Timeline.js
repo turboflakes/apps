@@ -74,19 +74,35 @@ export default function SessionPerformance600Timeline({sessionIndex}) {
     return null
   }
   
-  const timelineData = blocks.map((o, i) => ({
-    block: o.block_number.format(),
-    bvr: 1 - o._mvr,
-    votes: !isUndefined(o.stats) ? (i > 0 ? 
-      ((o.stats.ev + o.stats.iv + o.stats.mv) - (blocks[i-1].stats.ev + blocks[i-1].stats.iv + blocks[i-1].stats.mv)) : 
-      (o.stats.ev + o.stats.iv + o.stats.mv))  : undefined
-  }))
+  const timelineData = blocks.map((o, i) => {
+    // if (o.block_number === 16573253) {
+    //   console.log("___", i, blocks[i-1], o, o.stats.ev + o.stats.iv + o.stats.mv, (blocks[i-1].stats.ev + blocks[i-1].stats.iv + blocks[i-1].stats.mv));
+    //   console.log("__", !isUndefined(o.stats) ? (i > 0 ? ((blocks[i-1].stats.ev + blocks[i-1].stats.iv + blocks[i-1].stats.mv))
+    //     ((o.stats.ev + o.stats.iv + o.stats.mv) - (blocks[i-1].stats.ev + blocks[i-1].stats.iv + blocks[i-1].stats.mv)) : 
+    //     (o.stats.ev + o.stats.iv + o.stats.mv))  : undefined);
+    // }
+    if (!isUndefined(o.stats) && !isUndefined(blocks[i-1])) {
+      const votes = o.stats.ev + o.stats.iv + o.stats.mv;
+      const previousVotes = blocks[i-1].stats.ev + blocks[i-1].stats.iv + blocks[i-1].stats.mv;
+      return {
+        block: o.block_number.format(),
+        bvr: 1 - o._mvr,
+        votes: previousVotes < votes ? votes - previousVotes : 0
+      }
+    }
+    return {
+      block: o.block_number.format(),
+      bvr: 1 - o._mvr,
+      votes: 0
+    }
+  })
 
   return (
     <Box
       sx={{
+        my: 2,
         pt: 2,
-        pl: 2,
+        // pl: 2,
         display: 'flex',
         // justifyContent: 'space-between',
         flexDirection: 'column',

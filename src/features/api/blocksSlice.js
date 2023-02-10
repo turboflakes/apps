@@ -112,6 +112,7 @@ const calculateBlockMvr = (state, block) => {
     return undefined
   }
   const mvr = _calculateBlockMvr(state.entities[block.block_number - 1], block);
+  console.log("___", block.block_number, mvr, block);
   if (mvr === -1){
     return calculateBlockMvr(state, state.entities[block.block_number - 1]);
   }
@@ -194,6 +195,8 @@ export const selectBlocksBySession = (state, sessionIndex) => {
 };
 
 export const selectLastXBlocks = (state, x = 600) => {
-  const finalizedBlocks = selectAll(state).filter(b => b.is_finalized && !isUndefined(b.stats) ? b.stats.ev + b.stats.iv + b.stats.mv !== 0 : false)
+  // const finalizedBlocks = selectAll(state).filter(b => b.is_finalized && !isUndefined(b.stats) ? b.stats.ev + b.stats.iv + b.stats.mv !== 0 : false)
+  // 
+  const finalizedBlocks = selectAll(state)
   return finalizedBlocks.slice(Math.max(finalizedBlocks.length - x, 1))
 };

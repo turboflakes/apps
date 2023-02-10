@@ -63,8 +63,8 @@ export default function SearchSmall(props) {
           fullWidth
           // error={!isValidAddress(this.state.address)}
           InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
+            endAdornment: (
+              <InputAdornment position="end">
                 <IconButton onClick={handleSubmit} size="small"
                   color="primary" 
                   // disabled={!isValidAddress(this.state.address)}

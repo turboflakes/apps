@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import IconButton from '@mui/material/IconButton';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   addressChanged,
   selectAddress
@@ -28,7 +28,7 @@ export default function DetailsIcon({address}) {
 
   return (
     <IconButton color="primary" onClick={handleOnClick} align="right">
-      <ZoomInIcon />
+      <SearchIcon />
     </IconButton>
   )
 }

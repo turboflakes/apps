@@ -3,7 +3,9 @@ import { useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
+import Paper from '@mui/material/Paper';
 import SessionPerformance600Timeline from './SessionPerformance600Timeline';
 import NetTotalStakedBox from './NetTotalStakedBox';
 import NetLastRewardBox from './NetLastRewardBox';
@@ -14,6 +16,7 @@ import NetPointsValidatorsBox from './NetPointsValidatorsBox';
 import NetOwnStakeValidatorsBox from './NetOwnStakeValidatorsBox';
 import SearchSmall from './SearchSmall';
 import HistoryErasMenu from './HistoryErasMenu';
+import GradesBox from './GradesBox';
 import onetSVG from '../assets/onet.svg';
 import { 
   selectSessionHistory,
@@ -46,13 +49,73 @@ export default function DashboardPage() {
   }
 
   return (
-		<Box sx={{ m: 2, mt: 2, pt: 1, minHeight: '100vh'}}>
+    <Box sx={{ display: 'flex', justifyContent: 'center'}}>
+		<Container sx={{ }}>
       <Grid container spacing={2}>
-        <Grid item xs={12} >
-          <Box sx={{ mt: 10, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-            <SearchSmall />
-          </Box>
+        <Grid sx={{ mt: 18 }} item xs={7} >
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end'}}>
+              <Box sx={{
+                minHeight: 288,
+              }} >
+                <Box sx={{display: 'flex'}}>
+                  <Paper sx={{
+                      ml: -20,
+                      mt: -2,
+                      width: 128,
+                      height: 128,
+                      borderRadius: "50%",
+                      position: 'relative',
+                      boxShadow: 'rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px',
+                      
+                      '&:before': {
+                        content: '" "',
+                        display: 'block',
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        width: '100%',
+                        height: '100%',
+                        // opacity: 0.8,
+                        backgroundImage: `url(${onetSVG})`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: '50% 50%',
+                        backgroundSize: '64px 64px',
+                      }
+                  }}></Paper>
+                  <Box sx={{ ml: 4}}>
+                    <Typography
+                        component="h1"
+                        variant="h2"
+                        align="left"
+                      >
+                      <Typography variant="h5" >
+                        Welcome to 
+                      </Typography>
+                      ONE·T Insights Space
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Typography variant="subtitle1" align="left">
+                    Monitor and explore the <b>Kusama</b> network. Search your favourite Validators and visualize on-chain data performance.
+                  </Typography>
+              </Box>
+            </Box>
+            {/* <Box sx={{ my: 6, ml: 4, display: 'flex', justifyContent: 'center', alignItems:'flex-end'}}>
+              <SearchSmall />
+              <img src={onetSVG} style={{ 
+                // marginBottom: "16px",
+                // opacity: 0.6,
+                width: 128,
+                height: 128 }} alt={"ONE-T logo"}/>
+            </Box> */}
         </Grid>
+        <Grid sx={{ mt: 8 }} item xs={5}>
+          <GradesBox sessionIndex={currentSession} size="lg" />
+        </Grid>
+
+        <Grid item xs={12}>
+          <SessionPerformance600Timeline sessionIndex={currentSession} />
+        </Grid> 
 
         {/* <Grid item xs={12}>
           <Divider sx={{ 
@@ -63,26 +126,17 @@ export default function DashboardPage() {
             borderBottom: 'none',
             backgroundColor: 'transparent',
             backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-            }} />
+            }} /> 
         </Grid> */}
 
-        <Grid item xs={12}>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
-            <img src={onetSVG} style={{ 
-              // margin: "8px",
-              opacity: 0.6,
-              width: 128,
-              height: 128 }} alt={"ONE-T logo"}/>
-          </Box>
-          <SessionPerformance600Timeline sessionIndex={currentSession} />
-        </Grid> 
+        
 
         <Grid item xs={12} >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
-            <Box sx={{ p: 2 }}>
+          <Box sx={{ display: 'flex'}}>
+            {/* <Box sx={{ p: 2 }}>
               <Typography variant="h4">Kusama Network Stats</Typography>
               <Typography variant="subtitle" color="secondary">Collected from the last {maxHistorySessions} sessions ({maxHistoryEras} eras).</Typography>
-            </Box>
+            </Box> */}
             <Box>
               <HistoryErasMenu />
             </Box>
@@ -146,6 +200,7 @@ export default function DashboardPage() {
             <EraPointsBox />
           </Grid> : null} */}
       </Grid>
-		</Box>
+		</Container>
+    </Box>
   );
 }
