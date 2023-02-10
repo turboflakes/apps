@@ -393,8 +393,7 @@ export default function LayoutPage({api}) {
         {/*  hidden toolbar */}
         <Toolbar/>
         <Outlet api={api} />
-        <Footer />
-       
+        <Footer small />
       </Box>
     </Box>
   );
