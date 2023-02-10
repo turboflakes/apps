@@ -86,7 +86,7 @@ function useSessionIndex(sessionIndex) {
   return [value, setValue];
 }
 
-export default function SessionSlider({maxSessions}) {
+export default function SessionSlider({maxSessions, showLegend}) {
   // const theme = useTheme();
   const dispatch = useDispatch();
   const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true}, {refetchOnMountOrArgChange: true});
@@ -127,7 +127,7 @@ export default function SessionSlider({maxSessions}) {
   return (
     <Box
       sx={{
-        mt: 1,
+        my: 2,
         p: 2,
         display: 'flex',
         // justifyContent: 'space-between',
@@ -146,10 +146,10 @@ export default function SessionSlider({maxSessions}) {
           <Typography variant="h6">History</Typography>
         </Box>
       </Box> */}
-      <Stack spacing={3} direction="row" sx={{ mb: 1 }} alignItems="center">
-        <Typography variant="caption" sx={{ ml: 3 }}>past</Typography>
+      <Stack spacing={3} direction="row" 
+        sx={{ mb: 1, ml: !showLegend ? 6 : 0, mr: !showLegend ? 6 : 0 }} alignItems="center">
+        {showLegend ? <Typography variant="caption" sx={{ ml: 3 }}>past</Typography> : null}
         <CustomSlider
-          aria-label="session slider"
           // defaultValue={sessionIndex}
           value={sessionIndex}
           onChange={handleChange}
@@ -160,7 +160,7 @@ export default function SessionSlider({maxSessions}) {
           marks={marks}
           valueLabelFormat={valueLabelFormat}
           valueLabelDisplay="on"/>
-        <Typography variant="caption">present</Typography>
+        {showLegend ? <Typography variant="caption">present</Typography> : null}
       </Stack>
     </Box>
   );

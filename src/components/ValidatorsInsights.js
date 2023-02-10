@@ -3,7 +3,6 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import ValidatorsDataGrid from './ValidatorsDataGrid';
 import IdentityFilter from './IdentityFilter';
-import SubsetFilter from './SubsetFilter';
 
 export default function ValidatorsInsights({sessionIndex, skip}) {
   // const theme = useTheme();
@@ -23,7 +22,6 @@ export default function ValidatorsInsights({sessionIndex, skip}) {
       >
         <Box sx={{ display: "flex", alignItems: "center"}} >
           <IdentityFilter />
-          {/* <SubsetFilter /> */}
         </Box>
         <ValidatorsDataGrid sessionIndex={sessionIndex} skip={skip} />
     </Paper>

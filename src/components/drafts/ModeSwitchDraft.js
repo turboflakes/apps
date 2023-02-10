@@ -6,13 +6,16 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
+import HistoryErasMenu from '../HistoryErasMenu';
+import Skeleton from '@mui/material/Skeleton';
 import {
+  selectPage,
   modeChanged,
   selectIsLiveMode
-} from '../features/layout/layoutSlice';
+} from '../../features/layout/layoutSlice';
 import { 
   selectBlock,
- } from '../features/api/blocksSlice'
+ } from '../../features/api/blocksSlice'
 import { 
   useGetSessionByIndexQuery,
   selectSessionHistory,
@@ -20,7 +23,7 @@ import {
   selectSessionCurrent,
   selectSessionByIndex,
   sessionHistoryChanged,
- } from '../features/api/sessionsSlice';
+ } from '../../features/api/sessionsSlice';
 
 const label = { inputProps: { 'aria-label': 'Mode switch' } };
 
@@ -82,7 +85,13 @@ export default function ModeSwitch({mode}) {
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
+  const { isFetching } = useGetSessionByIndexQuery(sessionIndex);
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
+  const selectedPage = useSelector(selectPage);
+  // Note: the following selects are only applied if route 'validators/insights'
+  const historySessionIds = useSelector(selectSessionHistoryIds);
+  const from_session = useSelector(state => selectSessionByIndex(state, historySessionIds[0]));
+  const to_session = useSelector(state => selectSessionByIndex(state, historySessionIds[historySessionIds.length - 1]));
   
   if (isUndefined(block) || isUndefined(session)) {
     return null
@@ -100,20 +109,44 @@ export default function ModeSwitch({mode}) {
 
   return (
     <Stack spacing={1} direction="row" alignItems="center">
-      <Box sx={{ display: 'flex', alignItems: 'center'}}>
-        <span style={{ width: '8px', height: '8px', borderRadius: '50%', 
+      {isLiveMode ? 
+        <Box sx={{ display: 'flex', alignItems: 'center'}}>
+          {isFetching ? 
+            <Skeleton variant="text" sx={{ width: 128, fontSize: '0.825rem' }} /> :
+            <Box sx={{ display: 'flex', alignItems: 'center'}}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', 
                   animation: "pulse 1s infinite ease-in-out alternate",
-                  backgroundColor: isLiveMode ? theme.palette.semantics.green : 'transparent', 
+                  backgroundColor: theme.palette.semantics.green, 
                   display: "inline-block" }}></span>
-        <Typography variant='caption' sx={{ ml: 1, fontWeight: '600', textTransform: 'uppercase' }} color="textPrimary">
-          {isLiveMode ? 'Live' : 'History Explorer'}
-        </Typography>
-      </Box>
-
+              <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
+                {!isFetching ? `${mode} [ ${session.eix.format()} // ${session.six.format()} ]` : ''}
+              </Typography>
+            </Box>
+          }
+        </Box> : 
+        (selectedPage !== 'validators/insights' ? 
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+            <HistoryErasMenu />
+            { isFetching ?
+              <Skeleton variant="text" sx={{ width: 128, fontSize: '0.825rem' }} /> :
+              <Typography variant="caption" align='right' sx={{ width: 128, fontWeight: '600' }} color="textPrimary">
+                {`[ ${session.eix.format()} // ${session.six.format()} ]`}
+              </Typography>
+            }
+          </Box> : 
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+            {!isUndefined(from_session) && !isUndefined(to_session) ?
+              <Typography variant="caption" sx={{ ml: 1, fontWeight: '600' }} color="textPrimary">
+                {`${mode} [ ${from_session.eix.format()} // ${from_session.six.format()} → ${to_session.eix.format()} // ${to_session.six.format()} ]`}
+              </Typography> :
+              <Skeleton variant="text" sx={{ width: 128, fontSize: '0.825rem' }} />
+            }
+          </Box>
+        )
+      }
       <MaterialUISwitch {...label} 
         checked={checked}
         onChange={handleChange} />
-
     </Stack>
   );
 }

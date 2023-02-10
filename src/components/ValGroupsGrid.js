@@ -35,7 +35,7 @@ export default function ValGroupsGrid({sessionIndex}) {
               Attestations of Validity by Val. Groups
             </Typography> :
             <Typography variant="subtitle" color="secondary">
-              Attestations of Validity by Val. Groups at history [{session.eix} // {sessionIndex}]
+              Attestations of Validity by Val. Groups at session {sessionIndex.format()}
             </Typography>}
         </Box>
         <ToggleButtonGroup

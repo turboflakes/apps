@@ -7,12 +7,15 @@ import Box from '@mui/material/Box';
 import { ComposedChart, Bar, Line, Area, XAxis, YAxis, Cell, ReferenceLine, 
   CartesianGrid, Tooltip, ResponsiveContainer, Rectangle, Legend } from 'recharts';
 import { Typography } from '@mui/material';
+import SessionSlider from './SessionSlider';
+import HistoryErasMenu from './HistoryErasMenu';
 import {
   selectSessionCurrent,
   selectSessionHistory,
   selectMvrBySessions,
   selectBackingPointsBySessions,
   selectAuthoredBlocksBySessions,
+  selectSessionByIndex,
   sessionHistoryChanged,
   buildSessionIdsArrayHelper
 } from '../features/api/sessionsSlice';
@@ -43,13 +46,13 @@ const renderTooltip = (props, theme) => {
           <Box sx={{ minWidth: '192px'}}>
             <Box>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.secondary.main}}>―</span>Backing Points: <b>{!isUndefined(data.pvPoints) ? data.pvPoints.format() : ''}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.secondary.main}}>●</span>Backing Points: <b>{!isUndefined(data.pvPoints) ? data.pvPoints.format() : ''}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>―</span>Authored Block Points: <b>{!isUndefined(data.abPoints) ? data.abPoints.format() : ''}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>●</span>Authored Block Points: <b>{!isUndefined(data.abPoints) ? data.abPoints.format() : ''}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.mvr * 10000) / 10000}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber, fontWeight: 600 }}>●</span>MVR (All Para-Authorities): <b>{Math.round(data.mvr * 10000) / 10000}</b>
               </Typography>
             </Box>
           </Box>
@@ -64,13 +67,13 @@ const renderLegend = (theme) => {
   return (
     <Box sx={{mt: -1, mr: 9, display: 'flex', justifyContent: 'flex-end'}}>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
-        <span style={{ marginRight: '8px', color: theme.palette.secondary.main}}>―</span>Backing Points
+        <span style={{ marginRight: '8px', color: theme.palette.secondary.main}}>●</span>Backing Points
       </Typography>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
-        <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>―</span>Authored Block Points
+        <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>●</span>Authored Block Points
       </Typography>
       <Typography variant="caption" color="inherit">
-        <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities)
+        <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>●</span>MVR (All Para-Authorities)
       </Typography>
     </Box>
   );
@@ -85,28 +88,8 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
   const allBackingPoints = useSelector(state => selectBackingPointsBySessions(state, historySessionIds));
   const allAuthoredBlocks = useSelector(state => selectAuthoredBlocksBySessions(state, historySessionIds));
   const allMvrs = useSelector(state => selectMvrBySessions(state, historySessionIds));
+  const historySessionSelected = useSelector(state => selectSessionByIndex(state, historySession));
   
-  // if (!isSuccess) {
-  //   return null
-  // }
-
-  // if (validators.filter(v => !isUndefined(v)).length !== maxSessions || allMvrs.length !== maxSessions) {
-  //   return null
-  // }
-
-  // const data = validators.map((v, i) => ({
-  //   session: v.session,
-  //   isAuth: v.is_auth ? 1 : 0,
-  //   isPara: v.is_para ? 1 : 0,
-  //   abPoints: v.is_auth ? v.auth.ab.length * 20 : 0,
-  //   pvPoints: v.is_para && (v.auth.ep - v.auth.sp) >= (v.auth.ab.length * 20) ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0,
-  //   gradeValue: v.is_para ? grade(1 - calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)) : '',
-  //   valMvr: v.is_para ? calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv) : 0,
-  //   valGroupMvr: v.is_para ? v._val_group_mvr : 0,  
-  //   group: v.is_para ? v.para.group : '',
-  //   sessionMvr: allMvrs[i]
-  // }))
-
   const data = historySessionIds.map((sessionId, i) => ({
     session: sessionId,
     gradeValue: grade(1 - allMvrs[i]),
@@ -136,19 +119,26 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' 
       }}>
       <Box>
-        <Typography variant="h6" paragraph>Timeline</Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+          <Box>
+            <Typography variant="h6">History Timeline</Typography>
+            <Typography variant="subtitle2">Session {historySessionSelected.six.format()} at Era {historySessionSelected.eix.format()} selected</Typography>
+          </Box>
+          <HistoryErasMenu />
+        </Box>
+        <SessionSlider maxSessions={maxSessions} showLegend={false} />
       </Box>
       <ResponsiveContainer width="100%" height={228}>
         <ComposedChart
           // width={500}
           // layout="vertical"
-          height={228}
+          height={292}
           data={data}
           margin={{
             top: 0,
             right: 0,
             left: 0,
-            bottom: 0,
+            bottom: 8,
           }}
         >
           <CartesianGrid strokeDasharray="1 4" vertical={false} horizontal={true} />

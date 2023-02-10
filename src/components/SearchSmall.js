@@ -38,7 +38,8 @@ export default function SearchSmall(props) {
       // setAddress("");
       dispatch(addressChanged(address));
       dispatch(pageChanged(`validator/${address}`));
-      navigate(`/one-t/${selectedChain}/validator/${address}`);
+      // navigate(`/one-t/${selectedChain}/validator/${address}`);
+      navigate(`/validator/${address}`)
       setAddress("");
     }
   }
@@ -54,7 +55,7 @@ export default function SearchSmall(props) {
             width: 512
           }}
           variant="outlined"
-          placeholder="Search by validator address"
+          placeholder="Search by validator stash address"
           color="primary"
           value={address}
           onChange={handleChange}

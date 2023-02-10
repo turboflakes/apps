@@ -7,10 +7,10 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import SessionBox from './SessionBox';
 import SessionPieChart from './SessionPieChart';
-import SessionPerformancePieChart from './SessionPerformancePieChart';
-import SessionPerformanceTimeline from './SessionPerformanceTimeline';
+import ValidatorSessionHistoryTimelineChart from './ValidatorSessionHistoryTimelineChart';
 import ValHeaderBox from './ValHeaderBox';
 import ValBodyBox from './ValBodyBox';
+import ModeSwitch from './ModeSwitch';
 import onetSVG from '../assets/onet.svg';
 import {
   selectAddress,
@@ -22,7 +22,9 @@ import {
  } from '../features/api/sessionsSlice';
 import { 
   selectIsLiveMode,
-  selectIsHistoryMode
+  selectIsHistoryMode,
+  selectMode,
+  selectMaxHistorySessions
 } from '../features/layout/layoutSlice';
 import { 
   selectIsSocketConnected,
@@ -35,14 +37,16 @@ export default function ValidatorPage() {
 	// const theme = useTheme();
   const { stash } = useParams();
   const dispatch = useDispatch();
+  const selectedMode = useSelector(selectMode);
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const selectedAddress = useSelector(selectAddress);
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
   const isLiveMode = useSelector(selectIsLiveMode);
   const isHistoryMode = useSelector(selectIsHistoryMode);
+  const maxHistorySessions = useSelector(selectMaxHistorySessions);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
-  const {data: validator, isSuccess, isError} = useGetValidatorByAddressQuery({address: stash, session: sessionIndex, show_summary: true, show_stats: true});
+  const {data: validator, isFetching, isSuccess, isError} = useGetValidatorByAddressQuery({address: stash, session: sessionIndex, show_summary: true, show_stats: true});
 
   React.useEffect(() => {
     if (stash && stash !== selectedAddress) {
@@ -56,41 +60,9 @@ export default function ValidatorPage() {
   }
 
   return (
-		<Box sx={{ m: 2, mt: isLiveMode ? 2 : 12, minHeight: '100vh' }}>
+		<Box sx={{ m: 2, mt: 2, pt: 1, minHeight: '100vh'}}>
       <Grid container spacing={2}>
-        {isLiveMode ? 
-          <Grid item xs={6} md={4}>
-            <SessionPerformanceTimeline sessionIndex={sessionIndex} />
-          </Grid>
-        : null}
-        {isLiveMode ? 
-          <Grid item xs={12} md={2}>
-            <SessionPerformancePieChart />
-          </Grid>
-        : null}
-        {isLiveMode ? 
-          <Grid item xs={12} md={2}>
-            <SessionPieChart sessionIndex={sessionIndex} />
-          </Grid> : null}
-        {isLiveMode ?
-          <Grid item xs={12} md={isHistoryMode ? 3 : 4}>
-            <SessionBox sessionIndex={sessionIndex} dark={isHistoryMode} />
-          </Grid> : null}
-
-
-        {/* --- validator header --- */}
-        {isLiveMode ?
-          <Grid item xs={12}>
-            <Divider sx={{ 
-              opacity: 0.25,
-              height: '1px',
-              borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-              borderBottom: 'none',
-              backgroundColor: 'transparent',
-              backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-              }} />
-          </Grid> : null}
-
+        
         {isError ?
           <Grid item xs={12}>
             <Box sx={{display: "flex", justifyContent:"center", 
@@ -112,9 +84,19 @@ export default function ValidatorPage() {
             <ValHeaderBox address={selectedAddress} sessionIndex={sessionIndex} />
           </Grid> : null}
 
-        {/* --- validator timeline or group --- */}
+        {isSuccess && validator.is_auth ?
+          <Grid item xs={12}>
+            <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
+              <ModeSwitch mode={selectedMode} />
+            </Box>
+          </Grid> : null}
 
-        {isSuccess ? 
+        {isHistoryMode ?
+          <Grid item xs={12}>
+            <ValidatorSessionHistoryTimelineChart address={selectedAddress} maxSessions={maxHistorySessions} />
+          </Grid> : null }
+
+        {isSuccess ?
           <Grid item xs={12}>
             <ValBodyBox address={selectedAddress} sessionIndex={sessionIndex} />
           </Grid> : null}

@@ -11,8 +11,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 // import FormHelperText from '@mui/material/FormHelperText';
 import Switch from '@mui/material/Switch';
 import { DataGrid } from '@mui/x-data-grid';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import Identicon from '@polkadot/react-identicon';
+import DetailsIcon from './DetailsIcon';
 import { grade } from '../util/grade'
 import {
   useGetValidatorsQuery,
@@ -31,27 +31,6 @@ import {
 import { scoreDisplay } from '../util/display';
 import { isChainSupported, getChainName } from '../constants'
 
-
-function DetailsIcon({address}) {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const selectedChain = useSelector(selectChain);
-  const selectedAddress = useSelector(selectAddress);
-
-  const handleOnClick = () => {
-    if (selectedAddress !== address) {
-      dispatch(addressChanged(address));
-      dispatch(pageChanged(`validator/${address}`));
-      navigate(`/one-t/${selectedChain}/validator/${address}`)
-    }
-  };
-
-  return (
-    <IconButton color="primary" onClick={handleOnClick} align="right">
-      <ZoomInIcon />
-    </IconButton>
-  )
-}
 
 const defineColumns = (theme, chain) => {
   return [

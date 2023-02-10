@@ -58,7 +58,7 @@ export default function ValHeaderBox({address, sessionIndex}) {
       }}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={5}>
-          <ValAddressProfile address={address} maxSessions={maxHistorySessions} showGrade />
+          <ValAddressProfile address={address} maxSessions={maxHistorySessions} showGrade showSubset />
         </Grid>
         <Grid item xs={12} md={7}>
           <Box sx={{ 
@@ -129,6 +129,7 @@ export default function ValHeaderBox({address, sessionIndex}) {
         </Grid>
         <Grid item xs={12}>
           <Divider sx={{ 
+            mt: 1,
             opacity: 0.25,
             height: '1px',
             borderTop: '0px solid rgba(0, 0, 0, 0.08)',

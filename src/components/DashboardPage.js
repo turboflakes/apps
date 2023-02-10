@@ -4,10 +4,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import SessionBox from './SessionBox';
-import SessionPieChart from './SessionPieChart';
-import SessionPerformancePieChart from './SessionPerformancePieChart';
-import SessionPerformanceTimeline from './SessionPerformanceTimeline';
+import SessionPerformance600Timeline from './SessionPerformance600Timeline';
 import NetTotalStakedBox from './NetTotalStakedBox';
 import NetLastRewardBox from './NetLastRewardBox';
 import NetTotalValidatorsBox from './NetTotalValidatorsBox';
@@ -15,6 +12,9 @@ import NetActiveValidatorsBox from './NetActiveValidatorsBox';
 import NetOversubscribedValidatorsBox from './NetOversubscribedValidatorsBox';
 import NetPointsValidatorsBox from './NetPointsValidatorsBox';
 import NetOwnStakeValidatorsBox from './NetOwnStakeValidatorsBox';
+import SearchSmall from './SearchSmall';
+import HistoryErasMenu from './HistoryErasMenu';
+import onetSVG from '../assets/onet.svg';
 import { 
   selectSessionHistory,
   selectSessionCurrent,
@@ -46,22 +46,17 @@ export default function DashboardPage() {
   }
 
   return (
-		<Box sx={{ m: 2, minHeight: '100vh', mt: isLiveMode ? 2 : 12 }}>
+		<Box sx={{ m: 2, mt: 2, pt: 1, minHeight: '100vh'}}>
       <Grid container spacing={2}>
-        {/* <Grid item xs={6} md={4}>
-          <SessionPerformanceTimeline sessionIndex={sessionIndex} />
+        <Grid item xs={12} >
+          <Box sx={{ mt: 10, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+            <SearchSmall />
+          </Box>
         </Grid>
-        <Grid item xs={12} md={2}>
-          <SessionPerformancePieChart />
-        </Grid>
-        <Grid item xs={12} md={2}>
-          <SessionPieChart sessionIndex={sessionIndex} />
-        </Grid>   
-        <Grid item xs={12} md={isHistoryMode ? 3 : 4}>
-          <SessionBox sessionIndex={sessionIndex} dark={isHistoryMode} />
-        </Grid>
-        <Grid item xs={12}>
+
+        {/* <Grid item xs={12}>
           <Divider sx={{ 
+            my: 1,
             opacity: 0.25,
             height: '1px',
             borderTop: '0px solid rgba(0, 0, 0, 0.08)',
@@ -70,10 +65,27 @@ export default function DashboardPage() {
             backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
             }} />
         </Grid> */}
-        <Grid item xs={12} md={9} >
-          <Box sx={{  p: 2 }}>
-            <Typography variant="h3">Network Stats</Typography>
-            <Typography variant="subtitle" color="secondary">Collected from the last {maxHistorySessions} sessions ({maxHistoryEras} eras).</Typography>
+
+        <Grid item xs={12}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
+            <img src={onetSVG} style={{ 
+              // margin: "8px",
+              opacity: 0.6,
+              width: 128,
+              height: 128 }} alt={"ONE-T logo"}/>
+          </Box>
+          <SessionPerformance600Timeline sessionIndex={currentSession} />
+        </Grid> 
+
+        <Grid item xs={12} >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+            <Box sx={{ p: 2 }}>
+              <Typography variant="h4">Kusama Network Stats</Typography>
+              <Typography variant="subtitle" color="secondary">Collected from the last {maxHistorySessions} sessions ({maxHistoryEras} eras).</Typography>
+            </Box>
+            <Box>
+              <HistoryErasMenu />
+            </Box>
           </Box>
         </Grid>
         <Grid item xs={6} md={4}>

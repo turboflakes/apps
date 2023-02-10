@@ -77,16 +77,7 @@ export default function ValGroupBox({address, sessionIndex}) {
       >
         <Box sx={{ p: 2 }}>
           <Typography variant="h4" >Val. Group {groupId}</Typography>
-          {isHistorMode ? 
-            <Typography variant="subtitle" color="secondary">At history [{session.eix} // {sessionIndex}]</Typography> : 
-              <Box sx={{ display: 'flex', alignItems: 'center'}}>
-                <Typography variant="subtitle">Performance Live</Typography>
-                <Box style={{ width: '8px', height: '8px', 
-                  marginLeft: '8px', borderRadius: '50%', 
-                  animation: "pulse 1s infinite ease-in-out alternate",
-                  backgroundColor: theme.palette.semantics.green, 
-                  display: "inline-block" }}></Box>
-            </Box>}
+          <Typography variant="subtitle" color="secondary">At session {sessionIndex.format()}</Typography>
         </Box>
         <Grid container spacing={2}>
           <Grid item xs={2}>

@@ -47,27 +47,13 @@ export default function SessionPerformancePieChartHeader() {
   return (
     <Box
       sx={{
-        mx: 2,
+        mx: 1,
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: 224
       }}
       >
-      <Box sx={{ px: 1, width: '50%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption1">network performance</Typography>
-          <Box sx={{display: 'flex'}}>
-            <Typography variant="h6">
-              {!isUndefined(finalized._mvr) ? `${Math.round((1 - finalized._mvr) * 100)}%` : '-'}
-              <span style={{
-                ...theme.typography.subtitle3,
-                marginLeft: '16px',
-                color: Math.sign(trendPer) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red
-              }}>{!isNaN(trendPer) ? (Math.sign(trendPer) !== 0 ? `${trendSign(trendPer)} ${Math.abs(trendPer)}%` : ``) : ''}</span>
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
-      <Box sx={{ px: 1, width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
         <PieChart width={64} height={64} margin={{top: 25}}>
           <Pie
               dataKey="value"
@@ -85,6 +71,21 @@ export default function SessionPerformancePieChartHeader() {
               ))}
             </Pie>
         </PieChart>
+      </Box>
+      <Box sx={{ mx: 1, width: '60%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
+          <Typography variant="caption1">network performance</Typography>
+          <Box sx={{display: 'flex'}}>
+            <Typography variant="h6">
+              {!isUndefined(finalized._mvr) ? `${Math.round((1 - finalized._mvr) * 100)}%` : '-'}
+              <span style={{
+                ...theme.typography.subtitle3,
+                marginLeft: '16px',
+                color: Math.sign(trendPer) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red
+              }}>{!isNaN(trendPer) ? (Math.sign(trendPer) !== 0 ? `${trendSign(trendPer)} ${Math.abs(trendPer)}%` : ``) : ''}</span>
+            </Typography>
+          </Box>
+        </Box>
       </Box>
     </Box>
   );

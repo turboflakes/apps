@@ -192,3 +192,8 @@ export const selectBlocksBySession = (state, sessionIndex) => {
   }
   return []
 };
+
+export const selectLastXBlocks = (state, x = 600) => {
+  const finalizedBlocks = selectAll(state).filter(b => b.is_finalized && !isUndefined(b.stats) ? b.stats.ev + b.stats.iv + b.stats.mv !== 0 : false)
+  return finalizedBlocks.slice(Math.max(finalizedBlocks.length - x, 1))
+};

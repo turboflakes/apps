@@ -137,7 +137,7 @@ const sessionsSlice = createSlice({
     })
     .addMatcher(matchValidatorsReceived, (state, action) => {
       
-     const setKey = (action, prefix) => {
+      const setKey = (action, prefix) => {
         if (!isUndefined(action)) {
           if (!isUndefined(action.meta)) {
             if (!isUndefined(action.meta.arg)) {
@@ -167,7 +167,7 @@ const sessionsSlice = createSlice({
         const _backing_points = validators.filter(v => v.is_auth && v.is_para).map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0);
         // const _stashes = validators.map(v => v.address);
         // const _stashes = validators.map(v => v.address);
-        const _current_stashes = !isUndefined(currentState.entities[session]._stashes) ? currentState.entities[session]._stashes : [];
+        const _current_stashes = !isUndefined(currentState.entities[session]) ? (!isUndefined(currentState.entities[session]._stashes) ? currentState.entities[session]._stashes : []) : [];
         const _stashes  = union(_current_stashes, validators.map(v => v.address));
         adapter.upsertOne(state, { six: parseInt(session, 10), 
           [setKey(action, "_group_ids")]: _group_ids, 

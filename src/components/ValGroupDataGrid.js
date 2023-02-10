@@ -7,6 +7,7 @@ import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import Identicon from '@polkadot/react-identicon';
+import DetailsIcon from './DetailsIcon';
 import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
 import {
@@ -140,6 +141,22 @@ const defineColumns = (theme) => {
     disableColumnMenu: true,
     sortingOrder: ['asc', 'desc']
   },
+  {
+    field: 'options',
+    headerName: '', 
+    width: 80,
+    align: 'center',
+    sortable: false,
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      if (!params.row.address) {
+        return null
+      } 
+      return (
+        <DetailsIcon address={params.row.address} />
+      )
+    }
+  },
 ]};
 
 function createDataGridRows(id, identity, address, b, i, e, m, p) {
@@ -177,15 +194,6 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
   })
   const columns = defineColumns(theme);
 
-  const handleOnRowClick = ({row}) => {
-    const address = row.address;
-    if (selectedAddress !== address) {
-      dispatch(addressChanged(address));
-      dispatch(pageChanged(`validator/${address}`));
-      navigate(`/one-t/${selectedChain}/validator/${address}`)
-    }
-  };
-
   return (
     <Paper
       sx={{
@@ -212,7 +220,6 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
           rowsPerPageOptions={[5]}
           hideFooter
           disableSelectionOnClick
-          onRowClick={handleOnRowClick}
         />
     </Paper>
   );

@@ -133,10 +133,8 @@ export default function SessionSliderRange() {
   return (
     <Box
       sx={{
-        mt: 1,
-        p: 2,
+        py: 2,
         display: 'flex',
-        // justifyContent: 'space-between',
         flexDirection: 'column',
         // alignItems: 'center',
         width: '100%',
@@ -155,7 +153,6 @@ export default function SessionSliderRange() {
       <Stack spacing={3} direction="row" sx={{ mb: 1 }} alignItems="center">
         <Typography variant="caption" sx={{ ml: 3 }}>past</Typography>
         <CustomSlider
-          aria-label="session slider"
           // defaultValue={sessionIndex}
           value={sessionRange}
           onChange={handleChange}

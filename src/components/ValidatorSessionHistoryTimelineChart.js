@@ -5,19 +5,27 @@ import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { ComposedChart, Bar, Line, Area, XAxis, YAxis, Cell, ReferenceLine, 
-  CartesianGrid, Tooltip, ResponsiveContainer, Rectangle, Legend } from 'recharts';
+  CartesianGrid, Tooltip as TooltipChart, ResponsiveContainer, Rectangle, Legend } from 'recharts';
 import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Skeleton from '@mui/material/Skeleton';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import CircleIcon from '@mui/icons-material/Circle';
+import HistoryErasMenu from './HistoryErasMenu';
+import Spinner from './Spinner';
 import {
   useGetValidatorsQuery,
   selectValidatorsByAddressAndSessions,
+  selectParaAuthoritySessionsByAddressAndSessions
 } from '../features/api/validatorsSlice';
 import {
   selectSessionCurrent,
   selectSessionHistory,
   selectMvrBySessions,
+  selectSessionByIndex,
   sessionHistoryChanged,
+  useGetSessionByIndexQuery,
   buildSessionIdsArrayHelper
 } from '../features/api/sessionsSlice';
 import {
@@ -76,13 +84,13 @@ const renderTooltip = (props, identiy, theme) => {
                 <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points: <b>{data.abPoints.format()}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.primary.main }}>―</span>MVR: <b>{Math.round(data.valMvr * 10000) / 10000}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.primary.main }}>●</span>MVR: <b>{Math.round(data.valMvr * 10000) / 10000}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>―</span>MVR (Val. Group {`${data.group}`}): <b>{Math.round(data.valGroupMvr * 10000) / 10000}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>●</span>MVR (Val. Group {`${data.group}`}): <b>{Math.round(data.valGroupMvr * 10000) / 10000}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>●</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
               </Typography>
               <Divider sx={{ my: 1 }} />
               <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -102,7 +110,7 @@ const renderTooltip = (props, identiy, theme) => {
                 <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points: <b>{data.abPoints}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>●</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
               </Typography>
               <Divider sx={{ my: 1 }} />
               <Typography component="div" variant="subtitle2" color="inherit">
@@ -113,7 +121,7 @@ const renderTooltip = (props, identiy, theme) => {
           <Box>
             <Box>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>●</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
               </Typography>
             </Box>
             <Divider sx={{ my: 1 }} />
@@ -134,22 +142,30 @@ const renderLegend = (theme) => {
   return (
     <Box sx={{mt: -1, mr: 9, display: 'flex', justifyContent: 'flex-end'}}>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
-        <span style={{ marginRight: '8px', color: theme.palette.secondary.main}}>⚝</span>Backing Points
+        <span style={{ marginRight: '8px', color: theme.palette.secondary.main}}>❚</span>Backing Points
       </Typography>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
         <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points
       </Typography>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
-        <span style={{ marginRight: '8px', color: theme.palette.primary.main }}>―</span>MVR
+        <span style={{ marginRight: '8px', color: theme.palette.primary.main }}>●</span>MVR
       </Typography>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
-        <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>―</span>MVR (Val. Group)
+        <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>●</span>MVR (Val. Group)
       </Typography>
       <Typography variant="caption" color="inherit">
-        <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>―</span>MVR (All Para-Authorities)
+        <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>●</span>MVR (All Para-Authorities)
       </Typography>
     </Box>
   );
+}
+
+function usePrevious(value) {
+  const ref = React.useRef();
+  React.useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
 }
 
 export default function ValidatorSessionHistoryTimelineChart({address, maxSessions}) {
@@ -157,24 +173,30 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
   const dispatch = useDispatch();
   const currentSession = useSelector(selectSessionCurrent);
   const historySession = useSelector(selectSessionHistory);
-  const {isSuccess, isFetching} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
+  const { isFetching: isFetchingSession } = useGetSessionByIndexQuery(historySession);
+  // const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true});
+  const {isFetching} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1 , maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds));
   const allMvrs = useSelector(state => selectMvrBySessions(state, historySessionIds));
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
+  const paraSessions = useSelector(state => selectParaAuthoritySessionsByAddressAndSessions(state, address, historySessionIds));
+  // const [sessionIndex, setSessionIndex] = useSessionIndex(historySession);
+  const prevCount = usePrevious(paraSessions.length);
+  const historySessionSelected = useSelector(state => selectSessionByIndex(state, historySession));
 
-  if (isFetching) {
+  if (isFetching || isUndefined(paraSessions) || isUndefined(historySessionSelected)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
-      height: 302,
+      height: 390,
       borderRadius: 3,
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       bgcolor: 'white'
     }} />)
   }
 
-  if (!isSuccess) {
-    return null
+  if (!isUndefined(prevCount) && paraSessions.length > 0 && prevCount !== paraSessions.length) {
+    setTimeout(() => (dispatch(sessionHistoryChanged(paraSessions[paraSessions.length - 1])), 100));
   }
 
   if (validators.filter(v => !isUndefined(v)).length !== maxSessions || allMvrs.length !== maxSessions) {
@@ -194,28 +216,39 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
     sessionMvr: allMvrs[i]
   }))
 
-  const handleClick = (data) => {
-    if (historySession !== data.session) {
-      setTimeout(() => dispatch(sessionHistoryChanged(data.session)), 50);
+  const handleClick = (newSession) => {
+    // setSessionIndex(newSession);
+    if (historySession !== newSession) {
+      setTimeout(() => dispatch(sessionHistoryChanged(newSession)), 50);
     }
   };
 
   return (
     <Paper sx={{ 
+      mt: 2,
       p: 2,
-      // mt: 2,
       display: 'flex',
       flexDirection: 'column',
       // justifyContent: 'center',
       // alignItems: 'center',
-      width: '100%',
+      width: "100%",
       // height: 256,
       borderRadius: 3,
       // bgcolor: theme.palette.neutrals[300],
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' 
       }}>
-      <Box>
-        <Typography variant="h6" paragraph>Timeline</Typography>
+      <Box sx={{ mb:2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <Box sx={{minHeight: 42}}>
+          <Typography variant="h6">History Timeline</Typography>
+          {isFetchingSession ? 
+            <Skeleton variant="text" sx={{ minWidth: 128, height: "12px"}} /> :
+            <Typography variant="subtitle2">Session {historySessionSelected.six.format()} at Era {historySessionSelected.eix.format()} selected</Typography>
+          }
+        </Box>
+        <Box sx={{ display: 'flex'}} >
+          <HistoryErasMenu />
+          {isFetchingSession ? <Spinner size={24}/> : null}
+        </Box>
       </Box>
       <ResponsiveContainer width="100%" height={228}>
         <ComposedChart
@@ -224,10 +257,10 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
           height={228}
           data={data}
           margin={{
-            top: 0,
+            top: 8,
             right: 0,
             left: 0,
-            bottom: 0,
+            bottom: 8,
           }}
         >
           <CartesianGrid strokeDasharray="1 4" vertical={false} horizontal={true} />
@@ -254,11 +287,11 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
             axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}} 
             />
           <Bar dataKey="abPoints" stackId="points" barSize={12} fill={theme.palette.secondary.main} />
-          <Bar dataKey="pvPoints" stackId="points" barSize={12} shape={<Rectangle radius={[8, 8, 0, 0]} />} 
-            onClick={handleClick} >
+          <Bar dataKey="pvPoints" stackId="points" barSize={12} shape={<Rectangle radius={[8, 8, 0, 0]} />} >
             {
               data.map((entry, index) => (
                 <Cell key={`cell-${index}`} cursor="pointer" 
+                  onClick={() => handleClick(entry.session)}
                   stroke={theme.palette.neutrals[300]}
                   strokeWidth={historySession === entry.session ? 4 : 0}
                   fill={theme.palette.grade[entry.gradeValue]} />
@@ -279,7 +312,7 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
           <Line yAxisId="rightMVR" type="monotone" dataKey="sessionMvr" dot={false} 
             stroke={theme.palette.semantics.amber} strokeWidth={2} />
           
-          <Tooltip 
+          <TooltipChart 
                 cursor={{fill: theme.palette.divider}}
                 offset={24}
                 wrapperStyle={{ zIndex: 100 }} 
@@ -287,6 +320,22 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
           <Legend verticalAlign="top" content={() => renderLegend(theme)} height={24} />
         </ComposedChart>
       </ResponsiveContainer>
+      <Box sx={{mt: 2, width: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+        <Box>
+          {data.filter(d => d.isPara).map((d, i) => 
+            (<Tooltip key={i} title={`Grade ${d.gradeValue} at Session ${d.session.format()}`}>
+              <IconButton key={i} aria-label={d.session} onClick={() => handleClick(d.session)} size="small"
+                sx={{mr: 1/4, bgcolor: historySession === d.session ? theme.palette.grey[800] : 'transparent'}} 
+                >
+                <CircleIcon fontSize="inherit" sx={{ color: theme.palette.grade[d.gradeValue] }}/>
+              </IconButton>
+            </Tooltip>)
+          )}
+        </Box>
+        <Box>
+          <Typography variant="caption">para-validator sessions</Typography>
+        </Box>
+      </Box>
     </Paper>
   );
 }

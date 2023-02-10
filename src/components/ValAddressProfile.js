@@ -3,16 +3,16 @@ import { useSelector } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
 // import { useTheme } from '@mui/material/styles';
 import { Typography } from '@mui/material';
-import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Skeleton from '@mui/material/Skeleton';
 import Identicon from '@polkadot/react-identicon';
+import Tooltip from '@mui/material/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWallet } from '@fortawesome/free-solid-svg-icons'
 import GradeIcon from './GradeIcon';
 import GradeHistoryIcon from './GradeHistoryIcon';
-// import tvpValid from '../assets/tvp_valid.svg';
+import tvpValid from '../assets/tvp_valid.svg';
 // import tvpInvalid from '../assets/tvp_invalid.svg';
 import {
   selectSessionCurrent,
@@ -30,7 +30,7 @@ import {
 } from '../features/layout/layoutSlice';
 import { stakeDisplay } from '../util/display'
 
-export default function ValAddressProfile({address, maxSessions, showGrade}) {
+export default function ValAddressProfile({address, maxSessions, showGrade, showSubset}) {
   // const theme = useTheme();
   const {isSuccess, isFetching} = useGetValidatorProfileByAddressQuery(address)
   const isLiveMode = useSelector(selectIsLiveMode);
@@ -45,7 +45,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade}) {
       width: '100%',
       height: 208,
       borderRadius: 3,
-      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       bgcolor: 'white'
     }} />)
   }
@@ -55,7 +55,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade}) {
   }
   
   return (
-    <Paper
+    <Box
       sx={{
         p: 3,
         // m: 2,
@@ -63,8 +63,8 @@ export default function ValAddressProfile({address, maxSessions, showGrade}) {
         flexDirection: 'column',
         width: '100%',
         height: 208,
-        borderRadius: 3,
-        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+        // borderRadius: 3,
+        // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
         // boxShadow: 'rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;'
         // boxShadow: 'rgba(69, 205, 233, 0.4) 5px 5px, rgba(69, 205, 233, 0.3) 10px 10px, rgba(69, 205, 233, 0.2) 15px 15px, rgba(69, 205, 233, 0.1) 20px 20px, rgba(69, 205, 233, 0.05) 25px 25px;'
         // boxShadow: 'rgba(11, 19, 16, 0.4) 5px 5px, rgba(11, 19, 16, 0.3) 10px 10px, rgba(11, 19, 16, 0.2) 15px 15px, rgba(11, 19, 16, 0.1) 20px 20px, rgba(11, 19, 16, 0.05) 25px 25px;'
@@ -75,7 +75,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade}) {
           <Box>
             <Identicon style={{marginRight: '16px'}}
               value={address}
-              size={64}
+              size={32}
               theme={'polkadot'} />
           </Box>
           <Box>
@@ -90,18 +90,35 @@ export default function ValAddressProfile({address, maxSessions, showGrade}) {
               backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
               }} />
             <Box sx={{ display: 'flex'}}>
+              <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+                {showGrade ? (
+                  isLiveMode ? 
+                    <GradeIcon sessionIndex={sessionIndex} address={address} size={64} /> :
+                    <GradeHistoryIcon address={address} maxSessions={maxSessions} size={64} />
+                  )
+                : null}
+              </Box>
               <Box sx={{ mr: 3,  display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                 <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>commission</Typography>
                 <Box>
                   <Typography variant="h5" component="span">{valProfile._commission}</Typography>
                 </Box>
               </Box>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+              <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                 <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>bonded</Typography>
                 <Box>
                   <Typography variant="h5" component="span">{stakeDisplay(valProfile.own_stake, chainInfo)}</Typography>
                 </Box>
               </Box>
+              {showSubset && valProfile.subset === "TVP" ? 
+                <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+                  <Tooltip title={`TVP Member`} arrow>
+                    <img src={tvpValid} style={{ 
+                        width: 64,
+                        height: "auto" }} alt="TVP Member" />
+                  </Tooltip>  
+                </Box>
+              : null}
             </Box>
           </Box>
           {/* <Box sx={{ ml: 2 }}>
@@ -110,13 +127,13 @@ export default function ValAddressProfile({address, maxSessions, showGrade}) {
                 height: 64 }} alt={"tvp"}/>
           </Box> */}
         </Box>
-        {showGrade ? (
+        {/* {showGrade ? (
             isLiveMode ? 
               <GradeIcon sessionIndex={sessionIndex} address={address} size={72} /> :
               <GradeHistoryIcon address={address} maxSessions={maxSessions} size={72} />
             )
-           : null}
+           : null} */}
       </Box>
-    </Paper>
+    </Box>
   );
 }

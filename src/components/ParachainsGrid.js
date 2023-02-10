@@ -50,7 +50,7 @@ export default function ParachainsGrid({sessionIndex}) {
               Attestations of Validity by Parachain
             </Typography> :
             <Typography variant="subtitle" color="secondary">
-              Attestations of Validity by Parachain at history [{session.eix} // {sessionIndex}]
+              Attestations of Validity by Parachain at session {sessionIndex.format()}
             </Typography>}
         </Box>
         <ToggleButtonGroup

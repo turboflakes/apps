@@ -5,19 +5,22 @@ import { useSelector, useDispatch } from 'react-redux';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import Divider from '@mui/material/Divider';
 import InsightsGrid from './InsightsGrid';
 import ValGroupsGrid from './ValGroupsGrid';
 import ParachainsGrid from './ParachainsGrid';
+import ModeSwitch from './ModeSwitch';
+import SessionHistoryTimelineChart from './SessionHistoryTimelineChart';
 import { 
   useGetValidatorsQuery,
  } from '../features/api/validatorsSlice';
- import {
+import {
   pageChanged,
+  selectPage,
+  selectMode,
+  selectIsHistoryMode,
+  selectMaxHistorySessions
 } from '../features/layout/layoutSlice';
- import {
-  selectChain,
-} from '../features/chain/chainSlice';
 
 function a11yProps(index) {
   return {
@@ -32,11 +35,12 @@ export default function OverviewTabs({sessionIndex, tab}) {
 	// const theme = useTheme();
   const navigate = useNavigate();
 	const dispatch = useDispatch();
-  const selectedChain = useSelector(selectChain);
+  const selectedMode = useSelector(selectMode);
+  const isHistoryMode = useSelector(selectIsHistoryMode);
+  const maxHistorySessions = useSelector(selectMaxHistorySessions);
   const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true, show_profile: true}, {refetchOnMountOrArgChange: true});
   const handleChange = (event, newValue) => {
     dispatch(pageChanged(tabPages[newValue]));
-    // navigate(`/one-t/${selectedChain}/${tabPages[newValue]}`)
     navigate(`/${tabPages[newValue]}`)
   };
 
@@ -45,8 +49,10 @@ export default function OverviewTabs({sessionIndex, tab}) {
   }
 
   return (
-		<Box sx={{ my: 2 }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+		<Box sx={{  }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', 
+        // borderBottom: 1, borderColor: 'divider' 
+        }}>
         <Tabs textColor="inherit" sx={{ 
           '.MuiTabs-indicator': { display: 'none' }, 
           '& .Mui-selected': { 
@@ -57,8 +63,23 @@ export default function OverviewTabs({sessionIndex, tab}) {
           <Tab sx={{ my:1, mr: 2,  borderRadius: 3 }} label="Parachains" {...a11yProps(1)} disableRipple disableFocusRipple />
           <Tab sx={{ my:1,  borderRadius: 3 }} label="Val. Groups" {...a11yProps(2)} disableRipple disableFocusRipple />
         </Tabs>
+        <ModeSwitch mode={selectedMode} />
       </Box>
-      {tab === 0 ? (<InsightsGrid sessionIndex={sessionIndex} />) : (
+      
+      {/* <Divider sx={{ 
+        opacity: 0.25,
+        height: '1px',
+        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+        borderBottom: 'none',
+        backgroundColor: 'transparent',
+        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+        }} /> */}
+      
+      {isHistoryMode && (tab === 1 || tab === 2) ? 
+        <Box sx={{ my: 2 }}>
+          <SessionHistoryTimelineChart maxSessions={maxHistorySessions} />
+        </Box> : null}
+      {tab === 0 ? (<InsightsGrid />) : (
         tab === 1 ? (<ParachainsGrid sessionIndex={sessionIndex} />) : 
         (<ValGroupsGrid sessionIndex={sessionIndex} />))
       }

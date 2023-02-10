@@ -47,7 +47,7 @@ const ValidateChain = () => {
   if (isNetworkSupported(chainName)) {
     return (<Outlet />)
   }
-  return (<Navigate to="/one-t/kusama/dashboard" />)
+  return (<Navigate to="/dashboard" />)
 }
 
 const App = () => {
@@ -81,6 +81,9 @@ const App = () => {
             <Route path="insights" element={<OverviewPage tab={0} />} />
             <Route path="parachains" element={<OverviewPage tab={1} />} />
             <Route path="val-groups" element={<OverviewPage tab={2} />} />
+            <Route path="validator" element={<ValidatorPage />} >
+              <Route path=":stash" element={<ValidatorPage />} />
+            </Route>
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>

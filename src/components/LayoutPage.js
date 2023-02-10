@@ -31,6 +31,7 @@ import Footer from './Footer'
 import SessionSlider from './SessionSlider';
 import SessionSliderRange from './SessionSliderRange';
 import ModeSwitch from './ModeSwitch';
+import ModeMenu from './ModeMenu';
 import { getNetworkIcon } from '../constants'
 import polkadotJsSVG from '../assets/polkadot_js_logo.svg';
 import onetSVG from '../assets/onet.svg';
@@ -247,14 +248,14 @@ export default function LayoutPage({api}) {
               { selectedPage !== 'validators/insights' && selectedPage !== 'dashboard' ? <SearchSmall /> : null }
             </Box> */}
             <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}></Box>
-            <Box sx={{ display: 'flex'}}>
+            <Box sx={{ display: 'flex', alignItems: 'center'}}>
              <SessionPerformancePieChartHeader />
              <SessionPieChartHeader />
              <SessionBoxHeader />
             </Box>
             {/* mode switch live/history */}
             {/* { selectedPage !== 'dashboard' ? <ModeSwitch mode={selectedMode} /> : null } */}
-
+            
           </Box>
           {/* { selectedPage !== 'dashboard' && isHistoryMode ? 
             <Box sx={{
@@ -333,8 +334,8 @@ export default function LayoutPage({api}) {
               </ListSubheader> */}
               <ListItemButton selected={selectedPage === 'insights'}
                 onClick={() => handlePageSelection('insights')}>
-                <ListItemIcon>
-                  <FontAwesomeIcon icon={faServer} />
+                <ListItemIcon sx={{ml: '2px'}}>
+                  <FontAwesomeIcon icon={faServer}  />
                 </ListItemIcon>
                 <ListItemText primary="Validator Insights" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
@@ -393,6 +394,7 @@ export default function LayoutPage({api}) {
         <Toolbar/>
         <Outlet api={api} />
         <Footer />
+       
       </Box>
     </Box>
   );

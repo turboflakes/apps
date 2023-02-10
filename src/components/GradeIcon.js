@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
 // import { useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import { 
   selectValidatorBySessionAndAddress,
@@ -46,12 +45,10 @@ export default function GradeIcon({sessionIndex, address, size = 96}) {
   }
 
   return (
-      <Box>
-        <Tooltip title={`Para-Authority grade performance for session ${sessionIndex}.`} arrow>
-          <img src={GRADES[gradeValue]} style={{ 
-              width: size,
-              height: "auto" }} alt={`Grade: ${gradeValue}`}/>
-        </Tooltip>
-      </Box>
+    <Tooltip title={`Para-Authority grade performance for session ${sessionIndex}.`} arrow>
+      <img src={GRADES[gradeValue]} style={{ 
+          width: size,
+          height: "auto" }} alt={`Grade: ${gradeValue}`}/>
+    </Tooltip>  
   );
 }

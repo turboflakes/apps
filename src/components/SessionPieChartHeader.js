@@ -86,25 +86,13 @@ export default function SessionPieChartHeader() {
   return (
     <Box
       sx={{
-        mx: 2,
+        mx: 1,
         display: 'flex',
         alignItems: 'center',
+        width: 224
       }}
       >
-      <Box sx={{ px: 1, width: '50%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption1">epoch countdown</Typography>
-          <Typography variant="h6">{min > 0 ? `${min} mins` : ` ${sec} secs`}
-            <span style={{
-                  ...theme.typography.subtitle3,
-                  marginLeft: '16px',
-                }}>
-                  {`${eraPercentage}% done`}
-            </span>
-          </Typography>
-        </Box>
-      </Box>
-      <Box sx={{ px: 1, width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
         <PieChart width={64} height={64}>
           <Pie
               data={pieEpochData}
@@ -145,6 +133,19 @@ export default function SessionPieChartHeader() {
               })}
             </Pie>
         </PieChart>
+      </Box>
+      <Box sx={{ mx: 1, width: '60%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
+          <Typography variant="caption1">epoch countdown</Typography>
+          <Typography variant="h6">{min > 0 ? `${min} mins` : ` ${sec} secs`}
+            <span style={{
+                  ...theme.typography.subtitle3,
+                  marginLeft: '16px',
+                }}>
+                  {`${eraPercentage}% done`}
+            </span>
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

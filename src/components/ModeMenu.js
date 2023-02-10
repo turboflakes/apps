@@ -3,11 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import isUndefined from 'lodash/isUndefined';
 import { styled, alpha, useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {
   selectMaxHistoryEras,
+  modeChanged,
   maxHistoryErasChanged
 } from '../features/layout/layoutSlice';
 
@@ -62,7 +64,7 @@ const CustomMenu = styled((props) => (
   },
 }));
 
-export default function HistoryErasMenu() {
+export default function ModeMenu({mode}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -76,17 +78,23 @@ export default function HistoryErasMenu() {
   const handleClose = (event) => {
     setAnchorEl(null);
     if (!isUndefined(event.target.value)) {
-      dispatch(maxHistoryErasChanged(event.target.value));
+      if (event.target.value !== 0) {
+        dispatch(maxHistoryErasChanged(event.target.value));
+      }
+      if (mode === 'History' && event.target.value === 0) {
+        dispatch(modeChanged('Live'));
+      } else if (mode === 'Live' && event.target.value !== 0) {
+        dispatch(modeChanged('History'));
+      }
     }
   };
 
   return (
-    <React.Fragment>
+    <Box>
       <Button
         id="history-button"
-        sx={{ ...theme.typography.caption, 
-          width: 128,
-          // textTransform: 'none', 
+        sx={{ ...theme.typography.caption,
+          width: 144,
           fontWeight: 600,
           color: theme.palette.text.primary,
           '& > .MuiButton-endIcon': {
@@ -100,26 +108,45 @@ export default function HistoryErasMenu() {
         disableFocusRipple
         disableRipple
         onClick={handleClick}
-        endIcon={<ArrowDropDownIcon sx={{ ml: 1}} />}
+        endIcon={<ArrowDropDownIcon sx={{ ml: 1}}/>}
       >
-        {`${OPTIONS.filter(o => o.value === maxHistoryEras)[0].description}`}
+        <span style={{ marginRight: '8px', width: '8px', height: '8px', borderRadius: '50%', 
+            animation: "pulse 1s infinite ease-in-out alternate",
+            backgroundColor: mode === 'Live' ? theme.palette.semantics.green : theme.palette.grey[400], 
+            display: "inline-block" }}></span>
+        {mode === 'Live' ? 'Live' : `${OPTIONS.filter(o => o.value === maxHistoryEras)[0].description}`}
       </Button>
       <CustomMenu
         id="history-menu"
         MenuListProps={{
           'aria-labelledby': 'history-button',
         }}
+        
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
       >
+        <MenuItem value={0} onClick={handleClose} 
+          sx={{width: 144}}
+          disabled={mode === 'Live'}
+          disableRipple dense>
+          <span style={{ marginRight: '8px', width: '8px', height: '8px', borderRadius: '50%', 
+              animation: "pulse 1s infinite ease-in-out alternate",
+              backgroundColor: theme.palette.semantics.green, 
+              display: "inline-block" }}></span>
+          Live
+        </MenuItem>
         {OPTIONS.map((o, i) => (
           <MenuItem key={i} value={o.value} onClick={handleClose} 
-            sx={{width: 128}}
+            sx={{width: 144}}
             disableRipple dense>
+            <span style={{ marginRight: '8px', width: '8px', height: '8px', borderRadius: '50%', 
+                animation: "pulse 1s infinite ease-in-out alternate",
+                backgroundColor: theme.palette.grey[400], 
+                display: "inline-block" }}></span>
             {o.description}
           </MenuItem>))}
       </CustomMenu>
-    </React.Fragment>
+    </Box>
   );
 }

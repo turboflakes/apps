@@ -37,7 +37,8 @@ export default function ValGroupList({sessionIndex, groupId}) {
   const handleAddressSelected = (address) => {
     dispatch(addressChanged(address));
     dispatch(pageChanged(`validator/${address}`));
-    navigate(`/one-t/${selectedChain}/validator/${address}`)
+    // navigate(`/one-t/${selectedChain}/validator/${address}`)
+    navigate(`/validator/${address}`)
   }
 
   return (
