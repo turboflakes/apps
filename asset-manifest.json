@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.1bfe73f6.js",
+    "main.js": "/static/js/main.9b38552a.js",
     "static/js/27.5757e9a4.chunk.js": "/static/js/27.5757e9a4.chunk.js",
     "static/media/manta.png": "/static/media/manta.3172e8ea9964232fe94c.png",
     "static/media/litmus.png": "/static/media/litmus.5ae2bc7c8b3c6b6f5c5a.png",
@@ -133,6 +133,7 @@
     "static/media/darwinia.svg": "/static/media/darwinia.0125b77ba790a67bb9628a92ad12d613.svg",
     "static/media/logo_1_inverted_subtract_turboflakes_.svg": "/static/media/logo_1_inverted_subtract_turboflakes_.a857a4938a7a8314993088abd566df27.svg",
     "static/media/zCloak.svg": "/static/media/zCloak.81f2780785909f4c1dd68371ad3c6da0.svg",
+    "static/media/tvp_valid.svg": "/static/media/tvp_valid.ccce5e5cb832e8b92185b8645f1ccf45.svg",
     "static/media/confti.svg": "/static/media/confti.3646f9e60a855c9128d17a232fca5208.svg",
     "static/media/kusari.svg": "/static/media/kusari.8f98d3ebad57f8d9794e3c78729335a0.svg",
     "static/media/acala.svg": "/static/media/acala.db93212dddd12142d2bb0dc1fe999419.svg",
@@ -214,6 +215,6 @@
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.1bfe73f6.js"
+    "static/js/main.9b38552a.js"
   ]
 }
