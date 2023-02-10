@@ -6,9 +6,11 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import IconButton from '@mui/material/IconButton';
 import EmailIcon from '@mui/icons-material/EmailRounded';
+import Identicon from '@polkadot/react-identicon';
 import logo from '../assets/logo/logo_1_inverted_subtract_turboflakes_.svg';
 import twitterSVG from '../assets/twitter_white.svg';
 import githubSVG from '../assets/github_white.svg';
+import { getTurboValidators } from '../constants/index';
 
 export default function Footer({small}) {
 	
@@ -65,10 +67,33 @@ export default function Footer({small}) {
 							</Grid> 
 						</Grid> : null}
 					<Box sx={{ py: 2, display: 'flex', justifyContent: small ? 'space-between' : 'flex-end'}}>
-            <Link href="/" color="inherit" align="right" >
-              <img src={logo} style={{ height: small ? 32 : 64 }} alt={"logo"}/>
-            </Link>
-						<Box>
+            <Box sx={{mb: 1, display: 'flex', flexDirection: 'column'}}>
+              <Link href="/" color="inherit" sx={{ mb: 1}} >
+                <img src={logo} style={{ height: small ? 32 : 64 }} alt={"logo"}/>
+              </Link>
+              {/* <Typography variant="caption" color="textSecondary" gutterBottom>
+                Donate (KSM) : H1tAQMm3eizGcmpAhL9aA9gR844kZpQfkU7pkmMiLx9jSzE 
+              </Typography>
+              <Typography variant="caption" color="textSecondary">
+                Donate (DOT) : 14Sqrs7dk6gmSiuPK7VWGbPmGr4EfESzZBcpT6U15W4ajJRf 
+              </Typography> */}
+              <Typography variant="body2" color="textSecondary" gutterBottom>Nominate our validators:</Typography>
+              <Box sx={{ display: 'flex'}}>
+                {getTurboValidators("kusama").map(v => (
+                  <Box sx={{ display: 'flex', alignItems: 'center'}}>
+                    <Typography variant="caption" color="textSecondary" sx={{mr: 1}}>
+                      <b>{v.name}</b>
+                    </Typography>
+                    <Identicon style={{marginRight: '16px'}}
+                      value={v.stash}
+                      size={32}
+                      theme={'polkadot'} />
+                  </Box>
+                ))}
+              </Box>
+              
+            </Box>
+            <Box>
 							<IconButton size="small" sx={{ 
 								margin: '0 8px', 
 								border: '1px solid #FFF', 
@@ -100,18 +125,18 @@ export default function Footer({small}) {
 							</IconButton>
 						</Box>
 					</Box>
-					<Box sx={{ pb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
-						<Typography variant="body2" color="textSecondary" sx={{ mr: 2 }}>
+          <Box sx={{ pb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+						<Typography variant="caption" color="textSecondary" sx={{ mr: 2 }}>
 						ONE·T Insights Space © 2023 - Developed by TurboFlakes
 						</Typography>
 						<Box sx={{ display: 'flex'}}>
-							<Typography variant="body2" color="textSecondary" sx={{ mr: 2 }}>
+							<Typography variant="caption" color="textSecondary" sx={{ mr: 2 }}>
 								<Link href="/#/disclaimer" underline="none" color="inherit" >Disclaimer</Link>
 							</Typography>
-							<Typography variant="body2" color="textSecondary" sx={{ mr: 2 }}>
+							<Typography variant="caption" color="textSecondary" sx={{ mr: 2 }}>
 								<Link href="/#/privacy" underline="none" color="inherit" >Privacy Policy</Link>
 							</Typography>
-							<Typography variant="body2" color="textSecondary">
+							<Typography variant="caption" color="textSecondary">
 								<Link href="/#/terms" underline="none" color="inherit" >Terms of Use</Link>
 							</Typography>
 							{/* <Typography variant="body2" color="textSecondary" sx={{ marginRight: '16px' }}>

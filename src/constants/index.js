@@ -25,7 +25,10 @@ const networkSettings = {
     coreAssignmentsTarget: 240,
     blocksPerSessionTarget: 2400,  
     poolIds: [process.env.REACT_APP_POLKADOT_POOL_ID_1, process.env.REACT_APP_POLKADOT_POOL_ID_2],
-    chains: prodParasPolkadot
+    chains: prodParasPolkadot,
+    validators: [
+      { stash: "12gPFmRqnsDhc9C5DuXyXBFA23io5fSGtKTSAimQtAWgueD2", name: "RAIDEN"}
+    ]
   },
   kusama: {
     name: "Kusama",
@@ -40,7 +43,13 @@ const networkSettings = {
     coreAssignmentsTarget: 60,
     blocksPerSessionTarget: 600, 
     poolIds: [process.env.REACT_APP_KUSAMA_POOL_ID_1, process.env.REACT_APP_KUSAMA_POOL_ID_2],
-    chains: prodParasKusama
+    chains: prodParasKusama,
+    validators: [
+      { stash: "FZsMKYHoQG1dAVhXBMyC7aYFYpASoBrrMYsAn1gJJUAueZX", name: "COCO" },
+      { stash: "GA7j1FHWXpEU4kavowEte6LWR3NgZ8bkv4spWa9joiQF5R2", name: "MOMO" },
+      { stash: "GwJweN3Q8VjBMkd2wWLQsgMXrwmFLD6ihfS146GkmiYg5gw", name: "TOTO" },
+      { stash: "FUu6iSzpfStHnbtbzFy2gsnBLttwNgNSULSCQCgMjPfkYwF", name: "DODO" }
+    ]
   },
   westend: {
     name: "Westend",
@@ -69,6 +78,8 @@ export const getMaxHistorySessions = (network) => networkSettings[network].maxHi
 export const getCoreAssignmentsTarget = (network) => networkSettings[network].coreAssignmentsTarget
 export const getBlocksPerSessionTarget = (network) => networkSettings[network].blocksPerSessionTarget
 export const getNetworkPoolId = (network, index) => networkSettings[network].poolIds[index]
+// Useful to present TurboFlakes validators
+export const getTurboValidators = (network) => networkSettings[network].validators
 // Useful for the leaderboard tabs selection
 export const getNetworkIndex = (network) => Object.keys(networkSettings).findIndex(n => n === network)
 export const getNetworkKey = (index) => Object.keys(networkSettings)[index]
