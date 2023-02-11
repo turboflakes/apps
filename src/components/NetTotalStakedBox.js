@@ -39,10 +39,10 @@ import { stakeDisplay } from '../util/display';
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>●</span>Total Issuance: <b>{stakeDisplay(data.total_issuance, chainInfo, 0, true)}</b>
+            <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>●</span>Total Issuance: <b>{stakeDisplay(data.total_issuance + data.total_issuance_min, chainInfo, 0, true)}</b>
           </Typography>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>Total Staked: <b>{stakeDisplay(data.total_staked, chainInfo, 0, true)}</b> ({Math.round(data.total_staked / data.total_issuance * 100 )}%)
+            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>Total Staked: <b>{stakeDisplay(data.total_staked + data.total_staked_min, chainInfo, 0, true)}</b> ({Math.round((data.total_staked + data.total_staked_min) / (data.total_issuance + data.total_issuance_min) * 100 )}%)
           </Typography>
         </Box>
         
@@ -82,7 +82,9 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
 
   const total_staked_percentage = total_issuance > 0 ? Math.round(total_staked / total_issuance * 100) : undefined;
 
-  const timelineData = data.map((s, i) => ({
+  const timelineData = data
+    .filter(s => !isUndefined(s.netstats) ? s.netstats.total_staked !== 0 : false)
+    .map((s, i) => ({
     session: s.six,
     total_issuance: !isUndefined(s.netstats) ? s.netstats.total_issuance : 0,
     total_staked: !isUndefined(s.netstats) ? s.netstats.total_staked : 0,
@@ -121,7 +123,7 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
             data={timelineData}
             margin={{
               top: 5,
-              right: 20,
+              right: -40,
               left: -50,
               bottom: -20,
             }}
@@ -130,8 +132,16 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
               tick={false}
               tickLine={false}
               axisLine={false} />
-            <YAxis type="number" 
-              // domain={['auto', 'dataMax']} 
+            <YAxis type="number"
+              yAxisId="total_issuance_id"
+              domain={['dataMin', 'dataMax']}
+              tick={false}
+              tickLine={false}
+              axisLine={false} />
+            <YAxis type="number"
+              yAxisId="total_staked_id"
+              orientation="right"
+              domain={['dataMin', 'dataMax']}
               tick={false}
               tickLine={false}
               axisLine={false} />
@@ -140,9 +150,9 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
                 offset={24}
                 wrapperStyle={{ zIndex: 100 }} 
                 content={props => renderTooltip(props, theme, chainInfo)} />
-            <Line isAnimationActive={false} type="monotone" dataKey="total_issuance" 
+            <Line yAxisId="total_issuance_id" isAnimationActive={false} type="monotone" dataKey="total_issuance" 
               strokeWidth={2} stroke={theme.palette.semantics.red} dot={false} />
-            <Line isAnimationActive={false} type="monotone" dataKey="total_staked" 
+            <Line yAxisId="total_staked_id" isAnimationActive={false} type="monotone" dataKey="total_staked" 
               strokeWidth={2} stroke={theme.palette.grey[900]} dot={false} />
           </LineChart>
         </ResponsiveContainer>
