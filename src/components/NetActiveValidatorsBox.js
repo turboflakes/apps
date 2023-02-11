@@ -139,7 +139,7 @@ export default function NetActiveValidatorsBox({sessionIndex, maxSessions}) {
               tickLine={false}
               axisLine={false} />
             <YAxis type="number" 
-              // domain={['auto', 'dataMax']} 
+              domain={['dataMin', 'dataMax']}
               tick={false}
               tickLine={false}
               axisLine={false} />
