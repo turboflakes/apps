@@ -53,8 +53,6 @@ export default function GradesBox({sessionIndex, size}) {
       bgcolor: 'white'
     }} />)
   }
-
-  console.log("__rawMvrs", rawMvrs);
   
   if (!rawMvrs.length) {
     return null

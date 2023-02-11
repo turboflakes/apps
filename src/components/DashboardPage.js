@@ -49,7 +49,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center'}}>
+    <Box sx={{ mb: 10, display: 'flex', justifyContent: 'center'}}>
 		<Container sx={{ }}>
       <Grid container spacing={2}>
         <Grid sx={{ mt: 18 }} item xs={7} >
@@ -58,14 +58,17 @@ export default function DashboardPage() {
                 minHeight: 288,
               }} >
                 <Box sx={{display: 'flex'}}>
-                  <Paper sx={{
-                      ml: -20,
+                  <Box sx={{
+                      // ml: -20,
                       mt: -2,
-                      width: 128,
-                      height: 128,
-                      borderRadius: "50%",
+                      width: 144,
+                      height: 144,
+                      // borderRadius: "50%",
                       position: 'relative',
-                      boxShadow: 'rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px',
+                      // boxShadow: 'rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px',
+                      // boxShadow: 'rgba(240, 46, 170, 0.4) 5px 5px, rgba(240, 46, 170, 0.3) 10px 10px, rgba(240, 46, 170, 0.2) 15px 15px, rgba(240, 46, 170, 0.1) 20px 20px, rgba(240, 46, 170, 0.05) 25px 25px;',
+                      // boxShadow: 'rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset',
+                      // boxShadow: 'rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset',
                       
                       '&:before': {
                         content: '" "',
@@ -79,25 +82,26 @@ export default function DashboardPage() {
                         backgroundImage: `url(${onetSVG})`,
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: '50% 50%',
-                        backgroundSize: '64px 64px',
+                        backgroundSize: '144px 144px',
                       }
-                  }}></Paper>
+                  }}></Box>
                   <Box sx={{ ml: 4}}>
                     <Typography
                         component="h1"
                         variant="h2"
                         align="left"
                       >
-                      <Typography variant="h5" >
-                        Welcome to 
+                      <Typography component="div" variant="h5" >
+                        Welcome to ONE-T
                       </Typography>
-                      ONE·T Insights Space
+                       Insights Space
                       </Typography>
                     </Box>
                   </Box>
-                  <Typography variant="subtitle1" align="left">
-                    Monitor and explore the <b>Kusama</b> network. Search your favourite Validators and visualize on-chain data performance.
+                  <Typography sx={{ my: 4 }} variant="subtitle1" align="left">
+                    Monitor and Explore the <b>KUSAMA</b> network. Search for your favourite Validators and visualize historic or realtime blockchain data performance.
                   </Typography>
+                  <SearchSmall />
               </Box>
             </Box>
             {/* <Box sx={{ my: 6, ml: 4, display: 'flex', justifyContent: 'center', alignItems:'flex-end'}}>
@@ -113,9 +117,11 @@ export default function DashboardPage() {
           <GradesBox sessionIndex={currentSession} size="lg" />
         </Grid>
 
-        <Grid item xs={12}>
+        
+        <Grid item xs={12} sx={{ my: 6}}>
           <SessionPerformance600Timeline sessionIndex={currentSession} />
-        </Grid> 
+        </Grid>  
+       
 
         {/* <Grid item xs={12}>
           <Divider sx={{ 
@@ -132,7 +138,7 @@ export default function DashboardPage() {
         
 
         <Grid item xs={12} >
-          <Box sx={{ display: 'flex'}}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
             {/* <Box sx={{ p: 2 }}>
               <Typography variant="h4">Kusama Network Stats</Typography>
               <Typography variant="subtitle" color="secondary">Collected from the last {maxHistorySessions} sessions ({maxHistoryEras} eras).</Typography>

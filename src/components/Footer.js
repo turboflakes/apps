@@ -10,7 +10,7 @@ import Identicon from '@polkadot/react-identicon';
 import logo from '../assets/logo/logo_1_inverted_subtract_turboflakes_.svg';
 import twitterSVG from '../assets/twitter_white.svg';
 import githubSVG from '../assets/github_white.svg';
-import { getTurboValidators } from '../constants/index';
+import { getNetworkIcon, getTurboValidators } from '../constants/index';
 
 export default function Footer({small}) {
 	
@@ -30,7 +30,7 @@ export default function Footer({small}) {
 			<Box sx={{ bgcolor: 'background.secondary'}} >
 				<Container>
 					{ !small ? 
-						<Grid container sx={{ py: small ? 2 : 8 }}>
+						<Grid container sx={{ py: small ? 4 : 8 }}>
 							<Grid container item xs={12} sm={6}>
 								<Link href="/" color="inherit" align="right" >
 									<img src={logo} style={{ height: small ? 32 : 64, marginBottom: 24 }} alt={"logo"}/>
@@ -66,21 +66,35 @@ export default function Footer({small}) {
 								</Typography>
 							</Grid> 
 						</Grid> : null}
-					<Box sx={{ py: 2, display: 'flex', justifyContent: small ? 'space-between' : 'flex-end'}}>
+					<Box sx={{ py: 4, display: 'flex', justifyContent: small ? 'space-between' : 'flex-end'}}>
             <Box sx={{mb: 1, display: 'flex', flexDirection: 'column'}}>
-              <Link href="/" color="inherit" sx={{ mb: 1}} >
+              <Link href="/" color="inherit" sx={{ mb: 2}} >
                 <img src={logo} style={{ height: small ? 32 : 64 }} alt={"logo"}/>
               </Link>
-              {/* <Typography variant="caption" color="textSecondary" gutterBottom>
-                Donate (KSM) : H1tAQMm3eizGcmpAhL9aA9gR844kZpQfkU7pkmMiLx9jSzE 
-              </Typography>
-              <Typography variant="caption" color="textSecondary">
-                Donate (DOT) : 14Sqrs7dk6gmSiuPK7VWGbPmGr4EfESzZBcpT6U15W4ajJRf 
-              </Typography> */}
-              <Typography variant="body2" color="textSecondary" gutterBottom>Nominate our validators:</Typography>
               <Box sx={{ display: 'flex'}}>
-                {getTurboValidators("kusama").map(v => (
-                  <Box sx={{ display: 'flex', alignItems: 'center'}}>
+                <Box sx={{ mr: 1, display: 'flex', alignItems: 'center'}}>
+                  <Typography variant="caption" color="textSecondary">
+                  Stake with us! On Polkadot with →
+                  </Typography>
+                </Box>
+                {getTurboValidators("polkadot").map((v, i) => (
+                  <Box key={i} sx={{ display: 'flex', alignItems: 'center'}}>
+                    <Typography variant="caption" color="textSecondary" sx={{mr: 1}}>
+                      <b>{v.name}</b>
+                    </Typography>
+                    <Identicon style={{marginRight: '16px'}}
+                      value={v.stash}
+                      size={32}
+                      theme={'polkadot'} />
+                  </Box>
+                ))}
+                <Box sx={{ ml: 2, mr: 1, display: 'flex', alignItems: 'center'}}>
+                  <Typography variant="caption" color="textSecondary">
+                    On Kusama with →
+                  </Typography>
+                </Box>
+                {getTurboValidators("kusama").map((v, i) => (
+                  <Box key={i} sx={{ display: 'flex', alignItems: 'center'}}>
                     <Typography variant="caption" color="textSecondary" sx={{mr: 1}}>
                       <b>{v.name}</b>
                     </Typography>
@@ -91,7 +105,6 @@ export default function Footer({small}) {
                   </Box>
                 ))}
               </Box>
-              
             </Box>
             <Box>
 							<IconButton size="small" sx={{ 
@@ -125,11 +138,12 @@ export default function Footer({small}) {
 							</IconButton>
 						</Box>
 					</Box>
-          <Box sx={{ pb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+          <Box sx={{ pb: 2, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'wrap' }}>
 						<Typography variant="caption" color="textSecondary" sx={{ mr: 2 }}>
-						ONE·T Insights Space © 2023 - Developed by TurboFlakes
+						ONE-T Insights Space © 2023 | Developed by TurboFlakes
 						</Typography>
-						<Box sx={{ display: 'flex'}}>
+            {/* TODO */}
+						{/* <Box sx={{ display: 'flex'}}>
 							<Typography variant="caption" color="textSecondary" sx={{ mr: 2 }}>
 								<Link href="/#/disclaimer" underline="none" color="inherit" >Disclaimer</Link>
 							</Typography>
@@ -139,10 +153,7 @@ export default function Footer({small}) {
 							<Typography variant="caption" color="textSecondary">
 								<Link href="/#/terms" underline="none" color="inherit" >Terms of Use</Link>
 							</Typography>
-							{/* <Typography variant="body2" color="textSecondary" sx={{ marginRight: '16px' }}>
-								<Link href="/#/cookies" underline="none" color="inherit" >Cookie Settings</Link>
-							</Typography> */}
-						</Box>
+						</Box> */}
 					</Box>
 				</Container>
 			</Box>

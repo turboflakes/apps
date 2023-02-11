@@ -52,7 +52,7 @@ export default function SearchSmall(props) {
           sx={{
             // backgroundColor: theme.palette.neutrals[100],
             borderRadius: 30,
-            width: 512
+            width: 712
           }}
           variant="outlined"
           placeholder="Search by validator stash address"
@@ -63,9 +63,9 @@ export default function SearchSmall(props) {
           fullWidth
           // error={!isValidAddress(this.state.address)}
           InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={handleSubmit} size="small"
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconButton sx={{ ml: 1}} onClick={handleSubmit} size="small"
                   color="primary" 
                   // disabled={!isValidAddress(this.state.address)}
                   >
