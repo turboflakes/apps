@@ -66,15 +66,14 @@ export default function Footer({small}) {
 								</Typography>
 							</Grid> 
 						</Grid> : null}
-					<Box sx={{ py: 4, display: 'flex', justifyContent: small ? 'space-between' : 'flex-end'}}>
-            <Box sx={{mb: 1, display: 'flex', flexDirection: 'column'}}>
-              <Link href="/" color="inherit" sx={{ mb: 2}} >
+					  <Box sx={{ py: 2, display: 'flex', justifyContent: small ? 'space-between' : 'flex-end', alignItems: 'center' }}>
+              <Link href="/" color="inherit" sx={{ display: 'flex', alignItems: 'center' }}>
                 <img src={logo} style={{ height: small ? 32 : 64 }} alt={"logo"}/>
               </Link>
               <Box sx={{ display: 'flex'}}>
                 <Box sx={{ mr: 1, display: 'flex', alignItems: 'center'}}>
                   <Typography variant="caption" color="textSecondary">
-                  Stake with us! On Polkadot with →
+                  Stake with us! On Polkadot with:
                   </Typography>
                 </Box>
                 {getTurboValidators("polkadot").map((v, i) => (
@@ -82,30 +81,34 @@ export default function Footer({small}) {
                     <Typography variant="caption" color="textSecondary" sx={{mr: 1}}>
                       <b>{v.name}</b>
                     </Typography>
-                    <Identicon style={{marginRight: '16px'}}
+                    <Identicon
                       value={v.stash}
                       size={32}
                       theme={'polkadot'} />
                   </Box>
                 ))}
-                <Box sx={{ ml: 2, mr: 1, display: 'flex', alignItems: 'center'}}>
+                <Box sx={{ mr: 1, ml: 2, display: 'flex', alignItems: 'center'}}>
                   <Typography variant="caption" color="textSecondary">
-                    On Kusama with →
+                    On Kusama with:
                   </Typography>
                 </Box>
                 {getTurboValidators("kusama").map((v, i) => (
-                  <Box key={i} sx={{ display: 'flex', alignItems: 'center'}}>
+                  <Box key={i} sx={{ ml: i > 0 ? 2 : 0, display: 'flex', alignItems: 'center'}}>
                     <Typography variant="caption" color="textSecondary" sx={{mr: 1}}>
                       <b>{v.name}</b>
                     </Typography>
-                    <Identicon style={{marginRight: '16px'}}
+                    <Identicon
                       value={v.stash}
                       size={32}
                       theme={'polkadot'} />
                   </Box>
                 ))}
               </Box>
-            </Box>
+					</Box>
+          <Box sx={{ py: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+            <Typography variant="caption" color="textSecondary" sx={{ mr: 2 }}>
+						ONE-T Insights Space © 2023 | Developed by TurboFlakes
+						</Typography>
             <Box>
 							<IconButton size="small" sx={{ 
 								margin: '0 8px', 
@@ -127,7 +130,7 @@ export default function Footer({small}) {
 									height: 18 }} alt={"github"}/>
 							</IconButton>
 							<IconButton color="secondary" size="small" sx={{ 
-								margin: '0 8px', 
+								ml: 1, 
 								border: '1px solid #FFF', 
 								color: 'text.secondary',
 								width: 30,
@@ -136,12 +139,7 @@ export default function Footer({small}) {
 									width: 18,
 									height: 18 }} alt={"github"}/>
 							</IconButton>
-						</Box>
-					</Box>
-          <Box sx={{ pb: 2, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'wrap' }}>
-						<Typography variant="caption" color="textSecondary" sx={{ mr: 2 }}>
-						ONE-T Insights Space © 2023 | Developed by TurboFlakes
-						</Typography>
+            </Box>
             {/* TODO */}
 						{/* <Box sx={{ display: 'flex'}}>
 							<Typography variant="caption" color="textSecondary" sx={{ mr: 2 }}>
