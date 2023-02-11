@@ -39,10 +39,10 @@ import { stakeDisplay } from '../util/display';
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>●</span>Total Issuance: <b>{stakeDisplay(data.total_issuance + data.total_issuance_min, chainInfo, 0, true)}</b>
+            <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>●</span>Total Issuance: <b>{stakeDisplay(data.total_issuance, chainInfo, 0, true)}</b>
           </Typography>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>Total Staked: <b>{stakeDisplay(data.total_staked + data.total_staked_min, chainInfo, 0, true)}</b> ({Math.round((data.total_staked + data.total_staked_min) / (data.total_issuance + data.total_issuance_min) * 100 )}%)
+            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>Total Staked: <b>{stakeDisplay(data.total_staked, chainInfo, 0, true)}</b> ({Math.round(data.total_staked / data.total_issuance * 100 )}%)
           </Typography>
         </Box>
         
