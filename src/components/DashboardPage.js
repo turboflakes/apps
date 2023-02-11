@@ -101,7 +101,6 @@ export default function DashboardPage() {
                   <Typography sx={{ my: 4 }} variant="subtitle1" align="left">
                     Monitor and Explore the <b>KUSAMA</b> network. Search for your favourite Validators and visualize historic or realtime blockchain data performance.
                   </Typography>
-                  <SearchSmall />
               </Box>
             </Box>
             {/* <Box sx={{ my: 6, ml: 4, display: 'flex', justifyContent: 'center', alignItems:'flex-end'}}>
@@ -138,40 +137,47 @@ export default function DashboardPage() {
         
 
         <Grid item xs={12} >
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-            {/* <Box sx={{ p: 2 }}>
-              <Typography variant="h4">Kusama Network Stats</Typography>
-              <Typography variant="subtitle" color="secondary">Collected from the last {maxHistorySessions} sessions ({maxHistoryEras} eras).</Typography>
-            </Box> */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+            <SearchSmall />
             <Box>
               <HistoryErasMenu />
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={6} md={4}>
+        <Grid item xs={6} md={5}>
           <NetTotalStakedBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
         </Grid>
-        <Grid item xs={6} md={4}>
+        <Grid item xs={6} md={5}>
           <NetLastRewardBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
         </Grid>
-        <Grid item xs={6} md={4}>
+        <Grid item xs={6} md={2}>
         </Grid>
-        <Grid item xs={6} md={4}>
+        <Grid item xs={6} md={2}>
         </Grid>
-        <Grid item xs={6} md={4}>
+        <Grid item xs={6} md={5}>
           <NetTotalValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
         </Grid>
-        <Grid item xs={6} md={4}>
+        <Grid item xs={6} md={5}>
           <NetActiveValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
         </Grid>
+        
         <Grid item xs={6} md={4}>
           <NetOversubscribedValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
         </Grid>
-        <Grid item xs={6} md={4}>
+        {/* <Grid item xs={6} md={4}>
+
+        </Grid> */}
+        
+        <Grid item xs={6} md={6}>
           <NetPointsValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
         </Grid>
-        <Grid item xs={6} md={4}>
+        
+        <Grid item xs={6} md={3}>
+        </Grid>
+        <Grid item xs={6} md={6}>
           <NetOwnStakeValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+        </Grid>
+        <Grid item xs={6} md={3}>
         </Grid>
         {/* {isLiveMode ? 
           <Grid item xs={12} md={2}>
