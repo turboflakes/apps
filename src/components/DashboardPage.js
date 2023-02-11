@@ -60,16 +60,15 @@ export default function DashboardPage() {
                 <Box sx={{display: 'flex'}}>
                   <Box sx={{
                       // ml: -20,
-                      mt: -2,
+                      mt: -4,
                       width: 144,
                       height: 144,
-                      // borderRadius: "50%",
                       position: 'relative',
                       // boxShadow: 'rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px',
                       // boxShadow: 'rgba(240, 46, 170, 0.4) 5px 5px, rgba(240, 46, 170, 0.3) 10px 10px, rgba(240, 46, 170, 0.2) 15px 15px, rgba(240, 46, 170, 0.1) 20px 20px, rgba(240, 46, 170, 0.05) 25px 25px;',
                       // boxShadow: 'rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset',
                       // boxShadow: 'rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset',
-                      
+                      zIndex: 30,
                       '&:before': {
                         content: '" "',
                         display: 'block',
@@ -84,23 +83,24 @@ export default function DashboardPage() {
                         backgroundPosition: '50% 50%',
                         backgroundSize: '144px 144px',
                       }
-                  }}></Box>
+                    }}>
+                  </Box>
                   <Box sx={{ ml: 4}}>
                     <Typography
                         component="h1"
-                        variant="h2"
+                        variant="h3"
                         align="left"
                       >
                       <Typography component="div" variant="h5" >
-                        Welcome to ONE-T
+                        Blockchain Analytics
                       </Typography>
-                       Insights Space
-                      </Typography>
-                    </Box>
+                        Provided by ONE-T 
+                    </Typography>
                   </Box>
-                  <Typography sx={{ my: 4 }} variant="subtitle1" align="left">
-                    Monitor and Explore the <b>KUSAMA</b> network. Search for your favourite Validators and visualize historic or realtime blockchain data performance.
-                  </Typography>
+                </Box>
+                <Typography sx={{ my: 4 }} variant="subtitle1" align="left">
+                  Monitor and explore the <b>KUSAMA</b> network — search for your favourite Validators and visualize historic or realtime blockchain data analytics
+                </Typography>
               </Box>
             </Box>
             {/* <Box sx={{ my: 6, ml: 4, display: 'flex', justifyContent: 'center', alignItems:'flex-end'}}>

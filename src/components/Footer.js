@@ -107,7 +107,7 @@ export default function Footer({small}) {
 					</Box>
           <Box sx={{ py: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
             <Typography variant="caption" color="textSecondary" sx={{ mr: 2 }}>
-						ONE-T Insights Space © 2023 | Developed by TurboFlakes
+						© 2023 TurboFlakes | ONE-T • Blockchain Analytics
 						</Typography>
             <Box>
 							<IconButton size="small" sx={{ 
