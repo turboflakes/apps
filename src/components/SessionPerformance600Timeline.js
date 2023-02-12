@@ -75,12 +75,6 @@ export default function SessionPerformance600Timeline({sessionIndex}) {
   }
   
   const timelineData = blocks.map((o, i) => {
-    // if (o.block_number === 16573253) {
-    //   console.log("___", i, blocks[i-1], o, o.stats.ev + o.stats.iv + o.stats.mv, (blocks[i-1].stats.ev + blocks[i-1].stats.iv + blocks[i-1].stats.mv));
-    //   console.log("__", !isUndefined(o.stats) ? (i > 0 ? ((blocks[i-1].stats.ev + blocks[i-1].stats.iv + blocks[i-1].stats.mv))
-    //     ((o.stats.ev + o.stats.iv + o.stats.mv) - (blocks[i-1].stats.ev + blocks[i-1].stats.iv + blocks[i-1].stats.mv)) : 
-    //     (o.stats.ev + o.stats.iv + o.stats.mv))  : undefined);
-    // }
     if (!isUndefined(o.stats) && !isUndefined(blocks[i-1])) {
       const votes = o.stats.ev + o.stats.iv + o.stats.mv;
       const previousVotes = blocks[i-1].stats.ev + blocks[i-1].stats.iv + blocks[i-1].stats.mv;

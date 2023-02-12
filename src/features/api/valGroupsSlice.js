@@ -54,7 +54,7 @@ const valGroupsSlice = createSlice({
     })
     .addMatcher(matchValidatorsReceived, (state, action) => {
       // Filter validators if authority and p/v
-      const filtered = action.payload.data.filter(v => v.is_auth && v.is_para);
+      const filtered = action.payload.data.filter(v => v.is_auth && v.is_para && !isUndefined(v.para_summary));
       
       // Group validators by session first
       const groupedBySession = groupBy(filtered, v => !!v.session ? v.session : action.payload.session)

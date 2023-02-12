@@ -136,7 +136,7 @@ const sessionsSlice = createSlice({
       adapter.upsertMany(state, sessions)
     })
     .addMatcher(matchValidatorsReceived, (state, action) => {
-      
+
       const setKey = (action, prefix) => {
         if (!isUndefined(action)) {
           if (!isUndefined(action.meta)) {
@@ -161,14 +161,15 @@ const sessionsSlice = createSlice({
       let currentState = current(state);
 
       forEach(groupedBySession, (validators, session) => {
-        const _group_ids = uniq(validators.filter(v => v.is_auth && v.is_para).map(v => toNumber(v.para.group))).sort((a, b) => a - b)
-        const _mvrs = validators.filter(v => v.is_auth && v.is_para).map(v => !isUndefined(v.para_summary) ? calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv) : undefined);
-        const _validity_votes = validators.filter(v => v.is_auth && v.is_para).map(v => !isUndefined(v.para_summary) ? v.para_summary.ev + v.para_summary.iv + v.para_summary.mv : 0);
-        const _backing_points = validators.filter(v => v.is_auth && v.is_para).map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0);
+        const filtered = validators.filter(v => v.is_auth && v.is_para && !isUndefined(v.para_summary));
+        const _group_ids = uniq(filtered.map(v => toNumber(v.para.group))).sort((a, b) => a - b)
+        const _mvrs = filtered.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
+        const _validity_votes = filtered.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv);
+        const _backing_points = filtered.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0);
         // const _stashes = validators.map(v => v.address);
         // const _stashes = validators.map(v => v.address);
         const _current_stashes = !isUndefined(currentState.entities[session]) ? (!isUndefined(currentState.entities[session]._stashes) ? currentState.entities[session]._stashes : []) : [];
-        const _stashes  = union(_current_stashes, validators.map(v => v.address));
+        const _stashes  = union(_current_stashes, filtered.map(v => v.address));
         adapter.upsertOne(state, { six: parseInt(session, 10), 
           [setKey(action, "_group_ids")]: _group_ids, 
           [setKey(action, "_mvrs")]: _mvrs, 

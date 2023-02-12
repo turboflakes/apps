@@ -37,7 +37,6 @@ export default function SessionBoxHeader({dark}) {
   const finalized = useSelector(selectFinalizedBlock)
   const session = useSelector(state => selectSessionByIndex(state, currentSession))
   const isLiveMode = useSelector(selectIsLiveMode)
-  
   if (isFetchingFinalizedBlock || isFetchingBlockSuccess || isFetchingSession
      || isUndefined(session) || isUndefined(best) || isUndefined(finalized)) {
       return (<Skeleton variant="rounded" sx={{
