@@ -169,7 +169,7 @@ const sessionsSlice = createSlice({
         // const _stashes = validators.map(v => v.address);
         // const _stashes = validators.map(v => v.address);
         const _current_stashes = !isUndefined(currentState.entities[session]) ? (!isUndefined(currentState.entities[session]._stashes) ? currentState.entities[session]._stashes : []) : [];
-        const _stashes  = union(_current_stashes, filtered.map(v => v.address));
+        const _stashes  = union(_current_stashes, validators.map(v => v.address));
         adapter.upsertOne(state, { six: parseInt(session, 10), 
           [setKey(action, "_group_ids")]: _group_ids, 
           [setKey(action, "_mvrs")]: _mvrs, 
