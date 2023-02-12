@@ -34,10 +34,11 @@ const CustomTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
 ))(({ theme }) => ({
   [`& .${tooltipClasses.arrow}`]: {
-    color: theme.palette.common.black,
+    color: theme.palette.grey[600],
   },
   [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: theme.palette.background.primary,
+    boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px',
   },
 }));
 
@@ -102,8 +103,8 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
                   disableFocusListener
                   placement="bottom-end"
                   title={
-                    <Box>
-                      <Typography variant="caption" color="inherit" >A grade reflects the backing votes ratio (BVR) of one or a set of validators:</Typography>
+                    <Box sx={{ p: 1}}>
+                      <Typography variant="caption" >A grade reflects the backing votes ratio (BVR) of one or a set of validators:</Typography>
                       <ul>
                         <li>{"A+ = BVR > 99%"}</li>
                         <li>{"A = BVR > 95%"}</li>
@@ -133,7 +134,7 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
           </IconButton>
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center'}}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
           { showPie ? 
           
             <GradesPieChart data={gradesData} size="md"  /> :

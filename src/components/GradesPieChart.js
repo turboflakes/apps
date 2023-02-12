@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Tooltip, Cell } from 'recharts';
 import { getNetworkIcon } from '../constants'
 
 const renderTooltip = (props) => {
@@ -38,6 +38,7 @@ const renderTooltip = (props) => {
 
 export default function GradesPieChart({data, size, dark, showNetworkIcon}) {
   const theme = useTheme();
+  console.log("__daata",data);
   return (
     <Box
         sx={{
@@ -46,7 +47,7 @@ export default function GradesPieChart({data, size, dark, showNetworkIcon}) {
           flexDirection: 'column',
           justifyContent: 'flex-end',
           alignItems: 'flex-end',
-          width: size === "lg" ? '288px' : (size === "md" ? '288px' : '64px'),
+          width: size === "lg" ? 288 : (size === "md" ? 208 : 64),
           // height: '100%',
           // borderRadius: 3,
           // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
@@ -66,16 +67,15 @@ export default function GradesPieChart({data, size, dark, showNetworkIcon}) {
                     width: 80,
                     height: 80 }} alt={"kusama"}/>
             </Box> : null}
-          <ResponsiveContainer width={size === "lg" ? 272 : '100%'} height={ size === "lg" ? 272 : (size === "md" ? 272 : 64)} >
-            <PieChart >
+            <PieChart width={size === "lg" ? 272 : (size === "md" ? 208 : 64)} height={ size === "lg" ? 272 : (size === "md" ? 272 : 64)}>
             <Pie
                 isAnimationActive={false}
                 dataKey="value"
                 data={data}
                 cx="50%"
                 cy="50%"
-                outerRadius={size === "lg" ? '128' : (size === "md" ? 96 : 32)}
-                innerRadius={size === "lg" ? '96' : (size === "md" ? 64 : 20)}
+                outerRadius={size === "lg" ? 128 : (size === "md" ? 96 : 32)}
+                innerRadius={size === "lg" ? 96 : (size === "md" ? 64 : 20)}
                 startAngle={90}
                 endAngle={-360}
                 // label={renderCustomizedLabel}
@@ -118,7 +118,6 @@ export default function GradesPieChart({data, size, dark, showNetworkIcon}) {
                 wrapperStyle={{ zIndex: 100 }} 
                 content={renderTooltip} />
             </PieChart>
-          </ResponsiveContainer>
         </Box>
     </Box>
   );
