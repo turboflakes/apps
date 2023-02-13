@@ -10,6 +10,9 @@ import Identicon from '@polkadot/react-identicon';
 import logo from '../assets/logo/logo_1_inverted_subtract_turboflakes_.svg';
 import twitterSVG from '../assets/twitter_white.svg';
 import githubSVG from '../assets/github_white.svg';
+import polkadotSVG from '../assets/polkadot_icon.svg';
+import kusamaSVG from '../assets/kusama_icon.svg';
+import kusamaTreasurySVG from '../assets/kusama_support_treasury_white.svg';
 import { getNetworkIcon, getTurboValidators } from '../constants/index';
 
 export default function Footer({small}) {
@@ -73,7 +76,7 @@ export default function Footer({small}) {
               <Box sx={{ display: 'flex'}}>
                 <Box sx={{ mr: 1, display: 'flex', alignItems: 'center'}}>
                   <Typography variant="caption" color="textSecondary">
-                  Stake with us! On Polkadot with:
+                  <b>Stake with us →</b>
                   </Typography>
                 </Box>
                 {getTurboValidators("polkadot").map((v, i) => (
@@ -81,35 +84,50 @@ export default function Footer({small}) {
                     <Typography variant="caption" color="textSecondary" sx={{mr: 1}}>
                       <b>{v.name}</b>
                     </Typography>
-                    <Identicon
-                      value={v.stash}
-                      size={32}
-                      theme={'polkadot'} />
+                    <Box sx={{ position: 'relative'}}>
+                      <img src={polkadotSVG} 
+                        style={{ 
+                          position: 'absolute', 
+                          border: '1px solid #FFF', borderRadius: '50%', 
+                          height: 20, right: -8, bottom: 2 }} alt={"github"}/>
+                      <Identicon
+                        value={v.stash}
+                        size={32}
+                        theme={'polkadot'} />
+                    </Box>
                   </Box>
                 ))}
-                <Box sx={{ mr: 1, ml: 2, display: 'flex', alignItems: 'center'}}>
-                  <Typography variant="caption" color="textSecondary">
-                    On Kusama with:
-                  </Typography>
-                </Box>
                 {getTurboValidators("kusama").map((v, i) => (
-                  <Box key={i} sx={{ ml: i > 0 ? 2 : 0, display: 'flex', alignItems: 'center'}}>
+                  <Box key={i} sx={{ ml: 2, display: 'flex', alignItems: 'center'}}>
                     <Typography variant="caption" color="textSecondary" sx={{mr: 1}}>
                       <b>{v.name}</b>
                     </Typography>
-                    <Identicon
-                      value={v.stash}
-                      size={32}
-                      theme={'polkadot'} />
+                    <Box sx={{ position: 'relative'}}>
+                      <img src={kusamaSVG} 
+                        style={{ 
+                          position: 'absolute', 
+                          border: '1px solid #FFF', borderRadius: '50%', 
+                          height: 20, right: -8, bottom: 2 }} alt={"github"}/>
+                      <Identicon
+                        value={v.stash}
+                        size={32}
+                        theme={'polkadot'} />
+                    </Box>
                   </Box>
                 ))}
               </Box>
 					</Box>
           <Box sx={{ py: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
-            <Typography variant="caption" color="textSecondary" sx={{ mr: 2 }}>
-						© 2023 TurboFlakes | ONE-T • Blockchain Analytics
-						</Typography>
             <Box>
+              <Typography variant="caption" color="textSecondary" sx={{ mr: 2 }}>
+              © 2023 TurboFlakes | ONE-T • Blockchain Analytics
+              </Typography>
+              <img src={kusamaTreasurySVG} style={{ 
+                    marginLeft: 8,
+                    height: 32 }} alt={"supported by kusama treasury"}/>
+            </Box>
+            <Box>
+              
 							<IconButton size="small" sx={{ 
 								margin: '0 8px', 
 								border: '1px solid #FFF', 
