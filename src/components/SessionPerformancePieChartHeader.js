@@ -80,7 +80,7 @@ export default function SessionPerformancePieChartHeader() {
               {!isUndefined(finalized._mvr) ? `${Math.round((1 - finalized._mvr) * 100)}%` : '-'}
               <span style={{
                 ...theme.typography.subtitle3,
-                marginLeft: '16px',
+                marginLeft: '8px',
                 color: Math.sign(trendPer) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red
               }}>{!isNaN(trendPer) ? (Math.sign(trendPer) !== 0 ? `${trendSign(trendPer)} ${Math.abs(trendPer)}%` : ``) : ''}</span>
             </Typography>

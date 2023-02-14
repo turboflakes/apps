@@ -51,7 +51,7 @@ export default function SessionPieChart({sessionIndex}) {
     createData('done', donePercentage),
     createData('progress', Math.round(((600-diff) * 100)/600)),
   ]
-  const eraPercentage = Math.round(donePercentage * (session.esix / 6));
+  const eraPercentage = Math.round(((session.esix - 1) / 6 * 100) + (donePercentage / 6));
   
   let pieEraData = [];
   for (let i = 1; i <= 6; i++) {

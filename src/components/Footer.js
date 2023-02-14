@@ -120,7 +120,7 @@ export default function Footer({small}) {
           <Box sx={{ py: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
             <Box>
               <Typography variant="caption" color="textSecondary" sx={{ mr: 2 }}>
-              © 2023 TurboFlakes | ONE-T • Blockchain Analytics
+              © 2023 TurboFlakes // ONE-T // Blockchain Analytics
               </Typography>
               <img src={kusamaTreasurySVG} style={{ 
                     marginLeft: 8,

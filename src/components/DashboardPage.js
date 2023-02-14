@@ -32,6 +32,8 @@ import {
   selectIsSocketConnected,
 } from '../features/api/socketSlice'
 
+
+
 export default function DashboardPage() {
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
@@ -47,6 +49,8 @@ export default function DashboardPage() {
     // TODO websocket/network disconnected page
     return (<Box sx={{ m: 2, minHeight: '100vh' }}></Box>)
   }
+
+
 
   return (
     <Box sx={{ mb: 10, display: 'flex', justifyContent: 'center'}}>
