@@ -38,7 +38,6 @@ const renderTooltip = (props) => {
 
 export default function GradesPieChart({data, size, dark, showNetworkIcon}) {
   const theme = useTheme();
-  console.log("__daata",data);
   return (
     <Box
         sx={{
