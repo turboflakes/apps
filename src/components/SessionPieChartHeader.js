@@ -9,15 +9,12 @@ import { Typography } from '@mui/material';
 import { 
   useGetBlockQuery,
   selectFinalizedBlock,
- } from '../features/api/blocksSlice'
+ } from '../features/api/blocksSlice';
 import { 
   useGetSessionByIndexQuery,
   selectSessionByIndex,
   selectSessionCurrent
- } from '../features/api/sessionsSlice'
-import {
-  selectIsLiveMode
-} from '../features/layout/layoutSlice';
+ } from '../features/api/sessionsSlice';
 
 function createData(name, value) {
   return { name, value };
@@ -34,7 +31,7 @@ export default function SessionPieChartHeader() {
     isFetching: isFetchingSession } = useGetSessionByIndexQuery(currentSession);
   const finalized = useSelector(selectFinalizedBlock)
   const session = useSelector(state => selectSessionByIndex(state, currentSession))
-  const isLiveMode = useSelector(selectIsLiveMode)
+  // const isLiveMode = useSelector(selectIsLiveMode)
 
   if (isFetchingBlockSuccess || isFetchingSession || isUndefined(session)) {
     return (<Skeleton variant="rounded" sx={{
@@ -48,7 +45,7 @@ export default function SessionPieChartHeader() {
     return null
   }
 
-  const diff = isLiveMode ? finalized.block_number - session.sbix : session.ebix - session.sbix;
+  const diff = finalized.block_number - session.sbix;
   const donePercentage = Math.round((diff * 100)/600);
   const pieEpochData = [
     createData('done', donePercentage),
