@@ -31,6 +31,7 @@ import {
   selectFinalizedBlock 
 } from './blocksSlice'
 import { calculateMvr } from '../../util/mvr'
+import { grade } from '../../util/grade';
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Sessions'],
@@ -166,16 +167,19 @@ const sessionsSlice = createSlice({
         const _mvrs = filtered.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
         const _validity_votes = filtered.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv);
         const _backing_points = filtered.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0);
-        // const _stashes = validators.map(v => v.address);
-        // const _stashes = validators.map(v => v.address);
         const _current_stashes = !isUndefined(currentState.entities[session]) ? (!isUndefined(currentState.entities[session]._stashes) ? currentState.entities[session]._stashes : []) : [];
         const _stashes  = union(_current_stashes, validators.map(v => v.address));
+        const _dispute_stashes = filtered.filter(v => !isUndefined(v.para.disputes)).map(v => v.address);
+        const _f_grade_stashes = filtered.filter(v => grade(1 - calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)) === "F").map(v => v.address);
+        
         adapter.upsertOne(state, { six: parseInt(session, 10), 
           [setKey(action, "_group_ids")]: _group_ids, 
           [setKey(action, "_mvrs")]: _mvrs, 
           [setKey(action, "_validity_votes")]: _validity_votes, 
           [setKey(action, "_backing_points")]: _backing_points, 
           [setKey(action, "_stashes")]: _stashes, 
+          [setKey(action, "_dispute_stashes")]: _dispute_stashes,   
+          [setKey(action, "_f_grade_stashes")]: _f_grade_stashes,   
         })
       })
 
@@ -264,6 +268,14 @@ export const selectScheduledParachainsBySession = (state, session) => {
 export const selectMVRsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
   (isArray(selectSessionByIndex(state, session)._mvrs) ? 
     selectSessionByIndex(state, session)._mvrs : []) : [];
+
+export const selectDisputesBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
+  (isArray(selectSessionByIndex(state, session)._dispute_stashes) ? 
+    selectSessionByIndex(state, session)._dispute_stashes : []) : [];
+
+export const selectLowGradesBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
+  (isArray(selectSessionByIndex(state, session)._f_grade_stashes) ? 
+    selectSessionByIndex(state, session)._f_grade_stashes : []) : [];
 
 export const selectValidityVotesBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
   (isArray(selectSessionByIndex(state, session)._validity_votes) ? 

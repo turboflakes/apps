@@ -33,7 +33,7 @@ export default function AuthoritiesBox({address}) {
     return null
   }
 
-  if (grade(1 - mvr) !== "F") {
+  if (grade(1 - mvr) !== "F" && isUndefined(validator.para.disputes)) {
     return null
   }
   

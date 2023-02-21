@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useTheme, styled } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined';
 import isNull from 'lodash/isNull';
+import uniq from 'lodash/uniq';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -11,7 +12,8 @@ import {
   selectFinalizedBlock,
 } from '../features/api/blocksSlice';
 import { 
-  selectMVRsBySession
+  selectLowGradesBySession,
+  selectDisputesBySession
  } from '../features/api/sessionsSlice';
 
 import { grade } from '../util/grade';
@@ -37,11 +39,14 @@ const customTitle = (data, theme) => {
           boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px'
          }}
       >
-        <Typography variant="h6" color="textSecondary">
-          <b>{data.value} validators need attention!</b>
+        <Typography variant="h6" color="textSecondary" gutterBottom>
+          <b>Some validators need attention!</b>
         </Typography>
         <Typography component="div" variant="caption" color="textSecondary" gutterBottom>
-          <span style={{color: theme.palette.text.primary }}></span>MVR average: <b>{data.average}</b>
+          <span style={{color: theme.palette.text.primary }}></span>Grade F: <b>{data.fGrades}</b>
+        </Typography>
+        <Typography component="div" variant="caption" color="textSecondary" gutterBottom>
+          <span style={{color: theme.palette.text.primary }}></span>Disputes: <b>{data.disputes}</b>
         </Typography>
       </Box>
   )
@@ -67,26 +72,19 @@ const emptyBox = ({theme, dark}) => {
 export default function AuthoritiesBox({sessionIndex, dark}) {
   const theme = useTheme();
   const block = useSelector(selectFinalizedBlock);
-  const rawMvrs = useSelector(state => selectMVRsBySession(state, sessionIndex));
+  const disputeStashes = useSelector(state => selectDisputesBySession(state, sessionIndex));
+  const fGradeStashes = useSelector(state => selectLowGradesBySession(state, sessionIndex));
   
-  if (!rawMvrs.length) {
+  const stashes = uniq([...fGradeStashes, ...disputeStashes]);
+  if (!stashes.length) {
     return emptyBox({theme, dark})
   }
   
-  const mvrs = rawMvrs.filter(mvr => !isUndefined(mvr) && !isNull(mvr))
-
-  if (!mvrs.length) {
+  if (isUndefined(block) || isUndefined(block.stats) ||  !stashes.length) {
     return emptyBox({theme, dark})
   }
 
-  if (isUndefined(block) || isUndefined(block.stats) || !mvrs.length) {
-    return emptyBox({theme, dark})
-  }
-
-  const poorGrades = mvrs.filter(mvr => grade(1 - mvr) === "F");
-  const pgAverage = Math.round((poorGrades.reduce((a, b) => a + b, 0) / poorGrades.length) * 10000) / 10000;
-  const pgPercentage = poorGrades.length * 100 / mvrs.length;
-  const tooltipData = {value: poorGrades.length, percentage: pgPercentage, average: pgAverage, session: sessionIndex};
+  const tooltipData = {fGrades: fGradeStashes.length, disputes: disputeStashes.length, session: sessionIndex};
 
   return (
     <Paper sx={{
@@ -112,7 +110,7 @@ export default function AuthoritiesBox({sessionIndex, dark}) {
           {!isUndefined(block.stats.npa) ? `${block.stats.npa} para-authorities` : '-'}
         </Typography>
       </Box>
-      {poorGrades.length > 0 ?
+      {stashes.length > 0 ?
         <Box sx={{px: 1, display: 'flex', flexDirection: 'column',  alignItems: 'flex-end', justifyContent: 'flex-start'}}>
           {/* <Typography variant="caption" color={theme.palette.semantics.red}>
             needs attention
@@ -138,7 +136,7 @@ export default function AuthoritiesBox({sessionIndex, dark}) {
                 </Box>
               </Box>
               <Typography sx={{ ml: 1 }} variant="h5" color={theme.palette.semantics.red} >
-                {poorGrades.length}
+                {stashes.length}
               </Typography>
             </Box>
           </CustomTooltip>
