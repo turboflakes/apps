@@ -1,6 +1,6 @@
 import isUndefined from 'lodash/isUndefined'
 export const grade = (ratio) => {
-  if (isUndefined(ratio)) {
+  if (isUndefined(ratio) || isNaN(ratio)) {
     return "-"
   }
   let p = Math.round(ratio * 10000);

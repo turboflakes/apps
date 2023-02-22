@@ -14,7 +14,7 @@ import { calculateMvr } from '../util/mvr'
 
 import { grade } from '../util/grade';
 
-export default function AuthoritiesBox({address}) {
+export default function ValAuthentionBox({address}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));

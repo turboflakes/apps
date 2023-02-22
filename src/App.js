@@ -17,6 +17,7 @@ import LayoutPage from './components/LayoutPage'
 import DashboardPage from './components/DashboardPage'
 import OverviewPage from './components/OverviewPage'
 import ValidatorPage from './components/ValidatorPage'
+import UnderMaintenancePage from './components/UnderMaintenancePage'
 import withTheme from './theme/withTheme'
 import {
   selectChain,
@@ -75,6 +76,8 @@ const App = () => {
   return (
       <Router>
         <Routes>
+          {/* <Route path="/" element={<UnderMaintenancePage />} />
+          <Route path="*" element={<Navigate to="/" />} /> */}
           <Route path="/" element={<LayoutPage api={api} />}>
             <Route index element={<Navigate to="/dashboard" />} />
             <Route path="dashboard" element={<DashboardPage />} />

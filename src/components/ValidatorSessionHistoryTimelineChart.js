@@ -84,6 +84,9 @@ const renderTooltip = (props, identiy, theme) => {
                 <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points: <b>{data.abPoints.format()}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.red}}>❚</span>Disputes: <b>{data.disputes.format()}</b>
+              </Typography>
+              <Typography component="div" variant="caption" color="inherit">
                 <span style={{ marginRight: '8px', color: theme.palette.primary.main }}>●</span>MVR: <b>{Math.round(data.valMvr * 10000) / 10000}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
@@ -146,6 +149,9 @@ const renderLegend = (theme) => {
       </Typography>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
         <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points
+      </Typography>
+      <Typography variant="caption" color="inherit" sx={{mr: 1}}>
+        <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>❚</span>Disputes
       </Typography>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
         <span style={{ marginRight: '8px', color: theme.palette.primary.main }}>●</span>MVR
@@ -212,9 +218,14 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
     gradeValue: v.is_para ? grade(1 - calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)) : '',
     valMvr: v.is_para ? calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv) : 0,
     valGroupMvr: v.is_para ? v._val_group_mvr : 0,  
+    disputes: v.is_para && !isUndefined(v.para) && !isUndefined(v.para.disputes) ? v.para.disputes.length : 0,
     group: v.is_para ? v.para.group : '',
     sessionMvr: allMvrs[i]
-  }))
+  }));
+
+  const totalDisputes = validators
+    .map(v => v.is_para && !isUndefined(v.para) && !isUndefined(v.para.disputes) ? v.para.disputes.length : 0)
+    .reduce((a, b) => a + b, 0);
 
   const handleClick = (newSession) => {
     // setSessionIndex(newSession);
@@ -312,6 +323,21 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
           <Line yAxisId="rightMVR" type="monotone" dataKey="sessionMvr" dot={false} 
             stroke={theme.palette.semantics.amber} strokeWidth={2} />
           
+          {/* disputes */}
+          {totalDisputes > 0 ? 
+            <YAxis type="number" yAxisId="rightDisputes"
+              hide={true}
+              width={64}
+              style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}
+              axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}} 
+              /> : null }
+          {totalDisputes > 0 ? 
+            <Bar dataKey="disputes" yAxisId="rightDisputes" barSize={6} shape={<Rectangle radius={[8, 8, 0, 0]} />} >
+              {
+                data.map((entry, index) => (<Cell key={`cell-${index}`} fill={theme.palette.semantics.red} />))
+              }
+            </Bar> : null}
+
           <TooltipChart 
                 cursor={{fill: theme.palette.divider}}
                 offset={24}

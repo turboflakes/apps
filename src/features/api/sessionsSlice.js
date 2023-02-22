@@ -301,7 +301,7 @@ export const selectMvrBySessions = (state, sessionIds = []) => sessionIds.map(id
 export const selectBackingPointsBySessions = (state, sessionIds = []) => sessionIds.map(id => {
   const session = selectSessionByIndex(state, id);
   if (!isUndefined(session)) {
-    if (session.stats) {
+    if (!isUndefined(session.stats)) {
       return session.stats.pt - (session.stats.ab * 20); 
     }
   }
@@ -310,7 +310,7 @@ export const selectBackingPointsBySessions = (state, sessionIds = []) => session
 export const selectTotalPointsBySessions = (state, sessionIds = []) => sessionIds.map(id => {
   const session = selectSessionByIndex(state, id);
   if (!isUndefined(session)) {
-    if (session.stats) {
+    if (!isUndefined(session.stats)) {
       return session.stats.pt; 
     }
   }
@@ -319,8 +319,17 @@ export const selectTotalPointsBySessions = (state, sessionIds = []) => sessionId
 export const  selectAuthoredBlocksBySessions = (state, sessionIds = []) => sessionIds.map(id => {
   const session = selectSessionByIndex(state, id);
   if (!isUndefined(session)) {
-    if (session.stats) {
+    if (!isUndefined(session.stats)) {
       return session.stats.ab; 
+    }
+  }
+}).filter(v => !isUndefined(v))
+
+export const  selectDisputesBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    if (!isUndefined(session.stats)) {
+      return session.stats.di
     }
   }
 }).filter(v => !isUndefined(v))

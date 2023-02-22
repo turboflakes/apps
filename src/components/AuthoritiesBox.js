@@ -76,11 +76,8 @@ export default function AuthoritiesBox({sessionIndex, dark}) {
   const fGradeStashes = useSelector(state => selectLowGradesBySession(state, sessionIndex));
   
   const stashes = uniq([...fGradeStashes, ...disputeStashes]);
-  if (!stashes.length) {
-    return emptyBox({theme, dark})
-  }
-  
-  if (isUndefined(block) || isUndefined(block.stats) ||  !stashes.length) {
+
+  if (isUndefined(block) || isUndefined(block.stats)) {
     return emptyBox({theme, dark})
   }
 

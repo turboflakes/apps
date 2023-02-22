@@ -15,6 +15,7 @@ import {
   selectMvrBySessions,
   selectBackingPointsBySessions,
   selectAuthoredBlocksBySessions,
+  selectDisputesBySessions,
   selectSessionByIndex,
   sessionHistoryChanged,
   buildSessionIdsArrayHelper
@@ -54,6 +55,9 @@ const renderTooltip = (props, theme) => {
               <Typography component="div" variant="caption" color="inherit">
                 <span style={{ marginRight: '8px', color: theme.palette.semantics.amber, fontWeight: 600 }}>●</span>MVR (All Para-Authorities): <b>{Math.round(data.mvr * 10000) / 10000}</b>
               </Typography>
+              <Typography component="div" variant="caption" color="inherit">
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.red, fontWeight: 600 }}>❚</span>Disputes: <b>{!isUndefined(data.disputes) ? data.disputes.format() : ''}</b>
+              </Typography>
             </Box>
           </Box>
       </Box>
@@ -72,8 +76,11 @@ const renderLegend = (theme) => {
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
         <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>●</span>Authored Block Points
       </Typography>
-      <Typography variant="caption" color="inherit">
+      <Typography variant="caption" color="inherit" sx={{mr: 1}}>
         <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>●</span>MVR (All Para-Authorities)
+      </Typography>
+      <Typography component="div" variant="caption" color="inherit">
+        <span style={{ marginRight: '8px', color: theme.palette.semantics.red, fontWeight: 600 }}>❚</span>Disputes
       </Typography>
     </Box>
   );
@@ -88,6 +95,7 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
   const allBackingPoints = useSelector(state => selectBackingPointsBySessions(state, historySessionIds));
   const allAuthoredBlocks = useSelector(state => selectAuthoredBlocksBySessions(state, historySessionIds));
   const allMvrs = useSelector(state => selectMvrBySessions(state, historySessionIds));
+  const allDisputes = useSelector(state => selectDisputesBySessions(state, historySessionIds));
   const historySessionSelected = useSelector(state => selectSessionByIndex(state, historySession));
   
   const data = historySessionIds.map((sessionId, i) => ({
@@ -95,6 +103,7 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
     gradeValue: grade(1 - allMvrs[i]),
     pvPoints: allBackingPoints[i],
     abPoints: allAuthoredBlocks[i] * 20,
+    disputes: allDisputes[i],
     mvr: allMvrs[i]
   }));
 
@@ -163,18 +172,7 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
             style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}
             axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}} 
             />
-          {/* <Bar dataKey="abPoints" stackId="points" barSize={12} fill={theme.palette.secondary.main} />
-          <Bar dataKey="pvPoints" stackId="points" barSize={12} shape={<Rectangle radius={[8, 8, 0, 0]} />} 
-            onClick={handleClick} >
-            {
-              data.map((entry, index) => (
-                <Cell key={`cell-${index}`} cursor="pointer" 
-                  stroke={theme.palette.neutrals[300]}
-                  strokeWidth={historySession === entry.session ? 4 : 0}
-                  fill={theme.palette.grade[entry.gradeValue]} />
-                ))
-            }
-          </Bar> */}
+
           <Line type="monotone" dataKey="pvPoints" dot={false} 
             stroke={theme.palette.secondary.main} strokeWidth={2} />
           <Line type="monotone" dataKey="abPoints" dot={false} 
@@ -191,6 +189,19 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
           <Line yAxisId="rightMVR" type="monotone" dataKey="mvr" dot={false} 
             stroke={theme.palette.semantics.amber} strokeWidth={2} />
           
+          {/* disputes */}
+          <YAxis type="number" yAxisId="rightDisputes"
+            hide={true}
+            width={64}
+            style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}
+            axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}} 
+            />
+          <Bar dataKey="disputes" yAxisId="rightDisputes" barSize={12} shape={<Rectangle radius={[8, 8, 0, 0]} />} >
+            {
+              data.map((entry, index) => (<Cell key={`cell-${index}`} fill={theme.palette.semantics.red} />))
+            }
+          </Bar>
+
           <Tooltip 
                 cursor={{fill: theme.palette.divider}}
                 offset={24}

@@ -17,6 +17,7 @@ import gradeC from '../assets/grades/grade_c.webp';
 import gradeDplus from '../assets/grades/grade_d_plus.webp';
 import gradeD from '../assets/grades/grade_d.webp';
 import gradeF from '../assets/grades/grade_f.webp';
+import emptyGrade from '../assets/grades/empty_grade.svg';
 
 const GRADES = {
   "A+" : gradeAplus,
@@ -28,6 +29,7 @@ const GRADES = {
   "D+" : gradeDplus,
   "D" : gradeD,
   "F" : gradeF,
+  "-" : emptyGrade
 }
 
 export default function GradeIcon({sessionIndex, address, size = 96}) {
@@ -38,11 +40,8 @@ export default function GradeIcon({sessionIndex, address, size = 96}) {
     return null
   }
   
-  const gradeValue = !isUndefined(validator.para_summary) ? grade(1 - calculateMvr(validator.para_summary.ev, validator.para_summary.iv, validator.para_summary.mv)) : undefined;
-
-  if (isUndefined(gradeValue)) {
-    return null
-  }
+  const gradeValue = !isUndefined(validator.para_summary) ? 
+    grade(1 - calculateMvr(validator.para_summary.ev, validator.para_summary.iv, validator.para_summary.mv)) : "-";
 
   return (
     <Tooltip title={`Para-Authority grade performance for session ${sessionIndex}.`} arrow>

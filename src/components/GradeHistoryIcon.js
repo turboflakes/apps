@@ -21,6 +21,7 @@ import gradeC from '../assets/grades/grade_c.webp';
 import gradeDplus from '../assets/grades/grade_d_plus.webp';
 import gradeD from '../assets/grades/grade_d.webp';
 import gradeF from '../assets/grades/grade_f.webp';
+import emptyGrade from '../assets/grades/empty_grade.svg';
 
 const GRADES = {
   "A+" : gradeAplus,
@@ -32,6 +33,7 @@ const GRADES = {
   "D+" : gradeDplus,
   "D" : gradeD,
   "F" : gradeF,
+  "-" : emptyGrade
 }
 
 export default function GradeHistoryIcon({address, maxSessions, size = 96}) {
@@ -53,10 +55,6 @@ export default function GradeHistoryIcon({address, maxSessions, size = 96}) {
   );
 
   const gradeValue = grade(1 - mvr);
-
-  if (!gradeValue) {
-    return null
-  }
   
   return (
     <Box>
