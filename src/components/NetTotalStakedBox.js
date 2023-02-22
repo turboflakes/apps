@@ -31,7 +31,7 @@ import { stakeDisplay } from '../util/display';
       >
         <Box sx={{mb: 2}}>
           <Typography component="div" variant="caption" color="inherit">
-            <b>Total Staked</b>
+            <b>Total Staked vs Total Issuance</b>
           </Typography>
           <Typography component="div" variant="caption" color="inherit">
             <i>{`session #${data.session.format()}`}</i>
@@ -111,7 +111,10 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
           <Typography variant="caption" gutterBottom>Total Staked</Typography>
           <Typography variant="h4">
-            {stakeDisplay(total_staked, chainInfo, 0, true)} {!isUndefined(total_staked_percentage) ? `(${total_staked_percentage}%)` : ''}
+            {stakeDisplay(total_staked, chainInfo, 0, true)}
+          </Typography>
+          <Typography variant="subtitle2">
+            {!isUndefined(total_staked_percentage) ? `${total_staked_percentage}% of total issuance` : ''}
           </Typography>
         </Box>
       </Box>

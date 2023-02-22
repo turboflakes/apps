@@ -14,7 +14,7 @@ const initializePage = () => {
 const initialState = {
   page: initializePage(),
   mode: 'Live',
-  maxHistoryEras: 8,
+  maxHistoryEras: 16,
   identityFilter: '',
   subsetFilter: ''
 };
