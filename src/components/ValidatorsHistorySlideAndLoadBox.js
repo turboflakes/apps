@@ -41,7 +41,7 @@ export default function ValidatorsHistoryInsights({skip}) {
       }}
       >
       <Box sx={{ my: 1, display: "flex", alignItems: "center", justifyContent: 'space-between'}} >
-        <SessionSliderRange />
+        <SessionSliderRange isFetching={isFetching} />
         <Box sx={{ mx: 1 }}>
           <Button variant='contained' 
             endIcon={isFetching ? <Spinner size={24}/> : <AddIcon />} 

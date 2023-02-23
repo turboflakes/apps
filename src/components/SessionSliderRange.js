@@ -89,7 +89,7 @@ function useSessionRange(range) {
   return [value, setValue];
 }
 
-export default function SessionSliderRange({showCaption}) {
+export default function SessionSliderRange({showCaption, isFetching}) {
   // const theme = useTheme();
   const dispatch = useDispatch();
   const historySessionIds = useSelector(selectSessionHistoryIds);
@@ -134,6 +134,7 @@ export default function SessionSliderRange({showCaption}) {
       <Stack spacing={3} direction="row" sx={{ ml: 1, mr: 3 }} alignItems="center">
         {showCaption ? <Typography variant="caption" sx={{ ml: 3 }}>past</Typography> : null}
         <CustomSlider
+          disabled={isFetching}
           value={sessionRange}
           onChange={handleChange}
           onChangeCommitted={handleChangeCommitted}
