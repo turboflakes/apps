@@ -141,8 +141,8 @@ export default function DashboardPage() {
         
 
         <Grid item xs={12} >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
-            <SearchSmall />
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+            {/* <SearchSmall /> */}
             <Box>
               <HistoryErasMenu />
             </Box>

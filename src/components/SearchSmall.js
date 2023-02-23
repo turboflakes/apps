@@ -52,7 +52,7 @@ export default function SearchSmall(props) {
           sx={{
             // backgroundColor: theme.palette.neutrals[100],
             borderRadius: 30,
-            width: 712
+            width: 512,
           }}
           variant="outlined"
           placeholder="Search by validator stash address"
@@ -78,7 +78,7 @@ export default function SearchSmall(props) {
               paddingLeft: '4px',
               '> .MuiOutlinedInput-input': {
                 fontSize: "0.925rem",
-                height: "36px",
+                height: "30px",
                 // fontSize: "0.825rem",
                 // lineHeight: "1rem",
               },

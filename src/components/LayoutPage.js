@@ -245,6 +245,9 @@ export default function LayoutPage({api}) {
             {/* <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}>
               { selectedPage !== 'validators/insights' && selectedPage !== 'dashboard' ? <SearchSmall /> : null }
             </Box> */}
+            <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}>
+              <SearchSmall />
+            </Box>
             <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}></Box>
             <Box sx={{ display: 'flex', alignItems: 'center'}}>
              <SessionPerformancePieChartHeader />

@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import SortIcon from '@mui/icons-material/Sort';
+import InputAdornment from '@mui/material/InputAdornment';
 
 import {
   selectIdentityFilter,
@@ -31,6 +34,15 @@ export default function SubsetFilter() {
       size="small"
       fullWidth
       InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <IconButton sx={{ ml: 1}} size="small"
+              // disabled={!isValidAddress(this.state.address)}
+              >
+              <SortIcon />
+            </IconButton>
+          </InputAdornment>
+        ),
         sx: {
           borderRadius: 30,
           paddingLeft: '4px',
