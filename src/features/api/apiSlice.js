@@ -3,7 +3,7 @@ import { selectChain } from '../chain/chainSlice'
 import { getNetworkHost } from '../../constants'
 
 const rawBaseQuery = fetchBaseQuery({
-  baseUrl: `//`,
+  baseUrl: '',
 })
 
 const dynamicBaseQuery = async (args, api, extraOptions) => {
@@ -20,7 +20,8 @@ const dynamicBaseQuery = async (args, api, extraOptions) => {
   }
 
   // construct a dynamically generated portion of the url
-  const adjustedUrl = `${getNetworkHost(chainName)}/api/v1`
+  const protocol = getNetworkHost(chainName).includes("localhost") ? 'http:' : 'https:';
+  const adjustedUrl = `${protocol}//${getNetworkHost(chainName)}/api/v1`
 
   const adjustedArgs =
     typeof args === 'string' ? `${adjustedUrl}${args}` : { ...args, url: `${adjustedUrl}${args.url}` }
