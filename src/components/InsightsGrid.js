@@ -8,9 +8,8 @@ import ValidatorsInsights from './ValidatorsInsights';
 import ValidatorsHistoryInsights from './ValidatorsHistoryInsights';
 import SubsetBox from './SubsetBox';
 import SubsetFilter from './SubsetFilter';
-
 import GradesWithFilterBox from './GradesWithFilterBox';
-
+import ValidatorsHistorySlideAndLoadBox from './ValidatorsHistorySlideAndLoadBox';
 import {
   selectAddress,
   addressChanged
@@ -18,6 +17,7 @@ import {
 import { 
   selectSessionHistory,
   selectSessionCurrent,
+  selectSessionHistoryRangeIds
  } from '../features/api/sessionsSlice';
 import { 
   selectIsLiveMode,
@@ -37,6 +37,7 @@ export default function InsightsGrid() {
   const currentSession = useSelector(selectSessionCurrent);
   const isLiveMode = useSelector(selectIsLiveMode);
   const isHistoryMode = useSelector(selectIsHistoryMode);
+  const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
   
   React.useEffect(() => {
@@ -56,11 +57,14 @@ export default function InsightsGrid() {
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Validator Insights</Typography>
           <Typography variant="subtitle" color="secondary">
-          Active validators in the current session {sessionIndex.format()}
+          {isLiveMode ? 
+            `Active validators in the current session ${sessionIndex.format()}` : 
+            `Active validators between session ${historySessionRangeIds[0].format()} and ${historySessionRangeIds[historySessionRangeIds.length - 1].format()}`}
           </Typography>
         </Box>
         <SubsetFilter />
       </Box>
+      {isHistoryMode ? <ValidatorsHistorySlideAndLoadBox /> : null}
       <Grid container spacing={2}>
         {isLiveMode ? 
           <Grid item xs={10}>

@@ -45,7 +45,7 @@ export default function ValDisputesBox({address, maxSessions}) {
           {!isUndefined(disputesTotal) ? disputesTotal : '-'}
         </Typography>
           <Typography variant="subtitle2" color="textSecondary" sx={{ whiteSpace: 'nowrap' }}>
-            last #{!isUndefined(lastDisputeBlock) ? lastDisputeBlock.format() : '-'}
+            last seen at block #{!isUndefined(lastDisputeBlock) ? lastDisputeBlock.format() : '-'}
           </Typography>
       </Box>
     </Paper>

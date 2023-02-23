@@ -79,12 +79,12 @@ export default function ValidatorPage() {
             </Box>
           </Grid> : null}
 
-        {isSuccess && validator.is_auth ? 
+        {isSuccess ? 
           <Grid item xs={12}>
             <ValHeaderBox address={selectedAddress} sessionIndex={sessionIndex} />
           </Grid> : null}
 
-        {isSuccess && validator.is_auth ?
+        {isSuccess ?
           <Grid item xs={12}>
             <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
               <ModeSwitch mode={selectedMode} />

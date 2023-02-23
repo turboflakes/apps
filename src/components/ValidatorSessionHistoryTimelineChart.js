@@ -334,7 +334,12 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
           {totalDisputes > 0 ? 
             <Bar dataKey="disputes" yAxisId="rightDisputes" barSize={6} shape={<Rectangle radius={[8, 8, 0, 0]} />} >
               {
-                data.map((entry, index) => (<Cell key={`cell-${index}`} fill={theme.palette.semantics.red} />))
+                data.map((entry, index) => (
+                <Cell key={`cell-${index}`} cursor="pointer" 
+                  onClick={() => handleClick(entry.session)}
+                  stroke={theme.palette.neutrals[300]}
+                  strokeWidth={historySession === entry.session ? 4 : 0}
+                  fill={theme.palette.semantics.red} />))
               }
             </Bar> : null}
 

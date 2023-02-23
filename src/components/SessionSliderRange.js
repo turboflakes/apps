@@ -8,14 +8,10 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import { 
-  useGetSessionsQuery, 
   sessionHistoryRangeChanged,
-  sessionHistoryIdsChanged,
   selectSessionHistoryRange,
   selectSessionHistoryIds,
   selectSessionsByIds,
-  selectSessionHistory,
-  buildSessionIdsArrayHelper
 } from '../features/api/sessionsSlice'
 
 const CustomSlider = styled(Slider)(({ theme }) => ({
@@ -93,18 +89,13 @@ function useSessionRange(range) {
   return [value, setValue];
 }
 
-export default function SessionSliderRange() {
+export default function SessionSliderRange({showCaption}) {
   // const theme = useTheme();
   const dispatch = useDispatch();
-  // const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true}, {refetchOnMountOrArgChange: true});
   const historySessionIds = useSelector(selectSessionHistoryIds);
   const historySessions = useSelector(state => selectSessionsByIds(state, historySessionIds));
   const historySessionRange = useSelector(selectSessionHistoryRange);
   const [sessionRange, setSessionRange] = useSessionRange(historySessionRange);
-  
-  // if (!isSessionSuccess) {
-  //   return null
-  // }
 
   const handleChange = (event, range) => {
     setSessionRange(range);
@@ -136,24 +127,13 @@ export default function SessionSliderRange() {
         py: 2,
         display: 'flex',
         flexDirection: 'column',
-        // alignItems: 'center',
         width: '100%',
-        // height: 72,
-        // borderRadius: 3,
-        // borderTopLeftRadius: '24px',
-        // borderTopRightRadius: '24px',
-        // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+        
       }}
       >
-      {/* <Box sx={{ p:`16px 24px`, display: 'flex', justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="h6">History</Typography>
-        </Box>
-      </Box> */}
-      <Stack spacing={3} direction="row" sx={{ mb: 1 }} alignItems="center">
-        <Typography variant="caption" sx={{ ml: 3 }}>past</Typography>
+      <Stack spacing={3} direction="row" sx={{ ml: 1, mr: 3 }} alignItems="center">
+        {showCaption ? <Typography variant="caption" sx={{ ml: 3 }}>past</Typography> : null}
         <CustomSlider
-          // defaultValue={sessionIndex}
           value={sessionRange}
           onChange={handleChange}
           onChangeCommitted={handleChangeCommitted}
@@ -163,7 +143,7 @@ export default function SessionSliderRange() {
           marks={marks}
           valueLabelFormat={valueLabelFormat}
           valueLabelDisplay="on"/>
-        <Typography variant="caption">present</Typography>
+        {showCaption ? <Typography variant="caption">present</Typography> : null}
       </Stack>
     </Box>
   );

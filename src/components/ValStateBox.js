@@ -21,7 +21,7 @@ export default function ValStateBox({address, sessionIndex, dark}) {
   // const currentSession = useSelector(selectSessionCurrent);
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex))
   
-  if (isUndefined(validator) || isUndefined(session)) {
+  if (isUndefined(validator) || isUndefined(session) || !validator.is_auth) {
     return null
   }
 

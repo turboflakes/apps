@@ -86,7 +86,7 @@ export default function ValHeaderBox({address, sessionIndex}) {
                       height: 96,
                     }}> 
                     <Typography variant="h6">History Stats</Typography>
-                    <Typography variant="subtitle2">{isLiveMode ? `${ORDER[session.esix-1]} session of era ${session.eix.format()}` : `From last ${maxHistorySessions} sessions (${maxHistoryEras} eras)`}</Typography>
+                    <Typography variant="subtitle2">{`From last ${maxHistorySessions} sessions (${maxHistoryEras} eras)`}</Typography>
                   </Box> }
               </Grid>
               <Grid item xs={12} md={isLiveMode ? 3 : 3}>
