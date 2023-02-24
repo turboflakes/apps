@@ -9,7 +9,8 @@ import SessionPointsBox from './SessionPointsBox';
 import AuthoredBlocksBox from './AuthoredBlocksBox';
 import BackingPointsBox from './BackingPointsBox';
 import PoolsMembersBox from './PoolsMembersBox';
-import GradesSmallBox from './GradesSmallBox';
+import PoolsPointsBox from './PoolsPointsBox';
+import PoolsPendingRewardsBox from './PoolsPendingRewardsBox';
 
 import { 
   selectSessionHistory,
@@ -54,10 +55,10 @@ export default function PoolsOverviewPage({tab}) {
           <PoolsMembersBox sessionIndex={currentSession} />
         </Grid>
         <Grid item xs={12} md={2}>
-          <GradesSmallBox sessionIndex={currentSession} />
+          <PoolsPointsBox sessionIndex={currentSession} />
         </Grid>
         <Grid item xs={12} md={2}>
-          <AuthoredBlocksBox />
+          <PoolsPendingRewardsBox sessionIndex={currentSession} />
         </Grid>
         <Grid item xs={12} md={2}>
           <BackingPointsBox />

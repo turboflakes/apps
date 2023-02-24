@@ -195,7 +195,6 @@ const sessionsSlice = createSlice({
       const groupedBySession = groupBy(action.payload.data, v => !!v.session ? v.session : action.payload.session)
 
       forEach(groupedBySession, (pools, session) => {
-        console.log("___pools, session", pools, session);
         if (!isUndefined(session)) {
           adapter.upsertOne(state, { six: parseInt(session, 10), _pool_ids: pools.map(p => p.id)})
         }

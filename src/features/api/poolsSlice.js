@@ -110,6 +110,13 @@ export const selectTotalPointsBySession = (state, session) => selectPoolIdsBySes
   })
   .reduce((a, b) => a + b, 0)
 
+export const selectTotalPendingRewardsBySession = (state, session) => selectPoolIdsBySession(state, session)
+  .map(id => {
+    const pool = selectPoolById(state, `${session}_${id}`)
+    return !isUndefined(pool.stats) ? pool.stats.reward : 0;
+  })
+  .reduce((a, b) => a + b, 0)
+
 
 // export const selectValGroupIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
 // export const selectValGroupIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 

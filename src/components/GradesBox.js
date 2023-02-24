@@ -11,9 +11,9 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Skeleton from '@mui/material/Skeleton';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import GradesPieChart from './GradesPieChart';
+import Tooltip from './Tooltip';
 import { 
   useGetValidatorsQuery,
  } from '../features/api/validatorsSlice';
@@ -23,18 +23,6 @@ import {
 import { grade } from '../util/grade'
 
 const grades = ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "F"]
-
-const CustomTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} arrow classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.arrow}`]: {
-    color: theme.palette.grey[600],
-  },
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.background.primary,
-    boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px',
-  },
-}));
 
 export default function GradesBox({sessionIndex, size}) {
   const theme = useTheme();
@@ -94,7 +82,7 @@ export default function GradesBox({sessionIndex, size}) {
         <Box sx={{ ml: 4, display: 'flex', flexDirection: 'column', width: 144}}>
           <Box sx={{ ml: 1, display: 'flex'}}>
             {/* <Typography variant="caption">validator grades</Typography> */}
-            <CustomTooltip
+            <Tooltip
               disableFocusListener
               placement="bottom-end"
               title={
@@ -117,7 +105,7 @@ export default function GradesBox({sessionIndex, size}) {
               }
               >
               <InfoOutlinedIcon sx={{ color: theme.palette.neutrals[300]}}/>
-            </CustomTooltip>
+            </Tooltip>
           </Box>
           <List dense >
             {gradesData.map((g, i) => (

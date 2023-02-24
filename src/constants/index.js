@@ -43,7 +43,7 @@ const networkSettings = {
     maxHistoryEras: 32,
     coreAssignmentsTarget: 60,
     blocksPerSessionTarget: 600, 
-    sessionsPerDayTarget: 24,
+    sessionsPerDayTarget: 6,
     poolIds: [process.env.REACT_APP_KUSAMA_POOL_ID_1, process.env.REACT_APP_KUSAMA_POOL_ID_2],
     chains: prodParasKusama,
     validators: [

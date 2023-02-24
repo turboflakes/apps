@@ -10,22 +10,27 @@ import Tooltip from './Tooltip';
 
 import {
   selectChain,
+  selectChainInfo,
 } from '../features/chain/chainSlice';
 import { 
-  selectTotalMembersBySession
+  selectTotalPendingRewardsBySession
  } from '../features/api/poolsSlice';
 import { 
   getSessionsPerDayTarget 
 } from '../constants'
+import { stakeDisplay } from '../util/display';
 
-export default function PoolMembersBox({sessionIndex, isFetching, dark}) {
+
+export default function PoolsPendingRewardsBox({sessionIndex, isFetching, dark}) {
   const theme = useTheme();
   const selectedChain = useSelector(selectChain);
+  const selectedChainInfo = useSelector(selectChainInfo);
   const nSessionsTarget = getSessionsPerDayTarget(selectedChain);
-  const currentValue = useSelector(state => selectTotalMembersBySession(state, sessionIndex));
-  const previousValue = useSelector(state => selectTotalMembersBySession(state, sessionIndex - nSessionsTarget));
+  const currentValue = useSelector(state => selectTotalPendingRewardsBySession(state, sessionIndex));
+  const previousValue = useSelector(state => selectTotalPendingRewardsBySession(state, sessionIndex - nSessionsTarget));
 
-  if (isUndefined(currentValue) || currentValue === 0 || isUndefined(previousValue)) {
+  if (isUndefined(currentValue) || currentValue === 0 || 
+    isUndefined(previousValue) || isUndefined(selectedChainInfo)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
       height: 96,
@@ -52,15 +57,15 @@ export default function PoolMembersBox({sessionIndex, isFetching, dark}) {
       }}>
       <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}
-          color={dark ? theme.palette.text.secondary : 'default'}>total members</Typography>
+          color={dark ? theme.palette.text.secondary : 'default'}>total pending rewards</Typography>
         <Typography variant="h5" color={dark ? theme.palette.text.secondary : 'default'}>
-          {currentValue}
+          {stakeDisplay(currentValue, selectedChainInfo, 0, true)}
         </Typography>
-        <Tooltip title={`${Math.abs(diff)} member ${Math.sign(diff) > 0 ? 'more' : 'less'} than ${nSessionsTarget} sessions ago.`} arrow>
+        <Tooltip title={`${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)} pending rewards ${Math.sign(diff) > 0 ? 'more' : 'less'} than ${nSessionsTarget} sessions ago.`} arrow>
           <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 
             lineHeight: 0.875,
             color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red }}>
-            <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${diff}` : `-${Math.abs(diff)}`) : ' '}</b>
+            <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)}` : `-${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)}`) : ' '}</b>
           </Typography>
         </Tooltip>
       </Box>

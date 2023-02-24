@@ -13,9 +13,10 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import IconButton from '@mui/material/IconButton';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import ListIcon from '@mui/icons-material/List';
-import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+// import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { styled, useTheme } from '@mui/material/styles';
 import GradesPieChart from './GradesPieChart';
+import Tooltip from './Tooltip';
 import {
   selectValidatorsInsightsBySessions,
 } from '../features/api/validatorsSlice'
@@ -30,17 +31,18 @@ import { grade } from '../util/grade'
 
 const grades = ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "F"]
 
-const CustomTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} arrow classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.arrow}`]: {
-    color: theme.palette.grey[600],
-  },
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.background.primary,
-    boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px',
-  },
-}));
+// const CustomTooltip = styled(({ className, ...props }) => (
+//   <Tooltip {...props} arrow classes={{ popper: className }} />
+// ))(({ theme }) => ({
+//   [`& .${tooltipClasses.arrow}`]: {
+//     color: theme.palette.grey[600],
+//   },
+//   [`& .${tooltipClasses.tooltip}`]: {
+//     color: theme.palette.text.primary,
+//     backgroundColor: theme.palette.background.primary,
+//     boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px',
+//   },
+// }));
 
 export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
   const theme = useTheme();
@@ -99,7 +101,7 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
                 <Typography variant="h6" sx={{ mr: 1, overflow: "hidden", textOverflow: "ellipsis" }} title="Distribution by grade">
                 Distribution by grade
                 </Typography>
-                <CustomTooltip
+                <Tooltip
                   disableFocusListener
                   placement="bottom-end"
                   title={
@@ -121,7 +123,7 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
                   }
                   >
                   <InfoOutlinedIcon sx={{ color: theme.palette.neutrals[300]}}/>
-                </CustomTooltip>
+                </Tooltip>
               </Box>
               <Typography variant="subtitle2" sx={{ height: 16, overflow: "hidden", textOverflow: "ellipsis" }}>
                 {subsetFilter !== '' ? <span>Only for subset {subsetFilter}</span> : 'Only para-validators'}

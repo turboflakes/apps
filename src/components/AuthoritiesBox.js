@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { useTheme, styled } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined';
-import isNull from 'lodash/isNull';
 import uniq from 'lodash/uniq';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+import Tooltip from './Tooltip';
 import {
   selectFinalizedBlock,
 } from '../features/api/blocksSlice';
@@ -16,27 +15,12 @@ import {
   selectDisputesBySession
  } from '../features/api/sessionsSlice';
 
-import { grade } from '../util/grade';
-
-const CustomTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: 'transparent',
-    padding: 0,
-  },
-}));
-
 const customTitle = (data, theme) => {
   return (
     <Box
         sx={{ 
-          bgcolor: theme.palette.semantics.red,
-          p: 2,
-          m: 0,
-          borderRadius: 1,
+          p: 1,
           minWidth: '144px',
-          boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px'
          }}
       >
         <Typography variant="h6" color="textSecondary" gutterBottom>
@@ -112,11 +96,12 @@ export default function AuthoritiesBox({sessionIndex, dark}) {
           {/* <Typography variant="caption" color={theme.palette.semantics.red}>
             needs attention
           </Typography> */}
-          <CustomTooltip
+          <Tooltip
             disableFocusListener
             placement="bottom-start"
+            bgcolor={theme.palette.semantics.red}
             title={customTitle(tooltipData, theme)}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right' }} >
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right', bgcolor: "transparent" }} >
               <Box sx={{width: '16px'}}>
                 <Box sx={{ 
                   animation: "pulse 1s infinite ease-in-out alternate",
@@ -136,7 +121,7 @@ export default function AuthoritiesBox({sessionIndex, dark}) {
                 {stashes.length}
               </Typography>
             </Box>
-          </CustomTooltip>
+          </Tooltip>
           {/* <Typography variant="subtitle2" color={theme.palette.semantics.red}>
             {`${pgPercentage}%` }
           </Typography> */}
