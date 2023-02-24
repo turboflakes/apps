@@ -23,6 +23,9 @@ import {
   matchParachainsReceived,
 } from './parachainsSlice'
 import { 
+  matchPoolsReceived,
+} from './poolsSlice'
+import { 
   selectValGroupBySessionAndGroupId,
   selectValidatorsBySessionAndGroupId,
   selectValidatorIdsBySessionAndGroupId,
@@ -185,7 +188,19 @@ const sessionsSlice = createSlice({
 
     })
     .addMatcher(matchParachainsReceived, (state, action) => {
-      adapter.upsertOne(state, { six: action.payload.session, _parachainIds: action.payload.data.map(p => p.pid)})
+      adapter.upsertOne(state, { six: action.payload.session, _parachain_ids: action.payload.data.map(p => p.pid)})
+    })
+    .addMatcher(matchPoolsReceived, (state, action) => {
+      // Group pools by session first
+      const groupedBySession = groupBy(action.payload.data, v => !!v.session ? v.session : action.payload.session)
+
+      forEach(groupedBySession, (pools, session) => {
+        console.log("___pools, session", pools, session);
+        if (!isUndefined(session)) {
+          adapter.upsertOne(state, { six: parseInt(session, 10), _pool_ids: pools.map(p => p.id)})
+        }
+      })
+
     })
   }
 })
@@ -210,6 +225,10 @@ export const selectValGroupIdsBySession = (state, session) => !!selectSessionByI
   (isArray(selectSessionByIndex(state, session)._group_ids) ? 
     selectSessionByIndex(state, session)._group_ids : []) : [];
 
+export const selectPoolIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
+    (isArray(selectSessionByIndex(state, session)._pool_ids) ? 
+      selectSessionByIndex(state, session)._pool_ids : []) : [];
+
 export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy) => {
   switch (sortBy) {
     case 'backing_points': {
@@ -233,8 +252,8 @@ export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy) => {
 };
 
 export const selectParachainIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
-  (isArray(selectSessionByIndex(state, session)._parachainIds) ? 
-    selectSessionByIndex(state, session)._parachainIds : []) : [];
+  (isArray(selectSessionByIndex(state, session)._parachain_ids) ? 
+    selectSessionByIndex(state, session)._parachain_ids : []) : [];
 
 export const selectParachainIdsBySessionSortedBy = (state, session, sortBy) => {
   switch (sortBy) {

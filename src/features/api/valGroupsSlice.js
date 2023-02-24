@@ -88,7 +88,7 @@ export default valGroupsSlice;
 // Selectors
 const { 
   selectById,
-} = adapter.getSelectors(state => state.valGroups)
+} = adapter.getSelectors(state => state.val_groups)
 
 export const selectValGroupBySessionAndGroupId = (state, session, groupId) => selectById(state, `${session}_${groupId}`);
 

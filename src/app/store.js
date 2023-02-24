@@ -12,19 +12,23 @@ import authoritiesSlice from '../features/api/authoritiesSlice';
 import valGroupsSlice from '../features/api/valGroupsSlice';
 import parachainsSlice from '../features/api/parachainsSlice';
 import valProfilesSlice from '../features/api/valProfilesSlice';
+import poolsSlice from '../features/api/poolsSlice';
+import poolsMetadataSlice from '../features/api/poolsMetadataSlice';
 
 export const store = configureStore({
   reducer: {
     chain: chainSlice.reducer,
     web3: web3Slice.reducer,
     layout: layoutSlice.reducer,
+    authorities: authoritiesSlice.reducer,
     blocks: blocksSlice.reducer,
     sessions: sessionsSlice.reducer,
     validators: validatorsSlice.reducer,
-    authorities: authoritiesSlice.reducer,
-    valProfiles: valProfilesSlice.reducer,
-    valGroups: valGroupsSlice.reducer,
+    val_profiles: valProfilesSlice.reducer,
+    val_groups: valGroupsSlice.reducer,
     parachains: parachainsSlice.reducer,
+    pools: poolsSlice.reducer,
+    pools_metadata: poolsMetadataSlice.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
     socket: socketSlice.reducer
   },

@@ -30,7 +30,7 @@ const adapter = createEntityAdapter({
 })
 
 const valProfilesSlice = createSlice({
-  name: 'valProfiles',
+  name: 'val_profiles',
   initialState: adapter.getInitialState(),
   reducers: {},
   extraReducers(builder) {
@@ -71,4 +71,4 @@ export default valProfilesSlice;
 
 export const { 
   selectById: selectValProfileByAddress 
-} = adapter.getSelectors(state => state.valProfiles)
+} = adapter.getSelectors(state => state.val_profiles)

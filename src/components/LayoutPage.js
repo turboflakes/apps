@@ -369,7 +369,7 @@ export default function LayoutPage({api}) {
                 {open ? 'Nomination Pools' : 'Nom..'}
               </ListSubheader> */}
 
-              <ListItemButton  selected={selectedPage === 'pools'}  disabled
+              <ListItemButton  selected={selectedPage === 'pools'}
                 onClick={() => handlePageSelection('pools')}>
                 <ListItemIcon>
                   <FontAwesomeIcon icon={faWaterLadder} />
