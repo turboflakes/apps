@@ -309,7 +309,7 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
     const timeline = sessions.map(s => {
       const y = x.find(e => e.session === s);
       if (!isUndefined(y)) {
-        if (y.is_auth && y.is_para) {
+        if (y.is_auth && y.is_para && !isUndefined(y.para_summary)) {
           const mvr = calculateMvr(y.para_summary.ev, y.para_summary.iv, y.para_summary.mv);
           return GLYPHS.fromMVR(mvr)
         } else if (y.is_auth) {
