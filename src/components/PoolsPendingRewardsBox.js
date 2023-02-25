@@ -59,15 +59,16 @@ export default function PoolsPendingRewardsBox({sessionIndex, isFetching, dark})
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}
           color={dark ? theme.palette.text.secondary : 'default'}>total pending rewards</Typography>
         <Typography variant="h5" color={dark ? theme.palette.text.secondary : 'default'}>
-          {stakeDisplay(currentValue, selectedChainInfo, 0, true)}
+          {stakeDisplay(currentValue, selectedChainInfo, 2, true)}
         </Typography>
-        <Tooltip title={`${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)} pending rewards ${Math.sign(diff) > 0 ? 'more' : 'less'} than ${nSessionsTarget} sessions ago.`} arrow>
-          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 
-            lineHeight: 0.875,
-            color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red }}>
-            <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)}` : `-${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)}`) : ' '}</b>
-          </Typography>
-        </Tooltip>
+        {diff !== 0 ? 
+          <Tooltip title={`${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)} pending rewards ${Math.sign(diff) > 0 ? 'more' : 'less'} than ${nSessionsTarget} sessions ago.`} arrow>
+            <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 
+              lineHeight: 0.875,
+              color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red }}>
+              <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)}` : `-${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)}`) : ' '}</b>
+            </Typography>
+          </Tooltip> : null }
       </Box>
     </Paper>
   );

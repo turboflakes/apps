@@ -19,9 +19,8 @@ import {
   matchValidatorsReceived,
 } from './validatorsSlice'
 import { 
-  selectParachainBySessionAndParaId,
-  matchParachainsReceived,
-} from './parachainsSlice'
+  matchPoolsReceived,
+} from './poolsSlice'
 import { 
   selectValGroupBySessionAndGroupId,
   selectValidatorsBySessionAndGroupId,
@@ -40,7 +39,7 @@ const adapter = createEntityAdapter({
 })
 
 const poolsMetadataSlice = createSlice({
-  name: 'poolsMetadata',
+  name: 'pools_metadata',
   initialState: adapter.getInitialState(),
   reducers: {},
   extraReducers(builder) {
@@ -53,7 +52,7 @@ const poolsMetadataSlice = createSlice({
     //   // update session with timestamp
     //   adapter.upsertOne(state, { ...action.payload, _ts: + new Date()})
     // })
-    .addMatcher(apiSlice.endpoints.getPools.matchFulfilled, (state, action) => {
+    .addMatcher(matchPoolsReceived, (state, action) => {
       const pools = action.payload.data.map(pool => ({
         ...pool,
         _ts: + new Date()
@@ -67,7 +66,19 @@ const poolsMetadataSlice = createSlice({
 export const { 
   selectAll: selectPoolsAll,
   // selectById: selectPoolByIndex
-} = adapter.getSelectors(state => state.poolsMetadata)
+} = adapter.getSelectors(state => state.pools_metadata)
+
+export const selectTotalOpen = (state) => selectPoolsAll(state).filter(p => p.state === "Open").length
+
+// .filter(p => {
+//   console.log("___p", p);
+//   return true
+// })
+  // .map(id => {
+  //   const pool = selectPoolById(state, `${session}_${id}`)
+  //   return !isUndefined(pool.stats) ? pool.stats.member_counter : 0;
+  // })
+  // .reduce((a, b) => a + b, 0)
 
 // export const selectValGroupIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
 // export const selectValGroupIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 

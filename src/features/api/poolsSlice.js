@@ -8,7 +8,7 @@ import {
 import uniq from 'lodash/uniq'
 import isUndefined from 'lodash/isUndefined'
 import isNull from 'lodash/isNull'
-import toNumber from 'lodash/toNumber'
+import flatten from 'lodash/flatten'
 import isArray from 'lodash/isArray'
 import forEach from 'lodash/forEach'
 import groupBy from 'lodash/groupBy'
@@ -23,9 +23,9 @@ export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Pools'],
   endpoints: (builder) => ({
     getPools: builder.query({
-      query: ({session, number_last_sessions, from, to, show_metadata, show_stats, show_nomstats}) => ({
+      query: ({session, number_last_sessions, from, to, show_metadata, show_nominees, show_stats, show_nomstats}) => ({
         url: `/pools`,
-        params: { session, number_last_sessions, from, to, show_metadata, show_stats, show_nomstats }
+        params: { session, number_last_sessions, from, to, show_metadata, show_nominees, show_stats, show_nomstats }
       }),
       providesTags: (result, error, arg) => [{ type: 'Pools', id: arg }],
     }),
@@ -95,7 +95,6 @@ export const {
   selectById: selectPoolById
 } = adapter.getSelectors(state => state.pools)
 
-
 export const selectTotalMembersBySession = (state, session) => selectPoolIdsBySession(state, session)
   .map(id => {
     const pool = selectPoolById(state, `${session}_${id}`)
@@ -117,7 +116,33 @@ export const selectTotalPendingRewardsBySession = (state, session) => selectPool
   })
   .reduce((a, b) => a + b, 0)
 
+export const selectTotalStakedBySession = (state, session) => selectPoolIdsBySession(state, session)
+  .map(id => {
+    const pool = selectPoolById(state, `${session}_${id}`)
+    return !isUndefined(pool.stats) ? pool.stats.staked : 0;
+  })
+  .reduce((a, b) => a + b, 0)
 
+
+export const selectTotalNomineesBySession = (state, session) => selectPoolIdsBySession(state, session)
+  .map(id => {
+    const pool = selectPoolById(state, `${session}_${id}`)
+    return !isUndefined(pool.nomstats) ? pool.nomstats.nominees : 0;
+  })
+  .reduce((a, b) => a + b, 0)
+
+export const selectTotalUniqueNomineesBySession = (state, session) => uniq(flatten(selectPoolIdsBySession(state, session)
+  .map(id => {
+    const pool = selectPoolById(state, `${session}_${id}`)
+    return !isUndefined(pool.nominees) ? pool.nominees.nominees : [];
+  }))).length
+
+export const selectTotalActiveBySession = (state, session) => selectPoolIdsBySession(state, session)
+  .map(id => {
+    const pool = selectPoolById(state, `${session}_${id}`)
+    return !isUndefined(pool.nomstats) ? (pool.nomstats.active > 0 ? 1 : 0) : 0;
+  })
+  .reduce((a, b) => a + b, 0)
 // export const selectValGroupIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
 // export const selectValGroupIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
 //   (isArray(selectSessionByIndex(state, session)._group_ids) ? 

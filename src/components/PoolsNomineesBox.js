@@ -12,20 +12,21 @@ import {
   selectChain,
 } from '../features/chain/chainSlice';
 import { 
-  selectTotalMembersBySession
+  selectTotalNomineesBySession,
+  selectTotalUniqueNomineesBySession
  } from '../features/api/poolsSlice';
 import { 
   getSessionsPerDayTarget 
 } from '../constants'
 
-export default function PoolMembersBox({sessionIndex, isFetching, dark}) {
+export default function PoolNomineesBox({sessionIndex, dark}) {
   const theme = useTheme();
   const selectedChain = useSelector(selectChain);
   const nSessionsTarget = getSessionsPerDayTarget(selectedChain);
-  const currentValue = useSelector(state => selectTotalMembersBySession(state, sessionIndex));
-  const previousValue = useSelector(state => selectTotalMembersBySession(state, sessionIndex - nSessionsTarget));
-
-  if (isUndefined(currentValue) || currentValue === 0 || isUndefined(previousValue)) {
+  const currentValue = useSelector(state => selectTotalNomineesBySession(state, sessionIndex));
+  const currentUnique = useSelector(state => selectTotalUniqueNomineesBySession(state, sessionIndex));
+  
+  if (isUndefined(currentValue) || currentValue === 0 || isUndefined(currentUnique)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
       height: 96,
@@ -34,8 +35,6 @@ export default function PoolMembersBox({sessionIndex, isFetching, dark}) {
       bgcolor: 'white'
     }} />)
   }
-
-  const diff = !isUndefined(previousValue) ? currentValue - previousValue : 0;
 
   return (
     <Paper sx={{
@@ -52,18 +51,16 @@ export default function PoolMembersBox({sessionIndex, isFetching, dark}) {
       }}>
       <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}
-          color={dark ? theme.palette.text.secondary : 'default'}>total members</Typography>
+          color={dark ? theme.palette.text.secondary : 'default'}>total nominees</Typography>
         <Typography variant="h5" color={dark ? theme.palette.text.secondary : 'default'}>
           {currentValue}
         </Typography>
-        {diff !== 0 ? 
-          <Tooltip title={`${Math.abs(diff)} member ${Math.sign(diff) > 0 ? 'more' : 'less'} than ${nSessionsTarget} sessions ago.`} arrow>
-            <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 
-              lineHeight: 0.875,
-              color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red }}>
-              <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${diff}` : `-${Math.abs(diff)}`) : ' '}</b>
-            </Typography>
-          </Tooltip> : null }
+        <Tooltip title={`${currentUnique} distinct validators.`} arrow>
+          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}
+            color={dark ? theme.palette.text.secondary : 'default'}>
+            {currentUnique} distinct validators
+          </Typography>
+        </Tooltip>
       </Box>
     </Paper>
   );

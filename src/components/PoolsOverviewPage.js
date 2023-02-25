@@ -8,9 +8,12 @@ import EraPointsBox from './EraPointsBox';
 import SessionPointsBox from './SessionPointsBox';
 import AuthoredBlocksBox from './AuthoredBlocksBox';
 import BackingPointsBox from './BackingPointsBox';
+import PoolsActiveBox from './PoolsActiveBox';
 import PoolsMembersBox from './PoolsMembersBox';
 import PoolsPointsBox from './PoolsPointsBox';
 import PoolsPendingRewardsBox from './PoolsPendingRewardsBox';
+import PoolsStakedBox from './PoolsStakedBox';
+import PoolsNomineesBox from './PoolsNomineesBox';
 
 import { 
   selectSessionHistory,
@@ -41,7 +44,7 @@ export default function PoolsOverviewPage({tab}) {
   const selectedChain = useSelector(selectChain);
   const nSessionsTarget = getSessionsPerDayTarget(selectedChain);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
-  const {isFetching, isSuccess} = useGetPoolsQuery({session: sessionIndex, show_metadata: true, show_stats: true, show_nomstats: true}, 
+  const {isFetching, isSuccess} = useGetPoolsQuery({session: sessionIndex, show_metadata: true, show_nominees: true, show_stats: true, show_nomstats: true}, 
     {refetchOnMountOrArgChange: true, pollingInterval: 10000});
 
   useGetPoolsQuery({session: sessionIndex - nSessionsTarget, show_stats: true, show_nomstats: true}, 
@@ -52,23 +55,32 @@ export default function PoolsOverviewPage({tab}) {
 		<Box sx={{ m: 2, mt: 2, pt: 1, minHeight: '100vh'}}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={2}>
+          <PoolsActiveBox sessionIndex={currentSession} />
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <PoolsNomineesBox sessionIndex={currentSession} />
+        </Grid>
+        <Grid item xs={12} md={2}>
           <PoolsMembersBox sessionIndex={currentSession} />
         </Grid>
         <Grid item xs={12} md={2}>
           <PoolsPointsBox sessionIndex={currentSession} />
         </Grid>
         <Grid item xs={12} md={2}>
+          <PoolsStakedBox sessionIndex={currentSession} />
+        </Grid>
+        <Grid item xs={12} md={2}>
           <PoolsPendingRewardsBox sessionIndex={currentSession} />
         </Grid>
-        <Grid item xs={12} md={2}>
+        {/* <Grid item xs={12} md={2}>
           <BackingPointsBox />
-        </Grid>
-        <Grid item xs={12} md={2}>
+        </Grid> */}
+        {/* <Grid item xs={12} md={2}>
           <SessionPointsBox />
-        </Grid>
-        <Grid item xs={12} md={2}>
+        </Grid> */}
+        {/* <Grid item xs={12} md={2}>
           <EraPointsBox />
-        </Grid>
+        </Grid> */}
 
         <Grid item xs={12}>
           <Divider sx={{ 
