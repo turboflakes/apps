@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
-import OverviewTabs from './OverviewTabs';
+import PoolsGrid from './PoolsGrid';
 import EraPointsBox from './EraPointsBox';
 import SessionPointsBox from './SessionPointsBox';
 import AuthoredBlocksBox from './AuthoredBlocksBox';
@@ -22,6 +22,9 @@ import {
 import { 
   useGetPoolsQuery,
  } from '../features/api/poolsSlice'
+import { 
+  useGetValidatorsQuery,
+ } from '../features/api/validatorsSlice'
 import { 
   selectIsLiveMode,
 } from '../features/layout/layoutSlice'
@@ -45,11 +48,12 @@ export default function PoolsOverviewPage({tab}) {
   const nSessionsTarget = getSessionsPerDayTarget(selectedChain);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
   const {isFetching, isSuccess} = useGetPoolsQuery({session: sessionIndex, show_metadata: true, show_nominees: true, show_stats: true, show_nomstats: true}, 
-    {refetchOnMountOrArgChange: true, pollingInterval: 10000});
+    {refetchOnMountOrArgChange: true, pollingInterval: 60000});
 
+  const {isFetching: isFetchingValidators} = useGetValidatorsQuery({session: sessionIndex, nominees_only: true, show_profile: true, show_summary: true});
+  
   useGetPoolsQuery({session: sessionIndex - nSessionsTarget, show_stats: true, show_nomstats: true}, 
       {refetchOnMountOrArgChange: true });
-
 
   return (
 		<Box sx={{ m: 2, mt: 2, pt: 1, minHeight: '100vh'}}>
@@ -95,7 +99,7 @@ export default function PoolsOverviewPage({tab}) {
         </Grid>
 
         <Grid item xs={12}>
-          <OverviewTabs sessionIndex={sessionIndex} tab={tab} />
+          <PoolsGrid sessionIndex={sessionIndex} />
         </Grid>
       </Grid>
 		</Box>

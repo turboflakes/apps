@@ -18,6 +18,12 @@ import {
   selectSessionByIndex,
   selectPoolIdsBySession
 } from './sessionsSlice'
+import {
+  selectValidatorBySessionAndAddress
+} from './validatorsSlice'
+import { 
+  selectValProfileByAddress,
+} from './valProfilesSlice'
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Pools'],
@@ -92,33 +98,62 @@ const poolsSlice = createSlice({
 // Selectors
 export const { 
   selectAll: selectPoolsAll,
-  selectById: selectPoolById
+  selectById
 } = adapter.getSelectors(state => state.pools)
+
+export const selectPoolBySessionAndPoolId = (state, session, poolId) => selectById(state, `${session}_${poolId}`)
+
+export const selectNomineesBySessionAndPoolId = (state, session, poolId) => {
+  const pool = selectPoolBySessionAndPoolId(state, session, poolId);
+  if (!isUndefined(pool.nominees)) {
+    return pool.nominees.nominees.map(id => {
+      return {
+        address: id,
+        profile: selectValProfileByAddress(state, id)
+      }
+    })
+  } 
+  return []
+};
+
+export const selectActiveNomineesBySessionAndPoolId = (state, session, poolId) => {
+  const pool = selectPoolBySessionAndPoolId(state, session, poolId);
+  if (!isUndefined(pool.nominees)) {
+    return pool.nominees.active.map(active => {
+      const validator = selectValidatorBySessionAndAddress(state, session, active.account);
+      return {
+        ...validator,
+        profile: selectValProfileByAddress(state, active.account)
+      }
+    })
+  } 
+  return []
+};
 
 export const selectTotalMembersBySession = (state, session) => selectPoolIdsBySession(state, session)
   .map(id => {
-    const pool = selectPoolById(state, `${session}_${id}`)
+    const pool = selectPoolBySessionAndPoolId(state, session, id);
     return !isUndefined(pool.stats) ? pool.stats.member_counter : 0;
   })
   .reduce((a, b) => a + b, 0)
 
 export const selectTotalPointsBySession = (state, session) => selectPoolIdsBySession(state, session)
   .map(id => {
-    const pool = selectPoolById(state, `${session}_${id}`)
+    const pool = selectPoolBySessionAndPoolId(state, session, id);
     return !isUndefined(pool.stats) ? pool.stats.points : 0;
   })
   .reduce((a, b) => a + b, 0)
 
 export const selectTotalPendingRewardsBySession = (state, session) => selectPoolIdsBySession(state, session)
   .map(id => {
-    const pool = selectPoolById(state, `${session}_${id}`)
+    const pool = selectPoolBySessionAndPoolId(state, session, id);
     return !isUndefined(pool.stats) ? pool.stats.reward : 0;
   })
   .reduce((a, b) => a + b, 0)
 
 export const selectTotalStakedBySession = (state, session) => selectPoolIdsBySession(state, session)
   .map(id => {
-    const pool = selectPoolById(state, `${session}_${id}`)
+    const pool = selectPoolBySessionAndPoolId(state, session, id);
     return !isUndefined(pool.stats) ? pool.stats.staked : 0;
   })
   .reduce((a, b) => a + b, 0)
@@ -126,20 +161,20 @@ export const selectTotalStakedBySession = (state, session) => selectPoolIdsBySes
 
 export const selectTotalNomineesBySession = (state, session) => selectPoolIdsBySession(state, session)
   .map(id => {
-    const pool = selectPoolById(state, `${session}_${id}`)
+    const pool = selectPoolBySessionAndPoolId(state, session, id);
     return !isUndefined(pool.nomstats) ? pool.nomstats.nominees : 0;
   })
   .reduce((a, b) => a + b, 0)
 
 export const selectTotalUniqueNomineesBySession = (state, session) => uniq(flatten(selectPoolIdsBySession(state, session)
   .map(id => {
-    const pool = selectPoolById(state, `${session}_${id}`)
+    const pool = selectPoolBySessionAndPoolId(state, session, id);
     return !isUndefined(pool.nominees) ? pool.nominees.nominees : [];
   }))).length
 
 export const selectTotalActiveBySession = (state, session) => selectPoolIdsBySession(state, session)
   .map(id => {
-    const pool = selectPoolById(state, `${session}_${id}`)
+    const pool = selectPoolBySessionAndPoolId(state, session, id);
     return !isUndefined(pool.nomstats) ? (pool.nomstats.active > 0 ? 1 : 0) : 0;
   })
   .reduce((a, b) => a + b, 0)

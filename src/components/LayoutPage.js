@@ -328,7 +328,7 @@ export default function LayoutPage({api}) {
                 <ListItemText primary="Dashboard" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
               
-              {/* <Divider sx={{ my: 1 }} /> */}
+              <Divider sx={{ my: 1 }} />
 
               {/* <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Validators' : 'Val..'}
@@ -363,7 +363,7 @@ export default function LayoutPage({api}) {
                   sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
               
-              {/* <Divider sx={{ my: 1 }} /> */}
+              <Divider sx={{ my: 1 }} />
 
               {/* <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Nomination Pools' : 'Nom..'}

@@ -24,6 +24,7 @@ import {
 } from './parachainsSlice'
 import { 
   matchPoolsReceived,
+  selectPoolBySessionAndPoolId
 } from './poolsSlice'
 import { 
   selectValGroupBySessionAndGroupId,
@@ -224,10 +225,6 @@ export const selectValGroupIdsBySession = (state, session) => !!selectSessionByI
   (isArray(selectSessionByIndex(state, session)._group_ids) ? 
     selectSessionByIndex(state, session)._group_ids : []) : [];
 
-export const selectPoolIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
-    (isArray(selectSessionByIndex(state, session)._pool_ids) ? 
-      selectSessionByIndex(state, session)._pool_ids : []) : [];
-
 export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy) => {
   switch (sortBy) {
     case 'backing_points': {
@@ -246,6 +243,42 @@ export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy) => {
     }
     default: {
       return selectValGroupIdsBySession(state, session)
+    }
+  }
+};
+
+export const selectPoolIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
+    (isArray(selectSessionByIndex(state, session)._pool_ids) ? 
+      selectSessionByIndex(state, session)._pool_ids : []) : [];
+
+export const selectPoolIdsBySessionSortedBy = (state, session, sortBy, stateFilter = 'Open') => {
+  switch (sortBy) {
+    case 'apr': {
+      const pool_ids = selectPoolIdsBySession(state, session)
+        .map(pool_id => selectPoolBySessionAndPoolId(state, session, pool_id))
+        .filter(f => f.state === stateFilter)
+        .sort((a, b) => !isUndefined(a.nomstats) && !isUndefined(b.nomstats)  ? b.nomstats.apr - a.nomstats.apr : 0)
+        .map(o => o.id);
+      return pool_ids
+    }
+    case 'members': {
+      const pool_ids = selectPoolIdsBySession(state, session)
+        .map(pool_id => selectPoolBySessionAndPoolId(state, session, pool_id))
+        .filter(f => f.state === stateFilter)
+        .sort((a, b) => !isUndefined(a.stats) && !isUndefined(b.stats)  ? b.stats.member_counter - a.stats.member_counter : 0)
+        .map(o => o.id);
+      return pool_ids
+    }
+    case 'points': {
+      const pool_ids = selectPoolIdsBySession(state, session)
+        .map(pool_id => selectPoolBySessionAndPoolId(state, session, pool_id))
+        .filter(f => f.state === stateFilter)
+        .sort((a, b) => !isUndefined(a.stats) && !isUndefined(b.stats)  ? b.stats.points - a.stats.points : 0)
+        .map(o => o.id);
+      return pool_ids
+    }
+    default: {
+      return selectPoolIdsBySession(state, session)
     }
   }
 };

@@ -31,9 +31,9 @@ export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Validators'],
   endpoints: (builder) => ({
     getValidators: builder.query({
-      query: ({address, session, sessions, role, number_last_sessions, show_summary, show_stats, show_profile, fetch_peers}) => ({
+      query: ({address, session, sessions, role, number_last_sessions, nominees_only, show_summary, show_stats, show_profile, fetch_peers}) => ({
         url: `/validators`,
-        params: { address, session, sessions, role, number_last_sessions, show_summary, show_stats, show_profile, fetch_peers }
+        params: { address, session, sessions, role, number_last_sessions, nominees_only, show_summary, show_stats, show_profile, fetch_peers }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
       async onQueryStarted(params, { getState, extra, dispatch, queryFulfilled }) {
@@ -43,7 +43,8 @@ export const extendedApi = apiSlice.injectEndpoints({
           
           // `onSuccess` subscribe for updates
           const session = selectSessionByIndex(getState(), params.session)
-          if ((params.role === "authority" || params.role === "para_authority") && session.is_current) {
+          
+          if ((params.role === "authority" || params.role === "para_authority" || params.nominees_only === true) && session.is_current) {
 
             if (params.show_summary) {
               let msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [params.session.toString()] });

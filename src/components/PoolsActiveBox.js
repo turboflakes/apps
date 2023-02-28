@@ -65,10 +65,10 @@ export default function PoolsActiveBox({sessionIndex, dark}) {
         <Typography variant="h5" color={dark ? theme.palette.text.secondary : 'default'}>
           {totalOpen}
         </Typography>
-        <Tooltip title={`${activePools} pools are active nominating.`} arrow>
+        <Tooltip title={`${activePools} pools are active nominating validators`} arrow>
           <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}
             color={dark ? theme.palette.text.secondary : 'default'}>
-            {activePools} active nomination
+            {activePools} active nominations
           </Typography>
         </Tooltip>
       </Box>

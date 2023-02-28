@@ -65,7 +65,7 @@ const poolsMetadataSlice = createSlice({
 // Selectors
 export const { 
   selectAll: selectPoolsAll,
-  // selectById: selectPoolByIndex
+  selectById: selectPoolById
 } = adapter.getSelectors(state => state.pools_metadata)
 
 export const selectTotalOpen = (state) => selectPoolsAll(state).filter(p => p.state === "Open").length

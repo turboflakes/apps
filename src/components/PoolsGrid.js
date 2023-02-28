@@ -6,37 +6,44 @@ import Typography from '@mui/material/Typography';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import SortIcon from '@mui/icons-material/Sort';
-import ValGroupCard from './ValGroupCard';
+import PoolCard from './PoolCard';
+import PoolsStateToggle from './PoolsStateToggle';
 import { 
-  // selectSessionByIndex,
-  selectValGroupIdsBySessionSortedBy
+  selectSessionByIndex,
+  selectPoolIdsBySessionSortedBy,
  } from '../features/api/sessionsSlice';
 import {
   selectIsLiveMode,
 } from '../features/layout/layoutSlice';
+import NetStatToggle from './NetStatToggle';
 
-export default function ValGroupsGrid({sessionIndex}) {
-  const [sortBy, setSortBy] = React.useState('');
-	const groupIds = useSelector(state => selectValGroupIdsBySessionSortedBy(state, sessionIndex, sortBy));
+export default function PoolsGrid({sessionIndex}) {
+  const [sortBy, setSortBy] = React.useState('apr');
+  const [stateFilter, setStateFilter] = React.useState('Open');
+	const poolIds = useSelector(state => selectPoolIdsBySessionSortedBy(state, sessionIndex, sortBy, stateFilter));
   const isLiveMode = useSelector(selectIsLiveMode);
-  // const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
+  const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
 
   const handleSort = (event, newSortBy) => {
     setSortBy(newSortBy);
   };
 
+  const handleStateChanged = (newValue) => {
+    setStateFilter(newValue)
+  }
+
   return (
 		<Box sx={{ m: 0 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
         <Box sx={{ p: 2 }}>
-          <Typography variant="h4">Val. Groups</Typography>
-          {isLiveMode ? 
+          <Typography variant="h4">Nomination Pools</Typography>
+          {/* {isLiveMode ? 
             <Typography variant="subtitle" color="secondary">
               Attestations of Validity by Val. Groups
             </Typography> :
             <Typography variant="subtitle" color="secondary">
               Attestations of Validity by Val. Groups at session {sessionIndex.format()}
-            </Typography>}
+            </Typography>} */}
         </Box>
         <ToggleButtonGroup
             value={sortBy}
@@ -45,27 +52,34 @@ export default function ValGroupsGrid({sessionIndex}) {
             onChange={handleSort}
             sx={{ display: 'flex', alignItems: 'center'	}}
           >
-          <ToggleButton value="backing_points" aria-label="Sort by Backing Points" 
+          <ToggleButton value="points" aria-label="Sort by Points" 
             disableRipple
             disableFocusRipple
             sx={{ px: 2, mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
-            <Box sx={{mr: 1}}>Sort by Backing Points</Box><SortIcon />
+            <Box sx={{mr: 1}}>Sort by Points</Box><SortIcon />
           </ToggleButton>
-          <ToggleButton value="mvr" aria-label="Sort by Missed Vote Ratio" 
+          <ToggleButton value="members" aria-label="Sort by Members" 
+            disableRipple
+            disableFocusRipple
+            sx={{ px: 2, mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
+            <Box sx={{mr: 1}}>Sort by Members</Box><SortIcon />
+          </ToggleButton>
+          <ToggleButton value="apr" aria-label="Sort by APR" 
             disableRipple
             disableFocusRipple
             sx={{ px: 2, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
-            <Box sx={{mr: 1}}>Sort by Missed Vote Ratio</Box><SortIcon />
+            <Box sx={{mr: 1}}>Sort by APR</Box><SortIcon />
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
-      <Box sx={{ px: 2, display: 'flex', justifyContent: 'flex-end'}}>
-        <Typography variant="caption" paragraph>Val. Groups total: {groupIds.length}</Typography>
+      <Box sx={{ px: 2, display: 'flex', justifyContent: 'space-between'}}>
+        <PoolsStateToggle onChange={handleStateChanged} />
+        <Typography variant="caption" paragraph>total: {poolIds.length}</Typography>
       </Box>
       <Grid container spacing={2}>
-        {groupIds.map(groupId => (
-          <Grid item xs={12} md={3} key={groupId}>
-            <ValGroupCard sessionIndex={sessionIndex} groupId={groupId} />
+        {poolIds.map(poolId => (
+          <Grid item xs={12} md={3} key={poolId}>
+            <PoolCard sessionIndex={sessionIndex} poolId={poolId} />
           </Grid>
         ))}
       </Grid>
