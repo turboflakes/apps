@@ -17,17 +17,14 @@ const renderTooltip = (props) => {
           m: 0,
           borderRadius: 1,
           boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px',
-          minWidth: '128px'
+          minWidth: '192px'
          }}
       >
-        <Typography component="div" variant="caption" color="inherit" gutterBottom>
+        <Typography component="div" variant="caption" color="inherit" paragraph>
           <b>Grade {data.payload.name}</b>
         </Typography>
-        <Typography component="div" variant="caption" color="inherit" gutterBottom>
-          {Math.round(data.payload.value*100)/100}%
-        </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          {data.payload.quantity} validators
+        <span style={{ marginRight: '8px', color: data.fill }}>●</span>{data.payload.quantity} validators ({Math.round(data.payload.value*100)/100}%)
         </Typography>
       </Box>
     );

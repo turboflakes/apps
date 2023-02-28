@@ -43,7 +43,7 @@ export default function PoolNomineesList({sessionIndex, poolId}) {
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '192px'}}>
         <List dense sx={{
           overflow: 'auto',
-          height: 192,
+          height: 216,
         }}>
           {validators.map((v, i) => (
             <ListItemButton key={i} sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(v.address)}>

@@ -9,21 +9,14 @@ import SortIcon from '@mui/icons-material/Sort';
 import PoolCard from './PoolCard';
 import PoolsStateToggle from './PoolsStateToggle';
 import { 
-  selectSessionByIndex,
   selectPoolIdsBySessionSortedBy,
  } from '../features/api/sessionsSlice';
-import {
-  selectIsLiveMode,
-} from '../features/layout/layoutSlice';
-import NetStatToggle from './NetStatToggle';
 
 export default function PoolsGrid({sessionIndex}) {
   const [sortBy, setSortBy] = React.useState('apr');
   const [stateFilter, setStateFilter] = React.useState('Open');
 	const poolIds = useSelector(state => selectPoolIdsBySessionSortedBy(state, sessionIndex, sortBy, stateFilter));
-  const isLiveMode = useSelector(selectIsLiveMode);
-  const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
-
+  
   const handleSort = (event, newSortBy) => {
     setSortBy(newSortBy);
   };

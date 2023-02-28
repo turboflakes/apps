@@ -31,26 +31,13 @@ import { grade } from '../util/grade'
 
 const grades = ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "F"]
 
-// const CustomTooltip = styled(({ className, ...props }) => (
-//   <Tooltip {...props} arrow classes={{ popper: className }} />
-// ))(({ theme }) => ({
-//   [`& .${tooltipClasses.arrow}`]: {
-//     color: theme.palette.grey[600],
-//   },
-//   [`& .${tooltipClasses.tooltip}`]: {
-//     color: theme.palette.text.primary,
-//     backgroundColor: theme.palette.background.primary,
-//     boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px',
-//   },
-// }));
-
 export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
   const theme = useTheme();
+  const [showPie, setShowPie] = React.useState(true);
   const identityFilter = useSelector(selectIdentityFilter);
   const subsetFilter = useSelector(selectSubsetFilter);
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, isHistoryMode ? historySessionRangeIds : [sessionIndex], isHistoryMode, identityFilter, subsetFilter));
-  const [showPie, setShowPie] = React.useState(true);
   
   if (!rows.length) {
     return null

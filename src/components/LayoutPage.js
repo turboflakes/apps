@@ -245,8 +245,8 @@ export default function LayoutPage({api}) {
             {/* <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}>
               { selectedPage !== 'validators/insights' && selectedPage !== 'dashboard' ? <SearchSmall /> : null }
             </Box> */}
-            <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}>
-              <SearchSmall />
+            <Box sx={{ ml: 1, flexGrow: 1, display: 'flex'}}>
+              <SearchSmall width={open ? 384 : 512} />
             </Box>
             <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}></Box>
             <Box sx={{ display: 'flex', alignItems: 'center'}}>

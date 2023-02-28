@@ -9,12 +9,21 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import PieChartIcon from '@mui/icons-material/PieChart';
+import ListIcon from '@mui/icons-material/List';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import Tooltip from './Tooltip';
 import SubsetPieChart from './SubsetPieChart';
-import PoolNomineesCardList from './PoolNomineesCardList';
+import PoolNomineesList from './PoolNomineesList';
+import PoolActiveNomineesList from './PoolActiveNomineesList';
 import {
   selectChain,
   selectChainInfo
 } from '../features/chain/chainSlice';
+import {
+  SUBSET
+} from '../features/api/validatorsSlice';
 import {
   selectPoolById,
 } from '../features/api/poolsMetadataSlice';
@@ -22,31 +31,24 @@ import {
   selectNomineesBySessionAndPoolId
 } from '../features/api/poolsSlice';
 import { stakeDisplay } from '../util/display';
+import { getNetworkName } from '../constants'
 
 export default function PoolCard({sessionIndex, poolId}) {
   // const theme = useTheme();
+  const [showPie, setShowPie] = React.useState(true);
   const selectedChain = useSelector(selectChain);
   const selectedChainInfo = useSelector(selectChainInfo);
   const pool = useSelector(state => selectPoolById(state, poolId));
   const members = !isUndefined(pool.stats) ? pool.stats.member_counter : 0;
   const points = !isUndefined(pool.stats) ? pool.stats.points : 0;
+  const rewards = !isUndefined(pool.stats) ? pool.stats.reward : 0;
   const apr = !isUndefined(pool.nomstats) ? pool.nomstats.apr : 0;
+  const nActive = !isUndefined(pool.nomstats) ? pool.nomstats.active : 0;
+  const nAll = !isUndefined(pool.nomstats) ? pool.nomstats.nominees : 0;
+  // const active = useSelector(state => selectActiveNomineesBySessionAndPoolId(state, sessionIndex, poolId));
   const nominees = useSelector(state => selectNomineesBySessionAndPoolId(state, sessionIndex, poolId));
-  
 
   
-  // const mvr = useSelector(state => selectValGroupMvrBySessionAndGroupId(state, sessionIndex, groupId));
-  // const ev = useSelector(state => selectValGroupValidityExplicitVotesBySessionAndGroupId(state, sessionIndex, groupId));
-  // const iv = useSelector(state => selectValGroupValidityImplicitVotesBySessionAndGroupId(state, sessionIndex, groupId));
-  // const mv = useSelector(state => selectValGroupValidityMissedVotesBySessionAndGroupId(state, sessionIndex, groupId));
-  // const validityVotes = useSelector(state => selectValGroupValidityVotesBySessionAndGroupId(state, sessionIndex, groupId));
-  // const backingPoints = useSelector(state => selectValGroupBackingPointsBySessionAndGroupId(state, sessionIndex, groupId));
-  // const coreAssignments = useSelector(state => selectValGroupCoreAssignmentsBySessionAndGroupId(state, sessionIndex, groupId));
-
-  // const pieChartsData = createBackingPieData(ev, iv, mv, paraId);
-  // const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
-
-  // const subsetPieData = 
   if (isUndefined(selectedChainInfo)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
@@ -57,9 +59,13 @@ export default function PoolCard({sessionIndex, poolId}) {
     }} />)
   }
 
-  const groupedBySubset = groupBy(nominees, v => !isUndefined(v.profile) ? v.profile.subset : "NA");
-  const subsetPieData = orderBy(Object.keys(groupedBySubset).map(subset => ({ subset, value: groupedBySubset[subset].length })), 'subset');
-  
+  const groupedBySubset = groupBy(nominees, v => !isUndefined(v.profile) ? v.profile.subset : "NONVAL");
+  const subsetPieData = orderBy(Object.keys(groupedBySubset).map(subset => ({ subset: SUBSET[subset], value: groupedBySubset[subset].length })), 'subset');
+
+  const handleView = () => {
+    setShowPie(!showPie);
+  }
+
   return (
     <Paper sx={{ 
       // p: 2,
@@ -77,8 +83,8 @@ export default function PoolCard({sessionIndex, poolId}) {
             overflow: "hidden", 
             textOverflow: "ellipsis",
             whiteSpace: "nowrap"
-          }}>{pool.metadata}</Typography>
-          <Typography variant="subtitle2">#{poolId}</Typography>
+          }}><span style={{marginRight: '8px'}}>#{poolId}</span>{pool.metadata}</Typography>
+          <Typography variant="subtitle2">members: {members}</Typography>
         </Box>
       </Box>
       <Divider sx={{ 
@@ -89,17 +95,20 @@ export default function PoolCard({sessionIndex, poolId}) {
         backgroundColor: 'transparent',
         backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
         }} />
-      <Box sx={{ p: 1, display: 'flex', justifyContent: 'space-around'}}>
-        <PoolNomineesCardList sessionIndex={sessionIndex} poolId={poolId} />
-      
-        <Box sx={{ display: 'flex', justifyContent: 'center', width: "50%"}}>
-          {/* <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
-            <Typography variant="caption" align='center'>Validity Statements</Typography>  
-            <Typography variant="h5" align='center'>{validityVotes}</Typography>
-          </Box> */}
-          <SubsetPieChart data={subsetPieData} size="md" />
+      <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-around'}}>
+        <Box sx={{ width: "50%", position: 'relative', display: 'flex', flexDirection: 'column'}}>
+          <IconButton sx={{ position: 'absolute', top: -12, left: 0, zIndex: 222}} aria-label="grade-details" onClick={handleView}>
+            { !showPie ? <PieChartIcon fontSize="small" /> : <ListIcon fontSize="small" /> }
+          </IconButton>
+          <Typography variant="caption" align="left" sx={{ml: 6}}>nominees: {nAll}</Typography>
+          { showPie ? 
+            <SubsetPieChart data={subsetPieData} size="sm" /> :
+            <PoolNomineesList sessionIndex={sessionIndex} poolId={poolId} />}
         </Box>
-       
+        <Box sx={{ width: "50%", display: 'flex', flexDirection: 'column'}}>
+          <Typography variant="caption" align="left" sx={{ml: 3}}>active: {nActive}</Typography>  
+          <PoolActiveNomineesList sessionIndex={sessionIndex} poolId={poolId} />
+        </Box>
       </Box> 
       <Divider sx={{ 
         opacity: 0.25,
@@ -111,15 +120,22 @@ export default function PoolCard({sessionIndex, poolId}) {
         }} />
       <Box sx={{ py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-          <Typography variant="caption" align='center'>Members</Typography>
-          <Typography variant="h5" align='center'>{members}</Typography>
+          <Typography variant="caption" align='center'>pending rewards</Typography>
+          <Typography variant="h5" align='center'>{stakeDisplay(rewards, selectedChainInfo, 2, true)}</Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-          <Typography variant="caption" align='center'>Points</Typography>
+          <Typography variant="caption" align='center'>points</Typography>
           <Typography variant="h5" align='center'>{stakeDisplay(points, selectedChainInfo, 2, true, false)}</Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-          <Typography variant="caption" align='center'>APR</Typography>
+          <Typography variant="caption" align='center'>
+            <b>APR</b>
+            <span>
+              <Tooltip title={`Annual percentage rate (APR) is the rate used to help you understand potential returns from your bonded stake. The Nomination Pool APR is based on the average APR of all the current pool nominees (validators) from the last 84 eras on ${getNetworkName(selectedChain)}, minus the respective validators commission.`}>
+                <InfoOutlinedIcon fontSize="inherit" sx={{ml: 1}}/>
+              </Tooltip>
+            </span>
+          </Typography>
           <Typography variant="h5" align='center'>{`${Math.round(apr * 10000) / 100}%`}</Typography>
         </Box>
       </Box>

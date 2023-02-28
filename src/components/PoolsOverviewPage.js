@@ -4,10 +4,6 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import PoolsGrid from './PoolsGrid';
-import EraPointsBox from './EraPointsBox';
-import SessionPointsBox from './SessionPointsBox';
-import AuthoredBlocksBox from './AuthoredBlocksBox';
-import BackingPointsBox from './BackingPointsBox';
 import PoolsActiveBox from './PoolsActiveBox';
 import PoolsMembersBox from './PoolsMembersBox';
 import PoolsPointsBox from './PoolsPointsBox';
@@ -40,7 +36,6 @@ import {
 
 export default function PoolsOverviewPage({tab}) {
   // const theme = useTheme();
-  const isSocketConnected = useSelector(selectIsSocketConnected);
   const isLiveMode = useSelector(selectIsLiveMode);
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
@@ -76,15 +71,6 @@ export default function PoolsOverviewPage({tab}) {
         <Grid item xs={12} md={2}>
           <PoolsPendingRewardsBox sessionIndex={currentSession} />
         </Grid>
-        {/* <Grid item xs={12} md={2}>
-          <BackingPointsBox />
-        </Grid> */}
-        {/* <Grid item xs={12} md={2}>
-          <SessionPointsBox />
-        </Grid> */}
-        {/* <Grid item xs={12} md={2}>
-          <EraPointsBox />
-        </Grid> */}
 
         <Grid item xs={12}>
           <Divider sx={{ 

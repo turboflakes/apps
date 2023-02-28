@@ -43,7 +43,7 @@ export const extendedApi = apiSlice.injectEndpoints({
           
           // `onSuccess` subscribe for updates
           const session = selectSessionByIndex(getState(), params.session)
-          
+
           if ((params.role === "authority" || params.role === "para_authority" || params.nominees_only === true) && session.is_current) {
 
             if (params.show_summary) {
@@ -285,10 +285,11 @@ const GLYPHS = {
   }
 }
 
-const SUBSET = { 
+export const SUBSET = { 
   "TVP": "TVP",
   "NONTVP": "Others",
-  "C100": "C100"
+  "C100": "C100",
+  "NONVAL": "Non-validator"
 }
 
 export const selectValidatorsInsightsBySessions = (state, sessions = [], isHistory = false, identityFilter = "", subsetFilter = "", isFetching) => {
