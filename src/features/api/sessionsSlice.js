@@ -192,6 +192,20 @@ const sessionsSlice = createSlice({
       adapter.upsertOne(state, { six: action.payload.session, _parachain_ids: action.payload.data.map(p => p.pid)})
     })
     .addMatcher(matchPoolsReceived, (state, action) => {
+
+      // verify that query was not for a single pool
+      if (!isUndefined(action)) {
+        if (!isUndefined(action.meta)) {
+          if (!isUndefined(action.meta.arg)) {
+            if (!isUndefined(action.meta.arg.originalArgs)) {
+              if (!isUndefined(action.meta.arg.originalArgs.pool)) {
+                return
+              }
+            }
+          }
+        }
+      }
+      
       // Group pools by session first
       const groupedBySession = groupBy(action.payload.data, v => !!v.session ? v.session : action.payload.session)
 
