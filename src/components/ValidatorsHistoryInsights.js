@@ -16,7 +16,7 @@ import {
 export default function ValidatorsHistoryInsights({skip}) {
   // const theme = useTheme();
   const historySessionIds = useSelector(selectSessionHistoryIds);
-  const {isFetching: isFetchingValidators} = useGetValidatorsQuery({sessions: [historySessionIds[0], historySessionIds[5]].join(","), show_summary: true, show_profile: true}, {skip});
+  const {isFetching: isFetchingValidators} = useGetValidatorsQuery({role: "authority", from: historySessionIds[0], to: historySessionIds[5], show_summary: true, show_profile: true}, {skip});
   const {isFetching: isFetchingSessions } = useGetSessionsQuery({from: historySessionIds[0], to: historySessionIds[5], show_stats: true}, {skip});
 
   const isFetching = isFetchingValidators || isFetchingSessions;

@@ -147,7 +147,7 @@ const sessionsSlice = createSlice({
           if (!isUndefined(action.meta)) {
             if (!isUndefined(action.meta.arg)) {
               if (!isUndefined(action.meta.arg.originalArgs)) {
-                if (!isUndefined(action.meta.arg.originalArgs.sessions)) {
+                if (!isUndefined(action.meta.arg.originalArgs.from) && !isUndefined(action.meta.arg.originalArgs.to)) {
                   return `${prefix}_insights`
                 }
               }
@@ -161,7 +161,6 @@ const sessionsSlice = createSlice({
 
       // Group validators by session first
       const groupedBySession = groupBy(filtered, v => !!v.session ? v.session : action.payload.session)
-
 
       let currentState = current(state);
 
