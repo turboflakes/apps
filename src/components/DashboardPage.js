@@ -4,8 +4,8 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
-import Paper from '@mui/material/Paper';
+// import Divider from '@mui/material/Divider';
+// import Paper from '@mui/material/Paper';
 import SessionPerformance600Timeline from './SessionPerformance600Timeline';
 import NetTotalStakedBox from './NetTotalStakedBox';
 import NetLastRewardBox from './NetLastRewardBox';
@@ -14,8 +14,9 @@ import NetActiveValidatorsBox from './NetActiveValidatorsBox';
 import NetOversubscribedValidatorsBox from './NetOversubscribedValidatorsBox';
 import NetPointsValidatorsBox from './NetPointsValidatorsBox';
 import NetOwnStakeValidatorsBox from './NetOwnStakeValidatorsBox';
-import SearchSmall from './SearchSmall';
+// import SearchSmall from './SearchSmall';
 import HistoryErasMenu from './HistoryErasMenu';
+import ValidatorsRankingBox from './ValidatorsRankingBox';
 import GradesBox from './GradesBox';
 import onetSVG from '../assets/onet.svg';
 import { 
@@ -148,13 +149,14 @@ export default function DashboardPage() {
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={6} md={5}>
+        <Grid item xs={6} md={4}>
           <NetTotalStakedBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
         </Grid>
-        <Grid item xs={6} md={5}>
+        <Grid item xs={6} md={4}>
           <NetLastRewardBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
         </Grid>
-        <Grid item xs={6} md={2}>
+        <Grid item xs={6} md={4}>
+          <ValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>
         </Grid>
         <Grid item xs={6} md={2}>
         </Grid>

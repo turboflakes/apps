@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux'
+// import { useSelector } from 'react-redux'
 import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
@@ -12,17 +12,6 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 import { 
   useGetSessionsQuery,
  } from '../features/api/sessionsSlice'
-import { 
-  useGetBlocksQuery,
-  selectBlocksBySession,
- } from '../features/api/blocksSlice'
-import {
-  selectIsLiveMode,
-  selectMaxHistorySessions,
-  selectMaxHistoryEras
-} from '../features/layout/layoutSlice';
-
-// const COLORS = (theme) => ([theme.palette.grey[900], theme.palette.grey[200], theme.palette.semantics.blue])
 
  const renderTooltip = (props, theme) => {
   const { active, payload } = props;
@@ -68,7 +57,7 @@ import {
 
 export default function NetActiveValidatorsBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true});
+  const {data, isSuccess, isFetching} = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true});
 
   if (isFetching || isUndefined(data)) {
     return (<Skeleton variant="rounded" sx={{

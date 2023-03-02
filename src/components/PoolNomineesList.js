@@ -9,7 +9,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Identicon from '@polkadot/react-identicon';
 import {
-  // selectChain,
   addressChanged
 } from '../features/chain/chainSlice';
 import {
