@@ -309,8 +309,6 @@ export default function LayoutPage({api}) {
               </Box>
             </Toolbar>
 
-            <Divider sx={{ mb: 1 }} />
-
             {/* menu */}
             <List component="nav" 
               sx={{ '> .MuiListItemButton-root.Mui-selected': {
@@ -319,7 +317,8 @@ export default function LayoutPage({api}) {
               {/* <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Validators' : 'Val..'}
               </ListSubheader> */}
-              
+              <Divider sx={{ my: 0 }} />
+
               <ListItemButton selected={selectedPage === 'dashboard'}
                 onClick={() => handlePageSelection('dashboard')}>
                 <ListItemIcon>
@@ -328,7 +327,7 @@ export default function LayoutPage({api}) {
                 <ListItemText primary="Dashboard" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
               
-              <Divider sx={{ my: 1 }} />
+              <Divider sx={{ my: 0 }} />
 
               {/* <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Validators' : 'Val..'}
@@ -363,7 +362,7 @@ export default function LayoutPage({api}) {
                   sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
               
-              <Divider sx={{ my: 1 }} />
+              <Divider sx={{ my: 0 }} />
 
               {/* <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Nomination Pools' : 'Nom..'}
@@ -376,7 +375,9 @@ export default function LayoutPage({api}) {
                 </ListItemIcon>
                 <ListItemText primary="Nomination Pools" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
+              <Divider sx={{ my: 0 }} />
             </List>
+            
           </Drawer>
       <Box
             component="main"

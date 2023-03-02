@@ -6,7 +6,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 import NetStatToggle from './NetStatToggle';
 import { 
   useGetSessionsQuery,
@@ -62,11 +62,11 @@ import { stakeDisplay } from '../util/display';
 
 export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
-  const chainInfo = useSelector(selectChainInfo)
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true});
+  const selectedChainInfo = useSelector(selectChainInfo)
+  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true});
   const [key, setKey] = React.useState("vals_own_stake_total");
 
-  if (isFetching || isUndefined(data) || isUndefined(chainInfo)) {
+  if (isFetching || isUndefined(data) || isUndefined(selectedChainInfo)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
       height: 192,
@@ -106,7 +106,7 @@ export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
         flexDirection: 'column',
         // alignItems: 'center',
         width: '100%',
-        height: 192,
+        height: '100%',
         borderRadius: 3,
         // borderTopLeftRadius: '24px',
         // borderTopRightRadius: '24px',
@@ -120,7 +120,7 @@ export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
             textOverflow: "ellipsis"}}>
           <Typography variant="caption" gutterBottom>Validators Own Stake</Typography>
           <Typography variant="h4" sx={{overflow: "hidden", textOverflow: "ellipsis"}}>
-            {stakeDisplay(mainValue, chainInfo, 0, true)}
+            {stakeDisplay(mainValue, selectedChainInfo, 0, true)}
           </Typography>
         </Box>
         <NetStatToggle onChange={handleStatChanged} />
@@ -132,26 +132,31 @@ export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
             // height="100"
             data={timelineData}
             margin={{
-              top: 5,
-              right: 20,
-              left: -50,
-              bottom: -20,
+              top: 8,
+              right: 32,
+              left: -8,
+              bottom: 16,
             }}
           >
-            <XAxis dataKey="session" interval={0} angle={-45} dx={20} fontSize="0.75rem" 
-              tick={false}
-              tickLine={false}
-              axisLine={false} />
+            <CartesianGrid strokeDasharray="1 4" vertical={false} horizontal={true} />
+
+            <XAxis dataKey="session" angle={-30} tickMargin={8}
+              style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
+              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
+              tickLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
+              />
             <YAxis type="number" 
-              domain={['dataMin', 'dataMax']} 
-              tick={false}
-              tickLine={false}
-              axisLine={false} />
+              domain={['dataMin', 'dataMax']}
+              style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
+              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
+              tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
+              tickFormatter={(a) => stakeDisplay(a, selectedChainInfo, 0, true, false)}
+              />
             <Tooltip 
                 cursor={{fill: theme.palette.divider}}
                 offset={24}
                 wrapperStyle={{ zIndex: 100 }} 
-                content={props => renderTooltip(props, theme, chainInfo)} />
+                content={props => renderTooltip(props, theme, selectedChainInfo)} />
             <Line isAnimationActive={false} type="monotone" dataKey="c100" 
               strokeWidth={2} stroke={theme.palette.grey[900]} dot={false} />
             <Line isAnimationActive={false} type="monotone" dataKey="others" 

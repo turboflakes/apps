@@ -110,7 +110,7 @@ export default function SessionPerformance600Timeline({sessionIndex}) {
       }}
       >
       <Box sx={{ mr: 2, display: 'flex', justifyContent: 'flex-end'}}>
-        <Typography variant="caption" gutterBottom>network trend in the last {blocks.length} finalized blocks</Typography>
+        <Typography variant="caption" gutterBottom>network pulse in the last {blocks.length} finalized blocks</Typography>
       </Box>
       <Box sx={{ height: '100%'}}>
         <ResponsiveContainer width="100%" height="100%">

@@ -9,14 +9,10 @@ import Container from '@mui/material/Container';
 import SessionPerformance600Timeline from './SessionPerformance600Timeline';
 import NetTotalStakedBox from './NetTotalStakedBox';
 import NetLastRewardBox from './NetLastRewardBox';
-import NetTotalValidatorsBox from './NetTotalValidatorsBox';
-import NetActiveValidatorsBox from './NetActiveValidatorsBox';
-import NetOversubscribedValidatorsBox from './NetOversubscribedValidatorsBox';
-import NetPointsValidatorsBox from './NetPointsValidatorsBox';
-import NetOwnStakeValidatorsBox from './NetOwnStakeValidatorsBox';
 // import SearchSmall from './SearchSmall';
 import HistoryErasMenu from './HistoryErasMenu';
 import ValidatorsRankingBox from './ValidatorsRankingBox';
+import NetVerticalTabs from './NetVerticalTabs';
 import GradesBox from './GradesBox';
 import onetSVG from '../assets/onet.svg';
 import { 
@@ -149,74 +145,26 @@ export default function DashboardPage() {
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={6} md={4}>
-          <NetTotalStakedBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+        <Grid item xs={8}>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+            <NetTotalStakedBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+            </Grid>
+            <Grid item xs={6}>
+            <NetLastRewardBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+            </Grid>
+            <Grid item xs={12}>
+              <NetVerticalTabs sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+            </Grid>
+          </Grid>
+          
         </Grid>
-        <Grid item xs={6} md={4}>
-          <NetLastRewardBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-        </Grid>
-        <Grid item xs={6} md={4}>
+        <Grid item xs={4}>
           <ValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>
         </Grid>
         <Grid item xs={6} md={2}>
         </Grid>
-        <Grid item xs={6} md={5}>
-          <NetTotalValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-        </Grid>
-        <Grid item xs={6} md={5}>
-          <NetActiveValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-        </Grid>
         
-        <Grid item xs={6} md={4}>
-          <NetOversubscribedValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-        </Grid>
-        {/* <Grid item xs={6} md={4}>
-
-        </Grid> */}
-        
-        <Grid item xs={6} md={6}>
-          <NetPointsValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-        </Grid>
-        
-        <Grid item xs={6} md={3}>
-        </Grid>
-        <Grid item xs={6} md={6}>
-          <NetOwnStakeValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-        </Grid>
-        <Grid item xs={6} md={3}>
-        </Grid>
-        {/* {isLiveMode ? 
-          <Grid item xs={12} md={2}>
-            <SessionPerformancePieChart />
-          </Grid>
-        : null}
-        {isLiveMode ? 
-          <Grid item xs={12} md={2}>
-            <SessionPieChart sessionIndex={sessionIndex} />
-          </Grid> : null}
-        <Grid item xs={12} md={isHistoryMode ? 3 : 4}>
-          <SessionBox sessionIndex={sessionIndex} dark={isHistoryMode} />
-        </Grid>
-        <Grid item xs={12} md={2}>
-          <AuthoritiesBox sessionIndex={sessionIndex} dark={isHistoryMode} />
-        </Grid>
-        <Grid item xs={12} md={2}>
-          <GradesSmallBox sessionIndex={sessionIndex} dark={isHistoryMode} />
-        </Grid>
-        <Grid item xs={12} md={2}>
-          {isLiveMode ? <AuthoredBlocksBox /> : <AuthoredBlocksHistoryBox sessionIndex={sessionIndex} />}
-        </Grid>
-        <Grid item xs={12} md={2}>
-          {isLiveMode ? <BackingPointsBox /> : <BackingPointsHistoryBox sessionIndex={sessionIndex} />}
-        </Grid>
-        {isLiveMode ?
-          <Grid item xs={12} md={2}>
-            <SessionPointsBox />
-          </Grid> : null}
-        {isLiveMode ?
-          <Grid item xs={12} md={2}>
-            <EraPointsBox />
-          </Grid> : null} */}
       </Grid>
 		</Container>
     </Box>

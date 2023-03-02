@@ -156,6 +156,7 @@ const sessionsSlice = createSlice({
         }
         return prefix
       }
+
       // Filter validators if authority and p/v
       const filtered = action.payload.data.filter(v => v.is_auth);
 

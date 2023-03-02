@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { ComposedChart, LineChart, Bar, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { ComposedChart, LineChart, Bar, Line, XAxis, YAxis, Tooltip, Cell, Rectangle, ResponsiveContainer } from 'recharts';
 import { 
   useGetSessionsQuery,
  } from '../features/api/sessionsSlice';
@@ -58,7 +58,7 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
   if (isFetching || isUndefined(data) || isUndefined(chainInfo)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
-      height: 192,
+      height: 224,
       borderRadius: 3,
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       bgcolor: 'white'
@@ -90,7 +90,7 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
         flexDirection: 'column',
         // alignItems: 'center',
         width: '100%',
-        height: 192,
+        height: 224,
         borderRadius: 3,
         // borderTopLeftRadius: '24px',
         // borderTopRightRadius: '24px',
@@ -132,7 +132,13 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
                 offset={24}
                 wrapperStyle={{ zIndex: 100 }} 
                 content={props => renderTooltip(props, theme, chainInfo)} />
-            <Bar dataKey="last_rewarded" barSize={12} fill={theme.palette.semantics.green} />
+            <Bar dataKey="last_rewarded" barSize={8} shape={<Rectangle radius={[8, 8, 0, 0]} />} >
+              {
+                data.map((entry, index) => (
+                <Cell key={`cell-${index}`} cursor="pointer" 
+                  fill={theme.palette.semantics.green} />))
+              }
+            </Bar>
             <Line isAnimationActive={false} type="monotone" dataKey="total_issuance" 
               strokeWidth={2} stroke={theme.palette.semantics.red} dot={false} />
             <Line isAnimationActive={false} type="monotone" dataKey="total_staked" 
