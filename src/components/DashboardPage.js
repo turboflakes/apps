@@ -48,8 +48,6 @@ export default function DashboardPage() {
     return (<Box sx={{ m: 2, minHeight: '100vh' }}></Box>)
   }
 
-
-
   return (
     <Box sx={{ mb: 10, display: 'flex', justifyContent: 'center'}}>
 		<Container sx={{ }}>
@@ -119,9 +117,9 @@ export default function DashboardPage() {
         </Grid>
 
         
-        <Grid item xs={12} sx={{ my: 6}}>
+        {/* <Grid item xs={12} sx={{ my: 6}}>
           <SessionPerformance600Timeline sessionIndex={currentSession} />
-        </Grid>  
+        </Grid>   */}
        
 
         {/* <Grid item xs={12}>
@@ -162,6 +160,10 @@ export default function DashboardPage() {
         </Grid>
         <Grid item xs={4}>
           <ValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>
+        </Grid>
+
+        <Grid item xs={12} sx={{ my: 2}}>
+          <SessionPerformance600Timeline sessionIndex={currentSession} />
         </Grid>
         {/* <Grid item xs={4}>
           <PoolsValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>

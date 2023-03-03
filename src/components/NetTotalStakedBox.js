@@ -62,7 +62,7 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
   if (isFetching || isUndefined(data) || isUndefined(chainInfo)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
-      height: 224,
+      height: 256,
       borderRadius: 3,
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       bgcolor: 'white'
@@ -100,7 +100,7 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
         flexDirection: 'column',
         // alignItems: 'center',
         width: '100%',
-        height: 224,
+        height: 256,
         borderRadius: 3,
         // borderTopLeftRadius: '24px',
         // borderTopRightRadius: '24px',
