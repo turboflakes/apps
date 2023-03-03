@@ -6,7 +6,9 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
+import NetValChartLegend from './NetValChartLegend';
+
 import { 
   useGetSessionsQuery,
  } from '../features/api/sessionsSlice'
@@ -55,12 +57,12 @@ import {
 
 export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true});
+  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true});
 
   if (isFetching || isUndefined(data)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
-      height: 192,
+      height: 434,
       borderRadius: 3,
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       bgcolor: 'white'
@@ -93,7 +95,7 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
         flexDirection: 'column',
         // alignItems: 'center',
         width: '100%',
-        height: 192,
+        height: '100%',
         borderRadius: 3,
         // borderTopLeftRadius: '24px',
         // borderTopRightRadius: '24px',
@@ -115,21 +117,25 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
             // height="100"
             data={timelineData}
             margin={{
-              top: 5,
-              right: 20,
-              left: -50,
-              bottom: -20,
+              top: 8,
+              right: 32,
+              left: -24,
+              bottom: 16,
             }}
           >
-            <XAxis dataKey="session" interval={0} angle={-45} dx={20} fontSize="0.75rem" 
-              tick={false}
-              tickLine={false}
-              axisLine={false} />
+            <CartesianGrid strokeDasharray="1 4" vertical={false} horizontal={true} />
+
+            <XAxis dataKey="session" angle={-30} tickMargin={8}
+              style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
+              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
+              tickLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
+              />
             <YAxis type="number" 
               domain={['dataMin', 'dataMax']}
-              tick={false}
-              tickLine={false}
-              axisLine={false} />
+              style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
+              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
+              tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
+              />
             <Tooltip 
                 cursor={{fill: theme.palette.divider}}
                 offset={24}
@@ -141,6 +147,8 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
               strokeWidth={2} stroke={theme.palette.grey[200]} dot={false} />
             <Line isAnimationActive={false} type="monotone" dataKey="tvp" 
               strokeWidth={2} stroke={theme.palette.semantics.blue} dot={false} />
+            
+            <Legend verticalAlign="top" content={() => NetValChartLegend({theme})} height={24} />
           </LineChart>
         </ResponsiveContainer>
       </Box>

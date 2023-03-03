@@ -6,9 +6,9 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 
-export default function NetStatToggle({onChange}) {
+export default function PoolHistoryToggle({onChange}) {
   // const theme = useTheme();
-  const [value, setValue] = React.useState("total");
+  const [value, setValue] = React.useState("members");
 
   const handleChange = (event, newValue) => {
     if (isNull(newValue)) {
@@ -19,7 +19,7 @@ export default function NetStatToggle({onChange}) {
   };
 
   return (
-    <Box>
+    <Box sx={{ mb: 1}}>
       <ToggleButtonGroup
         size="small"
         sx={{mx: 2}}
@@ -28,33 +28,26 @@ export default function NetStatToggle({onChange}) {
         onChange={handleChange}
         aria-label="text alignment"
       >
-        <ToggleButton value="total" aria-label="left aligned" 
+        <ToggleButton value="members" aria-label="left aligned" 
           sx={{ minWidth: 48, mr: 1, border: 0, 
             fontSize: "0.625rem",
             '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
             '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
-          Total
+          members
         </ToggleButton>
-        <ToggleButton value="avg" aria-label="justified" 
+        <ToggleButton value="staked" aria-label="justified" 
           sx={{ minWidth: 48, mr: 1, border: 0, 
             fontSize: "0.625rem",
             '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
             '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
-          Avg.
+          staked
         </ToggleButton>
-        <ToggleButton value="min" aria-label="right aligned" 
-          sx={{ minWidth: 48, mr: 1, border: 0, 
-            fontSize: "0.625rem",
-            '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
-            '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
-          Min.
-        </ToggleButton>
-        <ToggleButton value="max" aria-label="centered" 
-          sx={{ minWidth: 48, mr: 1, border: 0, 
+        <ToggleButton value="reward" aria-label="centered" 
+          sx={{ minWidth: 48, mr: 0, border: 0, 
             fontSize: "0.625rem",
             '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
             '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
-          Max.
+          rewards
         </ToggleButton>
       </ToggleButtonGroup>
     </Box>

@@ -23,6 +23,10 @@ import {
   matchParachainsReceived,
 } from './parachainsSlice'
 import { 
+  matchPoolsReceived,
+  selectPoolBySessionAndPoolId
+} from './poolsSlice'
+import { 
   selectValGroupBySessionAndGroupId,
   selectValidatorsBySessionAndGroupId,
   selectValidatorIdsBySessionAndGroupId,
@@ -143,7 +147,7 @@ const sessionsSlice = createSlice({
           if (!isUndefined(action.meta)) {
             if (!isUndefined(action.meta.arg)) {
               if (!isUndefined(action.meta.arg.originalArgs)) {
-                if (!isUndefined(action.meta.arg.originalArgs.sessions)) {
+                if (!isUndefined(action.meta.arg.originalArgs.from) && !isUndefined(action.meta.arg.originalArgs.to)) {
                   return `${prefix}_insights`
                 }
               }
@@ -152,12 +156,12 @@ const sessionsSlice = createSlice({
         }
         return prefix
       }
+
       // Filter validators if authority and p/v
       const filtered = action.payload.data.filter(v => v.is_auth);
 
       // Group validators by session first
       const groupedBySession = groupBy(filtered, v => !!v.session ? v.session : action.payload.session)
-
 
       let currentState = current(state);
 
@@ -185,7 +189,39 @@ const sessionsSlice = createSlice({
 
     })
     .addMatcher(matchParachainsReceived, (state, action) => {
-      adapter.upsertOne(state, { six: action.payload.session, _parachainIds: action.payload.data.map(p => p.pid)})
+      adapter.upsertOne(state, { six: action.payload.session, _parachain_ids: action.payload.data.map(p => p.pid)})
+    })
+    .addMatcher(matchPoolsReceived, (state, action) => {
+
+      // verify that query was not for a single pool
+      if (!isUndefined(action)) {
+        if (!isUndefined(action.meta)) {
+          if (!isUndefined(action.meta.arg)) {
+            if (!isUndefined(action.meta.arg.originalArgs)) {
+              if (!isUndefined(action.meta.arg.originalArgs.pool)) {
+                return
+              }
+            }
+          }
+        }
+      }
+      
+      // Group pools by session first
+      const groupedBySession = groupBy(action.payload.data, v => !!v.session ? v.session : action.payload.session)
+
+      forEach(groupedBySession, (pools, session) => {
+        if (!isUndefined(session)) {
+          adapter.upsertOne(state, { 
+            six: parseInt(session, 10), 
+            _pool_ids: pools.map(p => p.id),
+            _pool_members: pools.map(p => !isUndefined(p.stats) ? p.stats.member_counter : 0).reduce((a, b) => a + b, 0),
+            _pool_staked: pools.map(p => !isUndefined(p.stats) ? p.stats.staked : 0).reduce((a, b) => a + b, 0),
+            _pool_reward: pools.map(p => !isUndefined(p.stats) ? p.stats.reward : 0).reduce((a, b) => a + b, 0),
+            _pool_points: pools.map(p => !isUndefined(p.stats) ? p.stats.points : 0).reduce((a, b) => a + b, 0)
+          })
+        }
+      })
+
     })
   }
 })
@@ -232,9 +268,45 @@ export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy) => {
   }
 };
 
+export const selectPoolIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
+    (isArray(selectSessionByIndex(state, session)._pool_ids) ? 
+      selectSessionByIndex(state, session)._pool_ids : []) : [];
+
+export const selectPoolIdsBySessionSortedBy = (state, session, sortBy, stateFilter = 'Open') => {
+  switch (sortBy) {
+    case 'apr': {
+      const pool_ids = selectPoolIdsBySession(state, session)
+        .map(pool_id => selectPoolBySessionAndPoolId(state, session, pool_id))
+        .filter(f => f.state === stateFilter)
+        .sort((a, b) => !isUndefined(a.nomstats) && !isUndefined(b.nomstats)  ? b.nomstats.apr - a.nomstats.apr : 0)
+        .map(o => o.id);
+      return pool_ids
+    }
+    case 'members': {
+      const pool_ids = selectPoolIdsBySession(state, session)
+        .map(pool_id => selectPoolBySessionAndPoolId(state, session, pool_id))
+        .filter(f => f.state === stateFilter)
+        .sort((a, b) => !isUndefined(a.stats) && !isUndefined(b.stats)  ? b.stats.member_counter - a.stats.member_counter : 0)
+        .map(o => o.id);
+      return pool_ids
+    }
+    case 'points': {
+      const pool_ids = selectPoolIdsBySession(state, session)
+        .map(pool_id => selectPoolBySessionAndPoolId(state, session, pool_id))
+        .filter(f => f.state === stateFilter)
+        .sort((a, b) => !isUndefined(a.stats) && !isUndefined(b.stats)  ? b.stats.points - a.stats.points : 0)
+        .map(o => o.id);
+      return pool_ids
+    }
+    default: {
+      return selectPoolIdsBySession(state, session)
+    }
+  }
+};
+
 export const selectParachainIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
-  (isArray(selectSessionByIndex(state, session)._parachainIds) ? 
-    selectSessionByIndex(state, session)._parachainIds : []) : [];
+  (isArray(selectSessionByIndex(state, session)._parachain_ids) ? 
+    selectSessionByIndex(state, session)._parachain_ids : []) : [];
 
 export const selectParachainIdsBySessionSortedBy = (state, session, sortBy) => {
   switch (sortBy) {
@@ -331,6 +403,35 @@ export const  selectDisputesBySessions = (state, sessionIds = []) => sessionIds.
     if (!isUndefined(session.stats)) {
       return session.stats.di
     }
+  }
+}).filter(v => !isUndefined(v))
+
+// Pools
+export const selectPoolMembersBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    return session._pool_members
+  }
+}).filter(v => !isUndefined(v))
+
+export const selectPoolStakedBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    return session._pool_staked
+  }
+}).filter(v => !isUndefined(v))
+
+export const selectPoolRewardBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    return session._pool_reward
+  }
+}).filter(v => !isUndefined(v))
+
+export const selectPoolPointsBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    return session._pool_points
   }
 }).filter(v => !isUndefined(v))
 

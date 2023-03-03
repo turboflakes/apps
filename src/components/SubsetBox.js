@@ -52,7 +52,7 @@ export default function SubsetBox({sessionIndex, isHistoryMode}) {
                 Distribution by subset
                 </Typography>
               </Box>
-              <Typography variant="subtitle2" sx={{ height: 16, overflow: "hidden", textOverflow: "ellipsis" }}>
+              <Typography variant="subtitle2" sx={{ height: 16, overflow: "hidden", textOverflow: "ellipsis" }} paragraph>
                 All active validators
               </Typography>
             </Box>

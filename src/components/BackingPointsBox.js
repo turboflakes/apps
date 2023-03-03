@@ -19,7 +19,7 @@ import {
 } from '../features/chain/chainSlice';
 import {
   getBlocksPerSessionTarget
-} from '../constants'
+} from '../constants';
 
 const renderTooltip = (props, theme) => {
   const { active, payload } = props;

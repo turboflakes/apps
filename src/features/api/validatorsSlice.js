@@ -25,15 +25,15 @@ import {
 import {
   selectValProfileByAddress
 } from './valProfilesSlice'
-
+import { grade } from '../../util/grade';
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Validators'],
   endpoints: (builder) => ({
     getValidators: builder.query({
-      query: ({address, session, sessions, role, number_last_sessions, show_summary, show_stats, show_profile, fetch_peers}) => ({
+      query: ({address, session, role, number_last_sessions, from, to, ranking, size, subset, nominees_only, show_summary, show_stats, show_profile, fetch_peers}) => ({
         url: `/validators`,
-        params: { address, session, sessions, role, number_last_sessions, show_summary, show_stats, show_profile, fetch_peers }
+        params: { address, session, role, number_last_sessions, from, to, ranking, size, subset, nominees_only, show_summary, show_stats, show_profile, fetch_peers }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
       async onQueryStarted(params, { getState, extra, dispatch, queryFulfilled }) {
@@ -43,7 +43,8 @@ export const extendedApi = apiSlice.injectEndpoints({
           
           // `onSuccess` subscribe for updates
           const session = selectSessionByIndex(getState(), params.session)
-          if ((params.role === "authority" || params.role === "para_authority") && session.is_current) {
+
+          if ((params.role === "authority" || params.role === "para_authority" || params.nominees_only === true) && session.is_current) {
 
             if (params.show_summary) {
               let msg = JSON.stringify({ method: 'subscribe_para_authorities_summary', params: [params.session.toString()] });
@@ -196,6 +197,22 @@ export const selectValidatorsByAddressAndSessions = (state, address, sessions = 
     }
   }).filter(v => !isUndefined(v))
 
+export const selectValidatorGradeBySessionAndAddress = (state, session, address) => {
+  const v = selectValidatorBySessionAndAddress(state, session, address);
+  if (!isUndefined(v) && !isUndefined(v.para_summary)) {
+    return grade(1-calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv))
+  }
+  return "-"
+}
+
+export const selectValidatorPoolCounterBySessionAndAddress = (state, session, address) => {
+  const v = selectValidatorBySessionAndAddress(state, session, address);
+  if (!isUndefined(v) && !isUndefined(v.pool_counter)) {
+    return v.pool_counter
+  }
+  return "-"
+}
+
 export const selectParaAuthoritySessionsByAddressAndSessions = (state, address, sessions = []) => 
   selectValidatorsByAddressAndSessions(state, address, sessions)
     .filter(v => v.is_auth && v.is_para)
@@ -284,10 +301,11 @@ const GLYPHS = {
   }
 }
 
-const SUBSET = { 
+export const SUBSET = { 
   "TVP": "TVP",
   "NONTVP": "Others",
-  "C100": "C100"
+  "C100": "C100",
+  "NONVAL": "Non-validator"
 }
 
 export const selectValidatorsInsightsBySessions = (state, sessions = [], isHistory = false, identityFilter = "", subsetFilter = "", isFetching) => {

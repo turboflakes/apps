@@ -108,21 +108,19 @@ export default function ModeSwitch({mode}) {
   };
 
   return (
-    <Stack spacing={1} direction="row" alignItems="center">
+    <Stack sx={{width: 128}} direction="row" alignItems="center">
+      <MaterialUISwitch {...label} 
+        checked={checked}
+        onChange={handleChange} />
       <Box sx={{ display: 'flex', alignItems: 'center'}}>
         {/* <span style={{ width: '8px', height: '8px', borderRadius: '50%', 
                   animation: "pulse 1s infinite ease-in-out alternate",
                   backgroundColor: isLiveMode ? theme.palette.semantics.green : 'transparent', 
                   display: "inline-block" }}></span> */}
-        <Typography variant='caption' sx={{ ml: 1, fontWeight: '600', textTransform: 'uppercase' }} color="textPrimary">
-          {isLiveMode ? 'Live' : 'History Explorer'}
+        <Typography variant='caption' sx={{ fontWeight: '600', textTransform: 'uppercase' }} color="textPrimary">
+          {isLiveMode ? 'Live' : 'History'}
         </Typography>
       </Box>
-
-      <MaterialUISwitch {...label} 
-        checked={checked}
-        onChange={handleChange} />
-
     </Stack>
   );
 }

@@ -17,7 +17,7 @@ import {
   pageChanged
 } from '../features/layout/layoutSlice';
 
-export default function SearchSmall(props) {
+export default function SearchSmall({width = 512}) {
   // const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -52,7 +52,7 @@ export default function SearchSmall(props) {
           sx={{
             // backgroundColor: theme.palette.neutrals[100],
             borderRadius: 30,
-            width: 512,
+            width,
           }}
           variant="outlined"
           placeholder="Search by validator stash address"

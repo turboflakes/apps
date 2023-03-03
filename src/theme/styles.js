@@ -47,6 +47,11 @@ let theme = createTheme({
       "F": "#DF2326",
       "-": "#FFFFFF",
     },
+    state: {
+      "Open": "#86D3E7",
+      "Destroying": "#DF2326",
+      "Blocked": "#F6B519",
+    },
     neutrals: {
       100: "#F1F1F0",
       200: "#C8C9CC",
@@ -182,7 +187,7 @@ let theme = createTheme({
     subtitle2: {
       fontFamily: "'Roboto', sans-serif",
       fontSize: "0.825rem",
-      fontStyle: "italic",
+      // fontStyle: "italic",
       lineHeight: 0.875,
       color: '#4D4D4D',
     }, 

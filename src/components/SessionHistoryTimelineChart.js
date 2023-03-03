@@ -166,7 +166,7 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
 
           {/* points */}
           <XAxis style={{ fontSize: '0.8rem' }} dataKey="session" type="category" 
-            axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} angle={-30} tickMargin={8}/>         
+            axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} angle={-30} tickMargin={8} />         
           <YAxis type="number" 
             width={64}
             style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}

@@ -4,19 +4,18 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
-import Paper from '@mui/material/Paper';
+// import Divider from '@mui/material/Divider';
+// import Paper from '@mui/material/Paper';
 import SessionPerformance600Timeline from './SessionPerformance600Timeline';
 import NetTotalStakedBox from './NetTotalStakedBox';
 import NetLastRewardBox from './NetLastRewardBox';
-import NetTotalValidatorsBox from './NetTotalValidatorsBox';
-import NetActiveValidatorsBox from './NetActiveValidatorsBox';
-import NetOversubscribedValidatorsBox from './NetOversubscribedValidatorsBox';
-import NetPointsValidatorsBox from './NetPointsValidatorsBox';
-import NetOwnStakeValidatorsBox from './NetOwnStakeValidatorsBox';
-import SearchSmall from './SearchSmall';
+// import SearchSmall from './SearchSmall';
 import HistoryErasMenu from './HistoryErasMenu';
+import ValidatorsRankingBox from './ValidatorsRankingBox';
+import PoolsValidatorsRankingBox from './PoolsValidatorsRankingBox';
+import NetVerticalTabs from './NetVerticalTabs';
 import GradesBox from './GradesBox';
+import NetPoolHistoryBox from './NetPoolHistoryBox';
 import onetSVG from '../assets/onet.svg';
 import { 
   selectSessionHistory,
@@ -24,22 +23,20 @@ import {
  } from '../features/api/sessionsSlice'
 import { 
   selectIsLiveMode,
-  selectIsHistoryMode,
+  // selectIsHistoryMode,
   selectMaxHistorySessions,
-  selectMaxHistoryEras
+  // selectMaxHistoryEras
 } from '../features/layout/layoutSlice'
 import { 
   selectIsSocketConnected,
 } from '../features/api/socketSlice'
 
-
-
 export default function DashboardPage() {
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
-  const maxHistoryEras = useSelector(selectMaxHistoryEras);
+  // const maxHistoryEras = useSelector(selectMaxHistoryEras);
   const isLiveMode = useSelector(selectIsLiveMode);
-  const isHistoryMode = useSelector(selectIsHistoryMode);
+  // const isHistoryMode = useSelector(selectIsHistoryMode);
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
   
@@ -50,11 +47,9 @@ export default function DashboardPage() {
     return (<Box sx={{ m: 2, minHeight: '100vh' }}></Box>)
   }
 
-
-
   return (
     <Box sx={{ mb: 10, display: 'flex', justifyContent: 'center'}}>
-		<Container sx={{ }}>
+		<Container>
       <Grid container spacing={2}>
         <Grid sx={{ mt: 18 }} item xs={7} >
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end'}}>
@@ -120,101 +115,60 @@ export default function DashboardPage() {
           <GradesBox sessionIndex={currentSession} size="lg" />
         </Grid>
 
-        
-        <Grid item xs={12} sx={{ my: 6}}>
+        <Grid item xs={12} sx={{ my: 2}}>
           <SessionPerformance600Timeline sessionIndex={currentSession} />
-        </Grid>  
-       
+        </Grid>
 
-        {/* <Grid item xs={12}>
-          <Divider sx={{ 
-            my: 1,
-            opacity: 0.25,
-            height: '1px',
-            borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-            borderBottom: 'none',
-            backgroundColor: 'transparent',
-            backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-            }} /> 
-        </Grid> */}
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} >
+              <Box sx={{ mb: -1, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <Typography sx={{ ml: 2, mb: 0}} variant='h6'>
+                  Staking
+                </Typography>
+                <Box>
+                  <HistoryErasMenu />
+                </Box>
+              </Box>
+            </Grid>
 
-        
+            <Grid item xs={8}>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                <NetTotalStakedBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+                </Grid>
+                <Grid item xs={6}>
+                <NetLastRewardBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+                </Grid>
+                <Grid item xs={12}>
+                  <NetVerticalTabs sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+                </Grid>
+              </Grid>
+            </Grid>
 
-        <Grid item xs={12} >
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-            {/* <SearchSmall /> */}
-            <Box>
-              <HistoryErasMenu />
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={6} md={5}>
-          <NetTotalStakedBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-        </Grid>
-        <Grid item xs={6} md={5}>
-          <NetLastRewardBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-        </Grid>
-        <Grid item xs={6} md={2}>
-        </Grid>
-        <Grid item xs={6} md={2}>
-        </Grid>
-        <Grid item xs={6} md={5}>
-          <NetTotalValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-        </Grid>
-        <Grid item xs={6} md={5}>
-          <NetActiveValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-        </Grid>
-        
-        <Grid item xs={6} md={4}>
-          <NetOversubscribedValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-        </Grid>
-        {/* <Grid item xs={6} md={4}>
+            <Grid item xs={4}>
+              <ValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>
+            </Grid>
 
-        </Grid> */}
-        
-        <Grid item xs={6} md={6}>
-          <NetPointsValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-        </Grid>
-        
-        <Grid item xs={6} md={3}>
-        </Grid>
-        <Grid item xs={6} md={6}>
-          <NetOwnStakeValidatorsBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-        </Grid>
-        <Grid item xs={6} md={3}>
-        </Grid>
-        {/* {isLiveMode ? 
-          <Grid item xs={12} md={2}>
-            <SessionPerformancePieChart />
           </Grid>
-        : null}
-        {isLiveMode ? 
-          <Grid item xs={12} md={2}>
-            <SessionPieChart sessionIndex={sessionIndex} />
-          </Grid> : null}
-        <Grid item xs={12} md={isHistoryMode ? 3 : 4}>
-          <SessionBox sessionIndex={sessionIndex} dark={isHistoryMode} />
         </Grid>
-        <Grid item xs={12} md={2}>
-          <AuthoritiesBox sessionIndex={sessionIndex} dark={isHistoryMode} />
+       
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography sx={{ ml: 2}} variant='h6'>
+              Nomination Pools
+              </Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <PoolsValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>
+            </Grid>
+            <Grid item xs={8}>
+              <NetPoolHistoryBox sessionIndex={sessionIndex} skip={isNaN(sessionIndex)}/>
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={2}>
-          <GradesSmallBox sessionIndex={sessionIndex} dark={isHistoryMode} />
-        </Grid>
-        <Grid item xs={12} md={2}>
-          {isLiveMode ? <AuthoredBlocksBox /> : <AuthoredBlocksHistoryBox sessionIndex={sessionIndex} />}
-        </Grid>
-        <Grid item xs={12} md={2}>
-          {isLiveMode ? <BackingPointsBox /> : <BackingPointsHistoryBox sessionIndex={sessionIndex} />}
-        </Grid>
-        {isLiveMode ?
-          <Grid item xs={12} md={2}>
-            <SessionPointsBox />
-          </Grid> : null}
-        {isLiveMode ?
-          <Grid item xs={12} md={2}>
-            <EraPointsBox />
-          </Grid> : null} */}
+        
       </Grid>
 		</Container>
     </Box>

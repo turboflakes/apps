@@ -2,6 +2,7 @@ import {
   createSlice,
   createEntityAdapter,
 } from '@reduxjs/toolkit'
+import isUndefined from 'lodash/isUndefined'
 import apiSlice from './apiSlice'
 import { 
   matchValidatorsReceived,
@@ -30,7 +31,7 @@ const adapter = createEntityAdapter({
 })
 
 const valProfilesSlice = createSlice({
-  name: 'valProfiles',
+  name: 'val_profiles',
   initialState: adapter.getInitialState(),
   reducers: {},
   extraReducers(builder) {
@@ -47,10 +48,34 @@ const valProfilesSlice = createSlice({
         _ts: + new Date()})
     })
     .addMatcher(matchValidatorsReceived, (state, action) => {
+      const setKey = (action, suffix = 'ranking') => {
+        if (!isUndefined(action)) {
+          if (!isUndefined(action.meta)) {
+            if (!isUndefined(action.meta.arg)) {
+              if (!isUndefined(action.meta.arg.originalArgs)) {
+                if (!isUndefined(action.meta.arg.originalArgs.ranking)) {
+                  return `_${action.meta.arg.originalArgs.ranking}_${suffix}`
+                }
+              }
+            }
+          }
+        }
+        return suffix
+      }
+
       const profiles = action.payload.data.filter(validator => !!validator.profile)
           .map(validator => {
-            return {
+            let obj = {
               ...validator.profile,
+            };
+            if (validator.ranking) {
+              obj = {
+                ...obj,
+                [setKey(action)]: validator.ranking
+              }
+            }
+            return {
+              ...obj,
               _commission: !!validator.profile.commission ? commissionDisplay(validator.profile.commission) : '',
               _identity: !!validator.profile.identity ? 
                 (!!validator.profile.identity.sub ? 
@@ -71,4 +96,4 @@ export default valProfilesSlice;
 
 export const { 
   selectById: selectValProfileByAddress 
-} = adapter.getSelectors(state => state.valProfiles)
+} = adapter.getSelectors(state => state.val_profiles)

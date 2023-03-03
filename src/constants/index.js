@@ -23,7 +23,8 @@ const networkSettings = {
     maxValidators: 16,
     maxHistoryEras: 4,
     coreAssignmentsTarget: 240,
-    blocksPerSessionTarget: 2400,  
+    blocksPerSessionTarget: 2400,
+    sessionsPerDayTarget: 6,
     poolIds: [process.env.REACT_APP_POLKADOT_POOL_ID_1, process.env.REACT_APP_POLKADOT_POOL_ID_2],
     chains: prodParasPolkadot,
     validators: [
@@ -42,6 +43,7 @@ const networkSettings = {
     maxHistoryEras: 32,
     coreAssignmentsTarget: 60,
     blocksPerSessionTarget: 600, 
+    sessionsPerDayTarget: 24,
     poolIds: [process.env.REACT_APP_KUSAMA_POOL_ID_1, process.env.REACT_APP_KUSAMA_POOL_ID_2],
     chains: prodParasKusama,
     validators: [
@@ -62,6 +64,7 @@ const networkSettings = {
     maxHistoryEras: 4,
     coreAssignmentsTarget: 60, 
     blocksPerSessionTarget: 600, 
+    sessionsPerDayTarget: 24,
     poolIds: [process.env.REACT_APP_WESTEND_POOL_ID_1, process.env.REACT_APP_WESTEND_POOL_ID_2],
   }
 }
@@ -77,6 +80,7 @@ export const getMaxHistoryEras = (network) => networkSettings[network].maxHistor
 export const getMaxHistorySessions = (network) => networkSettings[network].maxHistoryEras * 6
 export const getCoreAssignmentsTarget = (network) => networkSettings[network].coreAssignmentsTarget
 export const getBlocksPerSessionTarget = (network) => networkSettings[network].blocksPerSessionTarget
+export const getSessionsPerDayTarget = (network) => networkSettings[network].sessionsPerDayTarget
 export const getNetworkPoolId = (network, index) => networkSettings[network].poolIds[index]
 // Useful to present TurboFlakes validators
 export const getTurboValidators = (network) => networkSettings[network].validators

@@ -3,7 +3,6 @@ import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { PieChart, Pie, Tooltip, Cell } from 'recharts';
-import { getNetworkIcon } from '../constants'
 
 const renderTooltip = (props) => {
   const { active, payload } = props;
@@ -17,14 +16,17 @@ const renderTooltip = (props) => {
           m: 0,
           borderRadius: 1,
           boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px',
-          minWidth: '192px'
+          minWidth: '144px'
          }}
       >
-        <Typography component="div" variant="caption" color="inherit" paragraph>
-          <b>Grade {data.payload.name}</b>
+        <Typography component="div" variant="caption" color="inherit" gutterBottom>
+          <b>State {data.payload.name}</b>
+        </Typography>
+        <Typography component="div" variant="caption" color="inherit" gutterBottom>
+          {Math.round(data.payload.value*100)/100}%
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-        <span style={{ marginRight: '8px', color: data.fill }}>●</span>{data.payload.quantity} validators ({Math.round(data.payload.value*100)/100}%)
+          {data.payload.quantity} pools
         </Typography>
       </Box>
     );
@@ -33,7 +35,7 @@ const renderTooltip = (props) => {
   return null;
 };
 
-export default function GradesPieChart({data, size, dark, showNetworkIcon}) {
+export default function PoolsStatesPieChart({data, size, dark, showNetworkIcon}) {
   const theme = useTheme();
   return (
     <Box
@@ -50,19 +52,6 @@ export default function GradesPieChart({data, size, dark, showNetworkIcon}) {
         }}
         >
           <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative'}}>
-          {showNetworkIcon ? 
-            <Box sx={{
-              position: 'absolute',
-              display: 'flex', justifyContent: 'center', alignItems: 'center',
-              width: 254,
-              height: 254,
-              borderRadius: "50%", 
-              boxShadow: 'rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px',
-              }}>
-              <img src={getNetworkIcon("kusama")}  style={{ 
-                    width: 80,
-                    height: 80 }} alt={"kusama"}/>
-            </Box> : null}
             <PieChart width={size === "lg" ? 272 : (size === "md" ? 208 : 64)} height={ size === "lg" ? 272 : (size === "md" ? 272 : 64)}>
             <Pie
                 isAnimationActive={false}
@@ -78,7 +67,7 @@ export default function GradesPieChart({data, size, dark, showNetworkIcon}) {
                 labelLine={false}
               >
                 {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={theme.palette.grade[entry.name]} borderRadius 
+                  <Cell key={`cell-${index}`} fill={theme.palette.state[entry.name]} borderRadius 
                   stroke={dark ? theme.palette.background.secondary : theme.palette.background.paper} strokeWidth={1} />
                 ))}
               </Pie>

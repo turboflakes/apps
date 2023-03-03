@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
 import InsightsGrid from './InsightsGrid';
 import ValGroupsGrid from './ValGroupsGrid';
 import ParachainsGrid from './ParachainsGrid';
@@ -16,7 +15,6 @@ import {
  } from '../features/api/validatorsSlice';
 import {
   pageChanged,
-  selectPage,
   selectMode,
   selectIsHistoryMode,
   selectMaxHistorySessions
@@ -39,6 +37,7 @@ export default function OverviewTabs({sessionIndex, tab}) {
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
   const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true, show_profile: true}, {refetchOnMountOrArgChange: true});
+  
   const handleChange = (event, newValue) => {
     dispatch(pageChanged(tabPages[newValue]));
     navigate(`/${tabPages[newValue]}`)

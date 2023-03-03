@@ -4,7 +4,16 @@ import Box from '@mui/material/Box';
 import { PieChart, Pie, Tooltip, Cell, Legend, ResponsiveContainer } from 'recharts';
 import { Typography } from '@mui/material';
 
-const COLORS = (theme) => ([theme.palette.grey[900], theme.palette.grey[200], theme.palette.semantics.blue])
+// const COLORS = (theme) => ([theme.palette.grey[900], theme.palette.grey[200], theme.palette.semantics.blue])
+
+const COLORS = (theme) => ({
+  "NONVAL": theme.palette.semantics.red,
+  "Non-validator": theme.palette.semantics.red,
+  "C100": theme.palette.grey[900],
+  "NONTVP": theme.palette.grey[200],
+  "Others": theme.palette.grey[200],
+  "TVP": theme.palette.semantics.blue
+})
 
 const renderTooltip = (props) => {
   const { active, payload } = props;
@@ -16,19 +25,16 @@ const renderTooltip = (props) => {
           bgcolor: '#fff',
           p: 2,
           m: 0,
+          minWidth: '192px',
           borderRadius: 1,
           boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px',
-          minWidth: '128px'
          }}
       >
-        <Typography component="div" variant="caption" color="inherit" gutterBottom>
-          <b>Subset {data.payload.name}</b>
-        </Typography>
-        <Typography component="div" variant="caption" color="inherit" gutterBottom>
-        {`${Math.round((data.payload.value / data.payload.total)*100)}%`}
+        <Typography component="div" variant="caption" color="inherit" paragraph>
+          <b>Validators Subset</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-        {data.payload.value} validators
+        <span style={{ marginRight: '8px', color: data.fill }}>●</span>{data.payload.name}: {data.payload.value} ({`${Math.round((data.payload.value / data.payload.total)*100)}%`})
         </Typography>
       </Box>
     );
@@ -84,13 +90,13 @@ export default function SubsetPieChart({data, showLegend, size}) {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          width: '100%'
-          // height: '100%',
+          width: '100%',
+          height: 216,
           // borderRadius: 3,
           // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
         }}
         >
-          <ResponsiveContainer width='100%' height={size === "md" ? 256 : 100} >
+          <ResponsiveContainer width='100%' height={size === "md" ? 256 : 180} >
             <PieChart>
             <Pie
                 isAnimationActive={false}
@@ -98,7 +104,7 @@ export default function SubsetPieChart({data, showLegend, size}) {
                 data={pieData}
                 cx="50%"
                 cy="50%"
-                outerRadius={size === "md" ? 72 : 32}
+                outerRadius={size === "md" ? 72 : 56}
                 innerRadius={2}
                 startAngle={90}
                 endAngle={-360}
@@ -106,7 +112,7 @@ export default function SubsetPieChart({data, showLegend, size}) {
                 labelLine={false}
               >
                 {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS(theme)[index]} />
+                  <Cell key={`cell-${index}`} fill={COLORS(theme)[entry.name]} />
                 ))}
               </Pie>
               <Tooltip 

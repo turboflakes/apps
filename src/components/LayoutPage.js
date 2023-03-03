@@ -72,6 +72,18 @@ function useWeb3ChainInfo(api) {
   return [];
 }
 
+function useScrollTop(ref, selectedPage) {
+  const [page, setPage] = React.useState(selectedPage);
+  React.useEffect(() => {
+    if (selectedPage !== page) {
+      ref.current.scrollTop = 0;
+      setPage(selectedPage)
+		}
+  }, [selectedPage]);
+
+  return [];
+}
+
 const drawerWidth = 210;
 const drawerWidthClosed = 56;
 
@@ -122,6 +134,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function LayoutPage({api}) {
+  const ref = React.useRef();
   const theme = useTheme();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -140,6 +153,8 @@ export default function LayoutPage({api}) {
   
   const web3Account = useSelector(selectAccount);
 	useWeb3ChainInfo(api);
+
+  useScrollTop(ref, selectedPage);
 
   const handleChainSelection = (ev, chain) => {
 		if (chain === null) {
@@ -245,8 +260,8 @@ export default function LayoutPage({api}) {
             {/* <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}>
               { selectedPage !== 'validators/insights' && selectedPage !== 'dashboard' ? <SearchSmall /> : null }
             </Box> */}
-            <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}>
-              <SearchSmall />
+            <Box sx={{ ml: 1, flexGrow: 1, display: 'flex'}}>
+              <SearchSmall width={open ? 384 : 512} />
             </Box>
             <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}></Box>
             <Box sx={{ display: 'flex', alignItems: 'center'}}>
@@ -309,8 +324,6 @@ export default function LayoutPage({api}) {
               </Box>
             </Toolbar>
 
-            <Divider sx={{ mb: 1 }} />
-
             {/* menu */}
             <List component="nav" 
               sx={{ '> .MuiListItemButton-root.Mui-selected': {
@@ -319,7 +332,8 @@ export default function LayoutPage({api}) {
               {/* <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Validators' : 'Val..'}
               </ListSubheader> */}
-              
+              <Divider sx={{ my: 0 }} />
+
               <ListItemButton selected={selectedPage === 'dashboard'}
                 onClick={() => handlePageSelection('dashboard')}>
                 <ListItemIcon>
@@ -328,7 +342,7 @@ export default function LayoutPage({api}) {
                 <ListItemText primary="Dashboard" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
               
-              {/* <Divider sx={{ my: 1 }} /> */}
+              <Divider sx={{ my: 0 }} />
 
               {/* <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Validators' : 'Val..'}
@@ -363,20 +377,22 @@ export default function LayoutPage({api}) {
                   sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
               
-              {/* <Divider sx={{ my: 1 }} /> */}
+              <Divider sx={{ my: 0 }} />
 
               {/* <ListSubheader component="div" sx={{ color: theme.palette.neutrals[300] }}>
                 {open ? 'Nomination Pools' : 'Nom..'}
               </ListSubheader> */}
 
-              <ListItemButton  selected={selectedPage === 'pools'}  disabled
+              <ListItemButton  selected={selectedPage === 'pools'}
                 onClick={() => handlePageSelection('pools')}>
                 <ListItemIcon>
                   <FontAwesomeIcon icon={faWaterLadder} />
                 </ListItemIcon>
                 <ListItemText primary="Nomination Pools" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
+              <Divider sx={{ my: 0 }} />
             </List>
+            
           </Drawer>
       <Box
             component="main"
@@ -389,7 +405,9 @@ export default function LayoutPage({api}) {
               flexGrow: 1,
               height: '100vh',
               overflow: 'auto',
+              scrollBehavior: "smooth"
             }}
+            ref={ref}
           >	
         {/*  hidden toolbar */}
         <Toolbar/>

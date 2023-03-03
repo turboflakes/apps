@@ -17,6 +17,7 @@ import LayoutPage from './components/LayoutPage'
 import DashboardPage from './components/DashboardPage'
 import OverviewPage from './components/OverviewPage'
 import ValidatorPage from './components/ValidatorPage'
+import PoolsOverviewPage from './components/PoolsOverviewPage'
 import UnderMaintenancePage from './components/UnderMaintenancePage'
 import withTheme from './theme/withTheme'
 import {
@@ -84,6 +85,7 @@ const App = () => {
             <Route path="insights" element={<OverviewPage tab={0} />} />
             <Route path="parachains" element={<OverviewPage tab={1} />} />
             <Route path="val-groups" element={<OverviewPage tab={2} />} />
+            <Route path="pools" element={<PoolsOverviewPage />} />
             <Route path="validator" element={<ValidatorPage />} >
               <Route path=":stash" element={<ValidatorPage />} />
             </Route>
