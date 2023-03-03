@@ -148,10 +148,10 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column'}}>
           <Typography variant="h6">
-            Performance Ranking 
+            Top Validators Performances
           </Typography>
           <Typography variant="caption" gutterBottom>
-            Top 16 Best validators of the last {maxSessions} sessions
+            Performance ranking of the last {maxSessions} sessions
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
@@ -161,7 +161,10 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
             title={
               <Box sx={{ p: 1}}>
                 <Typography variant="caption" paragraph>
-                  ONE-T Top Best Validators performances is based on the following criteria:
+                <b>Top Validators Performances</b>
+                </Typography>
+                <Typography variant="caption" paragraph>
+                  ONE-T performance ranking is based on the following criteria:
                 </Typography>
                 <Typography component="div" variant="caption" gutterBottom>
                   <b>score:</b> Backing votes ratio (1-MVR) make up 75% of the score, average p/v points make up 18% and number of sessions as p/v the remaining 7%

@@ -12,6 +12,7 @@ import NetLastRewardBox from './NetLastRewardBox';
 // import SearchSmall from './SearchSmall';
 import HistoryErasMenu from './HistoryErasMenu';
 import ValidatorsRankingBox from './ValidatorsRankingBox';
+import PoolsValidatorsRankingBox from './PoolsValidatorsRankingBox';
 import NetVerticalTabs from './NetVerticalTabs';
 import GradesBox from './GradesBox';
 import onetSVG from '../assets/onet.svg';
@@ -21,9 +22,9 @@ import {
  } from '../features/api/sessionsSlice'
 import { 
   selectIsLiveMode,
-  selectIsHistoryMode,
+  // selectIsHistoryMode,
   selectMaxHistorySessions,
-  selectMaxHistoryEras
+  // selectMaxHistoryEras
 } from '../features/layout/layoutSlice'
 import { 
   selectIsSocketConnected,
@@ -34,9 +35,9 @@ import {
 export default function DashboardPage() {
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
-  const maxHistoryEras = useSelector(selectMaxHistoryEras);
+  // const maxHistoryEras = useSelector(selectMaxHistoryEras);
   const isLiveMode = useSelector(selectIsLiveMode);
-  const isHistoryMode = useSelector(selectIsHistoryMode);
+  // const isHistoryMode = useSelector(selectIsHistoryMode);
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
   
@@ -162,8 +163,9 @@ export default function DashboardPage() {
         <Grid item xs={4}>
           <ValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>
         </Grid>
-        <Grid item xs={6} md={2}>
-        </Grid>
+        {/* <Grid item xs={4}>
+          <PoolsValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>
+        </Grid> */}
         
       </Grid>
 		</Container>

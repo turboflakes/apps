@@ -205,6 +205,14 @@ export const selectValidatorGradeBySessionAndAddress = (state, session, address)
   return "-"
 }
 
+export const selectValidatorPoolCounterBySessionAndAddress = (state, session, address) => {
+  const v = selectValidatorBySessionAndAddress(state, session, address);
+  if (!isUndefined(v) && !isUndefined(v.pool_counter)) {
+    return v.pool_counter
+  }
+  return "-"
+}
+
 export const selectParaAuthoritySessionsByAddressAndSessions = (state, address, sessions = []) => 
   selectValidatorsByAddressAndSessions(state, address, sessions)
     .filter(v => v.is_auth && v.is_para)
