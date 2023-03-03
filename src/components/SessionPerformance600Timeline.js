@@ -2,16 +2,16 @@ import * as React from 'react';
 import { useSelector } from 'react-redux'
 import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
-import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-
 import { Typography } from '@mui/material';
+import Spinner from './Spinner';
+
 import { 
   useGetBlocksQuery,
   selectLastXBlocks,
  } from '../features/api/blocksSlice'
+
 
 
  const renderTooltip = (props, identiy, theme) => {
@@ -60,13 +60,16 @@ export default function SessionPerformance600Timeline({sessionIndex}) {
   const blocks = useSelector(selectLastXBlocks)
 
   if (isFetchingCurrent || isFetchingPrevious) {
-    return (<Skeleton variant="rounded" sx={{
-      width: '100%',
-      height: 96,
-      borderRadius: 3,
-      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-      bgcolor: 'white'
-    }} />)
+    return (<Box sx={{
+        my: 2,
+        pt: 2,
+        width: '100%',
+        height: 96,
+        display: 'flex',
+        justifyContent: 'center'
+      }}>
+      <Spinner size={24}/>
+    </Box>)
   }
   
   // Minimum of 4 blocks to draw a trend

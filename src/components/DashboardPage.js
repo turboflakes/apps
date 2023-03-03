@@ -31,8 +31,6 @@ import {
   selectIsSocketConnected,
 } from '../features/api/socketSlice'
 
-
-
 export default function DashboardPage() {
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
@@ -51,7 +49,7 @@ export default function DashboardPage() {
 
   return (
     <Box sx={{ mb: 10, display: 'flex', justifyContent: 'center'}}>
-		<Container sx={{ }}>
+		<Container>
       <Grid container spacing={2}>
         <Grid sx={{ mt: 18 }} item xs={7} >
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end'}}>
@@ -120,7 +118,7 @@ export default function DashboardPage() {
         <Grid item xs={12} sx={{ my: 2}}>
           <SessionPerformance600Timeline sessionIndex={currentSession} />
         </Grid>
-        
+
         <Grid item xs={12}>
           <Grid container spacing={2}>
             <Grid item xs={12} >

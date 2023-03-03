@@ -72,6 +72,18 @@ function useWeb3ChainInfo(api) {
   return [];
 }
 
+function useScrollTop(ref, selectedPage) {
+  const [page, setPage] = React.useState(selectedPage);
+  React.useEffect(() => {
+    if (selectedPage !== page) {
+      ref.current.scrollTop = 0;
+      setPage(selectedPage)
+		}
+  }, [selectedPage]);
+
+  return [];
+}
+
 const drawerWidth = 210;
 const drawerWidthClosed = 56;
 
@@ -122,6 +134,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function LayoutPage({api}) {
+  const ref = React.useRef();
   const theme = useTheme();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -140,6 +153,8 @@ export default function LayoutPage({api}) {
   
   const web3Account = useSelector(selectAccount);
 	useWeb3ChainInfo(api);
+
+  useScrollTop(ref, selectedPage);
 
   const handleChainSelection = (ev, chain) => {
 		if (chain === null) {
@@ -390,7 +405,9 @@ export default function LayoutPage({api}) {
               flexGrow: 1,
               height: '100vh',
               overflow: 'auto',
+              scrollBehavior: "smooth"
             }}
+            ref={ref}
           >	
         {/*  hidden toolbar */}
         <Toolbar/>

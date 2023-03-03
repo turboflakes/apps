@@ -154,7 +154,7 @@ export default function PoolsValidatorsRankingBox({sessionIndex, maxSessions, sk
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column'}}>
         {isFetching ?
-          <Box sx={{height: 590, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <Box sx={{ height: 342, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <Spinner size={32}/>
           </Box>
           : (isSuccess ?

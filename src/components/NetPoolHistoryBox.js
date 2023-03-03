@@ -5,8 +5,8 @@ import isUndefined from 'lodash/isUndefined';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Skeleton from '@mui/material/Skeleton';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
-import Spinner from './Spinner';
 import PoolHistoryToggle from './PoolHistoryToggle';
 import {
   useGetPoolsQuery
@@ -82,11 +82,13 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
   };
   
   if (isFetching) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%'}}>
-        <Spinner size={32}/>
-      </Box>
-    )
+    return (<Skeleton variant="rounded" sx={{
+      width: '100%',
+      height: 376,
+      borderRadius: 3,
+      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: 'white'
+    }} />)
   }
 
   if (!isSuccess) {
@@ -106,7 +108,8 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
   }
 
   const mainValue = poolStats[key][historySessionIds.length - 1];
-  const mainValueFormatted = ["reward", "staked"].includes(key) ? stakeDisplay(mainValue, selectedChainInfo, 0, true, true) : mainValue.format();
+  const mainValueFormatted = !isUndefined(mainValue) ? 
+    (["reward", "staked"].includes(key) ? stakeDisplay(mainValue, selectedChainInfo, 0, true, true) : mainValue.format()) : 0;
 
   return (
     <Paper sx={{
