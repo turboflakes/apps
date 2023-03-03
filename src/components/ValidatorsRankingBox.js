@@ -6,10 +6,7 @@ import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import AddIcon from '@mui/icons-material/PlaylistAdd';
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -38,6 +35,7 @@ import {
   stashDisplay, 
   nameDisplay,
   commissionDisplay } from '../util/display'
+import { isNull } from 'lodash';
 
 function ItemButtom({address, sessionIndex}) {
   const theme = useTheme();
@@ -126,6 +124,9 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
   // }
 
   const handleChange = (event, newValue) => {
+    if (isNull(newValue)) {
+      return
+    }
     setSubset(newValue)
   };
 

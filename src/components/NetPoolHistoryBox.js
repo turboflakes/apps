@@ -2,8 +2,6 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined';
-import groupBy from 'lodash/groupBy';
-import orderBy from 'lodash/orderBy';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -76,9 +74,12 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
   const {isFetching, isSuccess} = useGetPoolsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_stats: true}, {skip});
   
   const historySessionIds = buildSessionIdsArrayHelper(sessionIndex - 1 , maxSessions);
-  const poolMembers = useSelector((state) => selectPoolMembersBySessions(state, historySessionIds));
-  const poolStaked = useSelector((state) => selectPoolStakedBySessions(state, historySessionIds));
-  const poolRewards = useSelector((state) => selectPoolRewardBySessions(state, historySessionIds));
+  
+  const poolStats = {
+    members: useSelector((state) => selectPoolMembersBySessions(state, historySessionIds)),
+    staked: useSelector((state) => selectPoolStakedBySessions(state, historySessionIds)),
+    reward: useSelector((state) => selectPoolRewardBySessions(state, historySessionIds)),
+  };
   
   if (isFetching) {
     return (
@@ -95,14 +96,17 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
   const timelineData = historySessionIds
     .map((s, i) => ({
     session: s,
-    members: poolMembers[i],
-    reward:  poolRewards[i],
-    staked:  poolStaked[i],
+    members: poolStats[key][i],
+    reward:  poolStats[key][i],
+    staked:  poolStats[key][i],
   }))
 
   const handleStatChanged = (newValue) => {
     setKey(newValue)
   }
+
+  const mainValue = poolStats[key][historySessionIds.length - 1];
+  const mainValueFormatted = ["reward", "staked"].includes(key) ? stakeDisplay(mainValue, selectedChainInfo, 0, true, true) : mainValue.format();
 
   return (
     <Paper sx={{
@@ -113,14 +117,22 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
       flexDirection: 'column',
       // alignItems: 'center',
       width: '100%',
-      height: 384,
+      height: 376,
       borderRadius: 3,
       // borderTopLeftRadius: '24px',
       // borderTopRightRadius: '24px',
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
     }}>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <PoolHistoryToggle onChange={handleStatChanged} />
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
+          <Typography variant="caption" gutterBottom>Total {LABEL[key]}</Typography>
+          <Typography variant="h4">
+            {!isUndefined(mainValueFormatted) ? mainValueFormatted : 0}
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <PoolHistoryToggle onChange={handleStatChanged} />
+        </Box>
       </Box>
       <Box sx={{ height: '100%'}}>
         <ResponsiveContainer width="100%" height="100%">

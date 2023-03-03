@@ -1,15 +1,19 @@
 import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
+// import { useTheme } from '@mui/material/styles';
+import isNull from 'lodash/isNull';
 import Box from '@mui/material/Box';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 
 export default function PoolHistoryToggle({onChange}) {
-  const theme = useTheme();
+  // const theme = useTheme();
   const [value, setValue] = React.useState("members");
 
   const handleChange = (event, newValue) => {
+    if (isNull(newValue)) {
+      return
+    }
     setValue(newValue)
     onChange(newValue)
   };

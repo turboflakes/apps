@@ -124,10 +124,10 @@ export default function PoolsValidatorsRankingBox({sessionIndex, maxSessions, sk
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column'}}>
           <Typography variant="h6">
-            Top Validators in Nomination Pools
+            Top Nominees
           </Typography>
           <Typography variant="caption">
-            The most frequently chosen
+            Validators most frequently chosen
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>

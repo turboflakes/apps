@@ -6,8 +6,8 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
-
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
+import NetValChartLegend from './NetValChartLegend';
 
 import { 
   useGetSessionsQuery,
@@ -147,6 +147,8 @@ export default function NetActiveValidatorsBox({sessionIndex, maxSessions}) {
               strokeWidth={2} stroke={theme.palette.grey[200]} dot={false} />
             <Line isAnimationActive={false} type="monotone" dataKey="tvp" 
               strokeWidth={2} stroke={theme.palette.semantics.blue} dot={false} />
+            
+            <Legend verticalAlign="top" content={() => NetValChartLegend({theme})} height={24} />
           </LineChart>
         </ResponsiveContainer>
       </Box>

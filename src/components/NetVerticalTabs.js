@@ -28,7 +28,7 @@ export default function NetVerticalTabs({sessionIndex, maxSessions, onChange}) {
 
   return (
     <Box
-      sx={{ display: 'flex', height: 432 , ml: -19 }}
+      sx={{ display: 'flex', height: 434 , ml: -19 }}
     >
       <Tabs
         orientation="vertical"

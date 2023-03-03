@@ -117,61 +117,58 @@ export default function DashboardPage() {
           <GradesBox sessionIndex={currentSession} size="lg" />
         </Grid>
 
-        
-        {/* <Grid item xs={12} sx={{ my: 6}}>
-          <SessionPerformance600Timeline sessionIndex={currentSession} />
-        </Grid>   */}
-       
-
-        {/* <Grid item xs={12}>
-          <Divider sx={{ 
-            my: 1,
-            opacity: 0.25,
-            height: '1px',
-            borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-            borderBottom: 'none',
-            backgroundColor: 'transparent',
-            backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-            }} /> 
-        </Grid> */}
-
-        
-
-        <Grid item xs={12} >
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-            {/* <SearchSmall /> */}
-            <Box>
-              <HistoryErasMenu />
-            </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={8}>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-            <NetTotalStakedBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-            </Grid>
-            <Grid item xs={6}>
-            <NetLastRewardBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-            </Grid>
-            <Grid item xs={12}>
-              <NetVerticalTabs sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
-            </Grid>
-          </Grid>
-          
-        </Grid>
-        <Grid item xs={4}>
-          <ValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>
-        </Grid>
-
         <Grid item xs={12} sx={{ my: 2}}>
           <SessionPerformance600Timeline sessionIndex={currentSession} />
         </Grid>
+        
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} >
+              <Box sx={{ mb: -1, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <Typography sx={{ ml: 2, mb: 0}} variant='h6'>
+                  Staking
+                </Typography>
+                <Box>
+                  <HistoryErasMenu />
+                </Box>
+              </Box>
+            </Grid>
 
-        <Grid item xs={4}>
-          <PoolsValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>
+            <Grid item xs={8}>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                <NetTotalStakedBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+                </Grid>
+                <Grid item xs={6}>
+                <NetLastRewardBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+                </Grid>
+                <Grid item xs={12}>
+                  <NetVerticalTabs sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid item xs={4}>
+              <ValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>
+            </Grid>
+
+          </Grid>
         </Grid>
-        <Grid item xs={8}>
-          <NetPoolHistoryBox sessionIndex={sessionIndex} skip={isNaN(sessionIndex)}/>
+       
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography sx={{ ml: 2}} variant='h6'>
+              Nomination Pools
+              </Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <PoolsValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>
+            </Grid>
+            <Grid item xs={8}>
+              <NetPoolHistoryBox sessionIndex={sessionIndex} skip={isNaN(sessionIndex)}/>
+            </Grid>
+          </Grid>
         </Grid>
         
       </Grid>

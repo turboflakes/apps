@@ -6,8 +6,9 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend } from 'recharts';
 import NetStatToggle from './NetStatToggle';
+import NetValChartLegend from './NetValChartLegend';
 import { 
   useGetSessionsQuery,
  } from '../features/api/sessionsSlice';
@@ -69,7 +70,7 @@ export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
   if (isFetching || isUndefined(data) || isUndefined(selectedChainInfo)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
-      height: 192,
+      height: 434,
       borderRadius: 3,
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       bgcolor: 'white'
@@ -163,6 +164,8 @@ export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
               strokeWidth={2} stroke={theme.palette.grey[200]} dot={false} />
             <Line isAnimationActive={false} type="monotone" dataKey="tvp" 
               strokeWidth={2} stroke={theme.palette.semantics.blue} dot={false} />
+
+            <Legend verticalAlign="top" content={() => NetValChartLegend({theme})} height={24} />
           </LineChart>
         </ResponsiveContainer>
       </Box>
