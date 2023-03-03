@@ -127,7 +127,7 @@ export default function PoolsValidatorsRankingBox({sessionIndex, maxSessions, sk
             Top Validators in Nomination Pools
           </Typography>
           <Typography variant="caption">
-            The most frequently picked
+            The most frequently chosen
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>

@@ -211,7 +211,14 @@ const sessionsSlice = createSlice({
 
       forEach(groupedBySession, (pools, session) => {
         if (!isUndefined(session)) {
-          adapter.upsertOne(state, { six: parseInt(session, 10), _pool_ids: pools.map(p => p.id)})
+          adapter.upsertOne(state, { 
+            six: parseInt(session, 10), 
+            _pool_ids: pools.map(p => p.id),
+            _pool_members: pools.map(p => !isUndefined(p.stats) ? p.stats.member_counter : 0).reduce((a, b) => a + b, 0),
+            _pool_staked: pools.map(p => !isUndefined(p.stats) ? p.stats.staked : 0).reduce((a, b) => a + b, 0),
+            _pool_reward: pools.map(p => !isUndefined(p.stats) ? p.stats.reward : 0).reduce((a, b) => a + b, 0),
+            _pool_points: pools.map(p => !isUndefined(p.stats) ? p.stats.points : 0).reduce((a, b) => a + b, 0)
+          })
         }
       })
 
@@ -396,6 +403,35 @@ export const  selectDisputesBySessions = (state, sessionIds = []) => sessionIds.
     if (!isUndefined(session.stats)) {
       return session.stats.di
     }
+  }
+}).filter(v => !isUndefined(v))
+
+// Pools
+export const selectPoolMembersBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    return session._pool_members
+  }
+}).filter(v => !isUndefined(v))
+
+export const selectPoolStakedBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    return session._pool_staked
+  }
+}).filter(v => !isUndefined(v))
+
+export const selectPoolRewardBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    return session._pool_reward
+  }
+}).filter(v => !isUndefined(v))
+
+export const selectPoolPointsBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    return session._pool_points
   }
 }).filter(v => !isUndefined(v))
 

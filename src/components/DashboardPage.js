@@ -15,6 +15,7 @@ import ValidatorsRankingBox from './ValidatorsRankingBox';
 import PoolsValidatorsRankingBox from './PoolsValidatorsRankingBox';
 import NetVerticalTabs from './NetVerticalTabs';
 import GradesBox from './GradesBox';
+import NetPoolHistoryBox from './NetPoolHistoryBox';
 import onetSVG from '../assets/onet.svg';
 import { 
   selectSessionHistory,
@@ -165,9 +166,13 @@ export default function DashboardPage() {
         <Grid item xs={12} sx={{ my: 2}}>
           <SessionPerformance600Timeline sessionIndex={currentSession} />
         </Grid>
-        {/* <Grid item xs={4}>
+
+        <Grid item xs={4}>
           <PoolsValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>
-        </Grid> */}
+        </Grid>
+        <Grid item xs={8}>
+          <NetPoolHistoryBox sessionIndex={sessionIndex} skip={isNaN(sessionIndex)}/>
+        </Grid>
         
       </Grid>
 		</Container>
