@@ -43,16 +43,16 @@ export default function NetVerticalTabs({sessionIndex, maxSessions, onChange}) {
           }}}
         value={value} onChange={handleChange}
       >
-        <Tab sx={{ my:1, mr: 2,  borderRadius: 3, textTransform: 'none', width: 136 }} label="Total Val." {...a11yProps(0)} disableRipple disableFocusRipple />
-        <Tab sx={{ my:1, mr: 2,  borderRadius: 3, textTransform: 'none', width: 136 }} label="Active Val." {...a11yProps(1)} disableRipple disableFocusRipple />
+        <Tab sx={{ my:1, mr: 2,  borderRadius: 3, textTransform: 'none', width: 136 }} label="Active Val." {...a11yProps(0)} disableRipple disableFocusRipple />
+        <Tab sx={{ my:1, mr: 2,  borderRadius: 3, textTransform: 'none', width: 136 }} label="Total Val." {...a11yProps(1)} disableRipple disableFocusRipple />
         <Tab sx={{ my:1, mr: 2,  borderRadius: 3, textTransform: 'none', width: 136 }} label="Oversubscribed" {...a11yProps(2)} disableRipple disableFocusRipple />
         <Tab sx={{ my:1, mr: 2,  borderRadius: 3, textTransform: 'none', width: 136 }} label="Own Stake" {...a11yProps(2)} disableRipple disableFocusRipple />
         <Tab sx={{ my:1, mr: 2,  borderRadius: 3, textTransform: 'none', width: 136 }} label="Era Points" {...a11yProps(2)} disableRipple disableFocusRipple />
         
       </Tabs>
 
-      { value === 0 ? <NetTotalValidatorsBox sessionIndex={sessionIndex} maxSessions={maxSessions} /> : null }
-      { value === 1 ? <NetActiveValidatorsBox sessionIndex={sessionIndex} maxSessions={maxSessions} /> : null }
+      { value === 0 ? <NetActiveValidatorsBox sessionIndex={sessionIndex} maxSessions={maxSessions} /> : null }
+      { value === 1 ? <NetTotalValidatorsBox sessionIndex={sessionIndex} maxSessions={maxSessions} /> : null }
       { value === 2 ? <NetOversubscribedValidatorsBox sessionIndex={sessionIndex} maxSessions={maxSessions} /> : null }
       { value === 3 ? <NetOwnStakeValidatorsBox sessionIndex={sessionIndex} maxSessions={maxSessions} /> : null }
       { value === 4 ? <NetPointsValidatorsBox sessionIndex={sessionIndex} maxSessions={maxSessions} /> : null }
