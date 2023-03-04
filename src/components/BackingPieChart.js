@@ -24,10 +24,10 @@ const renderTooltip = (props) => {
          }}
       >
         <Typography component="div" variant="caption" color="inherit" paragraph>
-        <b>Validity Statements</b>
+        <b>{data.payload.name} Statements</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          <span style={{ marginRight: '8px', color: data.fill }}>●</span>{data.payload.name}: {data.payload.value} ({Math.round(p*100)}%)
+          <span style={{ marginRight: '8px', color: data.fill }}>●</span>{data.payload.value} votes ({Math.round(p*100)}%)
         </Typography>
       </Box>
     );
