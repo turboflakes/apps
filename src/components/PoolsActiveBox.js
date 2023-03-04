@@ -11,6 +11,7 @@ import PoolsStatesPieChart from './PoolsStatesPieChart';
 
 import { 
   selectPoolsAll,
+  selectTotalPools,
   selectTotalOpen
  } from '../features/api/poolsMetadataSlice';
 
@@ -23,10 +24,11 @@ const states = ["Open", "Destroying", "Blocked"]
 export default function PoolsActiveBox({sessionIndex, dark}) {
   const theme = useTheme();
   const allPools = useSelector(selectPoolsAll);
+  const totalPools = useSelector(selectTotalPools);
   const totalOpen = useSelector(selectTotalOpen);
   const activePools = useSelector(state => selectTotalActiveBySession(state, sessionIndex));
   
-  if (!allPools.length) {
+  if (!allPools.length || totalPools === 0) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
       height: 96,
@@ -37,12 +39,9 @@ export default function PoolsActiveBox({sessionIndex, dark}) {
   }
 
   const poolsData = states.map(state => {
-    const quantity = allPools.filter(pool => pool.state === state).length;
-    const percentage = Math.round(quantity * 100 / allPools.length);
     return {
       name: state,
-      value: percentage,
-      quantity,
+      value: allPools.filter(pool => pool.state === state).length,  
     }
   });
 
@@ -72,7 +71,7 @@ export default function PoolsActiveBox({sessionIndex, dark}) {
           </Typography>
         </Tooltip>
       </Box>
-      <Box sx={{ px: 1, width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
+      <Box sx={{ px: 1, display: 'flex', justifyContent: 'flex-end'}}>
         <PoolsStatesPieChart data={poolsData} size="sm" dark={dark} />
       </Box>
     </Paper>

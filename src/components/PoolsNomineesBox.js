@@ -7,6 +7,7 @@ import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import Tooltip from './Tooltip';
+import SubsetPieChart from './SubsetPieChart';
 
 import {
   selectChain,
@@ -14,7 +15,8 @@ import {
 import { 
   selectTotalNomineesBySession,
   selectTotalUniqueNomineesBySession,
-  selectTotalNonValNomineesBySession
+  selectTotalNonValNomineesBySession,
+  selectNomineesBySessionGroupedBySubset
  } from '../features/api/poolsSlice';
 
  const customTitle = (data, theme) => {
@@ -38,7 +40,7 @@ export default function PoolNomineesBox({sessionIndex, dark}) {
   const currentValue = useSelector(state => selectTotalNomineesBySession(state, sessionIndex));
   const currentUnique = useSelector(state => selectTotalUniqueNomineesBySession(state, sessionIndex));
   const currentNonValidators = useSelector(state => selectTotalNonValNomineesBySession(state, sessionIndex));
-  
+  const nomineesGrouped = useSelector(state => selectNomineesBySessionGroupedBySubset(state, sessionIndex));
   
   if (isUndefined(currentValue) || currentValue === 0 || isUndefined(currentUnique) || isUndefined(currentNonValidators)) {
     return (<Skeleton variant="rounded" sx={{
@@ -76,7 +78,11 @@ export default function PoolNomineesBox({sessionIndex, dark}) {
           </Typography>
         </Tooltip>
       </Box>
-      {currentNonValidators > 0 ?
+      <Box sx={{ px: 1, display: 'flex', justifyContent: 'flex-end'}}>
+        <SubsetPieChart data={nomineesGrouped} size="xs" />
+      </Box>
+      
+      {/* {currentNonValidators > 0 ?
         <Box sx={{px: 1, display: 'flex', flexDirection: 'column',  alignItems: 'flex-end', justifyContent: 'flex-start'}}>
           <Tooltip
             disableFocusListener
@@ -104,7 +110,7 @@ export default function PoolNomineesBox({sessionIndex, dark}) {
               </Typography>
             </Box>
           </Tooltip>
-        </Box> : null}
+        </Box> : null} */}
     </Paper>
   );
 }

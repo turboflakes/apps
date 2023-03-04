@@ -16,17 +16,14 @@ const renderTooltip = (props) => {
           m: 0,
           borderRadius: 1,
           boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px',
-          minWidth: '144px'
+          minWidth: '176px'
          }}
       >
-        <Typography component="div" variant="caption" color="inherit" gutterBottom>
+        <Typography component="div" variant="caption" color="inherit" paragraph>
           <b>State {data.payload.name}</b>
         </Typography>
-        <Typography component="div" variant="caption" color="inherit" gutterBottom>
-          {Math.round(data.payload.value*100)/100}%
-        </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          {data.payload.quantity} pools
+        <span style={{ marginRight: '8px', color: data.fill }}>●</span>{data.payload.value} pools ({`${Math.round((data.payload.value / data.payload.total)*100)}%`})
         </Typography>
       </Box>
     );
@@ -35,8 +32,16 @@ const renderTooltip = (props) => {
   return null;
 };
 
-export default function PoolsStatesPieChart({data, size, dark, showNetworkIcon}) {
+export default function PoolsStatesPieChart({data, size, dark}) {
   const theme = useTheme();
+  const total = data.map(d => d.value).reduce((a, b) => a + b, 0);
+  const pieData = data.map(d => {
+    return {
+      name: d.name,
+      value: d.value,
+      total,
+    }
+  });
   return (
     <Box
         sx={{
@@ -56,7 +61,7 @@ export default function PoolsStatesPieChart({data, size, dark, showNetworkIcon})
             <Pie
                 isAnimationActive={false}
                 dataKey="value"
-                data={data}
+                data={pieData}
                 cx="50%"
                 cy="50%"
                 outerRadius={size === "lg" ? 128 : (size === "md" ? 96 : 32)}
@@ -66,37 +71,27 @@ export default function PoolsStatesPieChart({data, size, dark, showNetworkIcon})
                 // label={renderCustomizedLabel}
                 labelLine={false}
               >
-                {data.map((entry, index) => (
+                {pieData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={theme.palette.state[entry.name]} borderRadius 
                   stroke={dark ? theme.palette.background.secondary : theme.palette.background.paper} strokeWidth={1} />
                 ))}
               </Pie>
-              {!showNetworkIcon ?
+              {
                 (size === "md" ?
                   <text x="50%" y="50%" fill={dark ? theme.palette.text.secondary : '#343434'} style={{ 
                     fontFamily: theme.typography.h2.fontFamily,
                     fontSize: theme.typography.h2.fontSize,
                     color: dark ? theme.palette.text.secondary : 'default'
                     }} textAnchor={'middle'} dominantBaseline="central">
-                    {data.slice().sort((a, b) => b.value - a.value)[0].name}
+                    {pieData.slice().sort((a, b) => b.value - a.value)[0].name}
                   </text> : 
                   <text x="50%" y="50%" fill={dark ? theme.palette.text.secondary : '#343434'} style={{ 
                     fontFamily: theme.typography.caption.fontFamily,
                     fontSize: theme.typography.caption.fontSize,
                     fontWeight: 'bold'
                     }} textAnchor={'middle'} dominantBaseline="central">
-                    {`${Math.floor(data.slice().sort((a, b) => b.value - a.value)[0].value)}%`}
-                  </text>) : null
-              }
-              {!showNetworkIcon ? 
-                (size === "md" ?
-                  <text x="50%" y="58%" fill={dark ? theme.palette.text.secondary : '#343434'} style={{ 
-                    fontFamily: theme.typography.caption.fontFamily,
-                    fontSize: theme.typography.caption.fontSize,
-                    color: dark ? theme.palette.text.secondary : 'default'
-                    }} textAnchor={'middle'} dominantBaseline="central">
-                    majority
-                  </text> :  null) : null
+                    {`${Math.round(Math.floor(pieData.slice().sort((a, b) => b.value - a.value)[0].value) / pieData[0].total * 100)}%`}
+                  </text>)
               }
               <Tooltip 
                 cursor={{fill: 'transparent'}}

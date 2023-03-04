@@ -48,9 +48,9 @@ let theme = createTheme({
       "-": "#FFFFFF",
     },
     state: {
-      "Open": "#86D3E7",
+      "Open": "#44D7B6",
+      "Blocked": "#0B1317",
       "Destroying": "#DF2326",
-      "Blocked": "#F6B519",
     },
     neutrals: {
       100: "#F1F1F0",

@@ -6,11 +6,14 @@ import {
 import uniq from 'lodash/uniq'
 import isUndefined from 'lodash/isUndefined'
 import flatten from 'lodash/flatten'
+import groupBy from 'lodash/groupBy'
+import orderBy from 'lodash/orderBy'
 import apiSlice from './apiSlice'
 import { 
   selectPoolIdsBySession
 } from './sessionsSlice'
 import {
+  SUBSET,
   selectValidatorBySessionAndAddress
 } from './validatorsSlice'
 import { 
@@ -131,17 +134,11 @@ export const selectTotalNomineesBySession = (state, session) => selectPoolIdsByS
   })
   .reduce((a, b) => a + b, 0)
 
-export const selectTotalUniqueNomineesBySession = (state, session) => uniq(flatten(selectPoolIdsBySession(state, session)
+  export const selectUniqueNomineesBySession = (state, session) => uniq(flatten(selectPoolIdsBySession(state, session)
   .map(id => {
     const pool = selectPoolBySessionAndPoolId(state, session, id);
     return !isUndefined(pool.nominees) ? pool.nominees.nominees : [];
-  }))).length
-
-export const selectTotalNonValNomineesBySession = (state, session) => uniq(flatten(selectPoolIdsBySession(state, session)
-  .map(id => {
-    const pool = selectPoolBySessionAndPoolId(state, session, id);
-    return !isUndefined(pool.nominees) ? pool.nominees.nominees : [];
-  }))).map(a => selectValProfileByAddress(state, a)).filter(p => isUndefined(p)).length
+  })))
 
 export const selectTotalActiveBySession = (state, session) => selectPoolIdsBySession(state, session)
   .map(id => {
@@ -149,5 +146,23 @@ export const selectTotalActiveBySession = (state, session) => selectPoolIdsBySes
     return !isUndefined(pool.nomstats) ? (pool.nomstats.active > 0 ? 1 : 0) : 0;
   })
   .reduce((a, b) => a + b, 0)
+
+export const selectTotalUniqueNomineesBySession = (state, session) => selectUniqueNomineesBySession(state, session).length
+
+export const selectTotalNonValNomineesBySession = (state, session) => selectUniqueNomineesBySession(state, session)
+  .map(a => selectValProfileByAddress(state, a)).filter(p => isUndefined(p)).length
+
+export const selectNomineesBySessionGroupedBySubset = (state, session) => {
+  const nominees = selectUniqueNomineesBySession(state, session).map(a => selectValProfileByAddress(state, a))
+  const groupedBySubset = groupBy(nominees, v => !isUndefined(v) ? v.subset : "NONVAL");
+  return orderBy(Object.keys(groupedBySubset).map(subset => ({ subset: SUBSET[subset], value: groupedBySubset[subset].length })), 'subset');
+}
+
+export const selectNomineesBySessionAggregatedBySubset = (state, session) => {
+  const nominees = selectUniqueNomineesBySession(state, session).map(a => selectValProfileByAddress(state, a))
+  const groupedBySubset = groupBy(nominees, v => !isUndefined(v) ? v.subset : "NONVAL");
+  orderBy(Object.keys(groupedBySubset).map(subset => ({ subset: SUBSET[subset], value: groupedBySubset[subset].length })), 'subset');
+  return groupedBySubset
+}
 
 export default poolsSlice;

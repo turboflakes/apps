@@ -114,7 +114,7 @@ export default function PoolCard({sessionIndex, poolId}) {
       {showInsights ? <PoolHistorySection sessionIndex={sessionIndex} poolId={poolId} /> :
         <Box>
           <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between'}}>
-            <Box sx={{ width: "50%", position: 'relative', display: 'flex', flexDirection: 'column'}}>
+            <Box sx={{ width: "50%", height: 224, position: 'relative', display: 'flex', flexDirection: 'column'}}>
               <Typography variant="caption" align="left" sx={{ml: 3}}>nominees: {nAll}</Typography>
               <IconButton sx={{ position: 'absolute', top: -8, right: 0, zIndex: 2}} aria-label="grade-details" onClick={handlePie}>
                 { !showPie ? 
@@ -122,7 +122,7 @@ export default function PoolCard({sessionIndex, poolId}) {
                   <FontAwesomeIcon icon={faListUl} fontSize="small" /> }
               </IconButton>
               { showPie ? 
-                <SubsetPieChart data={subsetPieData} size="sm" /> :
+                <SubsetPieChart data={subsetPieData} size="sm" showLabel /> :
                 <PoolNomineesList sessionIndex={sessionIndex} poolId={poolId} />}
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column'}}>

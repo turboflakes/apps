@@ -29,10 +29,10 @@ const renderTooltip = (props) => {
          }}
       >
         <Typography component="div" variant="caption" color="inherit" paragraph>
-          <b>Validators Subset</b>
+          <b>Subset {data.payload.name}</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-        <span style={{ marginRight: '8px', color: data.fill }}>●</span>{data.payload.name}: {data.payload.value} ({`${Math.round((data.payload.value / data.payload.total)*100)}%`})
+        <span style={{ marginRight: '8px', color: data.fill }}>●</span>{data.payload.value} {data.payload.name === "Non-validator" ? "addresses" : "validators"} ({`${Math.round((data.payload.value / data.payload.total)*100)}%`})
         </Typography>
       </Box>
     );
@@ -69,7 +69,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-export default function SubsetPieChart({data, showLegend, size}) {
+export default function SubsetPieChart({data, size, showLegend, showLabel}) {
   const theme = useTheme();
   const total = data.map(d => d.value).reduce((a, b) => a + b, 0);
   const pieData = data.map(d => {
@@ -88,13 +88,13 @@ export default function SubsetPieChart({data, showLegend, size}) {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          width: '100%',
-          height: 216,
+          width: ["md", "sm"].includes(size) ? '100%' : 64,
+          // height: 216,
           // borderRadius: 3,
           // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
         }}
         >
-          <ResponsiveContainer width='100%' height={size === "md" ? 256 : 180} >
+          <ResponsiveContainer width='100%' height={size === "md" ? 256 : (size === "sm" ? 180 : 64)} >
             <PieChart>
             <Pie
                 isAnimationActive={false}
@@ -102,11 +102,11 @@ export default function SubsetPieChart({data, showLegend, size}) {
                 data={pieData}
                 cx="50%"
                 cy="50%"
-                outerRadius={size === "md" ? 72 : 56}
+                outerRadius={size === "md" ? 72 : (size === "sm" ? 56 : 32)}
                 innerRadius={2}
                 startAngle={90}
                 endAngle={-360}
-                label={renderCustomizedLabel}
+                label={showLabel ? renderCustomizedLabel : null}
                 labelLine={false}
               >
                 {pieData.map((entry, index) => (

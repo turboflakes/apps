@@ -61,7 +61,7 @@ export default function SubsetBox({sessionIndex, isHistoryMode}) {
           </Box>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'center'}}>
-          <SubsetPieChart data={data} size="md" showLegend />
+          <SubsetPieChart data={data} size="md" showLegend showLabel />
         </Box>
       </Box>
     </Paper>

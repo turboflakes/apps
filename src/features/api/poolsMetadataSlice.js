@@ -2,7 +2,7 @@ import {
   createSlice,
   createEntityAdapter,
 } from '@reduxjs/toolkit'
-
+import isUndefined from 'lodash/isUndefined'
 import { 
   matchPoolsReceived,
 } from './poolsSlice'
@@ -35,6 +35,7 @@ export const {
   selectById: selectPoolById
 } = adapter.getSelectors(state => state.pools_metadata)
 
+export const selectTotalPools = (state) => selectPoolsAll(state).filter(p => !isUndefined(p.state)).length
 export const selectTotalOpen = (state) => selectPoolsAll(state).filter(p => p.state === "Open").length
 
 export default poolsMetadataSlice;
