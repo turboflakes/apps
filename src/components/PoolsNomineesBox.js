@@ -13,20 +13,34 @@ import {
 } from '../features/chain/chainSlice';
 import { 
   selectTotalNomineesBySession,
-  selectTotalUniqueNomineesBySession
+  selectTotalUniqueNomineesBySession,
+  selectTotalNonValNomineesBySession
  } from '../features/api/poolsSlice';
-import { 
-  getSessionsPerDayTarget 
-} from '../constants'
+
+ const customTitle = (data, theme) => {
+  return (
+    <Box
+        sx={{ 
+          p: 1
+         }}
+      >
+        <Typography variant="h6" color="textSecondary">
+          <b>Nominees with NO intention to validate!</b>
+        </Typography>
+      </Box>
+  )
+}
 
 export default function PoolNomineesBox({sessionIndex, dark}) {
   const theme = useTheme();
   const selectedChain = useSelector(selectChain);
-  const nSessionsTarget = getSessionsPerDayTarget(selectedChain);
+  // const nSessionsTarget = getSessionsPerDayTarget(selectedChain);
   const currentValue = useSelector(state => selectTotalNomineesBySession(state, sessionIndex));
   const currentUnique = useSelector(state => selectTotalUniqueNomineesBySession(state, sessionIndex));
+  const currentNonValidators = useSelector(state => selectTotalNonValNomineesBySession(state, sessionIndex));
   
-  if (isUndefined(currentValue) || currentValue === 0 || isUndefined(currentUnique)) {
+  
+  if (isUndefined(currentValue) || currentValue === 0 || isUndefined(currentUnique) || isUndefined(currentNonValidators)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
       height: 96,
@@ -62,6 +76,35 @@ export default function PoolNomineesBox({sessionIndex, dark}) {
           </Typography>
         </Tooltip>
       </Box>
+      {currentNonValidators > 0 ?
+        <Box sx={{px: 1, display: 'flex', flexDirection: 'column',  alignItems: 'flex-end', justifyContent: 'flex-start'}}>
+          <Tooltip
+            disableFocusListener
+            placement="bottom-start"
+            bgcolor={theme.palette.semantics.red}
+            title={customTitle(currentNonValidators, theme)}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right', bgcolor: "transparent" }} >
+              <Box sx={{width: '16px'}}>
+                <Box sx={{ 
+                  animation: "pulse 1s infinite ease-in-out alternate",
+                  borderRadius: '50%',
+                  boxShadow: 'rgba(223, 35, 38, 0.8) 0px 0px 16px'
+                }}>
+                  <Box sx={{ 
+                    width: '16px', height: '16px', 
+                    bgcolor: theme.palette.semantics.red,
+                    borderRadius: '50%',
+                    textAlign: 'center',
+                    }} >
+                  </Box>
+                </Box>
+              </Box>
+              <Typography sx={{ ml: 1 }} variant="h5" color={theme.palette.semantics.red} >
+                {currentNonValidators}
+              </Typography>
+            </Box>
+          </Tooltip>
+        </Box> : null}
     </Paper>
   );
 }

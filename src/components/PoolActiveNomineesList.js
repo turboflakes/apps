@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
-import orderBy from 'lodash/orderBy'
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -12,7 +11,6 @@ import ListItemText from '@mui/material/ListItemText';
 import Skeleton from '@mui/material/Skeleton';
 import Identicon from '@polkadot/react-identicon';
 import {
-  selectChain,
   addressChanged
 } from '../features/chain/chainSlice';
 import {

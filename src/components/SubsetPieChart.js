@@ -4,8 +4,6 @@ import Box from '@mui/material/Box';
 import { PieChart, Pie, Tooltip, Cell, Legend, ResponsiveContainer } from 'recharts';
 import { Typography } from '@mui/material';
 
-// const COLORS = (theme) => ([theme.palette.grey[900], theme.palette.grey[200], theme.palette.semantics.blue])
-
 const COLORS = (theme) => ({
   "NONVAL": theme.palette.semantics.red,
   "Non-validator": theme.palette.semantics.red,

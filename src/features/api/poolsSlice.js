@@ -137,6 +137,12 @@ export const selectTotalUniqueNomineesBySession = (state, session) => uniq(flatt
     return !isUndefined(pool.nominees) ? pool.nominees.nominees : [];
   }))).length
 
+export const selectTotalNonValNomineesBySession = (state, session) => uniq(flatten(selectPoolIdsBySession(state, session)
+  .map(id => {
+    const pool = selectPoolBySessionAndPoolId(state, session, id);
+    return !isUndefined(pool.nominees) ? pool.nominees.nominees : [];
+  }))).map(a => selectValProfileByAddress(state, a)).filter(p => isUndefined(p)).length
+
 export const selectTotalActiveBySession = (state, session) => selectPoolIdsBySession(state, session)
   .map(id => {
     const pool = selectPoolBySessionAndPoolId(state, session, id);
