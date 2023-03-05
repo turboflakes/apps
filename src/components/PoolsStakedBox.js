@@ -7,13 +7,15 @@ import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import Tooltip from './Tooltip';
+import StakingPieChart from './StakingPieChart';
 
 import {
   selectChain,
   selectChainInfo,
 } from '../features/chain/chainSlice';
 import { 
-  selectTotalStakedBySession
+  selectTotalStakedBySession,
+  selectTotalUnbondingBySession
  } from '../features/api/poolsSlice';
 import { 
   getSessionsPerDayTarget 
@@ -28,6 +30,7 @@ export default function PoolsStakedBox({sessionIndex, dark}) {
   const nSessionsTarget = getSessionsPerDayTarget(selectedChain);
   const currentValue = useSelector(state => selectTotalStakedBySession(state, sessionIndex));
   const previousValue = useSelector(state => selectTotalStakedBySession(state, sessionIndex - nSessionsTarget));
+  const unbondingValue = useSelector(state => selectTotalUnbondingBySession(state, sessionIndex));
 
   if (isUndefined(currentValue) || currentValue === 0 || 
     isUndefined(previousValue) || isUndefined(selectedChainInfo)) {
@@ -41,6 +44,8 @@ export default function PoolsStakedBox({sessionIndex, dark}) {
   }
 
   const diff = !isUndefined(previousValue) ? currentValue - previousValue : 0;
+
+  const pieData = [{name: "Bonded", value: currentValue}, {name: "Unbonding", value: unbondingValue}]
 
   return (
     <Paper sx={{
@@ -57,7 +62,7 @@ export default function PoolsStakedBox({sessionIndex, dark}) {
       }}>
       <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}
-          color={dark ? theme.palette.text.secondary : 'default'}>total staked</Typography>
+          color={dark ? theme.palette.text.secondary : 'default'}>total bonded</Typography>
         <Typography variant="h5" color={dark ? theme.palette.text.secondary : 'default'}>
           {stakeDisplay(currentValue, selectedChainInfo, 2, true)}
         </Typography>
@@ -69,6 +74,9 @@ export default function PoolsStakedBox({sessionIndex, dark}) {
               <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)}` : `-${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)}`) : ' '}</b>
             </Typography>
           </Tooltip> : null}
+      </Box>
+      <Box sx={{ px: 1, display: 'flex', justifyContent: 'flex-end'}}>
+        <StakingPieChart data={pieData} size="xs" />
       </Box>
     </Paper>
   );

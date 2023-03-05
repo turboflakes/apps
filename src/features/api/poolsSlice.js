@@ -126,6 +126,12 @@ export const selectTotalStakedBySession = (state, session) => selectPoolIdsBySes
   })
   .reduce((a, b) => a + b, 0)
 
+export const selectTotalUnbondingBySession = (state, session) => selectPoolIdsBySession(state, session)
+  .map(id => {
+    const pool = selectPoolBySessionAndPoolId(state, session, id);
+    return !isUndefined(pool.stats) ? pool.stats.unbonding : 0;
+  })
+  .reduce((a, b) => a + b, 0)
 
 export const selectTotalNomineesBySession = (state, session) => selectPoolIdsBySession(state, session)
   .map(id => {

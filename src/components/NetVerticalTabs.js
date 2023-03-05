@@ -23,7 +23,9 @@ export default function NetVerticalTabs({sessionIndex, maxSessions, onChange}) {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    onChange(newValue)
+    if (onChange) {
+      onChange(newValue)
+    }
   };
 
   return (

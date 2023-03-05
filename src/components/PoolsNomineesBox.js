@@ -81,36 +81,6 @@ export default function PoolNomineesBox({sessionIndex, dark}) {
       <Box sx={{ px: 1, display: 'flex', justifyContent: 'flex-end'}}>
         <SubsetPieChart data={nomineesGrouped} size="xs" />
       </Box>
-      
-      {/* {currentNonValidators > 0 ?
-        <Box sx={{px: 1, display: 'flex', flexDirection: 'column',  alignItems: 'flex-end', justifyContent: 'flex-start'}}>
-          <Tooltip
-            disableFocusListener
-            placement="bottom-start"
-            bgcolor={theme.palette.semantics.red}
-            title={customTitle(currentNonValidators, theme)}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right', bgcolor: "transparent" }} >
-              <Box sx={{width: '16px'}}>
-                <Box sx={{ 
-                  animation: "pulse 1s infinite ease-in-out alternate",
-                  borderRadius: '50%',
-                  boxShadow: 'rgba(223, 35, 38, 0.8) 0px 0px 16px'
-                }}>
-                  <Box sx={{ 
-                    width: '16px', height: '16px', 
-                    bgcolor: theme.palette.semantics.red,
-                    borderRadius: '50%',
-                    textAlign: 'center',
-                    }} >
-                  </Box>
-                </Box>
-              </Box>
-              <Typography sx={{ ml: 1 }} variant="h5" color={theme.palette.semantics.red} >
-                {currentNonValidators}
-              </Typography>
-            </Box>
-          </Tooltip>
-        </Box> : null} */}
     </Paper>
   );
 }
