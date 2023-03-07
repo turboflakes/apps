@@ -128,7 +128,7 @@ export default function NetChilledValidatorsBox({sessionIndex, maxSessions}) {
             data={timelineData}
             margin={{
               top: 8,
-              right: 8,
+              right: 0,
               left: -24,
               bottom: 16,
             }}
@@ -181,6 +181,9 @@ export default function NetChilledValidatorsBox({sessionIndex, maxSessions}) {
           </ComposedChart>
         </ResponsiveContainer>
       </Box>
+      <Typography variant='caption' align='right' sx={{mb: 1, mr: 3, color: theme.palette.grey[400]}}>
+        {!isUndefined(data[data.length-1].netstats) ? `last data collected at block #${data[data.length-1].netstats.block_number}` : ""}
+      </Typography>
     </Paper>
   );
 }

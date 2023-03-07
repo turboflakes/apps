@@ -18,8 +18,11 @@ import {
   buildSessionIdsArrayHelper
 } from '../features/api/sessionsSlice';
 import { 
+  selectPoolBySessionAndPoolId,
+ } from '../features/api/poolsSlice';
+import { 
   selectMaxHistorySessions,
-} from '../features/layout/layoutSlice'
+} from '../features/layout/layoutSlice';
 import {
   selectChainInfo
 } from '../features/chain/chainSlice';
@@ -70,9 +73,8 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
   const [key, setKey] = React.useState("members");
   const selectedChainInfo = useSelector(selectChainInfo)
   const maxSessions = useSelector(selectMaxHistorySessions);
-  
   const {isFetching, isSuccess} = useGetPoolsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_stats: true}, {skip});
-  
+  const pool = useSelector(state => selectPoolBySessionAndPoolId(state, sessionIndex - 1, 1));
   const historySessionIds = buildSessionIdsArrayHelper(sessionIndex - 1 , maxSessions);
   
   const poolStats = {
@@ -80,7 +82,7 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
     staked: useSelector((state) => selectPoolStakedBySessions(state, historySessionIds)),
     reward: useSelector((state) => selectPoolRewardBySessions(state, historySessionIds)),
   };
-  
+
   if (isFetching) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
@@ -181,6 +183,9 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
           </AreaChart>
         </ResponsiveContainer>
       </Box>
+      <Typography variant='caption' align='right' sx={{mb: 1, mr: 3, color: theme.palette.grey[400]}}>
+        {!isUndefined(pool) ? (!isUndefined(pool.stats) ? `last data collected at block #${pool.stats.block_number}` : "") : ""}
+      </Typography>
     </Paper>
   );
 }

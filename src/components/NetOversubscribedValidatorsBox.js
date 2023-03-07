@@ -152,6 +152,9 @@ export default function NetOversubscribedValidatorsBox({sessionIndex, maxSession
           </LineChart>
         </ResponsiveContainer>
       </Box>
+      <Typography variant='caption' align='right' sx={{mb: 1, mr: 3, color: theme.palette.grey[400]}}>
+        {!isUndefined(data[data.length-1].netstats) ? `last data collected at block #${data[data.length-1].netstats.block_number}` : ""}
+      </Typography>
     </Paper>
   );
 }

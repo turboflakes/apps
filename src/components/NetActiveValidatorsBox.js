@@ -72,6 +72,8 @@ export default function NetActiveValidatorsBox({sessionIndex, maxSessions}) {
     return null
   }
 
+  console.log("__data[data.length-1]", data[data.length-1].netstats.block_number);
+
   // 
   const mainValue = data.filter(s => s.six === sessionIndex - 1)
     .map(s => !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m.vals_active).reduce((a, b) => a + b, 0) : 0)[0];
@@ -150,6 +152,9 @@ export default function NetActiveValidatorsBox({sessionIndex, maxSessions}) {
           </LineChart>
         </ResponsiveContainer>
       </Box>
+      <Typography variant='caption' align='right' sx={{mb: 1, mr: 3, color: theme.palette.grey[400]}}>
+        {!isUndefined(data[data.length-1].netstats) ? `last data collected at block #${data[data.length-1].netstats.block_number}` : ""}
+      </Typography>
     </Paper>
   );
 }

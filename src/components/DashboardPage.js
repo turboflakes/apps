@@ -18,14 +18,10 @@ import GradesBox from './GradesBox';
 import NetPoolHistoryBox from './NetPoolHistoryBox';
 import onetSVG from '../assets/onet.svg';
 import { 
-  selectSessionHistory,
   selectSessionCurrent,
  } from '../features/api/sessionsSlice'
 import { 
-  selectIsLiveMode,
-  // selectIsHistoryMode,
   selectMaxHistorySessions,
-  // selectMaxHistoryEras
 } from '../features/layout/layoutSlice'
 import { 
   selectIsSocketConnected,
@@ -34,14 +30,8 @@ import {
 export default function DashboardPage() {
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
-  // const maxHistoryEras = useSelector(selectMaxHistoryEras);
-  const isLiveMode = useSelector(selectIsLiveMode);
-  // const isHistoryMode = useSelector(selectIsHistoryMode);
-  const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
   
-  const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
-
   if (!isSocketConnected) {
     // TODO websocket/network disconnected page
     return (<Box sx={{ m: 2, minHeight: '100vh' }}></Box>)
@@ -135,19 +125,19 @@ export default function DashboardPage() {
             <Grid item xs={8}>
               <Grid container spacing={2}>
                 <Grid item xs={6}>
-                <NetTotalStakedBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+                <NetTotalStakedBox sessionIndex={currentSession} maxSessions={maxHistorySessions} />
                 </Grid>
                 <Grid item xs={6}>
-                <NetLastRewardBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+                <NetLastRewardBox sessionIndex={currentSession} maxSessions={maxHistorySessions} />
                 </Grid>
                 <Grid item xs={12}>
-                  <NetVerticalTabs sessionIndex={sessionIndex} maxSessions={maxHistorySessions} />
+                  <NetVerticalTabs sessionIndex={currentSession} maxSessions={maxHistorySessions} />
                 </Grid>
               </Grid>
             </Grid>
 
             <Grid item xs={4}>
-              <ValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>
+              <ValidatorsRankingBox sessionIndex={currentSession} maxSessions={maxHistorySessions} skip={isNaN(currentSession)}/>
             </Grid>
 
           </Grid>
@@ -161,15 +151,14 @@ export default function DashboardPage() {
               </Typography>
             </Grid>
             <Grid item xs={4}>
-              <PoolsValidatorsRankingBox sessionIndex={sessionIndex} maxSessions={maxHistorySessions} skip={isNaN(sessionIndex)}/>
+              <PoolsValidatorsRankingBox sessionIndex={currentSession} maxSessions={maxHistorySessions} skip={isNaN(currentSession)}/>
             </Grid>
             <Grid item xs={8}>
-              <NetPoolHistoryBox sessionIndex={sessionIndex} skip={isNaN(sessionIndex)}/>
+              <NetPoolHistoryBox sessionIndex={currentSession} skip={isNaN(currentSession)}/>
             </Grid>
           </Grid>
         </Grid>
-        
-      </Grid>
+      </Grid>      
 		</Container>
     </Box>
   );

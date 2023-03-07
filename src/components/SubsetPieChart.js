@@ -29,7 +29,7 @@ const renderTooltip = (props) => {
          }}
       >
         <Typography component="div" variant="caption" color="inherit" paragraph>
-          <b>Subset {data.payload.name}</b>
+          <b>{data.payload.name} {data.payload.name !== "Non-validator" ? "validators" : ""}</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
         <span style={{ marginRight: '8px', color: data.fill }}>●</span>{data.payload.value} {data.payload.name === "Non-validator" ? "addresses" : "validators"} ({`${Math.round((data.payload.value / data.payload.total)*100)}%`})
