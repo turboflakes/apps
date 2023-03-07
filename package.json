@@ -1,6 +1,6 @@
 {
   "name": "apps",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "homepage": "https://apps.turboflakes.io",
   "private": true,
   "dependencies": {
