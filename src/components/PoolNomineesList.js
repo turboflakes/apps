@@ -10,6 +10,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Skeleton from '@mui/material/Skeleton';
 import Identicon from '@polkadot/react-identicon';
+import Tooltip from './Tooltip';
 import {
   addressChanged
 } from '../features/chain/chainSlice';
@@ -51,20 +52,22 @@ function ItemButtom({validator}) {
   const subset = isUndefined(validator.profile) ? "NONVAL" : validator.profile.subset;
 
   return (
-    <ListItemButton sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(validator.address)}>
-      <ListItemIcon sx={{minWidth: 0, mr: 1, display: 'flex', alignItems: 'center'}}>
-        <Identicon
-          value={validator.address}
-          size={24}
-          theme={'polkadot'} />
-      </ListItemIcon>
-      <ListItemText sx={{whiteSpace: "nowrap", textDecoration: isUndefined(validator.profile) ? "line-through" : "none"}}
-        primary={nameDisplay(!!validator.profile ? validator.profile._identity : stashDisplay(validator.address, 4), 12)}
-      />
-      <span style={{ width: '8px', height: '8px', marginLeft: '4px', marginRight: '-4px', borderRadius: '50%', 
-          backgroundColor: COLORS(theme)[subset], 
-          display: "inline-block" }}></span>
-    </ListItemButton>
+    <Tooltip title={nameDisplay(!!validator.profile ? validator.profile._identity : stashDisplay(validator.address, 4), 64)}>
+      <ListItemButton sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(validator.address)}>
+        <ListItemIcon sx={{minWidth: 0, mr: 1, display: 'flex', alignItems: 'center'}}>
+          <Identicon
+            value={validator.address}
+            size={24}
+            theme={'polkadot'} />
+        </ListItemIcon>
+        <ListItemText sx={{whiteSpace: "nowrap", textDecoration: isUndefined(validator.profile) ? "line-through" : "none"}}
+          primary={nameDisplay(!!validator.profile ? validator.profile._identity : stashDisplay(validator.address, 4), 12)}
+        />
+        <span style={{ width: '8px', height: '8px', marginLeft: '4px', marginRight: '-4px', borderRadius: '50%', 
+            backgroundColor: COLORS(theme)[subset], 
+            display: "inline-block" }}></span>
+      </ListItemButton>
+    </Tooltip>
   )
 }
 
