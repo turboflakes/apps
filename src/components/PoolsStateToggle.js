@@ -19,7 +19,7 @@ export default function PoolsStateToggle({onChange}) {
   };
 
   return (
-    <Box sx={{mb: 1}}>
+    <Box>
       <ToggleButtonGroup
         size="small"
         sx={{mx: 2}}

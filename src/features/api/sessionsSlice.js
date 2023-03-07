@@ -13,6 +13,7 @@ import isArray from 'lodash/isArray'
 import forEach from 'lodash/forEach'
 import groupBy from 'lodash/groupBy'
 import union from 'lodash/union'
+import join from 'lodash/join'
 import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
 import { 
@@ -34,6 +35,9 @@ import {
 import { 
   selectFinalizedBlock 
 } from './blocksSlice'
+import {
+  selectValProfileByAddress
+} from './valProfilesSlice';
 import { calculateMvr } from '../../util/mvr'
 import { grade } from '../../util/grade';
 
@@ -308,12 +312,18 @@ export const selectPoolIdsBySession = (state, session) => !!selectSessionByIndex
     (isArray(selectSessionByIndex(state, session)._pool_ids) ? 
       selectSessionByIndex(state, session)._pool_ids : []) : [];
 
-export const selectPoolIdsBySessionSortedBy = (state, session, sortBy, stateFilter = 'Open') => {
+export const selectPoolIdsBySessionSortedBy = (state, session, sortBy, identityFilter = "", stateFilter = 'Open') => {
   switch (sortBy) {
     case 'apr': {
       const pool_ids = selectPoolIdsBySession(state, session)
         .map(pool_id => selectPoolBySessionAndPoolId(state, session, pool_id))
-        .filter(f => f.state === stateFilter)
+        .filter(f => f.state === stateFilter && 
+          (f.metadata.toLowerCase().includes(identityFilter.toLowerCase()) ||
+          !isUndefined(f.nominees) ? join( !isUndefined(f.nominees) ?
+            f.nominees.nominees.map(m => !isUndefined(selectValProfileByAddress(state, m)) ? selectValProfileByAddress(state, m)._identity : "") : "", ',')
+            .toLowerCase()
+            .includes(identityFilter.toLowerCase())
+           : false))
         .sort((a, b) => !isUndefined(a.nomstats) && !isUndefined(b.nomstats)  ? b.nomstats.apr - a.nomstats.apr : 0)
         .map(o => o.id);
       return pool_ids
@@ -321,7 +331,13 @@ export const selectPoolIdsBySessionSortedBy = (state, session, sortBy, stateFilt
     case 'members': {
       const pool_ids = selectPoolIdsBySession(state, session)
         .map(pool_id => selectPoolBySessionAndPoolId(state, session, pool_id))
-        .filter(f => f.state === stateFilter)
+        .filter(f => f.state === stateFilter && 
+          (f.metadata.toLowerCase().includes(identityFilter.toLowerCase()) ||
+          !isUndefined(f.nominees) ? join( !isUndefined(f.nominees) ?
+            f.nominees.nominees.map(m => !isUndefined(selectValProfileByAddress(state, m)) ? selectValProfileByAddress(state, m)._identity : "") : "", ',')
+            .toLowerCase()
+            .includes(identityFilter.toLowerCase())
+           : false))
         .sort((a, b) => !isUndefined(a.stats) && !isUndefined(b.stats)  ? b.stats.member_counter - a.stats.member_counter : 0)
         .map(o => o.id);
       return pool_ids
@@ -329,7 +345,13 @@ export const selectPoolIdsBySessionSortedBy = (state, session, sortBy, stateFilt
     case 'points': {
       const pool_ids = selectPoolIdsBySession(state, session)
         .map(pool_id => selectPoolBySessionAndPoolId(state, session, pool_id))
-        .filter(f => f.state === stateFilter)
+        .filter(f => f.state === stateFilter && 
+          (f.metadata.toLowerCase().includes(identityFilter.toLowerCase()) ||
+          !isUndefined(f.nominees) ? join( !isUndefined(f.nominees) ?
+            f.nominees.nominees.map(m => !isUndefined(selectValProfileByAddress(state, m)) ? selectValProfileByAddress(state, m)._identity : "") : "", ',')
+            .toLowerCase()
+            .includes(identityFilter.toLowerCase())
+           : false))
         .sort((a, b) => !isUndefined(a.stats) && !isUndefined(b.stats)  ? b.stats.points - a.stats.points : 0)
         .map(o => o.id);
       return pool_ids

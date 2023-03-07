@@ -7,6 +7,9 @@ import Typography from '@mui/material/Typography';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import SortIcon from '@mui/icons-material/Sort';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
 import PoolCard from './PoolCard';
 import PoolsStateToggle from './PoolsStateToggle';
 import { 
@@ -16,7 +19,8 @@ import {
 export default function PoolsGrid({sessionIndex}) {
   const [sortBy, setSortBy] = React.useState('apr');
   const [stateFilter, setStateFilter] = React.useState('Open');
-	const poolIds = useSelector(state => selectPoolIdsBySessionSortedBy(state, sessionIndex, sortBy, stateFilter));
+  const [identityFilter, setIdentityFilter] = React.useState('');
+	const poolIds = useSelector(state => selectPoolIdsBySessionSortedBy(state, sessionIndex, sortBy, identityFilter, stateFilter));
   
   const handleSort = (event, newSortBy) => {
     if (isNull(newSortBy)) {
@@ -29,19 +33,15 @@ export default function PoolsGrid({sessionIndex}) {
     setStateFilter(newValue)
   }
 
+  const handleIdentityFilter = (event) => {
+    setIdentityFilter(event.target.value)
+  }
+
   return (
 		<Box sx={{ m: 0 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Nomination Pools</Typography>
-          {/* {isLiveMode ? 
-            <Typography variant="subtitle" color="secondary">
-              Attestations of Validity by Val. Groups
-            </Typography> :
-            <Typography variant="subtitle" color="secondary">
-              Attestations of Validity by Val. Groups at session {sessionIndex.format()}
-            </Typography>} 
-            */}
         </Box>
         <ToggleButtonGroup
             value={sortBy}
@@ -70,9 +70,46 @@ export default function PoolsGrid({sessionIndex}) {
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
-      <Box sx={{ px: 2, display: 'flex', justifyContent: 'space-between'}}>
-        <PoolsStateToggle onChange={handleStateChanged} />
-        <Typography variant="caption" paragraph>total: {poolIds.length}</Typography>
+      <Box sx={{ mx: 2, mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <Box sx={{ display: 'flex', alignItems: 'center'}}>
+          <TextField
+            sx={{
+              // backgroundColor: theme.palette.neutrals[100],
+              borderRadius: 30,
+              width: 512
+            }}
+            variant="outlined"
+            placeholder="Filter by Pool Name or Nominee Identity"
+            color="primary"
+            value={identityFilter}
+            onChange={handleIdentityFilter}
+            size="small"
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconButton sx={{ ml: 1}} size="small"
+                    // disabled={!isValidAddress(this.state.address)}
+                    >
+                    <SortIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+              sx: {
+                borderRadius: 30,
+                paddingLeft: '4px',
+                '> .MuiOutlinedInput-input': {
+                  fontSize: "0.925rem",
+                  height: "24px",
+                  // fontSize: "0.825rem",
+                  // lineHeight: "1rem",
+                },
+              }
+            }}
+          />
+          <PoolsStateToggle onChange={handleStateChanged} />
+        </Box>
+        <Typography variant="caption">total: {poolIds.length}</Typography>
       </Box>
       <Grid container spacing={2}>
         {poolIds.map(poolId => (
