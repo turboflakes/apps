@@ -1,8 +1,11 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import isUndefined from 'lodash/isUndefined';
+import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 import PoolsGrid from './PoolsGrid';
 import PoolsActiveBox from './PoolsActiveBox';
 import PoolsMembersBox from './PoolsMembersBox';
@@ -17,6 +20,7 @@ import {
  } from '../features/api/sessionsSlice'
 import { 
   useGetPoolsQuery,
+  selectPoolBySessionAndPoolId
  } from '../features/api/poolsSlice'
 import { 
   useGetValidatorsQuery,
@@ -35,17 +39,18 @@ import {
 } from '../constants';
 
 export default function PoolsOverviewPage({tab}) {
-  // const theme = useTheme();
+  const theme = useTheme();
   const isLiveMode = useSelector(selectIsLiveMode);
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
   const selectedChain = useSelector(selectChain);
   const nSessionsTarget = getSessionsPerDayTarget(selectedChain);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
-  const {isFetching, isSuccess} = useGetPoolsQuery({session: sessionIndex, show_metadata: true, show_nominees: true, show_stats: true, show_nomstats: true}, 
+  const pool = useSelector(state => selectPoolBySessionAndPoolId(state, currentSession, 1));
+  useGetPoolsQuery({session: sessionIndex, show_metadata: true, show_nominees: true, show_stats: true, show_nomstats: true}, 
     {refetchOnMountOrArgChange: true, pollingInterval: 60000});
-
-  const {isFetching: isFetchingValidators} = useGetValidatorsQuery({session: sessionIndex, nominees_only: true, show_profile: true, show_summary: true});
+  
+  useGetValidatorsQuery({session: sessionIndex, nominees_only: true, show_profile: true, show_summary: true});
   
   useGetPoolsQuery({session: sessionIndex - nSessionsTarget, show_stats: true, show_nomstats: true}, 
       {refetchOnMountOrArgChange: true });
@@ -71,7 +76,6 @@ export default function PoolsOverviewPage({tab}) {
         <Grid item xs={12} md={2}>
           <PoolsPendingRewardsBox sessionIndex={currentSession} />
         </Grid>
-
         <Grid item xs={12}>
           <Divider sx={{ 
             mt: 1,
@@ -86,6 +90,11 @@ export default function PoolsOverviewPage({tab}) {
 
         <Grid item xs={12}>
           <PoolsGrid sessionIndex={sessionIndex} />
+        </Grid>
+        <Grid item xs={12} sx={{display: 'flex', justifyContent: 'flex-end'}}>
+          <Typography variant='caption' align='right' sx={{mb: 1, mr: 3, color: theme.palette.grey[400]}}>
+            {!isUndefined(pool) ? (!isUndefined(pool.stats) ? `last data collected at block #${pool.stats.block_number}` : "") : ""}
+          </Typography>
         </Grid>
       </Grid>
 		</Box>
