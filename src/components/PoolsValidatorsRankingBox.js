@@ -15,7 +15,7 @@ import Skeleton from '@mui/material/Skeleton';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Tooltip from './Tooltip';
 import Spinner from './Spinner';
-import RankingPaginationBox from './RankingPaginationBox';
+import PaginationBox from './PaginationBox';
 import {
   useGetValidatorsQuery,
   selectValidatorPoolCounterBySessionAndAddress,
@@ -156,7 +156,7 @@ export default function PoolsValidatorsRankingBox({sessionIndex, maxSessions, sk
             </List> : null)
         }
       </Box>
-      <RankingPaginationBox rankSize={RANK_SIZE} pageSize={PAGE_SIZE} onChange={handlePageChange} />
+      <PaginationBox totalSize={RANK_SIZE} pageSize={PAGE_SIZE} onChange={handlePageChange} />
     </Paper>
   );
 }

@@ -17,7 +17,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Tooltip from './Tooltip';
 import Spinner from './Spinner';
-import RankingPaginationBox from './RankingPaginationBox';
+import PaginationBox from './PaginationBox';
 import {
   useGetValidatorsQuery,
   selectValidatorGradeBySessionAndAddress,
@@ -236,7 +236,7 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
             </List> : null)
         }
       </Box>
-      <RankingPaginationBox rankSize={RANK_SIZE} pageSize={PAGE_SIZE} onChange={handlePageChange} />
+      <PaginationBox totalSize={RANK_SIZE} pageSize={PAGE_SIZE} onChange={handlePageChange} />
     </Paper>
   );
 }

@@ -12,14 +12,18 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import PoolCard from './PoolCard';
 import PoolsStateToggle from './PoolsStateToggle';
+import PaginationBox from './PaginationBox';
 import { 
   selectPoolIdsBySessionSortedBy,
  } from '../features/api/sessionsSlice';
+
+const PAGE_SIZE = 16;
 
 export default function PoolsGrid({sessionIndex}) {
   const [sortBy, setSortBy] = React.useState('apr');
   const [stateFilter, setStateFilter] = React.useState('Open');
   const [identityFilter, setIdentityFilter] = React.useState('');
+  const [page, setPage] = React.useState(0);
 	const poolIds = useSelector(state => selectPoolIdsBySessionSortedBy(state, sessionIndex, sortBy, identityFilter, stateFilter));
   
   const handleSort = (event, newSortBy) => {
@@ -35,6 +39,10 @@ export default function PoolsGrid({sessionIndex}) {
 
   const handleIdentityFilter = (event) => {
     setIdentityFilter(event.target.value)
+  }
+
+  const handlePageChange = (page) => {
+    setPage(page)
   }
 
   return (
@@ -88,9 +96,7 @@ export default function PoolsGrid({sessionIndex}) {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <IconButton sx={{ ml: 1}} size="small"
-                    // disabled={!isValidAddress(this.state.address)}
-                    >
+                  <IconButton sx={{ ml: 1}} size="small">
                     <SortIcon />
                   </IconButton>
                 </InputAdornment>
@@ -109,10 +115,10 @@ export default function PoolsGrid({sessionIndex}) {
           />
           <PoolsStateToggle onChange={handleStateChanged} />
         </Box>
-        <Typography variant="caption">total: {poolIds.length}</Typography>
+        <PaginationBox totalSize={poolIds.length} pageSize={PAGE_SIZE} onChange={handlePageChange} />
       </Box>
       <Grid container spacing={2}>
-        {poolIds.map(poolId => (
+        {poolIds.slice(page * PAGE_SIZE, (page * PAGE_SIZE) + PAGE_SIZE).map(poolId => (
           <Grid item xs={12} md={3} key={poolId}>
             <PoolCard sessionIndex={sessionIndex} poolId={poolId} />
           </Grid>
