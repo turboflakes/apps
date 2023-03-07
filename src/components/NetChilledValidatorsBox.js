@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux'
+// import { useSelector } from 'react-redux'
 import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
-import NetStatToggle from './NetStatToggle';
+import { ComposedChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, 
+  Bar, Rectangle, Cell, ResponsiveContainer } from 'recharts';
 import NetValChartLegend from './NetValChartLegend';
 
 import { 
@@ -30,21 +30,18 @@ import {
       >
         <Box sx={{mb: 2}}>
           <Typography component="div" variant="caption" color="inherit">
-            <b>Era Points</b>
+            <b>Chilled Validators and Disputes</b>
           </Typography>
           <Typography component="div" variant="caption" color="inherit">
-            <i>{`session #${data.session.format()} (${data.sessionIndex})`}</i>
+            <i>{`session #${data.session.format()}`}</i>
           </Typography>
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>TVP: <b>{data.tvp.format()}</b> ({Math.round((data.tvp * 100 ) / data.total)}%)
-          </Typography>
+            <span style={{ marginRight: '8px', color: theme.palette.grey[400] }}>❚</span>Chilled: <b>{data.chilled} validators</b> ({Math.round((data.chilled * 100 ) / data.total)}%)
+          </Typography>  
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>100% Com.: <b>{data.c100.format()}</b> ({Math.round((data.c100 * 100 ) / data.total)}%)
-          </Typography>
-          <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>●</span>Others: <b>{data.others.format()}</b> ({Math.round((data.others * 100 ) / data.total)}%)
+            <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>❚</span>Disputes: <b>{data.disputes}</b>
           </Typography>  
         </Box>
         
@@ -56,10 +53,22 @@ import {
   return null;
 };
 
-export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
+function ChartLegend({theme}) {
+  return (
+    <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
+      <Typography variant="caption" color="inherit" sx={{mr: 1}}>
+        <span style={{ marginRight: '8px', color: theme.palette.grey[400] }}>❚</span>Chilled validators
+      </Typography>
+      <Typography variant="caption" color="inherit">
+        <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>❚</span>Disputes
+      </Typography>
+    </Box>
+  );
+}
+
+export default function NetChilledValidatorsBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true});
-  const [key, setKey] = React.useState("vals_points_total");
+  const {data, isSuccess, isFetching} = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_stats: true, show_netstats: true});
 
   if (isFetching || isUndefined(data)) {
     return (<Skeleton variant="rounded" sx={{
@@ -77,20 +86,14 @@ export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
 
   // 
   const mainValue = data.filter(s => s.six === sessionIndex - 1)
-    .map(s => !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m["vals_points_total"]).reduce((a, b) => a + b, 0) : 0)[0];
+    .map(s => !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m.vals_active).reduce((a, b) => a + b, 0) : 0)[0];
 
   const timelineData = data.map((s, i) => ({
     session: s.six,
-    sessionIndex: s.esix,
-    total: !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m[key]).reduce((a, b) => a + b, 0) : 0,
-    c100: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "C100")[0][key] : 0,
-    tvp: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "TVP")[0][key] : 0,
-    others: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "NONTVP")[0][key] : 0,
+    total: !isUndefined(s.stats) ? s.stats.na : 0,
+    chilled: !isUndefined(s.netstats) ? s.netstats.total_vals_chilled : 0,
+    disputes: !isUndefined(s.stats) ? s.stats.di : 0,
   }))
-
-  const handleStatChanged = (newValue) => {
-    setKey(`vals_points_${newValue}`)
-  }
 
   return (
     <Paper
@@ -111,22 +114,21 @@ export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
       >
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption" gutterBottom>{`Total Era Points at session ${sessionIndex - 1}`}</Typography>
-          <Typography variant="h4">
-            {!isUndefined(mainValue) ? mainValue.format() : 0}
-          </Typography>
+          <Typography variant="caption" gutterBottom>Chilled Validators and Disputes</Typography>
+          {/* <Typography variant="h4">
+            {mainValue}
+          </Typography> */}
         </Box>
-        <NetStatToggle onChange={handleStatChanged} />
       </Box>
       <Box sx={{ height: '100%'}}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
+          <ComposedChart
             // width="100%"
             // height="100"
             data={timelineData}
             margin={{
               top: 8,
-              right: 32,
+              right: 8,
               left: -24,
               bottom: 16,
             }}
@@ -139,25 +141,44 @@ export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
               tickLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
               />
             <YAxis type="number" 
+              domain={['dataMin', 'dataMax']}
+              style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
+              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
+              tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
+              />
+            {/* show chilled */}
+            <Bar dataKey="chilled" 
+              barSize={8} shape={<Rectangle radius={[8, 8, 0, 0]} />} >
+              {
+                data.map((entry, index) => (
+                <Cell key={`cell-${index}`} cursor="pointer" 
+                  fill={theme.palette.grey[400]} />))
+              }
+            </Bar>
+            {/* show disputes */}
+            <YAxis type="number" yAxisId="rightDisputes"
+              orientation="right"
               // domain={['dataMin', 'dataMax']}
               style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
               axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
               tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
               />
+            <Bar dataKey="disputes" yAxisId="rightDisputes"
+              barSize={8} shape={<Rectangle radius={[8, 8, 0, 0]} />} >
+              {
+                data.map((entry, index) => (
+                <Cell key={`cell-${index}`} cursor="pointer" 
+                  fill={theme.palette.semantics.red} />))
+              }
+            </Bar>
+            
             <Tooltip 
                 cursor={{fill: theme.palette.divider}}
                 offset={24}
                 wrapperStyle={{ zIndex: 100 }} 
                 content={props => renderTooltip(props, theme)} />
-            <Line isAnimationActive={false} type="monotone" dataKey="c100" 
-              strokeWidth={2} stroke={theme.palette.grey[900]} dot={false} />
-            <Line isAnimationActive={false} type="monotone" dataKey="others" 
-              strokeWidth={2} stroke={theme.palette.grey[200]} dot={false} />
-            <Line isAnimationActive={false} type="monotone" dataKey="tvp" 
-              strokeWidth={2} stroke={theme.palette.semantics.blue} dot={false} />
-            
-            <Legend verticalAlign="top" content={() => NetValChartLegend({theme})} height={24} />
-          </LineChart>
+            <Legend verticalAlign="top" content={() => ChartLegend({theme})} height={24} />
+          </ComposedChart>
         </ResponsiveContainer>
       </Box>
     </Paper>

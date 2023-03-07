@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-// import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined';
 import groupBy from 'lodash/groupBy';
 import orderBy from 'lodash/orderBy';
@@ -35,7 +35,7 @@ import { stakeDisplay } from '../util/display';
 import { getNetworkName } from '../constants'
 
 export default function PoolCard({sessionIndex, poolId}) {
-  // const theme = useTheme();
+  const theme = useTheme();
   const [showPie, setShowPie] = React.useState(true);
   const [showInsights, setShowInsights] = React.useState(false);
   const selectedChain = useSelector(selectChain);
@@ -141,7 +141,7 @@ export default function PoolCard({sessionIndex, poolId}) {
           <Box sx={{ py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
               <Typography variant="caption" align='center'>pending rewards</Typography>
-              <Typography variant="h5" align='center'>{stakeDisplay(rewards, selectedChainInfo, 2, true)}</Typography>
+              <Typography variant="h5" align='center'>{stakeDisplay(rewards, selectedChainInfo, 2, true, false)}<span style={{...theme.typography.caption}}>KSM</span></Typography>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
               <Typography variant="caption" align='center'>points</Typography>

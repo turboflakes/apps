@@ -29,7 +29,7 @@ export default function SessionBox({sessionIndex, dark}) {
     isFetching: isFetchingBlockSuccess} = useGetBlockQuery({blockId: "best"}, {refetchOnMountOrArgChange: true});
   const {
     isSuccess: isSessionSuccess,
-    isFetching: isFetchingSession } = useGetSessionByIndexQuery(sessionIndex);
+    isFetching: isFetchingSession } = useGetSessionByIndexQuery({index: sessionIndex});
   const best = useSelector(selectBestBlock)
   const finalized = useSelector(selectFinalizedBlock)
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex))

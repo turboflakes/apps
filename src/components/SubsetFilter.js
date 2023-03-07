@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import isNull from 'lodash/isNull'
 import Box from '@mui/material/Box';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -15,6 +16,9 @@ export default function SubsetFilter() {
   const subsetFilter = useSelector(selectSubsetFilter);
   
   const handleSubsetFilter = (event, newFilter) => {
+    if (isNull(newFilter)) {
+      return
+    }
     dispatch(subsetFilterChanged(newFilter))
   };
 

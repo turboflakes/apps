@@ -27,7 +27,7 @@ export default function SessionPieChart({sessionIndex}) {
     isFetching: isFetchingBlockSuccess} = useGetBlockQuery({blockId: "finalized", show_stats: true});
   const {
     isSuccess: isSuccessSession,
-    isFetching: isFetchingSession } = useGetSessionByIndexQuery(sessionIndex);
+    isFetching: isFetchingSession } = useGetSessionByIndexQuery({index: sessionIndex});
   const finalized = useSelector(selectFinalizedBlock)
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex))
 

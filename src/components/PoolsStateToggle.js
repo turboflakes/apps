@@ -1,4 +1,5 @@
 import * as React from 'react';
+import isNull from 'lodash/isNull';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -10,6 +11,9 @@ export default function PoolsStateToggle({onChange}) {
   const [value, setValue] = React.useState("Open");
 
   const handleChange = (event, newValue) => {
+    if (isNull(newValue)) {
+      return
+    }
     setValue(newValue)
     onChange(newValue)
   };

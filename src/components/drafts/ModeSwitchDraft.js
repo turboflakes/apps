@@ -85,7 +85,7 @@ export default function ModeSwitch({mode}) {
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
-  const { isFetching } = useGetSessionByIndexQuery(sessionIndex);
+  const { isFetching } = useGetSessionByIndexQuery({index: sessionIndex});
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
   const selectedPage = useSelector(selectPage);
   // Note: the following selects are only applied if route 'validators/insights'

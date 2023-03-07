@@ -28,7 +28,7 @@ export default function SessionPieChartHeader() {
     isFetching: isFetchingBlockSuccess} = useGetBlockQuery({blockId: "finalized", show_stats: true});
   const {
     isSuccess: isSuccessSession,
-    isFetching: isFetchingSession } = useGetSessionByIndexQuery(currentSession);
+    isFetching: isFetchingSession } = useGetSessionByIndexQuery({index: currentSession});
   const finalized = useSelector(selectFinalizedBlock)
   const session = useSelector(state => selectSessionByIndex(state, currentSession))
   // const isLiveMode = useSelector(selectIsLiveMode)

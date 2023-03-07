@@ -139,10 +139,10 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
                   fill={theme.palette.semantics.green} />))
               }
             </Bar>
-            <Line isAnimationActive={false} type="monotone" dataKey="total_issuance" 
+            {/* <Line isAnimationActive={false} type="monotone" dataKey="total_issuance" 
               strokeWidth={2} stroke={theme.palette.semantics.red} dot={false} />
             <Line isAnimationActive={false} type="monotone" dataKey="total_staked" 
-              strokeWidth={2} stroke={theme.palette.grey[900]} dot={false} />
+              strokeWidth={2} stroke={theme.palette.grey[900]} dot={false} /> */}
           </ComposedChart>
         </ResponsiveContainer>
       </Box>

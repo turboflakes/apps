@@ -6,7 +6,8 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, 
+  Bar, Rectangle, Cell, ResponsiveContainer } from 'recharts';
 import NetValChartLegend from './NetValChartLegend';
 
 import { 
@@ -46,8 +47,6 @@ import {
             <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>●</span>Others: <b>{data.others}</b> ({Math.round((data.others * 100 ) / data.total)}%)
           </Typography>  
         </Box>
-        
-        
       </Box>
     );
   }
@@ -62,7 +61,7 @@ export default function NetActiveValidatorsBox({sessionIndex, maxSessions}) {
   if (isFetching || isUndefined(data)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
-      height: 192,
+      height: 434,
       borderRadius: 3,
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       bgcolor: 'white'
@@ -147,7 +146,6 @@ export default function NetActiveValidatorsBox({sessionIndex, maxSessions}) {
               strokeWidth={2} stroke={theme.palette.grey[200]} dot={false} />
             <Line isAnimationActive={false} type="monotone" dataKey="tvp" 
               strokeWidth={2} stroke={theme.palette.semantics.blue} dot={false} />
-            
             <Legend verticalAlign="top" content={() => NetValChartLegend({theme})} height={24} />
           </LineChart>
         </ResponsiveContainer>

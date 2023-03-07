@@ -84,7 +84,7 @@ export default function AuthoritiesBox({sessionIndex, dark}) {
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}
           color={dark ? theme.palette.text.secondary : 'default'}>active validators</Typography>
         <Typography variant="h5" color={dark ? theme.palette.text.secondary : 'default'}>
-          {!isUndefined(block.stats.npa) ? block.stats.na : '-'}
+          {!isUndefined(block.stats.na) ? block.stats.na : '-'}
         </Typography>
         <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}
           color={dark ? theme.palette.text.secondary : 'default'}>

@@ -41,23 +41,53 @@ export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Sessions'],
   endpoints: (builder) => ({
     getSessions: builder.query({
-      query: ({number_last_sessions, from, to, show_stats, show_netstats}) => ({
+      query: ({number_last_sessions, from, to, show_stats, show_netstats, retry}) => ({
         url: `/sessions`,
-        params: { number_last_sessions, from, to, show_stats, show_netstats }
+        params: { number_last_sessions, from, to, show_stats, show_netstats, retry }
       }),
       providesTags: (result, error, arg) => [{ type: 'Sessions', id: arg }],
       transformResponse: responseData => {
         return responseData.data
       },
+      async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+          // `onSuccess` subscribe for updates
+          if (params.from && params.to && params.show_netstats) {
+            const session = selectSessionByIndex(getState(), params.to)
+            if (session.is_syncing) {
+              const parsed = parseInt(params.retry, 10);
+              const retry = isNaN(parsed) ? 1 : parsed + 1;
+              if (retry < 60) {
+                setTimeout(() => {
+                  dispatch(extendedApi.endpoints.getSessions.initiate({...params, retry }))
+                }, 2000)
+              }
+            }
+          }
+        } catch (err) {
+          // `onError` side-effect
+          const parsed = parseInt(params.retry, 10);
+          const retry = isNaN(parsed) ? 1 : parsed + 1;
+          if (retry < 60) {
+            setTimeout(() => {
+              dispatch(extendedApi.endpoints.getSessions.initiate({...params, retry }))
+            }, 2000)
+          }
+        }
+      },
     }),
     getSessionByIndex: builder.query({
-      query: (index) => `/sessions/${index}`,
+      query: ({index, retry}) => ({
+        url: `/sessions/${index}`,
+        params: { retry }
+      }),
       providesTags: (result, error, arg) => [{ type: 'Sessions', id: arg }],
-      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+      async onQueryStarted(params, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
           // `onSuccess` subscribe for updates
-          if (id === "current") {
+          if (params.index === "current") {
             const msg = JSON.stringify({ method: "subscribe_session", params: ["new"] });
             dispatch(socketActions.messageQueued(msg))
             // Fetch previous sessions stats for the current era
@@ -65,7 +95,13 @@ export const extendedApi = apiSlice.injectEndpoints({
           }
         } catch (err) {
           // `onError` side-effect
-          // dispatch(socketActions.messageQueued(msg))
+          const parsed = parseInt(params.retry, 10);
+          const retry = isNaN(parsed) ? 1 : parsed + 1;
+          if (retry < 60) {
+            setTimeout(() => {
+              dispatch(extendedApi.endpoints.getSessionByIndex.initiate({...params, retry }))
+            }, 1000)
+          }
         }
       },
     }),

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-// import { useTheme } from '@mui/material/styles';
+import isNull from 'lodash/isNull';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -37,6 +37,9 @@ export default function ParachainsGrid({sessionIndex}) {
   const pScheduled = Math.round(nScheduled * 100 / paraIds.length);
 
   const handleSort = (event, newSortBy) => {
+    if (isNull(newSortBy)) {
+      return
+    }
     setSortBy(newSortBy);
   };
   

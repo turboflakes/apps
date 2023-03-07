@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import isNull from 'lodash/isNull';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -18,6 +19,9 @@ export default function PoolsGrid({sessionIndex}) {
 	const poolIds = useSelector(state => selectPoolIdsBySessionSortedBy(state, sessionIndex, sortBy, stateFilter));
   
   const handleSort = (event, newSortBy) => {
+    if (isNull(newSortBy)) {
+      return
+    }
     setSortBy(newSortBy);
   };
 
@@ -36,7 +40,8 @@ export default function PoolsGrid({sessionIndex}) {
             </Typography> :
             <Typography variant="subtitle" color="secondary">
               Attestations of Validity by Val. Groups at session {sessionIndex.format()}
-            </Typography>} */}
+            </Typography>} 
+            */}
         </Box>
         <ToggleButtonGroup
             value={sortBy}
