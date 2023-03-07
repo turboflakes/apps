@@ -72,8 +72,6 @@ export default function NetActiveValidatorsBox({sessionIndex, maxSessions}) {
     return null
   }
 
-  console.log("__data[data.length-1]", data[data.length-1].netstats.block_number);
-
   // 
   const mainValue = data.filter(s => s.six === sessionIndex - 1)
     .map(s => !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m.vals_active).reduce((a, b) => a + b, 0) : 0)[0];
