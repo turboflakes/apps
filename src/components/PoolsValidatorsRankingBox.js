@@ -6,20 +6,16 @@ import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import AddIcon from '@mui/icons-material/PlaylistAdd';
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Identicon from '@polkadot/react-identicon';
 import Skeleton from '@mui/material/Skeleton';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Tooltip from './Tooltip';
 import Spinner from './Spinner';
+import RankingPaginationBox from './RankingPaginationBox';
 import {
   useGetValidatorsQuery,
   selectValidatorPoolCounterBySessionAndAddress,
@@ -81,29 +77,23 @@ function ItemButtom({address, sessionIndex}) {
   )
 }
 
+const RANK_SIZE = 100;
+const PAGE_SIZE = 8;
+
 export default function PoolsValidatorsRankingBox({sessionIndex, maxSessions, skip}) {
   const theme = useTheme();
-  const [subset, setSubset] = React.useState("TVP");
-  const params = {ranking: "pools", size: 8, show_profile: true}
+  const [page, setPage] = React.useState(0);
+  const params = {ranking: "pools", size: RANK_SIZE, show_profile: true}
   const {data, isSuccess, isFetching} = useGetValidatorsQuery(params, {skip});
-  
-  // if (isFetching || isUndefined(data)) {
-  //   return (<Skeleton variant="rounded" sx={{
-  //     width: '100%',
-  //     height: 192,
-  //     borderRadius: 3,
-  //     boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-  //     bgcolor: 'white'
-  //   }} />)
-  // }
-  
-  // if (!isSuccess) {
-  //   return null
-  // }
 
-  const handleChange = (event, newValue) => {
-    setSubset(newValue)
-  };
+  const handlePageChange = (page) => {
+    setPage(page)
+  }
+
+  let ranking = [];
+  if (isSuccess) {
+    ranking = data.data;
+  }
 
   return (
     <Paper
@@ -124,7 +114,7 @@ export default function PoolsValidatorsRankingBox({sessionIndex, maxSessions, sk
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column'}}>
           <Typography variant="h6">
-            Top Nominees
+            {`Top ${RANK_SIZE} Nominees`}
           </Typography>
           <Typography variant="caption">
             Validators most frequently chosen
@@ -152,19 +142,21 @@ export default function PoolsValidatorsRankingBox({sessionIndex, maxSessions, sk
           </Tooltip>
         </Box>
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column'}}>
+      <Box sx={{ height: 308, display: 'flex', flexDirection: 'column'}}>
         {isFetching ?
-          <Box sx={{ height: 342, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <Spinner size={32}/>
           </Box>
           : (isSuccess ?
             <List dense sx={{
               overflow: 'auto',
             }}>
-              {data.data.map((v, i) => (<ItemButtom key={i} address={v.address} sessionIndex={sessionIndex} />))}
+              {ranking.slice(page * PAGE_SIZE, (page * PAGE_SIZE) + PAGE_SIZE).map((v, i) => 
+                (<ItemButtom key={i} address={v.address} sessionIndex={sessionIndex} rank={i + (page * PAGE_SIZE) + 1} />))}
             </List> : null)
         }
       </Box>
+      <RankingPaginationBox rankSize={RANK_SIZE} pageSize={PAGE_SIZE} onChange={handlePageChange} />
     </Paper>
   );
 }

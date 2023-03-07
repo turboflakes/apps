@@ -17,6 +17,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Tooltip from './Tooltip';
 import Spinner from './Spinner';
+import RankingPaginationBox from './RankingPaginationBox';
 import {
   useGetValidatorsQuery,
   selectValidatorGradeBySessionAndAddress,
@@ -33,11 +34,12 @@ import {
 
 import { 
   stashDisplay, 
-  nameDisplay,
-  commissionDisplay } from '../util/display'
+  nameDisplay } from '../util/display'
 import { isNull } from 'lodash';
 
-function ItemButtom({address, sessionIndex}) {
+const trendSign = (trend) => Math.sign(trend) > 0 ? '↑' : ( Math.sign(trend) < 0 ? '↓' : '');
+
+function ItemButtom({address, sessionIndex, rank, diff}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -63,6 +65,9 @@ function ItemButtom({address, sessionIndex}) {
           <Box sx={{ p: 1}}>
             <Typography variant="caption" paragraph>
               <b>{nameDisplay(!!valProfile ? valProfile._identity : stashDisplay(address, 4), 18)}</b>
+            </Typography>
+            <Typography component="div" variant="caption" gutterBottom>
+              <b>rank:</b> {rank}
             </Typography>
             <Typography component="div" variant="caption" gutterBottom>
               <b>score:</b> {valProfile._performance_ranking.score / 1000000}
@@ -93,35 +98,25 @@ function ItemButtom({address, sessionIndex}) {
         // primaryTypographyProps={{ style: {fontWeight: 600}}}
           primary={nameDisplay(!!valProfile ? valProfile._identity : stashDisplay(address, 4), 24)}
         />
-        {/* <ListItemText align="right" 
-          primary="↓ 10"
-          // primary={(valProfile._performance_ranking.score / 1000000)}
-          // primary={commissionDisplay(!!valProfile ? valProfile.commission : '')}
-        /> */}
+        <ListItemText align="right" sx={{ color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red }}
+          primary={diff !== 0 ? `${trendSign(diff)} ${Math.abs(diff)}` : ''}
+        />
       </ListItemButton>
     </Tooltip>
   )
 }
 
+const RANK_SIZE = 100;
+const PAGE_SIZE = 16;
+
 export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) {
   const theme = useTheme();
   const [subset, setSubset] = React.useState("TVP");
-  const params = {from: sessionIndex - maxSessions, to: sessionIndex - 1, ranking: "performance", size: 16}
+  const [page, setPage] = React.useState(0);
+  const params = {from: sessionIndex - maxSessions, to: sessionIndex - 1, ranking: "performance", size: RANK_SIZE}
   const {data, isSuccess, isFetching} = useGetValidatorsQuery(subset === "TVP" ? {...params, subset} : params, {skip});
-  
-  // if (isFetching || isUndefined(data)) {
-  //   return (<Skeleton variant="rounded" sx={{
-  //     width: '100%',
-  //     height: 192,
-  //     borderRadius: 3,
-  //     boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-  //     bgcolor: 'white'
-  //   }} />)
-  // }
-  
-  // if (!isSuccess) {
-  //   return null
-  // }
+  const paramsPrevious = {from: (sessionIndex - 1) - maxSessions, to: sessionIndex - 2, ranking: "performance", size: RANK_SIZE}
+  const {data: previousData, isSuccess: isPreviousSuccess, isFetching: isPreviousFetching} = useGetValidatorsQuery(subset === "TVP" ? {...paramsPrevious, subset} : paramsPrevious, {skip});
 
   const handleChange = (event, newValue) => {
     if (isNull(newValue)) {
@@ -129,6 +124,22 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
     }
     setSubset(newValue)
   };
+
+  const handlePageChange = (page) => {
+    setPage(page)
+  }
+
+  let ranking = [];
+  if (isSuccess && isPreviousSuccess) {
+    const a = data.data.forEach((v, i) => {
+      const o = previousData.data.findIndex(p => v.address == p.address)
+      if (o === -1 ) {
+        ranking.push({...v, diff: RANK_SIZE - i})  
+      } else {
+        ranking.push({...v, diff: o - i})
+      }
+    })
+  }
 
   return (
     <Paper
@@ -149,7 +160,7 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column'}}>
           <Typography variant="h6">
-            Top Validators Performances
+            Top 100 Validators Performances
           </Typography>
           <Typography variant="caption" gutterBottom>
             Performance ranking of the last {maxSessions} sessions
@@ -209,8 +220,8 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
-      <Box sx={{ height: 598, display: 'flex', flexDirection: 'column'}}>
-        {isFetching ?
+      <Box sx={{ height: 592, display: 'flex', flexDirection: 'column'}}>
+        {isFetching || isPreviousFetching?
           <Box sx={{ height: "100%", display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <Spinner size={32}/>
           </Box>
@@ -218,10 +229,12 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
             <List dense sx={{
               overflow: 'auto',
             }}>
-              {data.data.map((v, i) => (<ItemButtom key={i} address={v.address} sessionIndex={sessionIndex} />))}
+              {ranking.slice(page * PAGE_SIZE, (page * PAGE_SIZE) + PAGE_SIZE).map((v, i) => 
+                (<ItemButtom key={i} address={v.address} sessionIndex={sessionIndex} rank={i + (page * PAGE_SIZE) + 1} diff={v.diff}/>))}
             </List> : null)
         }
       </Box>
+      <RankingPaginationBox rankSize={RANK_SIZE} pageSize={PAGE_SIZE} onChange={handlePageChange} />
     </Paper>
   );
 }

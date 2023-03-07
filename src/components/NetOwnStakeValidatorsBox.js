@@ -70,7 +70,7 @@ export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
   if (isFetching || isUndefined(data) || isUndefined(selectedChainInfo)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
-      height: 434,
+      height: '100%',
       borderRadius: 3,
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       bgcolor: 'white'

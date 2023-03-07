@@ -84,7 +84,7 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
   if (isFetching) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
-      height: 376,
+      height: 409,
       borderRadius: 3,
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       bgcolor: 'white'
@@ -120,7 +120,7 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
       flexDirection: 'column',
       // alignItems: 'center',
       width: '100%',
-      height: 376,
+      height: 409,
       borderRadius: 3,
       // borderTopLeftRadius: '24px',
       // borderTopRightRadius: '24px',
