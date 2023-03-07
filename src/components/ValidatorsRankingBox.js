@@ -69,6 +69,9 @@ function ItemButtom({address, sessionIndex, rank, diff}) {
             <Typography component="div" variant="caption" gutterBottom>
               <b>rank:</b> {rank}
             </Typography>
+            <Typography component="div" variant="caption" paragraph>
+              <b>rank change:</b> {Math.sign(diff) > 0 ? `+${Math.abs(diff)}` : `-${Math.abs(diff)}`}
+            </Typography>
             <Typography component="div" variant="caption" gutterBottom>
               <b>score:</b> {valProfile._performance_ranking.score / 1000000}
             </Typography>
@@ -95,7 +98,6 @@ function ItemButtom({address, sessionIndex, rank, diff}) {
             theme={'polkadot'} />
         </ListItemIcon>
         <ListItemText sx={{whiteSpace: "nowrap"}} 
-        // primaryTypographyProps={{ style: {fontWeight: 600}}}
           primary={nameDisplay(!!valProfile ? valProfile._identity : stashDisplay(address, 4), 24)}
         />
         <ListItemText align="right" sx={{ color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red }}
@@ -131,8 +133,8 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
 
   let ranking = [];
   if (isSuccess && isPreviousSuccess) {
-    const a = data.data.forEach((v, i) => {
-      const o = previousData.data.findIndex(p => v.address == p.address)
+    data.data.forEach((v, i) => {
+      const o = previousData.data.findIndex(p => v.address === p.address)
       if (o === -1 ) {
         ranking.push({...v, diff: RANK_SIZE - i})  
       } else {
