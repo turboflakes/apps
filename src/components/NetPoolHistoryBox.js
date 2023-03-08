@@ -184,7 +184,7 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
         </ResponsiveContainer>
       </Box>
       <Typography variant='caption' align='right' sx={{mb: 1, mr: 3, color: theme.palette.grey[400]}}>
-        {!isUndefined(pool) ? (!isUndefined(pool.stats) ? `last data collected at block #${pool.stats.block_number}` : "") : ""}
+        {!isUndefined(pool) ? (!isUndefined(pool.stats) ? `latest data collected at block #${pool.stats.block_number}` : "") : ""}
       </Typography>
     </Paper>
   );

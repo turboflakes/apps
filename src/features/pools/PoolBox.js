@@ -47,7 +47,7 @@ export const PoolBox = ({poolId, api, extra}) => {
             </Box>
             <Box display="flex">
               <Typography variant="caption" align="right" sx={{width: '100%'}} gutterBottom>
-                last data sync {moment.unix(pool.ts).utc().format("DD/MM/YYYY HH:mm:ss (UTC)")}
+                latest data sync {moment.unix(pool.ts).utc().format("DD/MM/YYYY HH:mm:ss (UTC)")}
               </Typography>
             </Box>
             <Divider />

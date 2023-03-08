@@ -66,12 +66,13 @@ function ItemButtom({address, sessionIndex, rank, diff}) {
             <Typography variant="caption" paragraph>
               <b>{nameDisplay(!!valProfile ? valProfile._identity : stashDisplay(address, 4), 18)}</b>
             </Typography>
-            <Typography component="div" variant="caption" gutterBottom>
+            <Typography component="div" variant="caption" gutterBottom={diff !== 0} paragraph={diff === 0}>
               <b>rank:</b> {rank}
             </Typography>
-            <Typography component="div" variant="caption" paragraph>
-              <b>rank change:</b> {Math.sign(diff) > 0 ? `+${Math.abs(diff)}` : `-${Math.abs(diff)}`}
-            </Typography>
+            { diff !== 0 ?
+              <Typography component="div" variant="caption" paragraph>
+                <b>rank change:</b> {Math.sign(diff) > 0 ? `+${Math.abs(diff)}` : `-${Math.abs(diff)}`}
+              </Typography> : null}
             <Typography component="div" variant="caption" gutterBottom>
               <b>score:</b> {valProfile._performance_ranking.score / 1000000}
             </Typography>
