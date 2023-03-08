@@ -116,7 +116,7 @@ export default function ParachainsGrid({sessionIndex}) {
             width: 512
           }}
           variant="outlined"
-          placeholder="Filter by Parachain ID"
+          placeholder="Filter by Parachain ID/Name or Validator Identity/Address"
           color="primary"
           value={identityFilter}
           onChange={handleIdentityFilter}
@@ -142,11 +142,7 @@ export default function ParachainsGrid({sessionIndex}) {
             }
           }}
         />
-        
         <PaginationBox page={page} totalSize={paraIds.length} pageSize={PAGE_SIZE} onChange={handlePageChange} />
-      </Box>
-      <Box sx={{ mx: 2, display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
-        <Typography variant="caption" paragraph>Parachains scheduled: {nScheduled} ({pScheduled}%)</Typography>
       </Box>
       <Grid container spacing={2}>
         {paraIds.slice(page * PAGE_SIZE, (page * PAGE_SIZE) + PAGE_SIZE).map(paraId => (
@@ -155,6 +151,9 @@ export default function ParachainsGrid({sessionIndex}) {
           </Grid>
         ))}
       </Grid>
+      <Box sx={{ my: 2, display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
+        <Typography variant="caption">Parachains scheduled: {nScheduled} ({pScheduled}%)</Typography>
+      </Box>
 		</Box>
   );
 }

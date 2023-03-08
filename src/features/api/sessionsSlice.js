@@ -39,6 +39,13 @@ import {
 import {
   selectValProfileByAddress
 } from './valProfilesSlice';
+import {
+  selectValidatorBySessionAndAuthId
+} from './authoritiesSlice';
+import {
+  selectChain
+} from '../chain/chainSlice';
+import { getChainName, isChainSupported } from '../../constants'
 import { calculateMvr } from '../../util/mvr'
 import { grade } from '../../util/grade';
 
@@ -413,7 +420,11 @@ export const selectParachainIdsBySessionSortedBy = (state, session, sortBy, orde
     case 'backing_points': {
       const para_ids = selectParachainIdsBySession(state, session)
         .map(para_id => selectParachainBySessionAndParaId(state, session, para_id))
-        .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()))
+        .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()) ||
+            (isChainSupported(selectChain(state), f.pid) ? getChainName(selectChain(state), f.pid) : f.pid.toString()).toLowerCase().includes(identityFilter.toLowerCase()) ||
+            join(f.auths.map(m => !isUndefined(selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)) ? 
+              selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)._identity : ""), ',').toLowerCase().includes(identityFilter.toLowerCase())        
+        )
         .sort((a, b) => orderBy ? b._backing_points - a._backing_points : a._backing_points - b._backing_points)
         .map(o => o.pid);
       return para_ids
@@ -421,7 +432,11 @@ export const selectParachainIdsBySessionSortedBy = (state, session, sortBy, orde
     case 'mvr': {
       const para_ids = selectParachainIdsBySession(state, session)
         .map(para_id => selectParachainBySessionAndParaId(state, session, para_id))
-        .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()))
+        .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()) ||
+            (isChainSupported(selectChain(state), f.pid) ? getChainName(selectChain(state), f.pid) : f.pid.toString()).toLowerCase().includes(identityFilter.toLowerCase()) ||
+            join(f.auths.map(m => !isUndefined(selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)) ? 
+              selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)._identity : ""), ',').toLowerCase().includes(identityFilter.toLowerCase())        
+        )
         .sort((a, b) => orderBy ? b._mvr - a._mvr : a._mvr - b._mvr)
         .map(o => o.pid);
       return para_ids
@@ -429,7 +444,11 @@ export const selectParachainIdsBySessionSortedBy = (state, session, sortBy, orde
     case 'para_id': {
       const para_ids = selectParachainIdsBySession(state, session)
       .map(para_id => selectParachainBySessionAndParaId(state, session, para_id))
-      .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()))
+      .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()) ||
+            (isChainSupported(selectChain(state), f.pid) ? getChainName(selectChain(state), f.pid) : f.pid.toString()).toLowerCase().includes(identityFilter.toLowerCase()) ||
+            join(f.auths.map(m => !isUndefined(selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)) ? 
+              selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)._identity : ""), ',').toLowerCase().includes(identityFilter.toLowerCase())        
+        )
       .sort((a, b) => orderBy ? b.pid - a.pid : a.pid - b.pid)
       .map(o => o.pid);
       return para_ids
