@@ -287,7 +287,7 @@ export const selectValGroupIdsBySession = (state, session) => !!selectSessionByI
   (isArray(selectSessionByIndex(state, session)._group_ids) ? 
     selectSessionByIndex(state, session)._group_ids : []) : [];
 
-export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy, identityFilter = "") => {
+export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy, orderBy, identityFilter = "") => {
   switch (sortBy) {
     case 'backing_points': {
       const group_ids = selectValGroupIdsBySession(state, session)
@@ -299,7 +299,7 @@ export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy, ident
             .toLowerCase().includes(identityFilter.toLowerCase()) : 
             false)
         )
-        .sort((a, b) => b._backing_points - a._backing_points)
+        .sort((a, b) => orderBy ? b._backing_points - a._backing_points : a._backing_points - b._backing_points)
         .map(o => o._group_id);
       return group_ids
     }
@@ -313,12 +313,12 @@ export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy, ident
             .toLowerCase().includes(identityFilter.toLowerCase()) : 
             false)
         )
-        .sort((a, b) => b._mvr - a._mvr)
+        .sort((a, b) => orderBy ? b._mvr - a._mvr : a._mvr - b._mvr)
         .map(o => o._group_id);
       return group_ids
     }
-    default: {
-      return selectValGroupIdsBySession(state, session)
+    case 'group_id': {
+      const group_ids = selectValGroupIdsBySession(state, session)
         .map(group_id => selectValGroupBySessionAndGroupId(state, session, group_id))
         .filter(f => `val group ${f._group_id.toString()}` === identityFilter.toLowerCase().trim() || 
           `group ${f._group_id.toString()}` === identityFilter.toLowerCase().trim() || 
@@ -327,7 +327,12 @@ export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy, ident
             .toLowerCase().includes(identityFilter.toLowerCase()) : 
             false)
         )
-        .map(o => o._group_id)
+        .sort((a, b) => orderBy ? b._group_id - a._group_id : a._group_id - b._group_id)
+        .map(o => o._group_id);
+      return group_ids
+    }
+    default: {
+      return selectValGroupIdsBySession(state, session)
     }
   }
 };
@@ -336,7 +341,7 @@ export const selectPoolIdsBySession = (state, session) => !!selectSessionByIndex
     (isArray(selectSessionByIndex(state, session)._pool_ids) ? 
       selectSessionByIndex(state, session)._pool_ids : []) : [];
 
-export const selectPoolIdsBySessionSortedBy = (state, session, sortBy, identityFilter = "", stateFilter = 'Open') => {
+export const selectPoolIdsBySessionSortedBy = (state, session, sortBy, orderBy, identityFilter = "", stateFilter = 'Open') => {
   switch (sortBy) {
     case 'apr': {
       const pool_ids = selectPoolIdsBySession(state, session)
@@ -347,7 +352,7 @@ export const selectPoolIdsBySessionSortedBy = (state, session, sortBy, identityF
             f.nominees.nominees.map(m => !isUndefined(selectValProfileByAddress(state, m)) ? selectValProfileByAddress(state, m)._identity : "") : "", ',')
             .toLowerCase().includes(identityFilter.toLowerCase())
            : false)))
-        .sort((a, b) => !isUndefined(a.nomstats) && !isUndefined(b.nomstats)  ? b.nomstats.apr - a.nomstats.apr : 0)
+        .sort((a, b) => !isUndefined(a.nomstats) && !isUndefined(b.nomstats)  ? (orderBy ? b.nomstats.apr - a.nomstats.apr : a.nomstats.apr - b.nomstats.apr) : 0)
         .map(o => o.id);
       return pool_ids
     }
@@ -361,7 +366,7 @@ export const selectPoolIdsBySessionSortedBy = (state, session, sortBy, identityF
             .toLowerCase()
             .includes(identityFilter.toLowerCase())
            : false)))
-        .sort((a, b) => !isUndefined(a.stats) && !isUndefined(b.stats)  ? b.stats.member_counter - a.stats.member_counter : 0)
+        .sort((a, b) => !isUndefined(a.stats) && !isUndefined(b.stats)  ? (orderBy ? b.stats.member_counter - a.stats.member_counter : a.stats.member_counter - b.stats.member_counter) : 0)
         .map(o => o.id);
       return pool_ids
     }
@@ -375,7 +380,21 @@ export const selectPoolIdsBySessionSortedBy = (state, session, sortBy, identityF
             .toLowerCase()
             .includes(identityFilter.toLowerCase())
            : false)))
-        .sort((a, b) => !isUndefined(a.stats) && !isUndefined(b.stats)  ? b.stats.points - a.stats.points : 0)
+        .sort((a, b) => !isUndefined(a.stats) && !isUndefined(b.stats)  ? (orderBy ? b.stats.points - a.stats.points : a.stats.points - b.stats.points) : 0)
+        .map(o => o.id);
+      return pool_ids
+    }
+    case 'pool_id': {
+      const pool_ids = selectPoolIdsBySession(state, session)
+        .map(pool_id => selectPoolBySessionAndPoolId(state, session, pool_id))
+        .filter(f => f.state === stateFilter && 
+          (f.metadata.toLowerCase().includes(identityFilter.toLowerCase()) ||
+          (!isUndefined(f.nominees) ? join( !isUndefined(f.nominees) ?
+            f.nominees.nominees.map(m => !isUndefined(selectValProfileByAddress(state, m)) ? selectValProfileByAddress(state, m)._identity : "") : "", ',')
+            .toLowerCase()
+            .includes(identityFilter.toLowerCase())
+           : false)))
+        .sort((a, b) => !isUndefined(a.stats) && !isUndefined(b.stats)  ? (orderBy ? b.id - a.id : a.id - b.id) : 0)
         .map(o => o.id);
       return pool_ids
     }
@@ -389,13 +408,13 @@ export const selectParachainIdsBySession = (state, session) => !!selectSessionBy
   (isArray(selectSessionByIndex(state, session)._parachain_ids) ? 
     selectSessionByIndex(state, session)._parachain_ids : []) : [];
 
-export const selectParachainIdsBySessionSortedBy = (state, session, sortBy, identityFilter = "") => {
+export const selectParachainIdsBySessionSortedBy = (state, session, sortBy, orderBy, identityFilter = "") => {
   switch (sortBy) {
     case 'backing_points': {
       const para_ids = selectParachainIdsBySession(state, session)
         .map(para_id => selectParachainBySessionAndParaId(state, session, para_id))
         .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()))
-        .sort((a, b) => b._backing_points - a._backing_points)
+        .sort((a, b) => orderBy ? b._backing_points - a._backing_points : a._backing_points - b._backing_points)
         .map(o => o.pid);
       return para_ids
     }
@@ -403,15 +422,20 @@ export const selectParachainIdsBySessionSortedBy = (state, session, sortBy, iden
       const para_ids = selectParachainIdsBySession(state, session)
         .map(para_id => selectParachainBySessionAndParaId(state, session, para_id))
         .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()))
-        .sort((a, b) => b._mvr - a._mvr)
+        .sort((a, b) => orderBy ? b._mvr - a._mvr : a._mvr - b._mvr)
         .map(o => o.pid);
+      return para_ids
+    }
+    case 'para_id': {
+      const para_ids = selectParachainIdsBySession(state, session)
+      .map(para_id => selectParachainBySessionAndParaId(state, session, para_id))
+      .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()))
+      .sort((a, b) => orderBy ? b.pid - a.pid : a.pid - b.pid)
+      .map(o => o.pid);
       return para_ids
     }
     default: {
       return selectParachainIdsBySession(state, session)
-        .map(para_id => selectParachainBySessionAndParaId(state, session, para_id))
-        .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()))
-        .map(o => o.pid)
     }
   }
 };

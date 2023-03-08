@@ -10,6 +10,8 @@ import SortIcon from '@mui/icons-material/Sort';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowDownWideShort, faArrowUpWideShort } from '@fortawesome/free-solid-svg-icons'
 import PoolCard from './PoolCard';
 import PoolsStateToggle from './PoolsStateToggle';
 import PaginationBox from './PaginationBox';
@@ -20,14 +22,16 @@ import {
 const PAGE_SIZE = 16;
 
 export default function PoolsGrid({sessionIndex}) {
-  const [sortBy, setSortBy] = React.useState('apr');
+  const [sortBy, setSortBy] = React.useState('pool_id');
+  const [orderBy, setOrderBy] = React.useState(false); // true -> asc; false -> desc
   const [stateFilter, setStateFilter] = React.useState('Open');
   const [identityFilter, setIdentityFilter] = React.useState('');
   const [page, setPage] = React.useState(0);
-	const poolIds = useSelector(state => selectPoolIdsBySessionSortedBy(state, sessionIndex, sortBy, identityFilter, stateFilter));
+	const poolIds = useSelector(state => selectPoolIdsBySessionSortedBy(state, sessionIndex, sortBy, orderBy, identityFilter, stateFilter));
   
   const handleSort = (event, newSortBy) => {
     if (isNull(newSortBy)) {
+      setOrderBy(!orderBy);
       return
     }
     setSortBy(newSortBy);
@@ -65,19 +69,29 @@ export default function PoolsGrid({sessionIndex}) {
             disableRipple
             disableFocusRipple
             sx={{ px: 2, mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
-            <Box sx={{mr: 1}}>Sort by Points</Box><SortIcon />
+            <Box sx={{mr: 1}}>Sort by Points</Box>
+            {orderBy ? <FontAwesomeIcon icon={faArrowDownWideShort} /> : <FontAwesomeIcon icon={faArrowUpWideShort} />}
           </ToggleButton>
           <ToggleButton value="members" aria-label="Sort by Members" 
             disableRipple
             disableFocusRipple
             sx={{ px: 2, mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
-            <Box sx={{mr: 1}}>Sort by Members</Box><SortIcon />
+            <Box sx={{mr: 1}}>Sort by Members</Box>
+            {orderBy ? <FontAwesomeIcon icon={faArrowDownWideShort} /> : <FontAwesomeIcon icon={faArrowUpWideShort} />}
           </ToggleButton>
           <ToggleButton value="apr" aria-label="Sort by APR" 
             disableRipple
             disableFocusRipple
+            sx={{ px: 2, mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
+            <Box sx={{mr: 1}}>Sort by APR</Box>
+            {orderBy ? <FontAwesomeIcon icon={faArrowDownWideShort} /> : <FontAwesomeIcon icon={faArrowUpWideShort} />}
+          </ToggleButton>
+          <ToggleButton value="pool_id" aria-label="Sort by POOL ID" 
+            disableRipple
+            disableFocusRipple
             sx={{ px: 2, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
-            <Box sx={{mr: 1}}>Sort by APR</Box><SortIcon />
+            <Box sx={{mr: 1}}>Sort by POOL ID</Box>
+            {orderBy ? <FontAwesomeIcon icon={faArrowDownWideShort} /> : <FontAwesomeIcon icon={faArrowUpWideShort} />}
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>

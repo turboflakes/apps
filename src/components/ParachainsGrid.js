@@ -10,6 +10,8 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import SortIcon from '@mui/icons-material/Sort';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowDownWideShort, faArrowUpWideShort } from '@fortawesome/free-solid-svg-icons'
 import ParachainCard from './ParachainCard';
 import PaginationBox from './PaginationBox';
 import { 
@@ -28,11 +30,12 @@ const PAGE_SIZE = 16;
 
 export default function ParachainsGrid({sessionIndex}) {
 	// const theme = useTheme();
-  const [sortBy, setSortBy] = React.useState('');
+  const [sortBy, setSortBy] = React.useState('para_id');
+  const [orderBy, setOrderBy] = React.useState(false); // true -> asc; false -> desc
   const [page, setPage] = React.useState(0);
   const [identityFilter, setIdentityFilter] = React.useState('');
   const {isSuccess} = useGetParachainsQuery({session: sessionIndex}, {refetchOnMountOrArgChange: true});
-  const paraIds = useSelector(state => selectParachainIdsBySessionSortedBy(state, sessionIndex, sortBy, identityFilter));
+  const paraIds = useSelector(state => selectParachainIdsBySessionSortedBy(state, sessionIndex, sortBy, orderBy, identityFilter));
   const nScheduled = useSelector(state => selectScheduledParachainsBySession(state, sessionIndex));
   const totalParaIds = useSelector(state => selectTotalParachainIdsBySession(state, sessionIndex));
   const isLiveMode = useSelector(selectIsLiveMode);
@@ -45,6 +48,7 @@ export default function ParachainsGrid({sessionIndex}) {
 
   const handleSort = (event, newSortBy) => {
     if (isNull(newSortBy)) {
+      setOrderBy(!orderBy);
       return
     }
     setSortBy(newSortBy);
@@ -85,13 +89,22 @@ export default function ParachainsGrid({sessionIndex}) {
             disableRipple
             disableFocusRipple
             sx={{ px: 2, mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
-            <Box sx={{mr: 1}}>Sort by Backing Points</Box><SortIcon />
+            <Box sx={{mr: 1}}>Sort by Backing Points</Box>
+            {orderBy ? <FontAwesomeIcon icon={faArrowDownWideShort} /> : <FontAwesomeIcon icon={faArrowUpWideShort} />}
           </ToggleButton>
           <ToggleButton value="mvr" aria-label="Sort by Missed Vote Ratio" 
             disableRipple
             disableFocusRipple
+            sx={{ px: 2, mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
+            <Box sx={{mr: 1}}>Sort by Missed Vote Ratio</Box>
+            {orderBy ? <FontAwesomeIcon icon={faArrowDownWideShort} /> : <FontAwesomeIcon icon={faArrowUpWideShort} />}
+          </ToggleButton>
+          <ToggleButton value="para_id" aria-label="Sort by Para ID" 
+            disableRipple
+            disableFocusRipple
             sx={{ px: 2, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
-            <Box sx={{mr: 1}}>Sort by Missed Vote Ratio</Box><SortIcon />
+            <Box sx={{mr: 1}}>Sort by Para ID</Box>
+            {orderBy ? <FontAwesomeIcon icon={faArrowDownWideShort} /> : <FontAwesomeIcon icon={faArrowUpWideShort} />}
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
