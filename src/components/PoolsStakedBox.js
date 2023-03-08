@@ -20,7 +20,10 @@ import {
 import { 
   getSessionsPerDayTarget 
 } from '../constants'
-import { stakeDisplay } from '../util/display';
+import { 
+  stakeDisplay, 
+  symbolDisplay 
+} from '../util/display';
 
 
 export default function PoolsStakedBox({sessionIndex, dark}) {
@@ -64,7 +67,7 @@ export default function PoolsStakedBox({sessionIndex, dark}) {
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}
           color={dark ? theme.palette.text.secondary : 'default'}>total bonded</Typography>
         <Typography variant="h5" color={dark ? theme.palette.text.secondary : 'default'}>
-          {stakeDisplay(currentValue, selectedChainInfo, 2, true, false)} <span style={{...theme.typography.caption}}>KSM</span>
+          {stakeDisplay(currentValue, selectedChainInfo, 2, true, false)} <span style={{...theme.typography.caption}}>{symbolDisplay(selectedChainInfo)}</span>
         </Typography>
         {diff !== 0 ? 
           <Tooltip title={`${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)} ${Math.sign(diff) > 0 ? 'more' : 'less'} staked than ${nSessionsTarget} sessions ago.`} arrow>

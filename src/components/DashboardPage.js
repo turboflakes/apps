@@ -23,8 +23,15 @@ import {
 import { 
   selectIsSocketConnected,
 } from '../features/api/socketSlice'
+import {
+  selectChain,
+} from '../features/chain/chainSlice';
+import {
+  getNetworkName
+} from '../constants'
 
 export default function DashboardPage() {
+  const selectedChain = useSelector(selectChain);
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
   const currentSession = useSelector(selectSessionCurrent);
@@ -85,7 +92,7 @@ export default function DashboardPage() {
                   </Box>
                 </Box>
                 <Typography sx={{ my: 4 }} variant="subtitle1" align="left">
-                  Monitor and explore the <b>KUSAMA</b> network — search for your favourite Validators and visualize historic or realtime blockchain data analytics
+                  Monitor and explore the <b>{getNetworkName(selectedChain)}</b> network — search for your favourite Validators and visualize historic or realtime blockchain data analytics
                 </Typography>
               </Box>
             </Box>

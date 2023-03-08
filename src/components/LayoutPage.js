@@ -14,7 +14,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import MenuIcon from '@mui/icons-material/Menu';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
-import ListSubheader from '@mui/material/ListSubheader';
+// import ListSubheader from '@mui/material/ListSubheader';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -28,10 +28,10 @@ import SessionPerformancePieChartHeader from './SessionPerformancePieChartHeader
 import SessionPieChartHeader from './SessionPieChartHeader';
 import SessionBoxHeader from './SessionBoxHeader';
 import Footer from './Footer'
-import SessionSlider from './SessionSlider';
-import SessionSliderRange from './SessionSliderRange';
-import ModeSwitch from './ModeSwitch';
-import ModeMenu from './ModeMenu';
+// import SessionSlider from './SessionSlider';
+// import SessionSliderRange from './SessionSliderRange';
+// import ModeSwitch from './ModeSwitch';
+// import ModeMenu from './ModeMenu';
 import { getNetworkIcon } from '../constants'
 import polkadotJsSVG from '../assets/polkadot_js_logo.svg';
 import onetSVG from '../assets/onet.svg';
@@ -39,15 +39,15 @@ import apiSlice from '../features/api/apiSlice'
 import {
   pageChanged,
   selectPage,
-  selectMode,
+  // selectMode,
   selectIsHistoryMode,
-  selectMaxHistorySessions
+  // selectMaxHistorySessions
 } from '../features/layout/layoutSlice';
 import {
   chainInfoChanged,
   chainChanged,
   selectChain,
-  selectAddress
+  // selectAddress
 } from '../features/chain/chainSlice';
 import {
   selectAccount,
@@ -145,11 +145,11 @@ export default function LayoutPage({api}) {
 	};
 
 	const selectedChain = useSelector(selectChain);
-  const selectedAddress = useSelector(selectAddress);
+  // const selectedAddress = useSelector(selectAddress);
   const selectedPage = useSelector(selectPage);
-  const selectedMode = useSelector(selectMode);
+  // const selectedMode = useSelector(selectMode);
   const isHistoryMode = useSelector(selectIsHistoryMode);
-  const maxHistorySessions = useSelector(selectMaxHistorySessions);
+  // const maxHistorySessions = useSelector(selectMaxHistorySessions);
   
   const web3Account = useSelector(selectAccount);
 	useWeb3ChainInfo(api);
@@ -230,7 +230,7 @@ export default function LayoutPage({api}) {
                     width: 26,
                     height: 26 }} alt={web3Account.meta.name}/>
                 </Box> : null}
-              <ToggleButton disabled value="polkadot" aria-label="Polkadot Network" 
+              <ToggleButton value="polkadot" aria-label="Polkadot Network" 
                 sx={{ mr: 1, border: 0, 
                   '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
                   '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>

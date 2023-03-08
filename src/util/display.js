@@ -14,6 +14,13 @@ export const nameDisplay = (name, len, prefix = '') => {
     return name.length > len ? `${prefix}${name.slice(0, len)}..` : `${prefix}${name}`
 }
 
+export const symbolDisplay = (networkDetails) => {
+    if (!!networkDetails.tokenDecimals[0] && !!networkDetails.tokenSymbol[0]) {
+        return networkDetails.tokenSymbol[0]
+    }
+    return ''
+}
+
 export const stakeDisplay = (stake, networkDetails, decimals = 2, format = false, symbol = true) => {
     if (!!networkDetails.tokenDecimals[0] && !!networkDetails.tokenSymbol[0]) {
         const networkDecimals = Math.pow(10, parseInt(networkDetails.tokenDecimals[0], 10))

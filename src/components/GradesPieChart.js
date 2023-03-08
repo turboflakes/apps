@@ -1,8 +1,12 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { PieChart, Pie, Tooltip, Cell } from 'recharts';
+import {
+  selectChain,
+} from '../features/chain/chainSlice';
 import { getNetworkIcon } from '../constants'
 
 const renderTooltip = (props) => {
@@ -35,6 +39,7 @@ const renderTooltip = (props) => {
 
 export default function GradesPieChart({data, size, dark, showNetworkIcon}) {
   const theme = useTheme();
+  const selectedChain = useSelector(selectChain);
   return (
     <Box
         sx={{
@@ -59,9 +64,9 @@ export default function GradesPieChart({data, size, dark, showNetworkIcon}) {
               borderRadius: "50%", 
               boxShadow: 'rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px',
               }}>
-              <img src={getNetworkIcon("kusama")}  style={{ 
+              <img src={getNetworkIcon(selectedChain)}  style={{ 
                     width: 80,
-                    height: 80 }} alt={"kusama"}/>
+                    height: 80 }} alt={selectedChain}/>
             </Box> : null}
             <PieChart width={size === "lg" ? 272 : (size === "md" ? 208 : 64)} height={ size === "lg" ? 272 : (size === "md" ? 272 : 64)}>
             <Pie

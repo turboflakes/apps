@@ -21,11 +21,11 @@ const networkSettings = {
     logo: logoPolkadotSVG,
     url: "https://polkadot.network",
     maxValidators: 16,
-    maxHistoryEras: 4,
+    maxHistoryEras: 32,
     coreAssignmentsTarget: 240,
     blocksPerSessionTarget: 2400,
     sessionsPerDayTarget: 6,
-    poolIds: [process.env.REACT_APP_POLKADOT_POOL_ID_1, process.env.REACT_APP_POLKADOT_POOL_ID_2],
+    poolIds: [process.env.REACT_APP_POLKADOT_POOL_ID_1],
     chains: prodParasPolkadot,
     validators: [
       { stash: "12gPFmRqnsDhc9C5DuXyXBFA23io5fSGtKTSAimQtAWgueD2", name: "RAIDEN"}
