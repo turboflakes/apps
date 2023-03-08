@@ -46,8 +46,8 @@ export default function ValGroupList({sessionIndex, groupId}) {
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '192px'}}>
         <List dense >
           {validatorsOrderedByPoints.map((v, i) => (
-            <Tooltip title={nameDisplay(!!v.profile ? v.profile._identity : stashDisplay(v.address, 4), 64)}>
-              <ListItemButton key={i} sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(v.address)}>
+            <Tooltip key={i} title={nameDisplay(!!v.profile ? v.profile._identity : stashDisplay(v.address, 4), 64)}>
+              <ListItemButton sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(v.address)}>
                 <ListItemIcon sx={{minWidth: 0, mr: 1, display: 'flex', alignItems: 'center'}}>
                   <span style={{ width: '4px', height: '4px', marginLeft: '-4px', marginRight: '8px', borderRadius: '50%', 
                     backgroundColor: theme.palette.grade[gradeValue(v)], 

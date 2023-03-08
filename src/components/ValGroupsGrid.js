@@ -6,7 +6,11 @@ import Typography from '@mui/material/Typography';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import SortIcon from '@mui/icons-material/Sort';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
 import ValGroupCard from './ValGroupCard';
+import PaginationBox from './PaginationBox';
 import { 
   // selectSessionByIndex,
   selectValGroupIdsBySessionSortedBy
@@ -15,15 +19,29 @@ import {
   selectIsLiveMode,
 } from '../features/layout/layoutSlice';
 
+const PAGE_SIZE = 16;
+
 export default function ValGroupsGrid({sessionIndex}) {
   const [sortBy, setSortBy] = React.useState('');
-	const groupIds = useSelector(state => selectValGroupIdsBySessionSortedBy(state, sessionIndex, sortBy));
+  const [page, setPage] = React.useState(0);
+  const [identityFilter, setIdentityFilter] = React.useState('');
+	const groupIds = useSelector(state => selectValGroupIdsBySessionSortedBy(state, sessionIndex, sortBy, identityFilter));
   const isLiveMode = useSelector(selectIsLiveMode);
-  // const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
 
   const handleSort = (event, newSortBy) => {
     setSortBy(newSortBy);
   };
+
+  const handleIdentityFilter = (event) => {
+    setIdentityFilter(event.target.value)
+    if (page !== 0) {
+      setPage(0)
+    }
+  }
+
+  const handlePageChange = (page) => {
+    setPage(page)
+  }
 
   return (
 		<Box sx={{ m: 0 }}>
@@ -59,11 +77,44 @@ export default function ValGroupsGrid({sessionIndex}) {
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
-      <Box sx={{ px: 2, display: 'flex', justifyContent: 'flex-end'}}>
-        <Typography variant="caption" paragraph>Val. Groups total: {groupIds.length}</Typography>
+      <Box sx={{ mx: 2, mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <TextField
+          sx={{
+            // backgroundColor: theme.palette.neutrals[100],
+            borderRadius: 30,
+            width: 512
+          }}
+          variant="outlined"
+          placeholder="Filter by Group ID or Validator Identity or Address"
+          color="primary"
+          value={identityFilter}
+          onChange={handleIdentityFilter}
+          size="small"
+          fullWidth
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <IconButton sx={{ ml: 1}} size="small">
+                  <SortIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+            sx: {
+              borderRadius: 30,
+              paddingLeft: '4px',
+              '> .MuiOutlinedInput-input': {
+                fontSize: "0.925rem",
+                height: "24px",
+                // fontSize: "0.825rem",
+                // lineHeight: "1rem",
+              },
+            }
+          }}
+        />
+        <PaginationBox page={page} totalSize={groupIds.length} pageSize={PAGE_SIZE} onChange={handlePageChange} />
       </Box>
       <Grid container spacing={2}>
-        {groupIds.map(groupId => (
+        {groupIds.slice(page * PAGE_SIZE, (page * PAGE_SIZE) + PAGE_SIZE).map(groupId => (
           <Grid item xs={12} md={3} key={groupId}>
             <ValGroupCard sessionIndex={sessionIndex} groupId={groupId} />
           </Grid>
