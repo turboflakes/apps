@@ -389,11 +389,12 @@ export const selectParachainIdsBySession = (state, session) => !!selectSessionBy
   (isArray(selectSessionByIndex(state, session)._parachain_ids) ? 
     selectSessionByIndex(state, session)._parachain_ids : []) : [];
 
-export const selectParachainIdsBySessionSortedBy = (state, session, sortBy) => {
+export const selectParachainIdsBySessionSortedBy = (state, session, sortBy, identityFilter = "") => {
   switch (sortBy) {
     case 'backing_points': {
       const para_ids = selectParachainIdsBySession(state, session)
         .map(para_id => selectParachainBySessionAndParaId(state, session, para_id))
+        .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()))
         .sort((a, b) => b._backing_points - a._backing_points)
         .map(o => o.pid);
       return para_ids
@@ -401,15 +402,21 @@ export const selectParachainIdsBySessionSortedBy = (state, session, sortBy) => {
     case 'mvr': {
       const para_ids = selectParachainIdsBySession(state, session)
         .map(para_id => selectParachainBySessionAndParaId(state, session, para_id))
+        .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()))
         .sort((a, b) => b._mvr - a._mvr)
         .map(o => o.pid);
       return para_ids
     }
     default: {
       return selectParachainIdsBySession(state, session)
+        .map(para_id => selectParachainBySessionAndParaId(state, session, para_id))
+        .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()))
+        .map(o => o.pid)
     }
   }
 };
+
+export const selectTotalParachainIdsBySession = (state, session) => selectParachainIdsBySession(state, session).length;
 
 export const selectScheduledParachainsBySession = (state, session) => {
   return selectParachainIdsBySession(state, session)

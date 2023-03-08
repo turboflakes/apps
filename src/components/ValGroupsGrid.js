@@ -12,7 +12,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 import ValGroupCard from './ValGroupCard';
 import PaginationBox from './PaginationBox';
 import { 
-  // selectSessionByIndex,
   selectValGroupIdsBySessionSortedBy
  } from '../features/api/sessionsSlice';
 import {
@@ -85,7 +84,7 @@ export default function ValGroupsGrid({sessionIndex}) {
             width: 512
           }}
           variant="outlined"
-          placeholder="Filter by Group ID or Validator Identity or Address"
+          placeholder="Filter by Group ID or Validator Identity/Address"
           color="primary"
           value={identityFilter}
           onChange={handleIdentityFilter}
