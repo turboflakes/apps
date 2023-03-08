@@ -39,6 +39,9 @@ export default function PoolsGrid({sessionIndex}) {
 
   const handleIdentityFilter = (event) => {
     setIdentityFilter(event.target.value)
+    if (page !== 0) {
+      setPage(0)
+    }
   }
 
   const handlePageChange = (page) => {
@@ -115,7 +118,7 @@ export default function PoolsGrid({sessionIndex}) {
           />
           <PoolsStateToggle onChange={handleStateChanged} />
         </Box>
-        <PaginationBox totalSize={poolIds.length} pageSize={PAGE_SIZE} onChange={handlePageChange} />
+        <PaginationBox page={page} totalSize={poolIds.length} pageSize={PAGE_SIZE} onChange={handlePageChange} />
       </Box>
       <Grid container spacing={2}>
         {poolIds.slice(page * PAGE_SIZE, (page * PAGE_SIZE) + PAGE_SIZE).map(poolId => (

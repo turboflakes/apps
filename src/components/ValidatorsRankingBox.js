@@ -237,7 +237,7 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
             </List> : null)
         }
       </Box>
-      <PaginationBox totalSize={RANK_SIZE} pageSize={PAGE_SIZE} onChange={handlePageChange} />
+      <PaginationBox page={page} totalSize={RANK_SIZE} pageSize={PAGE_SIZE} onChange={handlePageChange} />
     </Paper>
   );
 }

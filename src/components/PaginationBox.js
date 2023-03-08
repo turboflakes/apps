@@ -5,13 +5,11 @@ import IconButton from '@mui/material/IconButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 
-export default function PaginationBox({totalSize = 100, pageSize = 16, onChange}) {
-  const [page, setPage] = React.useState(0);
+export default function PaginationBox({page, totalSize = 100, pageSize = 16, onChange}) {
   
   const handlePreviousPage = () => {
     if (page > 0) {
       const next = page - 1;
-      setPage(next)
       if (onChange) {
         onChange(next)
       }
@@ -21,7 +19,6 @@ export default function PaginationBox({totalSize = 100, pageSize = 16, onChange}
   const handleNextPage = () => {
     if (page < Math.round(totalSize/pageSize)) {
       const next = page + 1;
-      setPage(next)
       if (onChange) {
         onChange(next)
       }
