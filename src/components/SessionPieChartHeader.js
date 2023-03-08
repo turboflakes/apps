@@ -15,6 +15,13 @@ import {
   selectSessionByIndex,
   selectSessionCurrent
  } from '../features/api/sessionsSlice';
+import {
+  selectChain,
+} from '../features/chain/chainSlice';
+import {
+  getBlocksPerSessionTarget
+} from '../constants';
+
 
 function createData(name, value) {
   return { name, value };
@@ -22,6 +29,8 @@ function createData(name, value) {
 
 export default function SessionPieChartHeader() {
   const theme = useTheme();
+  const selectedChain = useSelector(selectChain);
+  const nBlocksTarget = getBlocksPerSessionTarget(selectedChain);
   const currentSession = useSelector(selectSessionCurrent);
   const {
     isSuccess: isSuccessFinalizedBlock, 
@@ -46,10 +55,10 @@ export default function SessionPieChartHeader() {
   }
 
   const diff = finalized.block_number - session.sbix;
-  const donePercentage = Math.round((diff * 100)/600);
+  const donePercentage = Math.round((diff * 100)/nBlocksTarget);
   const pieEpochData = [
     createData('done', donePercentage),
-    createData('progress', Math.round(((600-diff) * 100)/600)),
+    createData('progress', Math.round(((nBlocksTarget-diff) * 100)/nBlocksTarget)),
   ]
   const eraPercentage = Math.round(((session.esix - 1) / 6 * 100) + (donePercentage / 6));
   
@@ -76,8 +85,8 @@ export default function SessionPieChartHeader() {
     }
   }
 
-  const min = Math.floor(((600-diff)*6)/60)
-  const dec = (((600-diff)*6)/60) % 1
+  const min = Math.floor(((nBlocksTarget-diff)*6)/60)
+  const dec = (((nBlocksTarget-diff)*6)/60) % 1
   const sec = parseFloat(dec.toPrecision(4))*60
 
   return (
