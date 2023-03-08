@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { ComposedChart, LineChart, Bar, Line, XAxis, YAxis, Tooltip, Cell, Rectangle, ResponsiveContainer } from 'recharts';
+import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Cell, Rectangle, ResponsiveContainer } from 'recharts';
 import { 
   useGetSessionsQuery,
  } from '../features/api/sessionsSlice';
