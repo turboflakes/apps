@@ -231,7 +231,7 @@ export default function LayoutPage({api}) {
                     height: 26 }} alt={web3Account.meta.name}/>
                 </Box> : null}
               <ToggleButton value="polkadot" aria-label="Polkadot Network" 
-                sx={{ mr: 1, border: 0, 
+                sx={{ border: 0, m: 0, p: 1, mr: 1,
                   '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
                   '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
                 <img src={getNetworkIcon("polkadot")}  style={{ 
@@ -240,7 +240,7 @@ export default function LayoutPage({api}) {
                 {selectedChain === "polkadot" ? <Typography variant='h5' sx={{ paddingLeft: '8px'}}>Polkadot</Typography> : null}
               </ToggleButton>
               <ToggleButton value="kusama" aria-label="Kusama Network" 
-                sx={{ border: 0, 
+                sx={{ border: 0, m: 0, p: 1,
                   '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
                   '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
                 <img src={getNetworkIcon("kusama")}  style={{ 

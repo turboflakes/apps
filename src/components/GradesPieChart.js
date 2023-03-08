@@ -59,6 +59,7 @@ export default function GradesPieChart({data, size, dark, showNetworkIcon}) {
             <Box sx={{
               position: 'absolute',
               display: 'flex', justifyContent: 'center', alignItems: 'center',
+              bgcolor: '#fff',
               width: 254,
               height: 254,
               borderRadius: "50%", 
