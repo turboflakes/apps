@@ -17,7 +17,7 @@ export default function PaginationBox({page, totalSize = 100, pageSize = 16, onC
   }
 
   const handleNextPage = () => {
-    if (page < Math.round(totalSize/pageSize)) {
+    if (page < Math.floor(totalSize/pageSize)) {
       const next = page + 1;
       if (onChange) {
         onChange(next)
@@ -28,7 +28,7 @@ export default function PaginationBox({page, totalSize = 100, pageSize = 16, onC
   return (
     <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
       <Typography variant='caption' sx={{mr: 1}}>
-        {`${page + 1}—${Math.round(totalSize/pageSize) + 1} of ${totalSize}`}
+        {`${page + 1}—${Math.floor(totalSize/pageSize) + 1} of ${totalSize}`}
       </Typography>
       <IconButton onClick={handlePreviousPage} 
         disabled={page === 0}
@@ -36,7 +36,7 @@ export default function PaginationBox({page, totalSize = 100, pageSize = 16, onC
         <FontAwesomeIcon icon={faAngleLeft} fontSize="small" />
       </IconButton>
       <IconButton onClick={handleNextPage} 
-        disabled={page === Math.round(totalSize/pageSize)}
+        disabled={page === Math.floor(totalSize/pageSize)}
         sx={{ width: 30, height: 30}}>
         <FontAwesomeIcon icon={faAngleRight} fontSize="small" />
       </IconButton>
