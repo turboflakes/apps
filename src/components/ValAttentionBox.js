@@ -14,16 +14,12 @@ import { calculateMvr } from '../util/mvr'
 
 import { grade } from '../util/grade';
 
-export default function ValAuthentionBox({address}) {
+export default function ValAttentionBox({address}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
   
-  if (isUndefined(validator)) {
-    return null
-  }
-
-  if (!validator.is_para) {
+  if (isUndefined(validator) || isUndefined(validator.is_para) || isUndefined(validator.para_summary)) {
     return null
   }
 
