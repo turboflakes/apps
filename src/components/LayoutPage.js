@@ -198,19 +198,21 @@ export default function LayoutPage({api}) {
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
               <img src={getNetworkLogo(selectedChain)}  style={{ height: 24 }} alt={selectedChain}/>
               <Divider orientation='vertical' sx={{ 
+                mt: 0.5,
                 mx: 1, 
                 height: 24, 
                 bgcolor: theme.palette.text.primary,
                 transform: 'rotate(20deg)'
                 }} />
               <Divider orientation='vertical' sx={{ 
+                mt: 0.5,
                 mr: 1, 
                 height: 24, 
                 bgcolor: theme.palette.text.primary,
                 transform: 'rotate(20deg)'
                 }} />
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <Typography variant="caption" sx={{color: theme.palette.text.primary, fontSize: "0.875rem", lineHeight: 0, fontWeight: 600}}>
+                <Typography variant="caption" sx={{mt: 0.5, color: theme.palette.text.primary, fontSize: "0.875rem", lineHeight: 0, fontWeight: 600}}>
                   ONE-T
                 </Typography>
               </Box>

@@ -102,7 +102,7 @@ export default function ValBackingPointsHistoryBox({address, maxSessions}) {
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left', maxWidth: '112px'}}>
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>backing points (x̅)</Typography>
         <Typography variant="h5">
-          {!isUndefined(backingPoints) ? backingPoints : '-'}
+          {!isUndefined(backingPoints) ? backingPoints.format() : '-'}
         </Typography>
         <Tooltip title={`${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of Backing Points collected by all Para-Authorities of the last ${allBackingPoints.length} sessions.`} arrow>
           <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 

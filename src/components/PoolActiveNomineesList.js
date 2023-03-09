@@ -10,7 +10,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Skeleton from '@mui/material/Skeleton';
 import Identicon from '@polkadot/react-identicon';
-import Tooltip from './Tooltip';
 import {
   addressChanged
 } from '../features/chain/chainSlice';
@@ -45,22 +44,21 @@ function ItemButtom({validator}) {
   }
 
   return (
-    <Tooltip title={nameDisplay(!!validator.profile ? validator.profile._identity : stashDisplay(validator.address, 4), 64)}>
-      <ListItemButton sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(validator.address)}>
-        <ListItemIcon sx={{minWidth: 0, mr: 1, display: 'flex', alignItems: 'center'}}>
-          <span style={{ width: '4px', height: '4px', marginLeft: '-4px', marginRight: '8px', borderRadius: '50%', 
-            backgroundColor: theme.palette.grade[gradeValue(validator)], 
-            display: "inline-block" }}></span>
-          <Identicon
-            value={validator.address}
-            size={24}
-            theme={'polkadot'} />
-        </ListItemIcon>
-        <ListItemText sx={{whiteSpace: "nowrap"}}
-          primary={nameDisplay(!!validator.profile ? validator.profile._identity : stashDisplay(validator.address, 4), 12)}
-        />
-      </ListItemButton>
-    </Tooltip>
+    <ListItemButton sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(validator.address)}
+      title={nameDisplay(!!validator.profile ? validator.profile._identity : stashDisplay(validator.address, 4), 64)}>
+      <ListItemIcon sx={{minWidth: 0, mr: 1, display: 'flex', alignItems: 'center'}}>
+        <span style={{ width: '4px', height: '4px', marginLeft: '-4px', marginRight: '8px', borderRadius: '50%', 
+          backgroundColor: theme.palette.grade[gradeValue(validator)], 
+          display: "inline-block" }}></span>
+        <Identicon
+          value={validator.address}
+          size={24}
+          theme={'polkadot'} />
+      </ListItemIcon>
+      <ListItemText sx={{whiteSpace: "nowrap"}}
+        primary={nameDisplay(!!validator.profile ? validator.profile._identity : stashDisplay(validator.address, 4), 12)}
+      />
+    </ListItemButton>
   )
 }
 

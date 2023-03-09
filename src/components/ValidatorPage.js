@@ -29,6 +29,7 @@ import {
 import { 
   useGetValidatorByAddressQuery,
 } from '../features/api/validatorsSlice';
+import Spinner from './Spinner';
 
 export default function ValidatorPage() {
 	// const theme = useTheme();
@@ -43,7 +44,11 @@ export default function ValidatorPage() {
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
-  const {data: validator, isFetching, isSuccess, isError} = useGetValidatorByAddressQuery({address: stash, session: sessionIndex, show_summary: true, show_stats: true});
+  const {isFetching, isSuccess, isError} = useGetValidatorByAddressQuery({address: stash, session: sessionIndex, show_summary: true, show_stats: true});
+
+  // const isFetching = true
+  // const isSuccess = false
+  // const isError = false
 
   React.useEffect(() => {
     if (stash && stash !== selectedAddress) {
@@ -56,37 +61,48 @@ export default function ValidatorPage() {
     return (<Box sx={{ m: 2, minHeight: '100vh' }}></Box>)
   }
 
+  if (isError) {
+    return (
+      <Box sx={{ m: 2, mt: 2, pt: 1, minHeight: '100vh'}}>
+        <Box sx={{display: "flex", justifyContent:"center", 
+          alignItems: "center", height: "80vh", }}>
+          <Box sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+            <img src={onetSVG} style={{ 
+                margin: "32px",
+                opacity: 0.1,
+                width: 256,
+                height: 256 }} alt={"ONE-T logo"}/>
+            <Typography variant="h6" color="secondary">The stash address was not found.</Typography>
+            <Typography variant="h6" color="secondary">{document.location.href}</Typography>
+          </Box>
+        </Box>
+      </Box>
+    )
+  }
+
   return (
 		<Box sx={{ m: 2, mt: 2, pt: 1, minHeight: '100vh'}}>
       <Grid container spacing={2}>
-        
-        {isError ?
-          <Grid item xs={12}>
-            <Box sx={{display: "flex", justifyContent:"center", 
-              alignItems: "center", height: "80vh", }}>
-              <Box sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-                <img src={onetSVG} style={{ 
-                    margin: "32px",
-                    opacity: 0.1,
-                    width: 256,
-                    height: 256 }} alt={"ONE-T logo"}/>
-                <Typography variant="h6" color="secondary">The stash address was not found.</Typography>
-                <Typography variant="h6" color="secondary">{document.location.href}</Typography>
-              </Box>
-            </Box>
-          </Grid> : null}
+          
+        <Grid item xs={12}>
+          {isSuccess ? 
+            <ValHeaderBox address={selectedAddress} sessionIndex={sessionIndex} /> : 
+            <Box sx={{ 
+              width: '100%',
+              height: 232,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}><Spinner size={32}/></Box>}
+        </Grid> 
 
-        {isSuccess ? 
-          <Grid item xs={12}>
-            <ValHeaderBox address={selectedAddress} sessionIndex={sessionIndex} />
-          </Grid> : null}
-
-        {isSuccess ?
-          <Grid item xs={12}>
+        <Grid item xs={12}>
+          {isSuccess ?
             <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
               <ModeSwitch mode={selectedMode} />
-            </Box>
-          </Grid> : null}
+            </Box> : null}
+        </Grid> 
 
         {isHistoryMode ?
           <Grid item xs={12}>

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 import isUndefined from 'lodash/isUndefined';
 import isNull from 'lodash/isNull';
-import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
