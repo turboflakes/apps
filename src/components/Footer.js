@@ -76,7 +76,7 @@ export default function Footer({small}) {
               <Box sx={{ display: 'flex'}}>
                 <Box sx={{ mr: 1, display: 'flex', alignItems: 'center'}}>
                   <Typography variant="caption" color="textSecondary">
-                  <b>Stake with us →</b>
+                  <b>Hey! Stake with</b>
                   </Typography>
                 </Box>
                 {getTurboValidators("polkadot").map((v, i) => (

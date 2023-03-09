@@ -107,7 +107,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
               <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                 <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>bonded</Typography>
                 <Box>
-                  <Typography variant="h5" component="span">{stakeDisplay(valProfile.own_stake, chainInfo)}</Typography>
+                  <Typography variant="h5" component="span">{stakeDisplay(valProfile.own_stake, chainInfo, 4, true, true, true)}</Typography>
                 </Box>
               </Box>
               {showSubset && valProfile.subset === "TVP" ? 
