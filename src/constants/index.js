@@ -111,7 +111,7 @@ export const getChainLogo = (network, paraId) => {
     const nodeLogo = nodeLogos[sanitize(getChainInfo(network, paraId))];
     if (isUndefined(nodeLogo)) { 
       const chainLogo = chainLogos[sanitize(getChainName(network, paraId))];
-      if (isUndefined(nodeLogo)) { 
+      if (isUndefined(chainLogo)) { 
         return namedLogos.empty
       } 
       return chainLogo

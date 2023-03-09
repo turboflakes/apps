@@ -195,7 +195,7 @@ export default function LayoutPage({api}) {
             }}>
           
             {/* network logo */}
-            <Box sx={{ display: 'flex', alignItems: 'center'}}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
               <img src={getNetworkLogo(selectedChain)}  style={{ height: 24 }} alt={selectedChain}/>
               <Divider orientation='vertical' sx={{ 
                 mx: 1, 

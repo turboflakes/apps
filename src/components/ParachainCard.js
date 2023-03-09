@@ -56,8 +56,11 @@ export default function ParachainCard({sessionIndex, paraId}) {
           {!!chainName ?
           <Box sx={{ p: `4px 8px`, display: 'flex', alignItems: 'center', borderRadius: 3, bgcolor: theme.palette.grey[0] }} >
             <img src={getChainLogo(selectedChain, paraId)} style={{ width: 32, height: 32, marginRight: 8, backgroundColor: '#F7F7FA', borderRadius: 16}} alt={"logo"}/>
-            <Typography variant="h6">{chainName}</Typography>
+            <Typography variant="h6" sx={{m:0}}>
+              {chainName}
+            </Typography>
           </Box> : null}
+          <Typography variant="caption"><b>{paraId.format()}</b></Typography>
         </Box>
       </Box>
       <Divider sx={{ 

@@ -292,6 +292,111 @@ export const prodParasPolkadot = [
     }
   },
   {
+    homepage: 'https://integritee.network',
+    info: 'integritee',
+    paraId: 2039,
+    providers: {
+      Integritee: 'wss://polkadot.api.integritee.network'
+    },
+    text: 'Integritee Shell',
+  },
+  {
+    homepage: 'https://darwinia.network/',
+    info: 'darwinia',
+    paraId: 2046,
+    providers: {
+      'Darwinia Network': 'wss://parachain-rpc.darwinia.network'
+    },
+    text: 'Darwinia',
+  },
+  {
+    homepage: 'https://ajuna.io',
+    info: 'ajuna',
+    paraId: 2051,
+    providers: {
+      AjunaNetwork: 'wss://rpc-parachain.ajuna.network',
+      RadiumBlock: 'wss://ajuna.public.curie.radiumblock.co/ws'
+    },
+    text: 'Ajuna Network',
+  },
+  {
+    homepage: 'https://kylin.network/',
+    info: 'kylin',
+    paraId: 2052,
+    providers: {
+      'Kylin Network': 'wss://polkadot.kylin-node.co.uk'
+    },
+    text: 'Kylin',
+  },
+  {
+    homepage: 'https://www.bitgreen.org',
+    info: 'bitgreen',
+    paraId: 2048,
+    providers: {
+      Bitgreen: 'wss://mainnet.bitgreen.org'
+    },
+    text: 'Bitgreen',
+  },
+  {
+    homepage: 'https://www.omnibtc.finance',
+    info: 'omnibtc',
+    isUnreachable: true,
+    paraId: 2053,
+    providers: {
+      OmniBTC: 'wss://psc-parachain.coming.chat'
+    },
+    text: 'OmniBTC',
+  },
+  {
+    homepage: 'https://www.aventus.io/',
+    info: 'aventus',
+    paraId: 2056,
+    providers: {
+      Aventus: 'wss://public-rpc.mainnet.aventus.io'
+    },
+    text: 'Aventus',
+  },
+  {
+    homepage: 'https://www.watr.org/',
+    info: 'watr',
+    paraId: 2058,
+    providers: {
+      Watr: 'wss://rpc.watr.org'
+    },
+    text: 'Watr Network',
+  },
+  {
+    homepage: 'https://www.kilt.io/',
+    info: 'kilt',
+    paraId: 2086,
+    providers: {
+      Dwellir: 'wss://kilt-rpc.dwellir.com',
+      'KILT Protocol': 'wss://spiritnet.kilt.io/',
+      OnFinality: 'wss://spiritnet.api.onfinality.io/public-ws'
+    },
+    text: 'KILT Spiritnet',
+  },
+  {
+    homepage: 'https://oak.tech',
+    info: 'oak',
+    isUnreachable: true,
+    paraId: 2090,
+    providers: {
+      OAK: 'wss://rpc.oak.tech'
+    },
+    text: 'OAK Network',
+  },
+  {
+    homepage: 'https://frequency.xyz',
+    info: 'frequency',
+    paraId: 2091,
+    providers: {
+      'Frequency 0': 'wss://0.rpc.frequency.xyz',
+      'Frequency 1': 'wss://1.rpc.frequency.xyz'
+    },
+    text: 'Frequency',
+  },
+  {
     info: 'statemint',
     paraId: 1000,
     text: 'Statemint',
@@ -302,6 +407,24 @@ export const prodParasPolkadot = [
       Dwellir: 'wss://statemint-rpc.dwellir.com',
       Pinknode: 'wss://public-rpc.pinknode.io/statemint'
     }
+  },
+  {
+    info: 'polkadotCollectives',
+    paraId: 1001,
+    providers: {
+      OnFinality: 'wss://collectives.api.onfinality.io/public-ws',
+      Parity: 'wss://polkadot-collectives-rpc.polkadot.io'
+    },
+    teleport: [-1],
+    text: 'Collectives',
+  },
+  {
+    info: 'polkadotBridgeHub',
+    paraId: 1002,
+    providers: {
+      Parity: 'wss://polkadot-bridge-hub-rpc.polkadot.io'
+    },
+    text: 'BridgeHub',
   }
 ];
 
