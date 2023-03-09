@@ -7,8 +7,8 @@ import MuiAppBar from '@mui/material/AppBar';
 import MuiDrawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+// import ToggleButton from '@mui/material/ToggleButton';
+// import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -104,12 +104,14 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-({ theme, open }) => ({
+({ theme, open, chain }) => ({
 	'& .MuiDrawer-paper': {
 	position: 'relative',
 	whiteSpace: 'nowrap',
 	width: drawerWidth,
-	transition: theme.transitions.create('width', {
+  borderRight: 0,
+  borderTop: `4px solid ${chain === "polkadot" ? theme.palette.polkadot : theme.palette.background.secondary}`,
+  transition: theme.transitions.create('width', {
 		easing: theme.transitions.easing.sharp,
 		duration: theme.transitions.duration.enteringScreen,
 	}),
@@ -185,10 +187,9 @@ export default function LayoutPage({api}) {
           flexDirection: 'column',
           justifyContent: 'center', 
           p: 1/2,
-          pr: '24px', // keep right padding when drawer closed
+          // pr: '24px', // keep right padding when drawer closed
           bgcolor: "rgba(255, 255, 255, 0.5)", 
           backdropFilter: 'blur(16px)',
-          // borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
           }} id="top-toolbar">
             <Box sx={{
               display: 'flex', 
@@ -201,52 +202,15 @@ export default function LayoutPage({api}) {
           
             {/* network and drawer toggle */}
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-              <IconButton
-                onClick={toggleDrawer}
-                size="small"
-              >
-                <img src={getNetworkIcon(selectedChain)}  style={{ 
-                        width: 32,
-                        height: 32 }} alt={selectedChain}/>
-              </IconButton>
+
+              <img src={getNetworkIcon(selectedChain)}  style={{ 
+                      width: 32,
+                      height: 32 }} alt={selectedChain}/>
+
               <Typography variant='h5' sx={{ ml: 1, minWidth: 128, textTransform: 'uppercase' }}>
                 {getNetworkName(selectedChain)}
               </Typography>
             </Box>
-
-
-            {/* <ToggleButtonGroup
-              value={selectedChain}
-              exclusive
-              onChange={handleChainSelection}
-              sx={{ display: 'flex', alignItems: 'center'	}}
-            >
-              {!!web3Account ? 
-                <Box sx={{ mr: 3, p: 1, mt: 1, display: 'flex', alignItems: 'center', bgcolor: 'background.secondary', borderRadius: 3}}>
-                  <Typography variant="body2" color="text.secondary" sx={{ pl: 1, pr: 1 }} >{web3Account.meta.name}</Typography>
-                  <img src={polkadotJsSVG} style={{ 
-                    width: 26,
-                    height: 26 }} alt={web3Account.meta.name}/>
-                </Box> : null}
-              <ToggleButton value="polkadot" aria-label="Polkadot Network" 
-                sx={{ border: 0, m: 0, p: 1, mr: 1,
-                  '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
-                  '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
-                <img src={getNetworkIcon("polkadot")}  style={{ 
-                  width: 32,
-                  height: 32 }} alt={"polkadot"}/>
-                {selectedChain === "polkadot" ? <Typography variant='h5' sx={{ paddingLeft: '8px'}}>Polkadot</Typography> : null}
-              </ToggleButton>
-              <ToggleButton value="kusama" aria-label="Kusama Network" 
-                sx={{ border: 0, m: 0, p: 1,
-                  '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
-                  '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
-                <img src={getNetworkIcon("kusama")}  style={{ 
-                  width: 32,
-                  height: 32 }} alt={"kusama"}/>
-                {selectedChain === "kusama" ? <Typography variant='h5' sx={{ paddingLeft: '8px'}}>Kusama</Typography> : null}
-              </ToggleButton>
-            </ToggleButtonGroup> */}
 
             {/* search validator */}
             <Box sx={{ ml: 4, flexGrow: 1, display: 'flex'}}>
@@ -275,11 +239,11 @@ export default function LayoutPage({api}) {
             </Box> : null} */}
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open}
+      <Drawer variant="permanent" open={open} chain={selectedChain}
         sx={{
-          borderTop: `8px solid ${selectedChain === "polkadot" ? theme.palette.polkadot : theme.palette.background.secondary}`,
+          // borderTop: `8px solid ${selectedChain === "polkadot" ? theme.palette.polkadot : theme.palette.background.secondary}`,
         }}>
-            <Toolbar
+            <Box
                 sx={{
                   my: 2,
                   display: 'flex',
@@ -287,27 +251,31 @@ export default function LayoutPage({api}) {
                   alignItems: 'center',
                   justifyContent: 'center',
                   height: 256,
-                  
+                  position: 'relative',
                 }}
               >
-              {/* open/close left drawer */}
-              {/* <Box sx={{ position: 'absolute', left: `8px`, top: `8px` }}>
-                <IconButton onClick={toggleDrawer}>
-                  {open ? <ChevronLeftIcon /> : <MenuIcon />} 
-                </IconButton>
-              </Box> */}
 
               {/* app logo/name */}
               { open ? 
-                <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                <Box sx={{ 
+                  width: "100%",
+                  height: "100%",
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center', 
+                  alignItems: 'center', cursor: 'pointer'
+                }}
+                  onClick={toggleDrawer}>
                   <img src={onetSVG} style={{ 
                     width: 96,
                     height: 96 }} alt={"github"}/>
-                  <Typography sx={{mt: 2}} variant="h6" color="textPrimary" gutterBottom>ONE-T</Typography>
-                  <Typography variant="caption" color="textPrimary" gutterBottom>Blockchain Analytics</Typography>
+                  <Typography sx={{mt: 2}} variant="h6" color="textPrimary" gutterBottom>ONE-T // indexer bot</Typography>
                   <Chip sx={{ my: 2, p: 1}} label="beta version" color='primary'/>
                 </Box> : 
-                <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                <Box sx={{ 
+                  width: "100%",
+                  height: "100%",
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center', 
+                  alignItems: 'center', cursor: 'pointer'}}
+                  onClick={toggleDrawer} >
                   <Typography variant="h5">O</Typography>
                   <Typography variant="h5">N</Typography>
                   <Typography variant="h5">E</Typography>
@@ -315,93 +283,97 @@ export default function LayoutPage({api}) {
                   <Typography variant="h5" gutterBottom>T</Typography>
                 </Box>
               }
-            </Toolbar>
+            </Box>
 
             {/* menu */}
             <List component="nav" 
               sx={{ 
                 m: 0,
+                p: 0,
                 '> .MuiListItemButton-root.Mui-selected': {
                 bgcolor: "rgba(0, 0, 0, 0.12)"}, '> .MuiListItemButton-root.Mui-selected:hover': { bgcolor: "rgba(0, 0, 0, 0.18)"}
               }}>
 
-              <Divider sx={{ my: 0 }} />
+              <Divider sx={{ 
+                opacity: 0.25,
+                height: '1px',
+                borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                borderBottom: 'none',
+                backgroundColor: 'transparent',
+                backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                }} />
               
-              <ListItemButton selected={selectedPage === 'dashboard'}
+              <ListItemButton selected={selectedPage === 'dashboard'} disableRipple
                 onClick={() => handlePageSelection('dashboard')}>
                 <ListItemIcon>
-                  <Tooltip
-                    disableFocusListener
-                    placement="right"
-                    title="Dashboard">
-                      <DashboardIcon />
-                  </Tooltip>
+                  <DashboardIcon sx={{ color: theme.palette.text.primary }} />
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
               
-              <Divider sx={{ my: 0 }} />
+              <Divider sx={{ 
+                opacity: 0.25,
+                height: '1px',
+                borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                borderBottom: 'none',
+                backgroundColor: 'transparent',
+                backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                }} />
 
-              <ListItemButton selected={selectedPage === 'insights'}
+              <ListItemButton selected={selectedPage === 'insights'} disableRipple
                 onClick={() => handlePageSelection('insights')}>
                 <ListItemIcon sx={{ml: '2px'}}>
-                  <Tooltip
-                    disableFocusListener
-                    placement="right"
-                    title="Validator Insights">
-                    <Box><FontAwesomeIcon icon={faServer} /></Box>
-                  </Tooltip>
+                  <Box><FontAwesomeIcon icon={faServer} style={{ color: theme.palette.text.primary }} /></Box>
                 </ListItemIcon>
                 <ListItemText primary="Validator Insights" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
               
-              <ListItemButton selected={selectedPage === 'parachains'}
+              <ListItemButton selected={selectedPage === 'parachains'} disableRipple
                 onClick={() => handlePageSelection('parachains')}>
                 <ListItemIcon>
-                  <Tooltip
-                    disableFocusListener
-                    placement="right"
-                    title="Parachains">
-                    <Box><FontAwesomeIcon icon={faLink} /></Box>
-                  </Tooltip>
+                  <Box><FontAwesomeIcon icon={faLink} style={{ color: theme.palette.text.primary }} /></Box>
                 </ListItemIcon>
                 <ListItemText primary="Parachains" 
                   sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
             
-              <ListItemButton selected={selectedPage === 'val-groups'}
+              <ListItemButton selected={selectedPage === 'val-groups'} disableRipple
                 onClick={() => handlePageSelection('val-groups')}>
                 <ListItemIcon>
-                  <Tooltip
-                    disableFocusListener
-                    placement="right"
-                    title="Validator Groups">
-                    <HubIcon />
-                  </Tooltip>
+                  <HubIcon sx={{ color: theme.palette.text.primary }} />
                 </ListItemIcon>
                 <ListItemText primary="Validator Groups" 
                   sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
               
-              <Divider sx={{ my: 0 }} />
+              <Divider sx={{ 
+                opacity: 0.25,
+                height: '1px',
+                borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                borderBottom: 'none',
+                backgroundColor: 'transparent',
+                backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                }} />
 
-              <ListItemButton  selected={selectedPage === 'pools'}
+              <ListItemButton  selected={selectedPage === 'pools'} disableRipple
                 onClick={() => handlePageSelection('pools')}>
                 <ListItemIcon >
-                  <Tooltip
-                    disableFocusListener
-                    placement="right"
-                    title="Nomination Pools">
-                    <Box><FontAwesomeIcon icon={faWaterLadder} color="textPrimary"/></Box>
-                  </Tooltip>
+                  <Box><FontAwesomeIcon icon={faWaterLadder} style={{ color: theme.palette.text.primary }} /></Box>
                 </ListItemIcon>
                 <ListItemText primary="Nomination Pools" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
               </ListItemButton>
 
-              <Divider sx={{ my: 0 }} />
+              <Divider sx={{ 
+                opacity: 0.25,
+                height: '1px',
+                borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                borderBottom: 'none',
+                backgroundColor: 'transparent',
+                backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                }} />
 
               {selectedChain === "kusama" ? 
-                <ListItemButton onClick={() => handleChainSelection('polkadot')}>
+                <ListItemButton onClick={() => handleChainSelection('polkadot')} disableRipple>
                   <ListItemIcon sx={{ ml: -0.5, py: 2}}>
                     <img src={getNetworkIcon("polkadot")} style={{ 
                         width: 28,
@@ -411,7 +383,7 @@ export default function LayoutPage({api}) {
                 </ListItemButton> : null}
 
               {selectedChain === "polkadot" ? 
-                <ListItemButton onClick={() => handleChainSelection('kusama')}>
+                <ListItemButton onClick={() => handleChainSelection('kusama')} disableRipple>
                   <ListItemIcon sx={{ ml: -0.5, py: 2}}>
                     <img src={getNetworkIcon("kusama")} style={{ 
                         width: 28,
@@ -420,7 +392,15 @@ export default function LayoutPage({api}) {
                   <ListItemText primary="KUSAMA" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
                 </ListItemButton> : null}
 
-                <Divider sx={{ my: 0 }} />
+                <Divider sx={{ 
+                  opacity: 0.25,
+                  height: '1px',
+                  borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                  borderBottom: 'none',
+                  backgroundColor: 'transparent',
+                  backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                  }} />
+                  
             </List>
           </Drawer>
       <Box

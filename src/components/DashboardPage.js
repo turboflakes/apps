@@ -84,10 +84,13 @@ export default function DashboardPage() {
                         variant="h3"
                         align="left"
                       >
-                      <Typography component="div" variant="h5" >
-                        Blockchain Analytics by the Substrate
+                      <Typography component="div" variant="h5" sx={{fontWeight: 400}}>
+                        Substrate Blockchain Analytics
                       </Typography>
-                       indexer bot // ONE—T
+                        ONE-T // <span style={{ }}>indexer bot</span>
+                       <Typography component="div" variant="subtitle" >
+                        by TurboFlakes
+                      </Typography>
                     </Typography>
                   </Box>
                 </Box>
@@ -97,7 +100,7 @@ export default function DashboardPage() {
               </Box>
             </Box>
         </Grid>
-        
+
         <Grid sx={{ mt: 8 }} item xs={5}>
           <GradesBox sessionIndex={currentSession} size="lg" />
         </Grid>

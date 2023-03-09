@@ -74,7 +74,7 @@ export default function ValGroupCard({sessionIndex, groupId}) {
         <Box>
           <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
             <Typography variant="caption" align='center'>Validity Statements</Typography>  
-            <Typography variant="h5" align='center'>{validityVotes}</Typography>
+            <Typography variant="h5" align='center'>{validityVotes.format()}</Typography>
           </Box>
           <BackingPieChart data={pieChartsData} size="md" />
         </Box>
@@ -98,7 +98,7 @@ export default function ValGroupCard({sessionIndex, groupId}) {
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
           <Typography variant="caption" align='center'>Backing Points (x̅)</Typography>
-          <Typography variant="h5" align='center'>{backingPoints}</Typography>
+          <Typography variant="h5" align='center'>{backingPoints.format()}</Typography>
         </Box>
       </Box>
     </Paper>

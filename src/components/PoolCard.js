@@ -144,7 +144,7 @@ export default function PoolCard({sessionIndex, poolId}) {
           <Box sx={{ py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
               <Typography variant="caption" align='center'>pending rewards</Typography>
-              <Typography variant="h5" align='center'>{stakeDisplay(rewards, selectedChainInfo, 2, true, false)}<span style={{...theme.typography.caption}}>{symbolDisplay(selectedChainInfo)}</span></Typography>
+              <Typography variant="h5" align='center'>{stakeDisplay(rewards, selectedChainInfo, 2, true, true, true)}</Typography>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
               <Typography variant="caption" align='center'>points</Typography>

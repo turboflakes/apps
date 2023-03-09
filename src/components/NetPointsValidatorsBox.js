@@ -9,10 +9,13 @@ import Skeleton from '@mui/material/Skeleton';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
 import NetStatToggle from './NetStatToggle';
 import NetValChartLegend from './NetValChartLegend';
-
 import { 
   useGetSessionsQuery,
- } from '../features/api/sessionsSlice'
+ } from '../features/api/sessionsSlice';
+
+import {
+  convertToIU
+} from '../util/display';
 
  const renderTooltip = (props, theme) => {
   const { active, payload } = props;
@@ -127,7 +130,7 @@ export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
             margin={{
               top: 8,
               right: 32,
-              left: -24,
+              left: -20,
               bottom: 16,
             }}
           >
@@ -143,6 +146,7 @@ export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
               style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
               axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
               tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
+              tickFormatter={(a) => convertToIU(a, 0)}
               />
             <Tooltip 
                 cursor={{fill: theme.palette.divider}}

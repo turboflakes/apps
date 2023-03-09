@@ -40,7 +40,7 @@ import { stakeDisplay } from '../util/display';
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.green }}>●</span>Last Reward: <b>{stakeDisplay(data.last_rewarded, chainInfo, 4)}</b>
+            <span style={{ marginRight: '8px', color: theme.palette.semantics.green }}>●</span>Last Reward: <b>{stakeDisplay(data.last_rewarded, chainInfo, 4, true, true, true)}</b>
           </Typography>
         </Box>
       </Box>
@@ -101,7 +101,7 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
           <Typography variant="caption" gutterBottom>Last Reward</Typography>
           <Typography variant="h4">
-            {stakeDisplay(last_rewarded, chainInfo, 4)}
+            {stakeDisplay(last_rewarded, chainInfo, 4, true, true, true)}
           </Typography>
         </Box>
       </Box>
