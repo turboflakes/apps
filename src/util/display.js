@@ -21,10 +21,20 @@ export const symbolDisplay = (networkDetails) => {
     return ''
 }
 
-export const stakeDisplay = (stake, networkDetails, decimals = 2, format = false, symbol = true) => {
+export const convertToIU = (value, decimals) => {
+    return Math.abs(Number(value)) >= 1.0e+9
+    ? (Math.abs(Number(value)) / 1.0e+9).toFixed(decimals) + " B"
+    : Math.abs(Number(value)) >= 1.0e+6
+    ? (Math.abs(Number(value)) / 1.0e+6).toFixed(decimals) + " M"
+    : Math.abs(Number(value)) >= 1.0e+3
+    ? (Math.abs(Number(value)) / 1.0e+3).toFixed(decimals) + " K"
+    : Math.abs(Number(value)).toFixed(decimals) + " ";
+}
+
+export const stakeDisplay = (stake, networkDetails, decimals = 2, format = false, symbol = true, iu = false) => {
     if (!!networkDetails.tokenDecimals[0] && !!networkDetails.tokenSymbol[0]) {
         const networkDecimals = Math.pow(10, parseInt(networkDetails.tokenDecimals[0], 10))
-        return `${format ? parseFloat((stake/networkDecimals).toFixed(decimals)).format() : parseFloat((stake/networkDecimals).toFixed(decimals))} ${symbol ? networkDetails.tokenSymbol[0] : ''}`
+        return `${format ? ( iu ? convertToIU(stake/networkDecimals, decimals) : parseFloat((stake/networkDecimals).toFixed(decimals)).format()) : parseFloat((stake/networkDecimals).toFixed(decimals))}${symbol ? networkDetails.tokenSymbol[0] : ''}`
     }
     return stake
 }

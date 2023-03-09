@@ -85,26 +85,19 @@ export default function DashboardPage() {
                         align="left"
                       >
                       <Typography component="div" variant="h5" >
-                        Blockchain Analytics
+                        Blockchain Analytics by the Substrate
                       </Typography>
-                        Provided by ONE-T 
+                       indexer bot // ONE—T
                     </Typography>
                   </Box>
                 </Box>
                 <Typography sx={{ my: 4 }} variant="subtitle1" align="left">
-                  Monitor and explore the <b>{getNetworkName(selectedChain)}</b> network — search for your favourite Validators and visualize historic or realtime blockchain data analytics
+                  Monitor and explore the <b>{getNetworkName(selectedChain)}</b> network — search for your favourite Validators or Nomination Pools and visualize historic or realtime blockchain data analytics
                 </Typography>
               </Box>
             </Box>
-            {/* <Box sx={{ my: 6, ml: 4, display: 'flex', justifyContent: 'center', alignItems:'flex-end'}}>
-              <SearchSmall />
-              <img src={onetSVG} style={{ 
-                // marginBottom: "16px",
-                // opacity: 0.6,
-                width: 128,
-                height: 128 }} alt={"ONE-T logo"}/>
-            </Box> */}
         </Grid>
+        
         <Grid sx={{ mt: 8 }} item xs={5}>
           <GradesBox sessionIndex={currentSession} size="lg" />
         </Grid>

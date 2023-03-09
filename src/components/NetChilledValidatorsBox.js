@@ -55,11 +55,11 @@ import {
 
 function ChartLegend({theme}) {
   return (
-    <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
+    <Box sx={{display: 'flex', justifyContent: 'flex-end', mr: 8}}>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
         <span style={{ marginRight: '8px', color: theme.palette.grey[400] }}>❚</span>Chilled validators
       </Typography>
-      <Typography variant="caption" color="inherit">
+      <Typography variant="caption" color="inherit" >
         <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>❚</span>Disputes
       </Typography>
     </Box>

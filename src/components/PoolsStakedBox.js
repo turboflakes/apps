@@ -22,7 +22,6 @@ import {
 } from '../constants'
 import { 
   stakeDisplay, 
-  symbolDisplay 
 } from '../util/display';
 
 
@@ -67,14 +66,14 @@ export default function PoolsStakedBox({sessionIndex, dark}) {
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}
           color={dark ? theme.palette.text.secondary : 'default'}>total bonded</Typography>
         <Typography variant="h5" color={dark ? theme.palette.text.secondary : 'default'}>
-          {stakeDisplay(currentValue, selectedChainInfo, 2, true, false)} <span style={{...theme.typography.caption}}>{symbolDisplay(selectedChainInfo)}</span>
+          {stakeDisplay(currentValue, selectedChainInfo, 2, true, true, true)}
         </Typography>
         {diff !== 0 ? 
           <Tooltip title={`${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)} ${Math.sign(diff) > 0 ? 'more' : 'less'} staked than ${nSessionsTarget} sessions ago.`} arrow>
             <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 
               lineHeight: 0.875,
               color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red }}>
-              <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)}` : `-${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)}`) : ' '}</b>
+              <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, true, true, true)}` : `-${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, true, true, true)}`) : ' '}</b>
             </Typography>
           </Tooltip> : null}
       </Box>
