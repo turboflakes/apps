@@ -7,6 +7,7 @@ import {
 } from '@reduxjs/toolkit'
 import isUndefined from 'lodash/isUndefined'
 import findLast from 'lodash/findLast'
+import orderBy from 'lodash/orderBy'
 import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
 import { selectSessionByIndex } from './sessionsSlice'
@@ -80,40 +81,30 @@ export const matchBlocksReceived = isAnyOf(
   extendedApi.endpoints.getBlocks.matchFulfilled
 )
 
-const _calculateBlockMvr = (previousBlock, currentBlock) => {
-  if (isUndefined(currentBlock)) {
-    return -4
+const _calculateBlockMvr = (current, previous) => {
+  if (isUndefined(current) || isUndefined(current.stats)) { 
+    return -1
   }
-  if (isUndefined(currentBlock.stats)) {
-    return -1;
-  }
-  if (isUndefined(previousBlock)) {
-    return calculateMvr(currentBlock.stats.ev, currentBlock.stats.iv, currentBlock.stats.mv)
-  } else {
-    if (isUndefined(previousBlock.stats)) {
-      return -1;
+  if (isUndefined(previous) || isUndefined(previous.stats) || current.block_number - 1 !== previous.block_number) {
+    const mvr = calculateMvr(current.stats.ev, current.stats.iv, current.stats.mv);
+    if (isUndefined(mvr)) {
+      return -1
     }
-    const votes = currentBlock.stats.ev - previousBlock.stats.ev + currentBlock.stats.iv - previousBlock.stats.iv + currentBlock.stats.mv - previousBlock.stats.mv;
-    if (votes === 0) {
-      return -1;
-    }
-    return calculateMvr(
-      currentBlock.stats.ev - previousBlock.stats.ev, 
-      currentBlock.stats.iv - previousBlock.stats.iv, 
-      currentBlock.stats.mv - previousBlock.stats.mv);
+    return mvr
   }
+  return calculateMvr(
+    current.stats.ev - previous.stats.ev, 
+    current.stats.iv - previous.stats.iv, 
+    current.stats.mv - previous.stats.mv);
 }
 
-const calculateBlockMvr = (state, block) => {
-  if (isUndefined(block)) {
+const calculateBlockMvr = (i, data, current, previous) => {
+  const mvr = _calculateBlockMvr(current, previous)
+  if (mvr === -1) {
     return undefined
   }
-  if (isUndefined(block.block_number)) {
-    return undefined
-  }
-  const mvr = _calculateBlockMvr(state.entities[block.block_number - 1], block);
-  if (mvr === -1){
-    return calculateBlockMvr(state, state.entities[block.block_number - 1]);
+  if (isUndefined(mvr)) {
+    return calculateBlockMvr(i - 1, data, current, data[i - 1])
   }
   return mvr
 }
@@ -133,19 +124,36 @@ const blocksSlice = createSlice({
         blocksAdapter.removeOne(state, currentState.ids[0])
       }
       const block = action.payload;
-      blocksAdapter.upsertOne(state, { 
-        ...action.payload, 
-        _mvr: !isUndefined(block.stats) ? calculateBlockMvr(currentState, block) : undefined,
-        _ts: + new Date()
-      })
+      if (block.is_finalized) {
+        blocksAdapter.upsertOne(state, { 
+          ...action.payload, 
+          _mvr: !isUndefined(block.stats) ? calculateBlockMvr(0, [], block, currentState.entities[block.block_number - 1]) : undefined,
+          _ts: + new Date()
+        })
+      } else {
+        blocksAdapter.upsertOne(state, { 
+          ...action.payload, 
+          _ts: + new Date()
+        })
+      }
     })
     .addMatcher(matchBlocksReceived, (state, action) => {
       let currentState = current(state);
-      const blocks = action.payload.data.map(block => ({
-        ...block,
-        _mvr: !isUndefined(block.stats) ? calculateBlockMvr(currentState, block) : undefined,
-        _ts: + new Date()
-      }))
+
+      const blocks = action.payload.data.map((block, i) => {
+        if (block.is_finalized && !isUndefined(block.stats)) {
+          const previousBlock = i > 0 ? (isUndefined(currentState.entities[block.block_number - 1]) ? action.payload.data[i - 1] : currentState.entities[block.block_number - 1]) : currentState.entities[block.block_number - 1]
+          return  {
+            ...block,
+            _mvr: calculateBlockMvr(i, action.payload.data, block, previousBlock),
+            _ts: + new Date()
+          }  
+        }
+        return  {
+          ...block,
+          _ts: + new Date()
+        }
+      })
       blocksAdapter.upsertMany(state, blocks)
     })
   }

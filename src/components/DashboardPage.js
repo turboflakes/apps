@@ -106,7 +106,7 @@ export default function DashboardPage() {
         </Grid>
 
         <Grid item xs={12} sx={{ my: 2}}>
-          <SessionPerformance600Timeline sessionIndex={currentSession} />
+          <SessionPerformance600Timeline sessionIndex={currentSession} skip={isNaN(currentSession)} />
         </Grid>
 
         <Grid item xs={12}>
