@@ -7,28 +7,21 @@ import MuiAppBar from '@mui/material/AppBar';
 import MuiDrawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-// import ToggleButton from '@mui/material/ToggleButton';
-// import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import IconButton from '@mui/material/IconButton';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
-// import ListSubheader from '@mui/material/ListSubheader';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import HubIcon from '@mui/icons-material/Hub';
 import Chip from '@mui/material/Chip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink, faWaterLadder, faServer } from '@fortawesome/free-solid-svg-icons'
-import HubIcon from '@mui/icons-material/Hub';
+import Footer from './Footer'
 import SearchSmall from './SearchSmall'
 import SessionPerformancePieChartHeader from './SessionPerformancePieChartHeader';
 import SessionPieChartHeader from './SessionPieChartHeader';
 import SessionBoxHeader from './SessionBoxHeader';
-import Tooltip from './Tooltip';
-import Footer from './Footer'
 import onetSVG from '../assets/onet.svg';
 import apiSlice from '../features/api/apiSlice'
 import {
@@ -46,6 +39,7 @@ import {
 } from '../features/web3/web3Slice';
 import { 
   getNetworkIcon, 
+  getNetworkLogo, 
   getNetworkName 
 } from '../constants'
 
@@ -200,23 +194,33 @@ export default function LayoutPage({api}) {
               // height: '100%'
             }}>
           
-            {/* network and drawer toggle */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-
-              <img src={getNetworkIcon(selectedChain)}  style={{ 
-                      width: 32,
-                      height: 32 }} alt={selectedChain}/>
-
-              <Typography variant='h5' sx={{ ml: 1, minWidth: 128, textTransform: 'uppercase' }}>
-                {getNetworkName(selectedChain)}
-              </Typography>
+            {/* network logo */}
+            <Box sx={{ display: 'flex', alignItems: 'center'}}>
+              <img src={getNetworkLogo(selectedChain)}  style={{ height: 24 }} alt={selectedChain}/>
+              <Divider orientation='vertical' sx={{ 
+                mx: 1, 
+                height: 24, 
+                bgcolor: theme.palette.text.primary,
+                transform: 'rotate(20deg)'
+                }} />
+              <Divider orientation='vertical' sx={{ 
+                mr: 1, 
+                height: 24, 
+                bgcolor: theme.palette.text.primary,
+                transform: 'rotate(20deg)'
+                }} />
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <Typography variant="caption" sx={{color: theme.palette.text.primary, fontSize: "0.875rem", lineHeight: 0, fontWeight: 600}}>
+                  ONE-T
+                </Typography>
+              </Box>
             </Box>
 
             {/* search validator */}
             <Box sx={{ ml: 4, flexGrow: 1, display: 'flex'}}>
               <SearchSmall width={open ? 384 : 512} />
             </Box>
-            <Box sx={{ ml: 3, flexGrow: 1, display: 'flex'}}></Box>
+            <Box sx={{ ml: 2, flexGrow: 1, display: 'flex'}}></Box>
             <Box sx={{ display: 'flex', alignItems: 'center'}}>
              <SessionPerformancePieChartHeader />
              <SessionPieChartHeader />
