@@ -22,6 +22,7 @@ import ValDisputesHistoryBox from './ValDisputesHistoryBox';
 import ValStateBox from './ValStateBox';
 import ValParaInclusionBox from './ValParaInclusionBox';
 import ValAttentionBox from './ValAttentionBox';
+import Spinner from './Spinner';
 import {
   selectSessionByIndex,
   selectSessionCurrent,
@@ -35,8 +36,6 @@ import {
   selectValidatorBySessionAndAddress,
 } from '../features/api/validatorsSlice';
 
-const ORDER = ['1st', '2nd', '3rd', '4th', '5th', '6th'];
-
 export default function ValHeaderBox({address, sessionIndex}) {
 	// const theme = useTheme();
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
@@ -47,7 +46,17 @@ export default function ValHeaderBox({address, sessionIndex}) {
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, address));
 
   if (isNaN(sessionIndex) || isUndefined(session) || isUndefined(validator)) {
-    return null
+    return (<Box sx={{
+        width: "100%",
+        height: 232,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        <Spinner size={32}/>
+      </Box>
+    )
   }
 
   return (

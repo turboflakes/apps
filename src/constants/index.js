@@ -1,8 +1,8 @@
 import isUndefined from 'lodash/isUndefined'
 import iconPolkadotSVG from '../assets/polkadot_icon.svg';
-import logoPolkadotSVG from '../assets/polkadot_logotype_white.svg';
+import logoPolkadotSVG from '../assets/Polkadot_Logo_Horizontal_Pink-Black.svg';
 import iconKusamaSVG from '../assets/kusama_icon.svg';
-import logoKusamaSVG from '../assets/kusama_logo.svg';
+import logoKusamaSVG from '../assets/KUSAMA_6.svg';
 import iconWestendSVG from '../assets/westend_icon.svg';
 import logoWestendSVG from '../assets/westend_icon.svg'; 
 import {prodParasKusama} from './productionRelayKusama';
@@ -21,11 +21,11 @@ const networkSettings = {
     logo: logoPolkadotSVG,
     url: "https://polkadot.network",
     maxValidators: 16,
-    maxHistoryEras: 4,
+    maxHistoryEras: 32,
     coreAssignmentsTarget: 240,
     blocksPerSessionTarget: 2400,
     sessionsPerDayTarget: 6,
-    poolIds: [process.env.REACT_APP_POLKADOT_POOL_ID_1, process.env.REACT_APP_POLKADOT_POOL_ID_2],
+    poolIds: [process.env.REACT_APP_POLKADOT_POOL_ID_1],
     chains: prodParasPolkadot,
     validators: [
       { stash: "12gPFmRqnsDhc9C5DuXyXBFA23io5fSGtKTSAimQtAWgueD2", name: "RAIDEN"}
@@ -111,7 +111,7 @@ export const getChainLogo = (network, paraId) => {
     const nodeLogo = nodeLogos[sanitize(getChainInfo(network, paraId))];
     if (isUndefined(nodeLogo)) { 
       const chainLogo = chainLogos[sanitize(getChainName(network, paraId))];
-      if (isUndefined(nodeLogo)) { 
+      if (isUndefined(chainLogo)) { 
         return namedLogos.empty
       } 
       return chainLogo

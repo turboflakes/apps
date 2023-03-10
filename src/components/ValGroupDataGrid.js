@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import isUndefined from 'lodash/isUndefined'
 import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
@@ -8,22 +8,17 @@ import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import Identicon from '@polkadot/react-identicon';
 import DetailsIcon from './DetailsIcon';
+import GridIdentityLink from './GridIdentityLink';
+import InsightsInfoLegend from './InsightsInfoLegend';
 import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
 import {
   selectValidatorsBySessionAndGroupId
 } from '../features/api/valGroupsSlice'
 import {
-  addressChanged,
-  selectChain,
   selectAddress
 } from '../features/chain/chainSlice';
-import {
-  pageChanged
-} from '../features/layout/layoutSlice';
 import { stashDisplay, nameDisplay } from '../util/display'
-
-// const codes = ['★', 'A', 'B', 'C', 'D']
 
 const defineColumns = (theme) => {
   return [
@@ -38,28 +33,37 @@ const defineColumns = (theme) => {
   //   },
   // },
   { 
-      field: 'id', 
-      headerName: '', 
-      width: 48,
-      sortable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => {
-        if (params.row.address) {
-          return (
-              <Identicon
-                value={params.row.address}
-                size={24}
-                theme={'polkadot'} />
-            )
-        }
-        return (<div>-</div>)  
+    field: 'id', 
+    headerName: '', 
+    width: 48,
+    sortable: false,
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      if (params.row.address) {
+        return (
+            <Identicon
+              value={params.row.address}
+              size={24}
+              theme={'polkadot'} />
+          )
       }
-    },
+      return (<div>-</div>)  
+    }
+  },
   {
     field: 'identity',
     headerName: 'Identity',
-    width: 288,
+    width: 256,
     disableColumnMenu: true,
+    sortable: false,
+    renderCell: (params) => {
+      if (!params.row.address) {
+        return null
+      } 
+      return (
+        <GridIdentityLink address={params.row.address} />
+      )
+    }
   },
   {
     field: 'grade',
@@ -85,6 +89,13 @@ const defineColumns = (theme) => {
   {
     field: 'b',
     headerName: '❒',
+    type: 'number',
+    width: 64,
+    disableColumnMenu: true,
+  },
+  {
+    field: 'd',
+    headerName: '↔',
     type: 'number',
     width: 64,
     disableColumnMenu: true,
@@ -159,15 +170,12 @@ const defineColumns = (theme) => {
   },
 ]};
 
-function createDataGridRows(id, identity, address, b, i, e, m, p) {
-  return {id, identity, address, b, i, e, m, p };
+function createDataGridRows(id, identity, address, b, i, e, m, d, p) {
+  return {id, identity, address, b, i, e, m, d, p };
 }
 
 export default function ValGroupDataGrid({sessionIndex, groupId}) {
   const theme = useTheme();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const selectedChain = useSelector(selectChain);
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
   const selectedAddress = useSelector(selectAddress);
   if (!validators.length || validators.length !== validators.filter(v => !!v.para_stats).length) {
@@ -187,9 +195,10 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
         v.para_summary.iv, 
         v.para_summary.ev, 
         v.para_summary.mv, 
+        !isUndefined(v.para.disputes) ? v.para.disputes.length : 0,
         total_points)
     } else {
-      return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0)
+      return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0, 0)
     }
   })
   const columns = defineColumns(theme);
@@ -208,9 +217,8 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
       }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box>
-            <Typography variant="h6">Validators</Typography>
-          </Box>
+          <Typography variant="h6">Validators</Typography>
+          <InsightsInfoLegend />
         </Box>
         <DataGrid
           sx={{ bgcolor: '#FFF', width: '100%', borderRadius: 0, border: 0 }}
@@ -220,6 +228,7 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
           rowsPerPageOptions={[5]}
           hideFooter
           disableSelectionOnClick
+          disableRowSelectionOnClick
         />
     </Paper>
   );

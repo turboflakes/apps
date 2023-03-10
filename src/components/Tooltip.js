@@ -3,8 +3,10 @@ import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
 
 const CustomTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} arrow classes={{ popper: className }} />
-))(({ theme, bgcolor }) => ({
+  <Tooltip {...props} arrow classes={{ popper: className }} sx={{
+    width: "400px"
+  }}/>
+))(({ theme, bgcolor, width }) => ({
   [`& .${tooltipClasses.arrow}`]: {
     color: theme.palette.grey[400],
   },

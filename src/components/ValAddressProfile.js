@@ -11,7 +11,6 @@ import Tooltip from '@mui/material/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWallet } from '@fortawesome/free-solid-svg-icons'
 import GradeIcon from './GradeIcon';
-import GradeHistoryIcon from './GradeHistoryIcon';
 import tvpValid from '../assets/tvp_valid.svg';
 // import tvpInvalid from '../assets/tvp_invalid.svg';
 import {
@@ -91,12 +90,8 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
               }} />
             <Box sx={{ display: 'flex'}}>
               <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-                {showGrade ? (
-                  isLiveMode ? 
-                    <GradeIcon sessionIndex={sessionIndex} address={address} size={64} /> :
-                    <GradeHistoryIcon address={address} maxSessions={maxSessions} size={64} />
-                  )
-                : null}
+                {showGrade ? 
+                  <GradeIcon sessionIndex={sessionIndex} maxSessions={maxSessions} address={address} size={64} /> : null}
               </Box>
               <Box sx={{ mr: 3,  display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                 <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>commission</Typography>
@@ -107,7 +102,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
               <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                 <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>bonded</Typography>
                 <Box>
-                  <Typography variant="h5" component="span">{stakeDisplay(valProfile.own_stake, chainInfo)}</Typography>
+                  <Typography variant="h5" component="span">{stakeDisplay(valProfile.own_stake, chainInfo, 4, true, true, true)}</Typography>
                 </Box>
               </Box>
               {showSubset && valProfile.subset === "TVP" ? 
@@ -121,18 +116,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
               : null}
             </Box>
           </Box>
-          {/* <Box sx={{ ml: 2 }}>
-            <img src={tvpValid} style={{ 
-                width: 64,
-                height: 64 }} alt={"tvp"}/>
-          </Box> */}
         </Box>
-        {/* {showGrade ? (
-            isLiveMode ? 
-              <GradeIcon sessionIndex={sessionIndex} address={address} size={72} /> :
-              <GradeHistoryIcon address={address} maxSessions={maxSessions} size={72} />
-            )
-           : null} */}
       </Box>
     </Box>
   );

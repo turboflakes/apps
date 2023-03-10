@@ -53,13 +53,13 @@ import {
   return null;
 };
 
-export default function SessionPerformance600Timeline({sessionIndex}) {
+export default function SessionPerformance600Timeline({sessionIndex, skip}) {
   const theme = useTheme();
-  const {isSuccess: isSuccessCurrent, isFetching: isFetchingCurrent} = useGetBlocksQuery({session: sessionIndex, show_stats: true});
-  const {isSuccess: isSuccessPrevious, isFetching: isFetchingPrevious} = useGetBlocksQuery({session: sessionIndex - 1, show_stats: true});
+  const {isFetching: isFetchingCurrent} = useGetBlocksQuery({session: sessionIndex, show_stats: true}, {skip});
+  const {isFetching: isFetchingPrevious} = useGetBlocksQuery({session: sessionIndex - 1, show_stats: true}, {skip});
   const blocks = useSelector(selectLastXBlocks)
 
-  if (isFetchingCurrent || isFetchingPrevious) {
+  if (isFetchingCurrent || isFetchingPrevious || blocks.length < 2) {
     return (<Box sx={{
         my: 2,
         pt: 2,
@@ -77,21 +77,22 @@ export default function SessionPerformance600Timeline({sessionIndex}) {
     return null
   }
   
-  const timelineData = blocks.map((o, i) => {
-    if (!isUndefined(o.stats) && !isUndefined(blocks[i-1])) {
-      const votes = o.stats.ev + o.stats.iv + o.stats.mv;
-      const previousVotes = blocks[i-1].stats.ev + blocks[i-1].stats.iv + blocks[i-1].stats.mv;
+  const timelineData = blocks.filter(o => !isUndefined(o._mvr))
+    .map((o, i) => {
+      if (!isUndefined(o.stats) && !isUndefined(blocks[i-1])) {
+        const votes = o.stats.ev + o.stats.iv + o.stats.mv;
+        const previousVotes = blocks[i-1].stats.ev + blocks[i-1].stats.iv + blocks[i-1].stats.mv;
+        return {
+          block: o.block_number.format(),
+          bvr: 1 - o._mvr,
+          votes: previousVotes < votes ? votes - previousVotes : 0
+        }
+      }
       return {
         block: o.block_number.format(),
         bvr: 1 - o._mvr,
-        votes: previousVotes < votes ? votes - previousVotes : 0
+        votes: 0
       }
-    }
-    return {
-      block: o.block_number.format(),
-      bvr: 1 - o._mvr,
-      votes: 0
-    }
   })
 
   return (

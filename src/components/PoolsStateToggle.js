@@ -29,6 +29,8 @@ export default function PoolsStateToggle({onChange}) {
         aria-label="text alignment"
       >
         <ToggleButton value="Open" aria-label="left aligned" 
+          disableRipple
+          disableFocusRipple
           sx={{ minWidth: 48, mr: 1, border: 0, 
             fontSize: "0.625rem",
             '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
@@ -36,6 +38,8 @@ export default function PoolsStateToggle({onChange}) {
           Open
         </ToggleButton>
         <ToggleButton value="Blocked" aria-label="justified" 
+          disableRipple
+          disableFocusRipple
           sx={{ minWidth: 48, mr: 1, border: 0, 
             fontSize: "0.625rem",
             '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
@@ -43,6 +47,8 @@ export default function PoolsStateToggle({onChange}) {
           Blocked
         </ToggleButton>
         <ToggleButton value="Destroying" aria-label="centered" 
+          disableRipple
+          disableFocusRipple
           sx={{ minWidth: 48, mr: 1, border: 0, 
             fontSize: "0.625rem",
             '&.Mui-selected' : {borderRadius: 16, pr: 2}, 

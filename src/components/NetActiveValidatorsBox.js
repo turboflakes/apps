@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, 
-  Bar, Rectangle, Cell, ResponsiveContainer } from 'recharts';
+  ResponsiveContainer } from 'recharts';
 import NetValChartLegend from './NetValChartLegend';
 
 import { 
@@ -56,7 +56,7 @@ import {
 
 export default function NetActiveValidatorsBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
-  const {data, isSuccess, isFetching} = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true});
+  const {data, isSuccess, isFetching} = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {skip: isNaN(sessionIndex)});
 
   if (isFetching || isUndefined(data)) {
     return (<Skeleton variant="rounded" sx={{

@@ -208,6 +208,8 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
           aria-label="text alignment"
         >
           <ToggleButton value="all" aria-label="left aligned" 
+            disableRipple
+            disableFocusRipple
             sx={{ minWidth: 48, mr: 1, border: 0, 
               fontSize: "0.625rem",
               '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
@@ -215,6 +217,8 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
             All
           </ToggleButton>
           <ToggleButton value="TVP" aria-label="centered" 
+            disableRipple
+            disableFocusRipple
             sx={{ minWidth: 48, border: 0, 
               fontSize: "0.625rem",
               '&.Mui-selected' : {borderRadius: 16, pr: 2}, 

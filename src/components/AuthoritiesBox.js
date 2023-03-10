@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined';
 import uniq from 'lodash/uniq';
@@ -14,6 +15,9 @@ import {
   selectLowGradesBySession,
   selectDisputesBySession
  } from '../features/api/sessionsSlice';
+import {
+  pageChanged,
+} from '../features/layout/layoutSlice';
 
 const customTitle = (data, theme) => {
   return (
@@ -26,12 +30,14 @@ const customTitle = (data, theme) => {
         <Typography variant="h6" color="textSecondary" gutterBottom>
           <b>Some validators need attention!</b>
         </Typography>
-        <Typography component="div" variant="caption" color="textSecondary" gutterBottom>
-          <span style={{color: theme.palette.text.primary }}></span>Grade F: <b>{data.fGrades}</b>
-        </Typography>
-        <Typography component="div" variant="caption" color="textSecondary" gutterBottom>
-          <span style={{color: theme.palette.text.primary }}></span>Disputes: <b>{data.disputes}</b>
-        </Typography>
+        {data.fGrades > 0 ?
+          <Typography component="div" variant="caption" color="textSecondary" gutterBottom>
+            <span style={{color: theme.palette.text.primary }}></span>Low Grade F: <b>{data.fGrades} {data.fGrades > 1 ? `validators` : `validator`}</b> 
+          </Typography> : null}
+        {data.disputes > 0 ? 
+          <Typography component="div" variant="caption" color="textSecondary" gutterBottom>
+            <span style={{color: theme.palette.text.primary }}></span>Disputes Initiated by <b>{data.disputes} {data.disputes > 1 ? `validators` : `validator`}</b>
+          </Typography> : null}
       </Box>
   )
 }
@@ -55,6 +61,8 @@ const emptyBox = ({theme, dark}) => {
 
 export default function AuthoritiesBox({sessionIndex, dark}) {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const block = useSelector(selectFinalizedBlock);
   const disputeStashes = useSelector(state => selectDisputesBySession(state, sessionIndex));
   const fGradeStashes = useSelector(state => selectLowGradesBySession(state, sessionIndex));
@@ -66,6 +74,14 @@ export default function AuthoritiesBox({sessionIndex, dark}) {
   }
 
   const tooltipData = {fGrades: fGradeStashes.length, disputes: disputeStashes.length, session: sessionIndex};
+
+  const handleOnClick = () => {
+    dispatch(pageChanged(`insights`));
+    navigate(`/insights`, {state: {
+      showAllGrades: fGradeStashes.length > 0,
+      showDisputes: disputeStashes.length > 0
+    }})
+  };
 
   return (
     <Paper sx={{
@@ -101,7 +117,8 @@ export default function AuthoritiesBox({sessionIndex, dark}) {
             placement="bottom-start"
             bgcolor={theme.palette.semantics.red}
             title={customTitle(tooltipData, theme)}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right', bgcolor: "transparent" }} >
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'right', bgcolor: "transparent", cursor: 'pointer' }} 
+              onClick={handleOnClick}>
               <Box sx={{width: '16px'}}>
                 <Box sx={{ 
                   animation: "pulse 1s infinite ease-in-out alternate",

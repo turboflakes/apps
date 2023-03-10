@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux'
 import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
@@ -57,7 +56,7 @@ import {
 
 export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true});
+  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {skip: isNaN(sessionIndex)});
 
   if (isFetching || isUndefined(data)) {
     return (<Skeleton variant="rounded" sx={{

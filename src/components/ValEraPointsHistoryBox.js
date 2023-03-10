@@ -104,7 +104,7 @@ export default function ValTotalPointsHistoryBox({address, maxSessions}) {
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left', maxWidth: '128px'}}>
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>era points (x̅)</Typography>
         <Typography variant="h5">
-          {!isUndefined(avgPoints) ? avgPoints : '-'}
+          {!isUndefined(avgPoints) ? avgPoints.format() : '-'}
         </Typography>
         <Tooltip title={`${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of Era Points collected by all Authorities of the last ${Math.round(allTotalPoints.length / 6)} eras.`} arrow>
           <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 

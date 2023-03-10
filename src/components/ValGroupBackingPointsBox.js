@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
+import isUndefined from 'lodash/isUndefined';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -86,7 +87,7 @@ export default function ValGroupBackingPointsBox({groupId, sessionIndex}) {
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>backing points (x̅)</Typography>
         <Typography variant="h4">
-          {backingPoints}
+          {!isUndefined(backingPoints) ? backingPoints.format() : '-'}
         </Typography>
         <Tooltip title={`${Math.abs(diff)}% ${diff !== 0 ? (Math.sign(diff) > 0 ? `more` : `less`) : ''} than the average backing points from all Val. Groups in the current session.`} arrow>
           <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 

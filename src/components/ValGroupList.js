@@ -9,9 +9,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Identicon from '@polkadot/react-identicon';
-import Tooltip from './Tooltip';
 import {
-  selectChain,
   addressChanged
 } from '../features/chain/chainSlice';
 import {
@@ -31,7 +29,6 @@ export default function ValGroupList({sessionIndex, groupId}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const selectedChain = useSelector(selectChain);
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex, groupId));  
   const validatorsOrderedByPoints = orderBy(validators, o => o.auth.ep - o.auth.sp, "desc");  
 
@@ -46,22 +43,21 @@ export default function ValGroupList({sessionIndex, groupId}) {
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '192px'}}>
         <List dense >
           {validatorsOrderedByPoints.map((v, i) => (
-            <Tooltip key={i} title={nameDisplay(!!v.profile ? v.profile._identity : stashDisplay(v.address, 4), 64)}>
-              <ListItemButton sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(v.address)}>
-                <ListItemIcon sx={{minWidth: 0, mr: 1, display: 'flex', alignItems: 'center'}}>
-                  <span style={{ width: '4px', height: '4px', marginLeft: '-4px', marginRight: '8px', borderRadius: '50%', 
-                    backgroundColor: theme.palette.grade[gradeValue(v)], 
-                    display: "inline-block" }}></span>
-                  <Identicon
-                    value={v.address}
-                    size={24}
-                    theme={'polkadot'} />
-                </ListItemIcon>
-                <ListItemText sx={{whiteSpace: "nowrap"}}
-                  primary={nameDisplay(!!v.profile ? v.profile._identity : stashDisplay(v.address, 4), 12)}
-                />
-              </ListItemButton>
-            </Tooltip>
+            <ListItemButton key={i} sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(v.address)}
+              title={nameDisplay(!!v.profile ? v.profile._identity : stashDisplay(v.address, 4), 64)}>
+              <ListItemIcon sx={{minWidth: 0, mr: 1, display: 'flex', alignItems: 'center'}}>
+                <span style={{ width: '4px', height: '4px', marginLeft: '-4px', marginRight: '8px', borderRadius: '50%', 
+                  backgroundColor: theme.palette.grade[gradeValue(v)], 
+                  display: "inline-block" }}></span>
+                <Identicon
+                  value={v.address}
+                  size={24}
+                  theme={'polkadot'} />
+              </ListItemIcon>
+              <ListItemText sx={{whiteSpace: "nowrap"}}
+                primary={nameDisplay(!!v.profile ? v.profile._identity : stashDisplay(v.address, 4), 12)}
+              />
+            </ListItemButton>
           ))}
         </List>
       </Box>

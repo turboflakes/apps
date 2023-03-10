@@ -6,9 +6,8 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { ComposedChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, 
+import { ComposedChart, XAxis, YAxis, Tooltip, CartesianGrid, Legend, 
   Bar, Rectangle, Cell, ResponsiveContainer } from 'recharts';
-import NetValChartLegend from './NetValChartLegend';
 
 import { 
   useGetSessionsQuery,
@@ -38,14 +37,12 @@ import {
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[400] }}>❚</span>Chilled: <b>{data.chilled} validators</b> ({Math.round((data.chilled * 100 ) / data.total)}%)
+            <span style={{ marginRight: '8px', color: theme.palette.grey[400] }}>❚</span>Chilled: <b>{data.chilled} validators</b> ({Math.round((data.chilled * 10000 ) / data.total) / 100}%)
           </Typography>  
           <Typography component="div" variant="caption">
             <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>❚</span>Disputes: <b>{data.disputes}</b>
           </Typography>  
         </Box>
-        
-        
       </Box>
     );
   }
@@ -55,11 +52,11 @@ import {
 
 function ChartLegend({theme}) {
   return (
-    <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
+    <Box sx={{display: 'flex', justifyContent: 'flex-end', mr: 8}}>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
         <span style={{ marginRight: '8px', color: theme.palette.grey[400] }}>❚</span>Chilled validators
       </Typography>
-      <Typography variant="caption" color="inherit">
+      <Typography variant="caption" color="inherit" >
         <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>❚</span>Disputes
       </Typography>
     </Box>
@@ -68,7 +65,7 @@ function ChartLegend({theme}) {
 
 export default function NetChilledValidatorsBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
-  const {data, isSuccess, isFetching} = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_stats: true, show_netstats: true});
+  const {data, isSuccess, isFetching} = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_stats: true, show_netstats: true}, {skip: isNaN(sessionIndex)});
 
   if (isFetching || isUndefined(data)) {
     return (<Skeleton variant="rounded" sx={{
@@ -84,9 +81,6 @@ export default function NetChilledValidatorsBox({sessionIndex, maxSessions}) {
     return null
   }
 
-  // 
-  const mainValue = data.filter(s => s.six === sessionIndex - 1)
-    .map(s => !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m.vals_active).reduce((a, b) => a + b, 0) : 0)[0];
 
   const timelineData = data.map((s, i) => ({
     session: s.six,

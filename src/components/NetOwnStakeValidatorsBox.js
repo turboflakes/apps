@@ -17,8 +17,6 @@ import {
 } from '../features/chain/chainSlice';
 import { stakeDisplay } from '../util/display';
 
-// const COLORS = (theme) => ([theme.palette.grey[900], theme.palette.grey[200], theme.palette.semantics.blue])
-
  const renderTooltip = (props, theme, chainInfo) => {
   const { active, payload } = props;
   if (active && payload && payload.length) {
@@ -43,13 +41,13 @@ import { stakeDisplay } from '../util/display';
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>TVP: <b>{stakeDisplay(data.tvp, chainInfo, 0, true)}</b> ({Math.round((data.tvp * 100 ) / data.total)}%)
+            <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>TVP: <b>{stakeDisplay(data.tvp, chainInfo, 4, true, true, true)}</b> ({Math.round((data.tvp * 100 ) / data.total)}%)
           </Typography>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>100% Com.: <b>{stakeDisplay(data.c100, chainInfo, 0, true)}</b> ({Math.round((data.c100 * 100 ) / data.total)}%)
+            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>100% Com.: <b>{stakeDisplay(data.c100, chainInfo, 4, true, true, true)}</b> ({Math.round((data.c100 * 100 ) / data.total)}%)
           </Typography>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>●</span>Others: <b>{stakeDisplay(data.others, chainInfo, 0, true)}</b> ({Math.round((data.others * 100 ) / data.total)}%)
+            <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>●</span>Others: <b>{stakeDisplay(data.others, chainInfo, 4, true, true, true)}</b> ({Math.round((data.others * 100 ) / data.total)}%)
           </Typography>  
         </Box>
         
@@ -64,7 +62,7 @@ import { stakeDisplay } from '../util/display';
 export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
   const selectedChainInfo = useSelector(selectChainInfo)
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true});
+  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {skip: isNaN(sessionIndex)});
   const [key, setKey] = React.useState("vals_own_stake_total");
 
   if (isFetching || isUndefined(data) || isUndefined(selectedChainInfo)) {
@@ -121,7 +119,7 @@ export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
             textOverflow: "ellipsis"}}>
           <Typography variant="caption" gutterBottom>Validators Own Stake</Typography>
           <Typography variant="h4" sx={{overflow: "hidden", textOverflow: "ellipsis"}}>
-            {stakeDisplay(mainValue, selectedChainInfo, 0, true)}
+            {stakeDisplay(mainValue, selectedChainInfo, 4, true, true, true)}
           </Typography>
         </Box>
         <NetStatToggle onChange={handleStatChanged} />
@@ -135,7 +133,7 @@ export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
             margin={{
               top: 8,
               right: 32,
-              left: -8,
+              left: -24,
               bottom: 16,
             }}
           >
@@ -151,7 +149,7 @@ export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
               style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
               axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
               tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
-              tickFormatter={(a) => stakeDisplay(a, selectedChainInfo, 0, true, false)}
+              tickFormatter={(a) => stakeDisplay(a, selectedChainInfo, 0, true, false, true)}
               />
             <Tooltip 
                 cursor={{fill: theme.palette.divider}}

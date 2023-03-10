@@ -29,6 +29,8 @@ export default function NetStatToggle({onChange}) {
         aria-label="text alignment"
       >
         <ToggleButton value="total" aria-label="left aligned" 
+          disableRipple
+          disableFocusRipple
           sx={{ minWidth: 48, mr: 1, border: 0, 
             fontSize: "0.625rem",
             '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
@@ -36,6 +38,8 @@ export default function NetStatToggle({onChange}) {
           Total
         </ToggleButton>
         <ToggleButton value="avg" aria-label="justified" 
+          disableRipple
+          disableFocusRipple
           sx={{ minWidth: 48, mr: 1, border: 0, 
             fontSize: "0.625rem",
             '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
@@ -43,6 +47,8 @@ export default function NetStatToggle({onChange}) {
           Avg.
         </ToggleButton>
         <ToggleButton value="min" aria-label="right aligned" 
+          disableRipple
+          disableFocusRipple
           sx={{ minWidth: 48, mr: 1, border: 0, 
             fontSize: "0.625rem",
             '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
@@ -50,6 +56,8 @@ export default function NetStatToggle({onChange}) {
           Min.
         </ToggleButton>
         <ToggleButton value="max" aria-label="centered" 
+          disableRipple
+          disableFocusRipple
           sx={{ minWidth: 48, mr: 1, border: 0, 
             fontSize: "0.625rem",
             '&.Mui-selected' : {borderRadius: 16, pr: 2}, 

@@ -13,7 +13,7 @@ import githubSVG from '../assets/github_white.svg';
 import polkadotSVG from '../assets/polkadot_icon.svg';
 import kusamaSVG from '../assets/kusama_icon.svg';
 import kusamaTreasurySVG from '../assets/kusama_support_treasury_white.svg';
-import { getNetworkIcon, getTurboValidators } from '../constants/index';
+import { getTurboValidators } from '../constants/index';
 
 export default function Footer({small}) {
 	
@@ -35,7 +35,7 @@ export default function Footer({small}) {
 					{ !small ? 
 						<Grid container sx={{ py: small ? 4 : 8 }}>
 							<Grid container item xs={12} sm={6}>
-								<Link href="/" color="inherit" align="right" >
+								<Link href="https://www.turboflakes.io" target="_blank" rel="noreferrer" color="inherit" align="right" >
 									<img src={logo} style={{ height: small ? 32 : 64, marginBottom: 24 }} alt={"logo"}/>
 								</Link>
 							</Grid>
@@ -70,13 +70,13 @@ export default function Footer({small}) {
 							</Grid> 
 						</Grid> : null}
 					  <Box sx={{ py: 2, display: 'flex', justifyContent: small ? 'space-between' : 'flex-end', alignItems: 'center' }}>
-              <Link href="/" color="inherit" sx={{ display: 'flex', alignItems: 'center' }}>
+              <Link href="https://www.turboflakes.io" target="_blank" rel="noreferrer" color="inherit" sx={{ display: 'flex', alignItems: 'center' }}>
                 <img src={logo} style={{ height: small ? 32 : 64 }} alt={"logo"}/>
               </Link>
               <Box sx={{ display: 'flex'}}>
                 <Box sx={{ mr: 1, display: 'flex', alignItems: 'center'}}>
                   <Typography variant="caption" color="textSecondary">
-                  <b>Stake with us →</b>
+                  <b>Hey! Stake with</b>
                   </Typography>
                 </Box>
                 {getTurboValidators("polkadot").map((v, i) => (
@@ -120,7 +120,7 @@ export default function Footer({small}) {
           <Box sx={{ py: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
             <Box>
               <Typography variant="caption" color="textSecondary" sx={{ mr: 2 }}>
-              © 2023 TurboFlakes // ONE-T // Blockchain Analytics
+              © 2023 TurboFlakes • ONE-T // indexer bot • Substrate Blockchain Analytics
               </Typography>
               <img src={kusamaTreasurySVG} style={{ 
                     marginLeft: 8,

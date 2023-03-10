@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux'
 import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
 import ValidatorsHistoryDataGrid from './ValidatorsHistoryDataGrid';
-import IdentityFilter from './IdentityFilter';
 import { 
   useGetSessionsQuery, 
   selectSessionHistoryIds,
@@ -29,14 +27,11 @@ export default function ValidatorsHistoryInsights({skip}) {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: '1144px',
+        height: '1072px',
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}
       >
-        <Box sx={{ display: "flex", alignItems: "center"}} >
-          <IdentityFilter />
-        </Box>
         <ValidatorsHistoryDataGrid isFetching={isFetching} />
     </Paper>
   );

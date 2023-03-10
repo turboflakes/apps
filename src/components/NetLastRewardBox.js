@@ -40,7 +40,7 @@ import { stakeDisplay } from '../util/display';
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.green }}>●</span>Last Reward: <b>{stakeDisplay(data.last_rewarded, chainInfo, 4)}</b>
+            <span style={{ marginRight: '8px', color: theme.palette.semantics.green }}>●</span>Last Reward: <b>{stakeDisplay(data.last_rewarded, chainInfo, 4, true, true, true)}</b>
           </Typography>
         </Box>
       </Box>
@@ -53,7 +53,7 @@ import { stakeDisplay } from '../util/display';
 export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
   const chainInfo = useSelector(selectChainInfo)
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true});
+  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true, skip: isNaN(sessionIndex)});
 
   if (isFetching || isUndefined(data) || isUndefined(chainInfo)) {
     return (<Skeleton variant="rounded" sx={{
@@ -101,7 +101,7 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
           <Typography variant="caption" gutterBottom>Last Reward</Typography>
           <Typography variant="h4">
-            {stakeDisplay(last_rewarded, chainInfo, 4)}
+            {stakeDisplay(last_rewarded, chainInfo, 4, true, true, true)}
           </Typography>
         </Box>
       </Box>

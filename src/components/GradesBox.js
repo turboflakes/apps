@@ -2,17 +2,16 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 import isUndefined from 'lodash/isUndefined';
 import isNull from 'lodash/isNull';
-import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Skeleton from '@mui/material/Skeleton';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useTheme } from '@mui/material/styles';
 import GradesPieChart from './GradesPieChart';
+import Spinner from './Spinner';
 import Tooltip from './Tooltip';
 import { 
   useGetValidatorsQuery,
@@ -26,30 +25,22 @@ const grades = ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "F"]
 
 export default function GradesBox({sessionIndex, size}) {
   const theme = useTheme();
-  const {isSuccess, isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true}, {refetchOnMountOrArgChange: true});
+  const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
   const rawMvrs = useSelector(state => selectMVRsBySession(state, sessionIndex));
-
-  if (isFetching) {
-    return null
-  }
-  if (isFetching) {
-    return (<Skeleton variant="rounded" sx={{
-      width: '100%',
-      height: 320,
-      borderRadius: 3,
-      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-      bgcolor: 'white'
-    }} />)
-  }
-  
-  if (!rawMvrs.length) {
-    return null
-  }
-
   const mvrs = rawMvrs.filter(mvr => !isUndefined(mvr) && !isNull(mvr))
-  
-  if (!mvrs.length) {
-    return null
+
+  if (isFetching || !rawMvrs.length || !mvrs.length) {
+    return (<Box sx={{
+        width: "100%",
+        height: 320,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        <Spinner size={32}/>
+      </Box>
+    )
   }
 
   const gradesData = grades.map(g => {
@@ -61,8 +52,6 @@ export default function GradesBox({sessionIndex, size}) {
       quantity,
     }
   });
-  
-  // const pieChartData = grades.map((g, i) => ({name: g, value: gradesPercentages[i], }))
   
   return (
     <Box sx={{ 

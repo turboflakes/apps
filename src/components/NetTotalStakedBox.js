@@ -39,10 +39,10 @@ import { stakeDisplay } from '../util/display';
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>●</span>Total Issuance: <b>{stakeDisplay(data.total_issuance, chainInfo, 0, true)}</b>
+            <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>●</span>Total Issuance: <b>{stakeDisplay(data.total_issuance, chainInfo, 4, true, true, true)}</b>
           </Typography>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>Total Staked: <b>{stakeDisplay(data.total_staked, chainInfo, 0, true)}</b> ({Math.round(data.total_staked / data.total_issuance * 100 )}%)
+            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>Total Staked: <b>{stakeDisplay(data.total_staked, chainInfo, 4, true, true, true)}</b> ({Math.round(data.total_staked / data.total_issuance * 100 )}%)
           </Typography>
         </Box>
         
@@ -57,7 +57,7 @@ import { stakeDisplay } from '../util/display';
 export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
   const chainInfo = useSelector(selectChainInfo)
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true});
+  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true, skip: isNaN(sessionIndex)});
 
   if (isFetching || isUndefined(data) || isUndefined(chainInfo)) {
     return (<Skeleton variant="rounded" sx={{
@@ -111,7 +111,7 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
           <Typography variant="caption" gutterBottom>Total Staked</Typography>
           <Typography variant="h4">
-            {stakeDisplay(total_staked, chainInfo, 0, true)}
+            {stakeDisplay(total_staked, chainInfo, 4, true, true, true)}
           </Typography>
           <Typography variant="subtitle2">
             {!isUndefined(total_staked_percentage) ? `${total_staked_percentage}% of total issuance` : ''}

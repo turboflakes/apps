@@ -1,13 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
+import isNull from 'lodash/isNull'
 
-const chains = ['westend', 'kusama', 'polkadot'];
+const SUPPORTED_CHAINS = ['kusama', 'polkadot'];
 
 export const validateChain = () => {
-  //example: hash= "#/polkadot"
-  const chain = document.location.hash.substring(2, document.location.hash.length)
-  if (document.location.pathname === '/' && chains.includes(chain)) {
+  //example: "?chain=polkadot" || "?chain=kusama"
+  const chain = new URL(document.location.href).searchParams.get('chain')
+  if (!isNull(chain) && SUPPORTED_CHAINS.includes(chain)) {
     return chain
   }
+  // TODO: store/read from localStorage if chain is not provided
   return 'kusama'
 }
 

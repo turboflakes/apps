@@ -69,7 +69,7 @@ export default function PoolNomineesBox({sessionIndex, dark}) {
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}
           color={dark ? theme.palette.text.secondary : 'default'}>total nominees</Typography>
         <Typography variant="h5" color={dark ? theme.palette.text.secondary : 'default'}>
-          {currentValue}
+          {currentValue.format()}
         </Typography>
         <Tooltip title={`${currentUnique} distinct validators.`} arrow>
           <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}

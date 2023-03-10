@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Link from '@mui/material/Link';
 import SessionPerformance600Timeline from './SessionPerformance600Timeline';
 import NetTotalStakedBox from './NetTotalStakedBox';
 import NetLastRewardBox from './NetLastRewardBox';
@@ -23,11 +25,32 @@ import {
 import { 
   selectIsSocketConnected,
 } from '../features/api/socketSlice'
+import {
+  selectChain,
+} from '../features/chain/chainSlice';
+import {
+  getNetworkName, getNetworkURL
+} from '../constants'
+
+const SKILLS = ["indexer", "report", "matrix", "nominator", "rust"]
 
 export default function DashboardPage() {
+  const theme = useTheme();
+  const [index, setIndex] = React.useState(0);
+  const selectedChain = useSelector(selectChain);
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
   const currentSession = useSelector(selectSessionCurrent);
+  
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      if (index === SKILLS.length - 1) {
+        setIndex(0);  
+      }
+      setIndex(index => index + 1);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [index]);
   
   if (!isSocketConnected) {
     // TODO websocket/network disconnected page
@@ -71,39 +94,45 @@ export default function DashboardPage() {
                       }
                     }}>
                   </Box>
-                  <Box sx={{ ml: 4}}>
+                  <Box sx={{ width: 544, ml: 2 }}>
                     <Typography
                         component="h1"
                         variant="h3"
                         align="left"
                       >
-                      <Typography component="div" variant="h5" >
-                        Blockchain Analytics
+                      <Typography component="div" variant="h5" sx={{fontWeight: 400}}>
+                        Substrate Blockchain Analytics
                       </Typography>
-                        Provided by ONE-T 
+                        {`ONE-T // ${SKILLS[index]} bot`}
+                       <Typography component="div" variant="subtitle" >
+                        by TurboFlakes
+                      </Typography>
                     </Typography>
                   </Box>
                 </Box>
                 <Typography sx={{ my: 4 }} variant="subtitle1" align="left">
-                  Monitor and explore the <b>KUSAMA</b> network — search for your favourite Validators and visualize historic or realtime blockchain data analytics
+                  Monitor and explore the <Link sx={{
+                      fontWeight: 600,
+                      textDecoration: "underline",
+                      textDecorationThickness: 4,
+                      textDecorationColor: selectedChain === "polkadot" ? theme.palette.polkadot : theme.palette.background.secondary,
+                      '&:hover': {
+                        textDecorationThickness: 5,
+                      }
+                    }}
+                    href={getNetworkURL(selectedChain)} 
+                    target="_blank" rel="noreferrer" color="inherit">{getNetworkName(selectedChain)}</Link> network — search for your favourite Validators or Nomination Pools and visualize historic or realtime blockchain data analytics
                 </Typography>
               </Box>
             </Box>
-            {/* <Box sx={{ my: 6, ml: 4, display: 'flex', justifyContent: 'center', alignItems:'flex-end'}}>
-              <SearchSmall />
-              <img src={onetSVG} style={{ 
-                // marginBottom: "16px",
-                // opacity: 0.6,
-                width: 128,
-                height: 128 }} alt={"ONE-T logo"}/>
-            </Box> */}
         </Grid>
+
         <Grid sx={{ mt: 8 }} item xs={5}>
           <GradesBox sessionIndex={currentSession} size="lg" />
         </Grid>
 
         <Grid item xs={12} sx={{ my: 2}}>
-          <SessionPerformance600Timeline sessionIndex={currentSession} />
+          <SessionPerformance600Timeline sessionIndex={currentSession} skip={isNaN(currentSession)} />
         </Grid>
 
         <Grid item xs={12}>

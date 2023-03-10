@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux'
 import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
@@ -9,10 +8,13 @@ import Skeleton from '@mui/material/Skeleton';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
 import NetStatToggle from './NetStatToggle';
 import NetValChartLegend from './NetValChartLegend';
-
 import { 
   useGetSessionsQuery,
- } from '../features/api/sessionsSlice'
+ } from '../features/api/sessionsSlice';
+
+import {
+  convertToIU
+} from '../util/display';
 
  const renderTooltip = (props, theme) => {
   const { active, payload } = props;
@@ -58,7 +60,7 @@ import {
 
 export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true});
+  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {skip: isNaN(sessionIndex)});
   const [key, setKey] = React.useState("vals_points_total");
 
   if (isFetching || isUndefined(data)) {
@@ -127,7 +129,7 @@ export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
             margin={{
               top: 8,
               right: 32,
-              left: -24,
+              left: -20,
               bottom: 16,
             }}
           >
@@ -143,6 +145,7 @@ export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
               style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
               axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
               tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
+              tickFormatter={(a) => convertToIU(a, 0)}
               />
             <Tooltip 
                 cursor={{fill: theme.palette.divider}}

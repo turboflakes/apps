@@ -29,6 +29,8 @@ export default function PoolHistoryToggle({onChange}) {
         aria-label="text alignment"
       >
         <ToggleButton value="members" aria-label="left aligned" 
+          disableRipple
+          disableFocusRipple
           sx={{ minWidth: 48, mr: 1, border: 0, 
             fontSize: "0.625rem",
             '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
@@ -36,6 +38,8 @@ export default function PoolHistoryToggle({onChange}) {
           members
         </ToggleButton>
         <ToggleButton value="staked" aria-label="justified" 
+          disableRipple
+          disableFocusRipple
           sx={{ minWidth: 48, mr: 1, border: 0, 
             fontSize: "0.625rem",
             '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
@@ -43,6 +47,8 @@ export default function PoolHistoryToggle({onChange}) {
           staked
         </ToggleButton>
         <ToggleButton value="reward" aria-label="centered" 
+          disableRipple
+          disableFocusRipple
           sx={{ minWidth: 48, mr: 0, border: 0, 
             fontSize: "0.625rem",
             '&.Mui-selected' : {borderRadius: 16, pr: 2}, 

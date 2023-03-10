@@ -26,7 +26,10 @@ import {
 import {
   selectChainInfo
 } from '../features/chain/chainSlice';
-import { stakeDisplay } from '../util/display';
+import { 
+  stakeDisplay,
+  convertToIU
+} from '../util/display';
 
 const LABEL = {
   "members": "Members",
@@ -111,7 +114,7 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
 
   const mainValue = poolStats[key][historySessionIds.length - 1];
   const mainValueFormatted = !isUndefined(mainValue) ? 
-    (["reward", "staked"].includes(key) ? stakeDisplay(mainValue, selectedChainInfo, 0, true, true) : mainValue.format()) : 0;
+    (["reward", "staked"].includes(key) ? stakeDisplay(mainValue, selectedChainInfo, 4, true, true, true) : mainValue.format()) : 0;
 
   return (
     <Paper sx={{
@@ -146,7 +149,7 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
             margin={{
               top: 8,
               right: 32,
-              left: -8,
+              left: -24,
               bottom: 16,
             }}
           >
@@ -165,7 +168,7 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
               style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
               axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
               tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
-              tickFormatter={(a) => ["reward", "staked"].includes(key) ? stakeDisplay(a, selectedChainInfo, 0, true, false) : a}
+              tickFormatter={(a) => ["reward", "staked"].includes(key) ? stakeDisplay(a, selectedChainInfo, 0, true, false, true) : a}
               // tickCount={5}
               // tick={false}
               // tickLine={false}
