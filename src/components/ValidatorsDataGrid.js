@@ -12,6 +12,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import Identicon from '@polkadot/react-identicon';
 import DetailsIcon from './DetailsIcon';
 import GridIdentityLink from './GridIdentityLink';
+import IdentityFilter from './IdentityFilter';
+import InsightsInfoLegend from './InsightsInfoLegend';
 import { grade } from '../util/grade'
 import {
   useGetValidatorsQuery,
@@ -118,6 +120,13 @@ const defineColumns = (theme, chain) => {
     valueGetter: (params) => (!isNull(params.row.paraId) ? (isChainSupported(chain, params.row.paraId) ? getChainName(chain, params.row.paraId) : params.row.paraId) : null),
   },
   {
+    field: 'disputes',
+    headerName: '↔',
+    type: 'number',
+    width: 64,
+    disableColumnMenu: true,
+  },
+  {
     field: 'core_assignments',
     headerName: '↻',
     type: 'number',
@@ -167,9 +176,8 @@ const defineColumns = (theme, chain) => {
     type: 'number',
     width: 96,
     disableColumnMenu: true,
-    sortingOrder: ['asc', 'desc'],
+    // sortingOrder: ['asc', 'desc'],
     valueGetter: (params) => (scoreDisplay(params.row.score)),
-    
   },
   {
     field: 'options',
@@ -196,31 +204,45 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
   const subsetFilter = useSelector(selectSubsetFilter);
   const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "authority", show_summary: true, show_profile: true}, {refetchOnMountOrArgChange: true, skip});
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex], false, identityFilter, subsetFilter));
-  const [onlyPV, setOnlyPV] = React.useState(true);
-  const [viewAllGrades, setViewAllGrades] = React.useState(false);
+  const [showOnlyPV, setShowOnlyPV] = React.useState(true);
+  const [showAllGrades, setShowAllGrades] = React.useState(false);
+  const [onlyDisputes, setOnlyDisputes] = React.useState(false);
+  const [onlyLowGrades, setOnlyLowGrades] = React.useState(false);
   
   if (isUndefined(rows) && !isSuccess) {
     return null
   }
 
-  const columns = defineColumns(theme, selectedChain);
+  const rowsFiltered1 = showOnlyPV ? rows.filter(v => !isNull(v.mvr)) : rows;
+  const rowsFiltered2 = showAllGrades ? rowsFiltered1 : rowsFiltered1.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
+  const rowsFiltered3 = onlyDisputes ? rows.filter(v => v.disputes > 0) : rowsFiltered2;
+  const rowsFiltered4 = onlyLowGrades ? rows.filter(v => !isNull(v.mvr) ? grade(1-v.mvr) === 'F' : false) : rowsFiltered3;
+  const gradeFsCounter = rowsFiltered1.filter(v => !isNull(v.mvr) ? grade(1-v.mvr) === 'F' : false).length;
+  const disputesCounter = rows.filter(v => v.disputes > 0).length;
 
-  const rowsFiltered1 = onlyPV ? rows.filter(v => !isNull(v.mvr)) : rows;
-  const rowsFiltered2 = viewAllGrades ? rowsFiltered1 : rowsFiltered1.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
-  const gradeFsCounter = rowsFiltered1.filter((v) => !isNull(v.mvr) ? grade(1-v.mvr) === 'F' : false).length;
-
+  const columns = disputesCounter > 0 ? 
+    defineColumns(theme, selectedChain): defineColumns(theme, selectedChain).filter(c => c.field !== 'disputes');
+  
   const handleOnlyPVChange = (event) => {
-    setOnlyPV(event.target.checked);
+    setShowOnlyPV(event.target.checked);
   };
 
   const handleViewAllGradesChange = (event) => {
-    setViewAllGrades(event.target.checked);
+    setShowAllGrades(event.target.checked);
+  };
+
+  const handleOnlyDisputesChange = (event) => {
+    setOnlyDisputes(event.target.checked);
+  };
+
+  const handleOnlyLowGradesChange = (event) => {
+    setOnlyLowGrades(event.target.checked);
   };
 
   return (
     <Box
       sx={{
-        p: 2,
+        // p: 2,
         // m: 2,
         display: 'flex',
         flexDirection: 'column',
@@ -231,6 +253,53 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
         // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}
       >
+        <Box sx={{position: 'relative', mb:2, display: 'flex', alignItems: 'center'}}>
+          <IdentityFilter />
+          <FormGroup sx={{ ml: 4, display: 'flex', flexDirection: 'row'}}>
+            <FormControlLabel control={
+              <Switch size="small" checked={showOnlyPV} onChange={handleOnlyPVChange} />
+            } 
+            label="Show only active para-validators" 
+            sx={{
+              '& .MuiFormControlLabel-label' : {
+                ...theme.typography.caption
+              }
+            }}/>
+            <FormControlLabel control={
+              <Switch size="small" disabled={disputesCounter === 0} checked={onlyDisputes} 
+                onChange={handleOnlyDisputesChange} />
+            } 
+            label="Show only disputes" 
+            sx={{
+              '& .MuiFormControlLabel-label' : {
+                ...theme.typography.caption
+              }
+            }}/>
+            <FormControlLabel control={
+              <Switch size="small" disabled={gradeFsCounter === 0} checked={onlyLowGrades} 
+                onChange={handleOnlyLowGradesChange} />
+            } 
+            label="Show only low grades" 
+            sx={{
+              '& .MuiFormControlLabel-label' : {
+                ...theme.typography.caption
+              }
+            }}/>
+            <FormControlLabel control={
+              <Switch size="small" disabled={gradeFsCounter === 0 || onlyDisputes || onlyLowGrades} checked={showAllGrades || onlyDisputes || onlyLowGrades} 
+                onChange={handleViewAllGradesChange} />
+            } 
+            label="Show all grades" 
+            sx={{
+              '& .MuiFormControlLabel-label' : {
+                ...theme.typography.caption
+              }
+            }}/>
+          </FormGroup>
+          <Box sx={{ position: 'absolute', top: 0, right: 0}}>
+            <InsightsInfoLegend />
+          </Box>
+        </Box>
         <DataGrid
           sx={{ bgcolor: '#FFF', width: '100%', borderRadius: 0, border: 0,
           '& .MuiDataGrid-footerContainer': {
@@ -249,35 +318,12 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
             },
           }}
           // onRowClick={handleOnRowClick}
-          rows={rowsFiltered2}
+          rows={rowsFiltered4}
           columns={columns}
           rowsPerPageOptions={[16]}
           pagination
           disableSelectionOnClick
         />
-        <FormGroup sx={{ display: 'flex', flexDirection: 'row'}}>
-          <FormControlLabel control={
-            <Switch size="small" checked={onlyPV} onChange={handleOnlyPVChange} />
-          } 
-          label="Show only active para-validators" 
-          sx={{
-            '& .MuiFormControlLabel-label' : {
-              ...theme.typography.caption
-            }
-          }}/>
-          <FormControlLabel control={
-            <Switch size="small" disabled={gradeFsCounter === 0} checked={viewAllGrades} onChange={handleViewAllGradesChange} />
-          } 
-          label="Show all grades" 
-          sx={{
-            '& .MuiFormControlLabel-label' : {
-              ...theme.typography.caption
-            }
-          }}/>
-          {/* {gradeFsCounter !== 0 ?
-            <FormHelperText>Note: {gradeFsCounter} validators with grade <b>F</b> are hidden.</FormHelperText>
-            : null} */}
-        </FormGroup>
     </Box>
   );
 }

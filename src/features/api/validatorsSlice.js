@@ -249,10 +249,10 @@ const selectValidatorsBySessions = (state, sessions = [], suffix = "") => {
 
 function createRows(id, identity, address, subset, 
   active_sessions, para_sessions, authored_blocks, core_assignments, 
-  explicit_votes, implicit_votes, missed_votes, avg_pts, commission, paraId, timeline) {
+  explicit_votes, implicit_votes, missed_votes, disputes, avg_pts, commission, paraId, timeline) {
   return {id, identity, address, subset, 
     active_sessions, para_sessions, authored_blocks, 
-    core_assignments, explicit_votes, implicit_votes, missed_votes, 
+    core_assignments, explicit_votes, implicit_votes, missed_votes, disputes,
     avg_pts, commission, paraId, timeline };
 }
 
@@ -321,13 +321,14 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
   const rows = validators.map((x, i) => {
     const f1 = x.filter(y => y.is_auth);
     const authored_blocks = f1.map(v => v.auth.ab.length).reduce((a, b) => a + b, 0);
-    const f2 = x.filter(y => y.is_auth && y.is_para && !isUndefined(y.para_summary));
+    const f2 = x.filter(y => y.is_auth && y.is_para && !isUndefined(y.para_summary) && !isUndefined(y.para));
     // const para_points = f2.length > 0 ? f2.map(v => v.para_summary.pt - (v.para_summary.ab * 20)).reduce((a, b) => a + b, 0) : null;
     const para_points = f2.length > 0 ? f2.map(v => v.auth.ep - v.auth.sp - (v.auth.ab.length * 20)).reduce((a, b) => a + b, 0) : null;
     const core_assignments = f2.length > 0 ? f2.map(v => v.para_summary.ca).reduce((a, b) => a + b, 0) : null;
     const implicit_votes = f2.length > 0 ? f2.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0) : null;
     const explicit_votes = f2.length > 0 ? f2.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0) : null;
     const missed_votes = f2.length > 0 ? f2.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0) : null;
+    const disputes = f2.length > 0 ? f2.map(v => !isUndefined(v.para.disputes) ? v.para.disputes.length : 0).reduce((a, b) => a + b, 0) : null;
     const avg_bck_pts = f2.length > 0 ? para_points / f2.length : null;
     const profile = selectValProfileByAddress(state, x[0].address);
     const paraId = f2.length > 0 ? f2.map(v => v.para.pid) : null;
@@ -359,7 +360,8 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
       core_assignments,
       explicit_votes, 
       implicit_votes, 
-      missed_votes, 
+      missed_votes,
+      disputes,
       avg_bck_pts,
       !isUndefined(profile) ? profile.commission : null,
       paraId,

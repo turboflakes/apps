@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import isUndefined from 'lodash/isUndefined'
 import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
@@ -8,6 +9,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import Identicon from '@polkadot/react-identicon';
 import DetailsIcon from './DetailsIcon';
 import GridIdentityLink from './GridIdentityLink';
+import InsightsInfoLegend from './InsightsInfoLegend';
 import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
 import {
@@ -92,6 +94,13 @@ const defineColumns = (theme) => {
     disableColumnMenu: true,
   },
   {
+    field: 'd',
+    headerName: '↔',
+    type: 'number',
+    width: 64,
+    disableColumnMenu: true,
+  },
+  {
     field: 'i',
     headerName: '✓i',
     type: 'number',
@@ -161,8 +170,8 @@ const defineColumns = (theme) => {
   },
 ]};
 
-function createDataGridRows(id, identity, address, b, i, e, m, p) {
-  return {id, identity, address, b, i, e, m, p };
+function createDataGridRows(id, identity, address, b, i, e, m, d, p) {
+  return {id, identity, address, b, i, e, m, d, p };
 }
 
 export default function ValGroupDataGrid({sessionIndex, groupId}) {
@@ -186,9 +195,10 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
         v.para_summary.iv, 
         v.para_summary.ev, 
         v.para_summary.mv, 
+        !isUndefined(v.para.disputes) ? v.para.disputes.length : 0,
         total_points)
     } else {
-      return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0)
+      return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0, 0)
     }
   })
   const columns = defineColumns(theme);
@@ -207,9 +217,8 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
       }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box>
-            <Typography variant="h6">Validators</Typography>
-          </Box>
+          <Typography variant="h6">Validators</Typography>
+          <InsightsInfoLegend />
         </Box>
         <DataGrid
           sx={{ bgcolor: '#FFF', width: '100%', borderRadius: 0, border: 0 }}
@@ -219,6 +228,7 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
           rowsPerPageOptions={[5]}
           hideFooter
           disableSelectionOnClick
+          disableRowSelectionOnClick
         />
     </Paper>
   );
