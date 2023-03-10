@@ -29,7 +29,7 @@ import {
       >
         <Box sx={{mb: 2}}>
           <Typography component="div" variant="caption" color="inherit">
-            <b>Chilled Validators and Disputes</b>
+            <b>Chilled Validators</b>
           </Typography>
           <Typography component="div" variant="caption" color="inherit">
             <i>{`session #${data.session.format()}`}</i>
@@ -38,10 +38,7 @@ import {
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
             <span style={{ marginRight: '8px', color: theme.palette.grey[400] }}>❚</span>Chilled: <b>{data.chilled} validators</b> ({Math.round((data.chilled * 10000 ) / data.total) / 100}%)
-          </Typography>  
-          <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>❚</span>Disputes: <b>{data.disputes}</b>
-          </Typography>  
+          </Typography>
         </Box>
       </Box>
     );
@@ -52,12 +49,9 @@ import {
 
 function ChartLegend({theme}) {
   return (
-    <Box sx={{display: 'flex', justifyContent: 'flex-end', mr: 8}}>
-      <Typography variant="caption" color="inherit" sx={{mr: 1}}>
+    <Box sx={{display: 'flex', justifyContent: 'flex-end', mr: 4}}>
+      <Typography variant="caption" color="inherit">
         <span style={{ marginRight: '8px', color: theme.palette.grey[400] }}>❚</span>Chilled validators
-      </Typography>
-      <Typography variant="caption" color="inherit" >
-        <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>❚</span>Disputes
       </Typography>
     </Box>
   );
@@ -81,12 +75,13 @@ export default function NetChilledValidatorsBox({sessionIndex, maxSessions}) {
     return null
   }
 
+  const mainValue = data.filter(s => s.six === sessionIndex - 1)
+    .map(s => !isUndefined(s.netstats) ? s.netstats.total_vals_chilled : 0)[0];
 
   const timelineData = data.map((s, i) => ({
     session: s.six,
     total: !isUndefined(s.stats) ? s.stats.na : 0,
     chilled: !isUndefined(s.netstats) ? s.netstats.total_vals_chilled : 0,
-    disputes: !isUndefined(s.stats) ? s.stats.di : 0,
   }))
 
   return (
@@ -108,10 +103,10 @@ export default function NetChilledValidatorsBox({sessionIndex, maxSessions}) {
       >
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption" gutterBottom>Chilled Validators and Disputes</Typography>
-          {/* <Typography variant="h4">
+          <Typography variant="caption" gutterBottom>Total <b>Chilled Validators</b> by the end of the previous epoch</Typography>
+          <Typography variant="h4">
             {mainValue}
-          </Typography> */}
+          </Typography>
         </Box>
       </Box>
       <Box sx={{ height: '100%'}}>
@@ -122,7 +117,7 @@ export default function NetChilledValidatorsBox({sessionIndex, maxSessions}) {
             data={timelineData}
             margin={{
               top: 8,
-              right: 0,
+              right: 32,
               left: -24,
               bottom: 16,
             }}
@@ -147,22 +142,6 @@ export default function NetChilledValidatorsBox({sessionIndex, maxSessions}) {
                 data.map((entry, index) => (
                 <Cell key={`cell-${index}`} cursor="pointer" 
                   fill={theme.palette.grey[400]} />))
-              }
-            </Bar>
-            {/* show disputes */}
-            <YAxis type="number" yAxisId="rightDisputes"
-              orientation="right"
-              // domain={['dataMin', 'dataMax']}
-              style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
-              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
-              tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
-              />
-            <Bar dataKey="disputes" yAxisId="rightDisputes"
-              barSize={8} shape={<Rectangle radius={[8, 8, 0, 0]} />} >
-              {
-                data.map((entry, index) => (
-                <Cell key={`cell-${index}`} cursor="pointer" 
-                  fill={theme.palette.semantics.red} />))
               }
             </Bar>
             

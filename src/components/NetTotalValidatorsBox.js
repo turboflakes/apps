@@ -5,7 +5,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
 import NetValChartLegend from './NetValChartLegend';
 
 import { 
@@ -103,7 +103,7 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
       >
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption" gutterBottom>Total Validators</Typography>
+          <Typography variant="caption" gutterBottom><b>Total Validators</b> by the end of the previous epoch</Typography>
           <Typography variant="h4">
             {!isUndefined(mainValue) ? mainValue.format() : 0}
           </Typography>
@@ -111,7 +111,7 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
       </Box>
       <Box sx={{ height: '100%'}}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
+          <AreaChart
             // width="100%"
             // height="100"
             data={timelineData}
@@ -130,7 +130,7 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
               tickLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
               />
             <YAxis type="number" 
-              domain={['dataMin', 'dataMax']}
+              // domain={['dataMin', 'dataMax']}
               style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
               axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
               tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
@@ -140,15 +140,15 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
                 offset={24}
                 wrapperStyle={{ zIndex: 100 }} 
                 content={props => renderTooltip(props, theme)} />
-            <Line isAnimationActive={false} type="monotone" dataKey="c100" 
-              strokeWidth={2} stroke={theme.palette.grey[900]} dot={false} />
-            <Line isAnimationActive={false} type="monotone" dataKey="others" 
-              strokeWidth={2} stroke={theme.palette.grey[200]} dot={false} />
-            <Line isAnimationActive={false} type="monotone" dataKey="tvp" 
-              strokeWidth={2} stroke={theme.palette.semantics.blue} dot={false} />
+            <Area type="monotone" stackId="1" dataKey="c100"
+              strokeWidth={0} fill={theme.palette.grey[900]} />
+            <Area type="monotone" stackId="1" dataKey="others"
+              strokeWidth={0} fill={theme.palette.grey[200]} />
+            <Area type="monotone" stackId="1" dataKey="tvp"
+              strokeWidth={0} fill={theme.palette.semantics.blue} />
             
             <Legend verticalAlign="top" content={() => NetValChartLegend({theme})} height={24} />
-          </LineChart>
+          </AreaChart>
         </ResponsiveContainer>
       </Box>
       <Typography variant='caption' align='right' sx={{mb: 1, mr: 3, color: theme.palette.grey[400]}}>

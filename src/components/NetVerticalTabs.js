@@ -9,6 +9,7 @@ import NetOversubscribedValidatorsBox from './NetOversubscribedValidatorsBox';
 import NetPointsValidatorsBox from './NetPointsValidatorsBox';
 import NetOwnStakeValidatorsBox from './NetOwnStakeValidatorsBox';
 import NetChilledValidatorsBox from './NetChilledValidatorsBox';
+import NetDisputesInitiatedBox from './NetDisputesInitiatedBox';
 
 
 function a11yProps(index) {
@@ -50,8 +51,9 @@ export default function NetVerticalTabs({sessionIndex, maxSessions, onChange}) {
         <Tab sx={{ my:1, mr: 2,  borderRadius: 3, textTransform: 'none', width: 136 }} label="Total Val." {...a11yProps(1)} disableRipple disableFocusRipple />
         <Tab sx={{ my:1, mr: 2,  borderRadius: 3, textTransform: 'none', width: 136 }} label="Oversubscribed" {...a11yProps(2)} disableRipple disableFocusRipple />
         <Tab sx={{ my:1, mr: 2,  borderRadius: 3, textTransform: 'none', width: 136 }} label="Own Stake" {...a11yProps(2)} disableRipple disableFocusRipple />
-        <Tab sx={{ my:1, mr: 2,  borderRadius: 3, textTransform: 'none', width: 136 }} label="Session Points" {...a11yProps(2)} disableRipple disableFocusRipple />
+        <Tab sx={{ my:1, mr: 2,  borderRadius: 3, textTransform: 'none', width: 136 }} label="Era Points" {...a11yProps(2)} disableRipple disableFocusRipple />
         <Tab sx={{ my:1, mr: 2,  borderRadius: 3, textTransform: 'none', width: 136 }} label="Chilled Val." {...a11yProps(2)} disableRipple disableFocusRipple />
+        <Tab sx={{ my:1, mr: 2,  borderRadius: 3, textTransform: 'none', width: 136 }} label="Disputes Ini." {...a11yProps(2)} disableRipple disableFocusRipple />
         
       </Tabs>
 
@@ -61,7 +63,7 @@ export default function NetVerticalTabs({sessionIndex, maxSessions, onChange}) {
       { value === 3 ? <NetOwnStakeValidatorsBox sessionIndex={sessionIndex} maxSessions={maxSessions} /> : null }
       { value === 4 ? <NetPointsValidatorsBox sessionIndex={sessionIndex} maxSessions={maxSessions} /> : null }
       { value === 5 ? <NetChilledValidatorsBox sessionIndex={sessionIndex} maxSessions={maxSessions} /> : null }
-      
+      { value === 6 ? <NetDisputesInitiatedBox sessionIndex={sessionIndex} maxSessions={maxSessions} /> : null }
       
     </Box>
   );
