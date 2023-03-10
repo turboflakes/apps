@@ -266,7 +266,7 @@ export default function LayoutPage({api}) {
                   <img src={onetSVG} style={{ 
                     width: 96,
                     height: 96 }} alt={"github"}/>
-                  <Typography sx={{mt: 2}} variant="h6" color="textPrimary" gutterBottom>ONE-T // indexer bot</Typography>
+                  <Typography sx={{mt: 2}} variant="h6" color="textPrimary" gutterBottom>ONE-T // explorer</Typography>
                   <Chip sx={{ my: 2, p: 1}} label="beta version" color='primary'/>
                 </Box> : 
                 <Box sx={{ 
