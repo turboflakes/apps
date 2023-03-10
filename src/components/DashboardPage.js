@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Link from '@mui/material/Link';
 import SessionPerformance600Timeline from './SessionPerformance600Timeline';
 import NetTotalStakedBox from './NetTotalStakedBox';
 import NetLastRewardBox from './NetLastRewardBox';
@@ -27,10 +29,11 @@ import {
   selectChain,
 } from '../features/chain/chainSlice';
 import {
-  getNetworkName
+  getNetworkName, getNetworkURL
 } from '../constants'
 
 export default function DashboardPage() {
+  const theme = useTheme();
   const selectedChain = useSelector(selectChain);
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
@@ -95,7 +98,17 @@ export default function DashboardPage() {
                   </Box>
                 </Box>
                 <Typography sx={{ my: 4 }} variant="subtitle1" align="left">
-                  Monitor and explore the <b>{getNetworkName(selectedChain)}</b> network — search for your favourite Validators or Nomination Pools and visualize historic or realtime blockchain data analytics
+                  Monitor and explore the <Link sx={{
+                      fontWeight: 600,
+                      textDecoration: "underline",
+                      textDecorationThickness: 4,
+                      textDecorationColor: selectedChain === "polkadot" ? theme.palette.polkadot : theme.palette.background.secondary,
+                      '&:hover': {
+                        textDecorationThickness: 5,
+                      }
+                    }}
+                    href={getNetworkURL(selectedChain)} 
+                    target="_blank" rel="noreferrer" color="inherit">{getNetworkName(selectedChain)}</Link> network — search for your favourite Validators or Nomination Pools and visualize historic or realtime blockchain data analytics
                 </Typography>
               </Box>
             </Box>

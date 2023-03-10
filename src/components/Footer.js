@@ -35,7 +35,7 @@ export default function Footer({small}) {
 					{ !small ? 
 						<Grid container sx={{ py: small ? 4 : 8 }}>
 							<Grid container item xs={12} sm={6}>
-								<Link href="/" color="inherit" align="right" >
+								<Link href="https://www.turboflakes.io" target="_blank" rel="noreferrer" color="inherit" align="right" >
 									<img src={logo} style={{ height: small ? 32 : 64, marginBottom: 24 }} alt={"logo"}/>
 								</Link>
 							</Grid>
@@ -70,7 +70,7 @@ export default function Footer({small}) {
 							</Grid> 
 						</Grid> : null}
 					  <Box sx={{ py: 2, display: 'flex', justifyContent: small ? 'space-between' : 'flex-end', alignItems: 'center' }}>
-              <Link href="/" color="inherit" sx={{ display: 'flex', alignItems: 'center' }}>
+              <Link href="https://www.turboflakes.io" target="_blank" rel="noreferrer" color="inherit" sx={{ display: 'flex', alignItems: 'center' }}>
                 <img src={logo} style={{ height: small ? 32 : 64 }} alt={"logo"}/>
               </Link>
               <Box sx={{ display: 'flex'}}>
