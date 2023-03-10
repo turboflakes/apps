@@ -11,7 +11,6 @@ import Tooltip from '@mui/material/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWallet } from '@fortawesome/free-solid-svg-icons'
 import GradeIcon from './GradeIcon';
-import GradeHistoryIcon from './GradeHistoryIcon';
 import tvpValid from '../assets/tvp_valid.svg';
 // import tvpInvalid from '../assets/tvp_invalid.svg';
 import {
