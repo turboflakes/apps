@@ -69,17 +69,8 @@ function ItemButtom({validator}) {
 
 export default function PoolNomineesList({sessionIndex, poolId}) {
   // const theme = useTheme();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   // const selectedChain = useSelector(selectChain);
   const validators = useSelector(state => selectNomineesBySessionAndPoolId(state, sessionIndex, poolId));
-
-  const handleAddressSelected = (address) => {
-    dispatch(addressChanged(address));
-    dispatch(pageChanged(`validator/${address}`));
-    // navigate(`/one-t/${selectedChain}/validator/${address}`)
-    navigate(`/validator/${address}`)
-  }
 
   return (
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '192px'}}>

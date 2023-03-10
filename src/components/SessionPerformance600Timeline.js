@@ -55,8 +55,8 @@ import {
 
 export default function SessionPerformance600Timeline({sessionIndex, skip}) {
   const theme = useTheme();
-  const {isSuccess: isSuccessCurrent, isFetching: isFetchingCurrent} = useGetBlocksQuery({session: sessionIndex, show_stats: true}, {skip});
-  const {isSuccess: isSuccessPrevious, isFetching: isFetchingPrevious} = useGetBlocksQuery({session: sessionIndex - 1, show_stats: true}, {skip});
+  const {isFetching: isFetchingCurrent} = useGetBlocksQuery({session: sessionIndex, show_stats: true}, {skip});
+  const {isFetching: isFetchingPrevious} = useGetBlocksQuery({session: sessionIndex - 1, show_stats: true}, {skip});
   const blocks = useSelector(selectLastXBlocks)
 
   if (isFetchingCurrent || isFetchingPrevious || blocks.length < 2) {

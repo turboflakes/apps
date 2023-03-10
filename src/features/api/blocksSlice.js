@@ -7,7 +7,6 @@ import {
 } from '@reduxjs/toolkit'
 import isUndefined from 'lodash/isUndefined'
 import findLast from 'lodash/findLast'
-import orderBy from 'lodash/orderBy'
 import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
 import { selectSessionByIndex } from './sessionsSlice'
@@ -31,7 +30,8 @@ export const extendedApi = apiSlice.injectEndpoints({
       providesTags: (result, error, arg) => [{ type: 'Blocks', id: arg }],
       async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
         try {
-          const { data } = await queryFulfilled
+          // const { data } = await queryFulfilled
+          await queryFulfilled
           // `onSuccess` subscribe for updates
           if (params.blockId === "finalized") {
             // subscribe to finalized block and from previous session at the same index

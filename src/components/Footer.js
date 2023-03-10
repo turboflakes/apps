@@ -13,7 +13,7 @@ import githubSVG from '../assets/github_white.svg';
 import polkadotSVG from '../assets/polkadot_icon.svg';
 import kusamaSVG from '../assets/kusama_icon.svg';
 import kusamaTreasurySVG from '../assets/kusama_support_treasury_white.svg';
-import { getNetworkIcon, getTurboValidators } from '../constants/index';
+import { getTurboValidators } from '../constants/index';
 
 export default function Footer({small}) {
 	

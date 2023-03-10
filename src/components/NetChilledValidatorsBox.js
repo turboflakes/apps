@@ -6,9 +6,8 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { ComposedChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, 
+import { ComposedChart, XAxis, YAxis, Tooltip, CartesianGrid, Legend, 
   Bar, Rectangle, Cell, ResponsiveContainer } from 'recharts';
-import NetValChartLegend from './NetValChartLegend';
 
 import { 
   useGetSessionsQuery,
@@ -83,10 +82,6 @@ export default function NetChilledValidatorsBox({sessionIndex, maxSessions}) {
   if (!isSuccess) {
     return null
   }
-
-  // 
-  const mainValue = data.filter(s => s.six === sessionIndex - 1)
-    .map(s => !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m.vals_active).reduce((a, b) => a + b, 0) : 0)[0];
 
   const timelineData = data.map((s, i) => ({
     session: s.six,

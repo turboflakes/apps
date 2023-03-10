@@ -8,7 +8,6 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Skeleton from '@mui/material/Skeleton';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useTheme } from '@mui/material/styles';
 import GradesPieChart from './GradesPieChart';
@@ -26,7 +25,7 @@ const grades = ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "F"]
 
 export default function GradesBox({sessionIndex, size}) {
   const theme = useTheme();
-  const {isSuccess, isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
+  const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
   const rawMvrs = useSelector(state => selectMVRsBySession(state, sessionIndex));
   const mvrs = rawMvrs.filter(mvr => !isUndefined(mvr) && !isNull(mvr))
 

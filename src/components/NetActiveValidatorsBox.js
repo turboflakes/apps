@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend, 
-  Bar, Rectangle, Cell, ResponsiveContainer } from 'recharts';
+  ResponsiveContainer } from 'recharts';
 import NetValChartLegend from './NetValChartLegend';
 
 import { 

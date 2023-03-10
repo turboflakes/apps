@@ -27,20 +27,15 @@ import apiSlice from '../features/api/apiSlice'
 import {
   pageChanged,
   selectPage,
-  selectIsHistoryMode,
 } from '../features/layout/layoutSlice';
 import {
   chainInfoChanged,
   // chainChanged,
   selectChain,
 } from '../features/chain/chainSlice';
-import {
-  selectAccount,
-} from '../features/web3/web3Slice';
 import { 
   getNetworkIcon, 
   getNetworkLogo, 
-  getNetworkName 
 } from '../constants'
 
 function useWeb3ChainInfo(api) {
@@ -140,10 +135,8 @@ export default function LayoutPage({api}) {
   // const selectedAddress = useSelector(selectAddress);
   const selectedPage = useSelector(selectPage);
   // const selectedMode = useSelector(selectMode);
-  const isHistoryMode = useSelector(selectIsHistoryMode);
   // const maxHistorySessions = useSelector(selectMaxHistorySessions);
   
-  const web3Account = useSelector(selectAccount);
 	useWeb3ChainInfo(api);
 
   useScrollTop(ref, selectedPage);

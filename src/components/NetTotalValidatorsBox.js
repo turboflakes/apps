@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux'
 import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
