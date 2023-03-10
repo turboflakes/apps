@@ -32,12 +32,25 @@ import {
   getNetworkName, getNetworkURL
 } from '../constants'
 
+const SKILLS = ["indexer", "report", "matrix", "nominator", "rust"]
+
 export default function DashboardPage() {
   const theme = useTheme();
+  const [index, setIndex] = React.useState(0);
   const selectedChain = useSelector(selectChain);
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
   const currentSession = useSelector(selectSessionCurrent);
+  
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      if (index === SKILLS.length - 1) {
+        setIndex(0);  
+      }
+      setIndex(index => index + 1);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [index]);
   
   if (!isSocketConnected) {
     // TODO websocket/network disconnected page
@@ -81,7 +94,7 @@ export default function DashboardPage() {
                       }
                     }}>
                   </Box>
-                  <Box sx={{ ml: 4}}>
+                  <Box sx={{ width: 544, ml: 2 }}>
                     <Typography
                         component="h1"
                         variant="h3"
@@ -90,7 +103,7 @@ export default function DashboardPage() {
                       <Typography component="div" variant="h5" sx={{fontWeight: 400}}>
                         Substrate Blockchain Analytics
                       </Typography>
-                        ONE-T // <span style={{ }}>indexer bot</span>
+                        {`ONE-T // ${SKILLS[index]} bot`}
                        <Typography component="div" variant="subtitle" >
                         by TurboFlakes
                       </Typography>
