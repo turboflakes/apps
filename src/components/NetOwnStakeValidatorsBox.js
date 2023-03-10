@@ -62,7 +62,7 @@ import { stakeDisplay } from '../util/display';
 export default function NetOwnStakeValidatorsBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
   const selectedChainInfo = useSelector(selectChainInfo)
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true});
+  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {skip: isNaN(sessionIndex)});
   const [key, setKey] = React.useState("vals_own_stake_total");
 
   if (isFetching || isUndefined(data) || isUndefined(selectedChainInfo)) {
