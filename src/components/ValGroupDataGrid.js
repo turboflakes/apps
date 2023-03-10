@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
@@ -8,22 +7,16 @@ import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import Identicon from '@polkadot/react-identicon';
 import DetailsIcon from './DetailsIcon';
+import GridIdentityLink from './GridIdentityLink';
 import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
 import {
   selectValidatorsBySessionAndGroupId
 } from '../features/api/valGroupsSlice'
 import {
-  addressChanged,
-  selectChain,
   selectAddress
 } from '../features/chain/chainSlice';
-import {
-  pageChanged
-} from '../features/layout/layoutSlice';
 import { stashDisplay, nameDisplay } from '../util/display'
-
-// const codes = ['★', 'A', 'B', 'C', 'D']
 
 const defineColumns = (theme) => {
   return [
@@ -38,28 +31,37 @@ const defineColumns = (theme) => {
   //   },
   // },
   { 
-      field: 'id', 
-      headerName: '', 
-      width: 48,
-      sortable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => {
-        if (params.row.address) {
-          return (
-              <Identicon
-                value={params.row.address}
-                size={24}
-                theme={'polkadot'} />
-            )
-        }
-        return (<div>-</div>)  
+    field: 'id', 
+    headerName: '', 
+    width: 48,
+    sortable: false,
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      if (params.row.address) {
+        return (
+            <Identicon
+              value={params.row.address}
+              size={24}
+              theme={'polkadot'} />
+          )
       }
-    },
+      return (<div>-</div>)  
+    }
+  },
   {
     field: 'identity',
     headerName: 'Identity',
-    width: 288,
+    width: 256,
     disableColumnMenu: true,
+    sortable: false,
+    renderCell: (params) => {
+      if (!params.row.address) {
+        return null
+      } 
+      return (
+        <GridIdentityLink address={params.row.address} />
+      )
+    }
   },
   {
     field: 'grade',
@@ -165,9 +167,6 @@ function createDataGridRows(id, identity, address, b, i, e, m, p) {
 
 export default function ValGroupDataGrid({sessionIndex, groupId}) {
   const theme = useTheme();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const selectedChain = useSelector(selectChain);
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
   const selectedAddress = useSelector(selectAddress);
   if (!validators.length || validators.length !== validators.filter(v => !!v.para_stats).length) {

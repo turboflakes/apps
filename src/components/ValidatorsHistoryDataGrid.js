@@ -1,19 +1,17 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import isUndefined from 'lodash/isUndefined';
 import isNull from 'lodash/isNull';
 import { useTheme } from '@mui/material/styles';
-import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-// import FormHelperText from '@mui/material/FormHelperText';
 import Switch from '@mui/material/Switch';
 import { DataGrid } from '@mui/x-data-grid';
 import Skeleton from '@mui/material/Skeleton';
 import Identicon from '@polkadot/react-identicon';
 import DetailsIcon from './DetailsIcon';
+import GridIdentityLink from './GridIdentityLink';
 import { grade } from '../util/grade'
 import {
   selectValidatorsInsightsBySessions,
@@ -22,42 +20,45 @@ import {
   selectSessionHistoryRangeIds,
 } from '../features/api/sessionsSlice'
 import {
-  addressChanged,
-  // selectChain,
-  selectAddress
-} from '../features/chain/chainSlice';
-import {
   selectIdentityFilter,
   selectSubsetFilter,
-  pageChanged
 } from '../features/layout/layoutSlice';
 import { scoreDisplay } from '../util/display';
 
 const defineColumns = (theme) => {
   return [
   { 
-      field: 'id', 
-      headerName: '', 
-      width: 48,
-      sortable: false,
-      disableColumnMenu: true,
-      renderCell: (params) => {
-        if (params.row.address) {
-          return (
-              <Identicon
-                value={params.row.address}
-                size={24}
-                theme={'polkadot'} />
-            )
-        }
-        return (<div>-</div>)  
+    field: 'id', 
+    headerName: '', 
+    width: 48,
+    sortable: false,
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      if (params.row.address) {
+        return (
+            <Identicon
+              value={params.row.address}
+              size={24}
+              theme={'polkadot'} />
+          )
       }
-    },
+      return (<div>-</div>)  
+    }
+  },
   {
     field: 'identity',
     headerName: 'Identity',
-    width: 288,
+    width: 256,
     disableColumnMenu: true,
+    sortable: false,
+    renderCell: (params) => {
+      if (!params.row.address) {
+        return null
+      } 
+      return (
+        <GridIdentityLink address={params.row.address} />
+      )
+    }
   },
   {
     field: 'grade',
