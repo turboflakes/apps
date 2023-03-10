@@ -32,7 +32,7 @@ import {
   getNetworkName, getNetworkURL
 } from '../constants'
 
-const SKILLS = ["indexer", "report", "matrix", "nominator", "rust"]
+const SKILLS = ["explorer", "indexer", "reporter", "nominator", "matrix", "rust"]
 
 export default function DashboardPage() {
   const theme = useTheme();
