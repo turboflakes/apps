@@ -114,6 +114,13 @@ export const extendedApi = apiSlice.injectEndpoints({
         }
       },
     }),
+    getValidatorGradeByAddress: builder.query({
+      query: ({address, number_last_sessions, show_summary, show_stats}) => ({
+        url: `/validators/${address}/grade`,
+        params: { address, number_last_sessions, show_summary, show_stats }
+      }),
+      providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
+    }),
   }),
 })
 
@@ -121,6 +128,7 @@ export const {
   useGetValidatorsQuery,
   useGetValidatorByAddressQuery,
   useGetValidatorPeerByAuthorityQuery,
+  useGetValidatorGradeByAddressQuery,
 } = extendedApi
 
 // Actions

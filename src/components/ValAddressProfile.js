@@ -91,12 +91,8 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
               }} />
             <Box sx={{ display: 'flex'}}>
               <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-                {showGrade ? (
-                  isLiveMode ? 
-                    <GradeIcon sessionIndex={sessionIndex} address={address} size={64} /> :
-                    <GradeHistoryIcon address={address} maxSessions={maxSessions} size={64} />
-                  )
-                : null}
+                {showGrade ? 
+                  <GradeIcon sessionIndex={sessionIndex} maxSessions={maxSessions} address={address} size={64} /> : null}
               </Box>
               <Box sx={{ mr: 3,  display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                 <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>commission</Typography>
@@ -121,18 +117,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
               : null}
             </Box>
           </Box>
-          {/* <Box sx={{ ml: 2 }}>
-            <img src={tvpValid} style={{ 
-                width: 64,
-                height: 64 }} alt={"tvp"}/>
-          </Box> */}
         </Box>
-        {/* {showGrade ? (
-            isLiveMode ? 
-              <GradeIcon sessionIndex={sessionIndex} address={address} size={72} /> :
-              <GradeHistoryIcon address={address} maxSessions={maxSessions} size={72} />
-            )
-           : null} */}
       </Box>
     </Box>
   );

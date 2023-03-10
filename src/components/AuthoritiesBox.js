@@ -27,10 +27,10 @@ const customTitle = (data, theme) => {
           <b>Some validators need attention!</b>
         </Typography>
         <Typography component="div" variant="caption" color="textSecondary" gutterBottom>
-          <span style={{color: theme.palette.text.primary }}></span>Grade F: <b>{data.fGrades}</b>
+          <span style={{color: theme.palette.text.primary }}></span>Low Grade F: <b>{data.fGrades} {data.fGrades > 1 ? `validators` : `validator`}</b> 
         </Typography>
         <Typography component="div" variant="caption" color="textSecondary" gutterBottom>
-          <span style={{color: theme.palette.text.primary }}></span>Disputes: <b>{data.disputes}</b>
+          <span style={{color: theme.palette.text.primary }}></span>Raising Disputes: <b>{data.disputes} {data.disputes > 1 ? `validators` : `validator`}</b>
         </Typography>
       </Box>
   )

@@ -37,14 +37,12 @@ import {
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[400] }}>❚</span>Chilled: <b>{data.chilled} validators</b> ({Math.round((data.chilled * 100 ) / data.total)}%)
+            <span style={{ marginRight: '8px', color: theme.palette.grey[400] }}>❚</span>Chilled: <b>{data.chilled} validators</b> ({Math.round((data.chilled * 10000 ) / data.total) / 100}%)
           </Typography>  
           <Typography component="div" variant="caption">
             <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>❚</span>Disputes: <b>{data.disputes}</b>
           </Typography>  
         </Box>
-        
-        
       </Box>
     );
   }
@@ -82,6 +80,7 @@ export default function NetChilledValidatorsBox({sessionIndex, maxSessions}) {
   if (!isSuccess) {
     return null
   }
+
 
   const timelineData = data.map((s, i) => ({
     session: s.six,
