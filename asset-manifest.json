@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.4b44c96c.js",
+    "main.js": "/static/js/main.63a31267.js",
     "static/js/27.5757e9a4.chunk.js": "/static/js/27.5757e9a4.chunk.js",
     "static/media/manta.png": "/static/media/manta.3172e8ea9964232fe94c.png",
     "static/media/litmus.png": "/static/media/litmus.5ae2bc7c8b3c6b6f5c5a.png",
@@ -129,9 +129,8 @@
     "static/media/equilibrium.svg": "/static/media/equilibrium.4b23cdc820fdde4f6eba18b5f4148fe4.svg",
     "static/media/altair.svg": "/static/media/altair.5896748d34c9f7f556b73b7165b9a52f.svg",
     "static/media/ipci.svg": "/static/media/ipci.88e12d15f433415971cc76fa3e7fc39b.svg",
+    "static/media/Polkadot_Logo_Horizontal_Pink-Black.svg": "/static/media/Polkadot_Logo_Horizontal_Pink-Black.148a18ab6114f42960d3ba98b13c521b.svg",
     "static/media/totem.svg": "/static/media/totem.f523100035e490b163ffe0d56ea0a850.svg",
-    "static/media/polkadot_logotype_white.svg": "/static/media/polkadot_logotype_white.22c4f7510ae17fdcb5cc75cb99b81a0a.svg",
-    "static/media/darwinia.svg": "/static/media/darwinia.0125b77ba790a67bb9628a92ad12d613.svg",
     "static/media/logo_1_inverted_subtract_turboflakes_.svg": "/static/media/logo_1_inverted_subtract_turboflakes_.a857a4938a7a8314993088abd566df27.svg",
     "static/media/zCloak.svg": "/static/media/zCloak.81f2780785909f4c1dd68371ad3c6da0.svg",
     "static/media/tvp_valid.svg": "/static/media/tvp_valid.ccce5e5cb832e8b92185b8645f1ccf45.svg",
@@ -144,10 +143,11 @@
     "static/media/ares-gladios.svg": "/static/media/ares-gladios.6bb2aaf5703199c95febc9800f61ef95.svg",
     "static/media/snakenet.svg": "/static/media/snakenet.5af57a5e2c0c72ac71ebe6cf3223d6e2.svg",
     "static/media/ternoa.svg": "/static/media/ternoa.5c2c9766c9ff06b7bb972f70b56749fd.svg",
-    "static/media/kusama_logo.svg": "/static/media/kusama_logo.732eafd750e7774432b441b24a78dabb.svg",
+    "static/media/darwinia.svg": "/static/media/darwinia.248150bfea4b725dc3045a47ab96758f.svg",
     "static/media/kusama_icon.svg": "/static/media/kusama_icon.8d767b9affe635662f3ff9ae8a19c943.svg",
     "static/media/shell.svg": "/static/media/shell.9ab8caf9787073426f14eeb6f662754b.svg",
     "static/media/picasso.svg": "/static/media/picasso.8201ec261fcaf1b8dc30513f44c8b8c2.svg",
+    "static/media/KUSAMA_6.svg": "/static/media/KUSAMA_6.57b625b8d40168245eb6fd49811e38c4.svg",
     "static/media/oli.svg": "/static/media/oli.8ddc1b4209101d158a7f01a8d14c912a.svg",
     "static/media/integritee.svg": "/static/media/integritee.5f5ef5ce094a440ab39ad26667a7071b.svg",
     "static/media/singlavender.svg": "/static/media/singlavender.dddf03fd5657e9baddafd6d212af736f.svg",
@@ -184,7 +184,6 @@
     "static/media/kabocha.svg": "/static/media/kabocha.699d0d7e5e5669687aa8f463d4a68744.svg",
     "static/media/amplitude.svg": "/static/media/amplitude.7dd877a64bd666d1ef82a843c000ca89.svg",
     "static/media/parallel.svg": "/static/media/parallel.523444b3fab8bc81ada193325e75099a.svg",
-    "static/media/polkadot_js_logo.svg": "/static/media/polkadot_js_logo.7d2701e2ddbc756e5d6e5eb5dd2af7d5.svg",
     "static/media/polkadot-js.svg": "/static/media/polkadot-js.bc47e23e9b5d4e81941aa66a86d37abb.svg",
     "static/media/subid.svg": "/static/media/subid.de08c28d553a5ef095590d74e91de41a.svg",
     "static/media/crustParachain.svg": "/static/media/crustParachain.3c13f5a5fc46b0ca5b4ad6cb1b8420f6.svg",
@@ -217,6 +216,6 @@
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.4b44c96c.js"
+    "static/js/main.63a31267.js"
   ]
 }
