@@ -28,8 +28,13 @@ import {
 } from '../features/api/socketSlice';
 import { 
   useGetValidatorByAddressQuery,
+  selectValidatorBySessionAndAddress
 } from '../features/api/validatorsSlice';
+import {
+  useGetValidatorProfileByAddressQuery,
+} from '../features/api/valProfilesSlice';
 import Spinner from './Spinner';
+import { isUndefined } from 'lodash';
 
 export default function ValidatorPage() {
 	// const theme = useTheme();
@@ -44,11 +49,9 @@ export default function ValidatorPage() {
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
-  const {isFetching, isSuccess, isError} = useGetValidatorByAddressQuery({address: stash, session: sessionIndex, show_summary: true, show_stats: true});
-
-  // const isFetching = true
-  // const isSuccess = false
-  // const isError = false
+  const {isSuccess, isError} = useGetValidatorByAddressQuery({address: stash, session: sessionIndex, show_summary: true, show_stats: true});
+  const {isError: isProfileError} = useGetValidatorProfileByAddressQuery(stash)
+  const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, stash))
 
   React.useEffect(() => {
     if (stash && stash !== selectedAddress) {
@@ -61,7 +64,7 @@ export default function ValidatorPage() {
     return (<Box sx={{ m: 2, minHeight: '100vh' }}></Box>)
   }
 
-  if (isError) {
+  if (isError || isProfileError || (isSuccess && isUndefined(validator))) {
     return (
       <Box sx={{ m: 2, mt: 2, pt: 1, minHeight: '100vh'}}>
         <Box sx={{display: "flex", justifyContent:"center", 
