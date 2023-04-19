@@ -213,7 +213,7 @@ export default function LayoutPage({api}) {
 
             {/* search validator */}
             <Box sx={{ ml: 4, flexGrow: 1, display: 'flex'}}>
-              <SearchSmall width={open ? 384 : 512} />
+              <SearchSmall width={"30vw"} />
             </Box>
             <Box sx={{ ml: 2, flexGrow: 1, display: 'flex'}}></Box>
             <Box sx={{ display: 'flex', alignItems: 'center'}}>

@@ -9,6 +9,7 @@ import {
   useParams
 } from "react-router-dom";
 import { ApiPromise, WsProvider } from '@polkadot/api';
+import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -56,7 +57,9 @@ const App = () => {
   const selectedChain = useSelector(selectChain);
   const [api] = useWeb3Api(selectedChain);
 
-  const matches = useMediaQuery('(max-width: 1440px)');
+  // const matches = useMediaQuery('(max-width: 1440px)');
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down('sm'));
 
   if (matches) {
     return (

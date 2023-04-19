@@ -7,13 +7,13 @@ let theme = createTheme({
     margin: "0 auto"
   },
   breakpoints: {
-    values: {
-      xs: 0,
-      sm: 900,
-      md: 960,
-      lg: 1280,
-      xl: 1920,
-    }
+    // values: {
+    //   xs: 0,
+    //   sm: 900,
+    //   md: 960,
+    //   lg: 1280,
+    //   xl: 1920,
+    // }
   },
   palette: {
     primary: {
