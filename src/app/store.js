@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import appSlice from '../features/app/appSlice';
 import apiSlice from '../features/api/apiSlice'
 import chainSlice from '../features/chain/chainSlice';
 import web3Slice from '../features/web3/web3Slice';
@@ -17,6 +18,7 @@ import poolsMetadataSlice from '../features/api/poolsMetadataSlice';
 
 export const store = configureStore({
   reducer: {
+    app: appSlice.reducer,
     chain: chainSlice.reducer,
     web3: web3Slice.reducer,
     layout: layoutSlice.reducer,

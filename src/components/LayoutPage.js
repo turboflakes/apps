@@ -23,11 +23,15 @@ import SessionPerformancePieChartHeader from './SessionPerformancePieChartHeader
 import SessionPieChartHeader from './SessionPieChartHeader';
 import SessionBoxHeader from './SessionBoxHeader';
 import onetSVG from '../assets/onet.svg';
+import nomiSVG from '../assets/nomi.svg';
 import apiSlice from '../features/api/apiSlice'
 import {
   pageChanged,
   selectPage,
 } from '../features/layout/layoutSlice';
+import {
+  selectApp,
+} from '../features/app/appSlice';
 import {
   chainInfoChanged,
   // chainChanged,
@@ -131,15 +135,32 @@ export default function LayoutPage({api}) {
 		setOpen(!open);
 	};
 
+  const selectedApp = useSelector(selectApp);
 	const selectedChain = useSelector(selectChain);
-  // const selectedAddress = useSelector(selectAddress);
   const selectedPage = useSelector(selectPage);
-  // const selectedMode = useSelector(selectMode);
-  // const maxHistorySessions = useSelector(selectMaxHistorySessions);
   
 	useWeb3ChainInfo(api);
 
   useScrollTop(ref, selectedPage);
+
+  const handleAppSelection = (appName) => {
+		if (appName === null) {
+			return;
+		}
+    var searchParams = new URLSearchParams(document.location.search);
+    searchParams.set("app", appName);
+    document.location.search = searchParams.toString();
+
+		// Invalidate cache
+		dispatch(apiSlice.util.invalidateTags(['Pools']));
+    dispatch(apiSlice.util.invalidateTags(['Validators']));
+    dispatch(apiSlice.util.invalidateTags(['ValProfiles']));
+    dispatch(apiSlice.util.invalidateTags(['Blocks']));
+    dispatch(apiSlice.util.invalidateTags(['Parachains']));
+    dispatch(apiSlice.util.invalidateTags(['Sessions']));
+    
+    // dispatch(chainChanged(chain));
+  };
 
   const handleChainSelection = (chain) => {
 		if (chain === null) {
@@ -263,10 +284,18 @@ export default function LayoutPage({api}) {
                   alignItems: 'center', cursor: 'pointer'
                 }}
                   onClick={toggleDrawer}>
-                  <img src={onetSVG} style={{ 
-                    width: 96,
-                    height: 96 }} alt={"github"}/>
-                  <Typography sx={{mt: 2}} variant="h6" color="textPrimary" gutterBottom>ONE-T // explorer</Typography>
+                  {selectedApp === "onet" ?
+                    <img src={onetSVG} style={{ 
+                      width: 96,
+                      height: 96 }} alt={"one-t"}/> : null }
+                  {selectedApp === "nomi" ?
+                    <img src={nomiSVG} style={{ 
+                      width: 96,
+                      height: 96 }} alt={"nomi"}/> : null }
+                  <Typography sx={{mt: 2}} variant="h6" color="textPrimary" gutterBottom>
+                  {selectedApp === "onet" ? `ONE-T // explorer` : ''}
+                  {selectedApp === "nomi" ? `NOMI` : ''}
+                  </Typography>
                   <Chip sx={{ my: 2, p: 1}} label="beta version" color='primary'/>
                 </Box> : 
                 <Box sx={{ 
@@ -275,11 +304,24 @@ export default function LayoutPage({api}) {
                   display: 'flex', flexDirection: 'column', justifyContent: 'center', 
                   alignItems: 'center', cursor: 'pointer'}}
                   onClick={toggleDrawer} >
-                  <Typography variant="h5">O</Typography>
-                  <Typography variant="h5">N</Typography>
-                  <Typography variant="h5">E</Typography>
-                  <Typography variant="h5">·</Typography>
-                  <Typography variant="h5" gutterBottom>T</Typography>
+                    {selectedApp === "onet" ? 
+                      <React.Fragment>
+                        <Typography variant="h5">O</Typography>
+                        <Typography variant="h5">N</Typography>
+                        <Typography variant="h5">E</Typography>
+                        <Typography variant="h5">·</Typography>
+                        <Typography variant="h5" gutterBottom>T</Typography>
+                      </React.Fragment>
+                    : null }
+                    {selectedApp === "nomi" ? 
+                      <React.Fragment>
+                        <Typography variant="h5">N</Typography>
+                        <Typography variant="h5">O</Typography>
+                        <Typography variant="h5">M</Typography>
+                        <Typography variant="h5">I</Typography>
+                      </React.Fragment>
+                    : null }
+                  
                 </Box>
               }
             </Box>
@@ -389,6 +431,36 @@ export default function LayoutPage({api}) {
                         height: 28 }} alt={"kusama"}/>
                   </ListItemIcon>
                   <ListItemText primary="KUSAMA" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+                </ListItemButton> : null}
+
+                <Divider sx={{ 
+                  opacity: 0.25,
+                  height: '1px',
+                  borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                  borderBottom: 'none',
+                  backgroundColor: 'transparent',
+                  backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                  }} />
+
+              {selectedApp !== "onet" ? 
+                <ListItemButton onClick={() => handleAppSelection('onet')} disableRipple>
+                  <ListItemIcon sx={{ ml: -0.5, py: 2}}>
+                    <img src={onetSVG} style={{ 
+                      width: 28,
+                      height: 28 }} alt={"one-t"}/>
+                  </ListItemIcon>
+                  <ListItemText primary="ONE-T" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+                </ListItemButton> : null}
+
+
+              {selectedApp !== "nomi" ? 
+                <ListItemButton onClick={() => handleAppSelection('nomi')} disableRipple>
+                  <ListItemIcon sx={{ ml: -0.5, py: 2}}>
+                    <img src={nomiSVG} style={{ 
+                        width: 28,
+                        height: 28 }} alt={"nomi"}/>
+                  </ListItemIcon>
+                  <ListItemText primary="NOMI" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
                 </ListItemButton> : null}
 
                 <Divider sx={{ 

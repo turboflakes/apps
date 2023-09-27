@@ -10,7 +10,7 @@ export const validateChain = () => {
     return chain
   }
   // TODO: store/read from localStorage if chain is not provided
-  return 'kusama'
+  return 'polkadot'
 }
 
 const initialState = {
