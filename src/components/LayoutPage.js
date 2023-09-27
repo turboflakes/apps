@@ -354,7 +354,7 @@ export default function LayoutPage({api}) {
                 backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
                 }} />
 
-              <ListItemButton  selected={selectedPage === 'pools'} disableRipple disabled
+              <ListItemButton  selected={selectedPage === 'pools'} disableRipple
                 onClick={() => handlePageSelection('pools')}>
                 <ListItemIcon >
                   <Box><FontAwesomeIcon icon={faWaterLadder} style={{ color: theme.palette.text.primary }} /></Box>
