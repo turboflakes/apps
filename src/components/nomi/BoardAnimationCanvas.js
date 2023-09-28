@@ -281,7 +281,7 @@ export default function BoardAnimationCanvas({width, height, topY, onBallClick})
   return (
     <Box sx={{ 
       position: "relative",
-      backgroundColor: "rgba(241, 241, 240, 0.95)",
+      // backgroundColor: "rgba(241, 241, 240, 0.95)",
       borderBottom: `solid 2px #FFF`,
       }}>
         <canvas ref={canvasRef}

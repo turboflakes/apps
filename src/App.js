@@ -14,7 +14,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { getNetworkExternalWSS } from './constants';
 import LayoutPage from './components/LayoutPage'
-// import UnderMaintenancePage from './components/UnderMaintenancePage'
+import UnderMaintenancePage from './components/UnderMaintenancePage'
 // ONE-T Pages
 import DashboardPage from './components/DashboardPage'
 import OverviewPage from './components/OverviewPage'
@@ -33,19 +33,28 @@ import {
 import {isNetworkSupported} from './constants'
 import onetSVG from './assets/onet.svg';
 
+
 function useWeb3Api(chain) {
-  const [api, setApi] = React.useState(undefined);
+  const [api, setApi] = React.useState();
 
   React.useEffect(() => {
-    
     const createWeb3Api = async (provider) => {
-      return await ApiPromise.create({ provider });
+      const api = await ApiPromise.create({ provider, noInitWarn: true, throwOnConnect: true })
+      await api.isReady
+      setApi(api)
     }
-
+    
     if (chain) {
       const wsProvider = new WsProvider(getNetworkExternalWSS(chain));
-      createWeb3Api(wsProvider).then((api) => setApi(api));
+      createWeb3Api(wsProvider).catch(console.error);
     }
+
+    return function cleanup() {
+      if (api) {
+        api.disconnect();
+      }
+    }
+
   }, [chain]);
 
   return [api];
@@ -85,8 +94,8 @@ const App = () => {
   return (
       <Router>
         <Routes>
-          {/* <Route path="/" element={<UnderMaintenancePage />} />
-          <Route path="*" element={<Navigate to="/" />} /> */}
+          {/* <Route path="/" element={<UnderMaintenancePage />} /> */}
+          {/*<Route path="*" element={<Navigate to="/" />} /> */}
           <Route path="/" element={<LayoutPage api={api} />}>
             {selectedApp === "onet" ?
               <React.Fragment>

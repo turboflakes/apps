@@ -56,7 +56,7 @@ function useWeb3ChainInfo(api) {
 				dispatch(chainInfoChanged(info.toHuman()));
 			});
 		}
-  }, [api, dispatch]);
+  }, []);
 
   return [];
 }
@@ -186,6 +186,11 @@ export default function LayoutPage({api}) {
     navigate(`/${page}`);
   }
 
+  // wait for api to be ready
+  if (!api) {
+    return null
+  }
+
   return (
     <Box sx={{ display: 'flex' }}>
       <AppBar position="absolute" open={open} color="transparent" elevation={0} >
@@ -227,15 +232,18 @@ export default function LayoutPage({api}) {
                 }} />
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 <Typography variant="caption" sx={{mt: 0.5, color: theme.palette.text.primary, fontSize: "0.875rem", lineHeight: 0, fontWeight: 600}}>
-                  ONE-T
+                  {selectedApp === "onet" ? `ONE-T` : null }
+                  {selectedApp === "nomi" ? `NOMI` : null }
                 </Typography>
               </Box>
             </Box>
 
             {/* search validator */}
-            <Box sx={{ ml: 4, flexGrow: 1, display: 'flex'}}>
-              <SearchSmall width={open ? 384 : 512} />
-            </Box>
+            
+            {selectedApp === "onet" ? 
+              <Box sx={{ ml: 4, flexGrow: 1, display: 'flex'}}>
+                <SearchSmall width={open ? 384 : 512} />
+              </Box> : null }
             <Box sx={{ ml: 2, flexGrow: 1, display: 'flex'}}></Box>
             <Box sx={{ display: 'flex', alignItems: 'center'}}>
              <SessionPerformancePieChartHeader />
@@ -270,7 +278,7 @@ export default function LayoutPage({api}) {
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  height: 256,
+                  height: 288,
                   position: 'relative',
                 }}
               >
@@ -331,6 +339,7 @@ export default function LayoutPage({api}) {
               sx={{ 
                 m: 0,
                 p: 0,
+                height: '100%',
                 '> .MuiListItemButton-root.Mui-selected': {
                 bgcolor: "rgba(0, 0, 0, 0.12)"}, '> .MuiListItemButton-root.Mui-selected:hover': { bgcolor: "rgba(0, 0, 0, 0.18)"}
               }}>
@@ -344,65 +353,69 @@ export default function LayoutPage({api}) {
                 backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
                 }} />
               
-              <ListItemButton selected={selectedPage === 'dashboard'} disableRipple
-                onClick={() => handlePageSelection('dashboard')}>
-                <ListItemIcon>
-                  <DashboardIcon sx={{ color: theme.palette.text.primary }} />
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-              </ListItemButton>
-              
-              <Divider sx={{ 
-                opacity: 0.25,
-                height: '1px',
-                borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                borderBottom: 'none',
-                backgroundColor: 'transparent',
-                backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                }} />
+              {selectedApp === "onet" ? 
+                <React.Fragment>
+                  <ListItemButton selected={selectedPage === 'dashboard'} disableRipple
+                    onClick={() => handlePageSelection('dashboard')}>
+                    <ListItemIcon>
+                      <DashboardIcon sx={{ color: theme.palette.text.primary }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Dashboard" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+                  </ListItemButton>
+                
+                <Divider sx={{ 
+                  opacity: 0.25,
+                  height: '1px',
+                  borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                  borderBottom: 'none',
+                  backgroundColor: 'transparent',
+                  backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                  }} />
 
-              <ListItemButton selected={selectedPage === 'insights'} disableRipple
-                onClick={() => handlePageSelection('insights')}>
-                <ListItemIcon sx={{ml: '2px'}}>
-                  <Box><FontAwesomeIcon icon={faServer} style={{ color: theme.palette.text.primary }} /></Box>
-                </ListItemIcon>
-                <ListItemText primary="Validator Insights" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-              </ListItemButton>
+                <ListItemButton selected={selectedPage === 'insights'} disableRipple
+                  onClick={() => handlePageSelection('insights')}>
+                  <ListItemIcon sx={{ml: '2px'}}>
+                    <Box><FontAwesomeIcon icon={faServer} style={{ color: theme.palette.text.primary }} /></Box>
+                  </ListItemIcon>
+                  <ListItemText primary="Validator Insights" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+                </ListItemButton>
+                
+                <ListItemButton selected={selectedPage === 'parachains'} disableRipple
+                  onClick={() => handlePageSelection('parachains')}>
+                  <ListItemIcon>
+                    <Box><FontAwesomeIcon icon={faLink} style={{ color: theme.palette.text.primary }} /></Box>
+                  </ListItemIcon>
+                  <ListItemText primary="Parachains" 
+                    sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+                </ListItemButton>
               
-              <ListItemButton selected={selectedPage === 'parachains'} disableRipple
-                onClick={() => handlePageSelection('parachains')}>
-                <ListItemIcon>
-                  <Box><FontAwesomeIcon icon={faLink} style={{ color: theme.palette.text.primary }} /></Box>
-                </ListItemIcon>
-                <ListItemText primary="Parachains" 
-                  sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-              </ListItemButton>
-            
-              <ListItemButton selected={selectedPage === 'val-groups'} disableRipple
-                onClick={() => handlePageSelection('val-groups')}>
-                <ListItemIcon>
-                  <HubIcon sx={{ color: theme.palette.text.primary }} />
-                </ListItemIcon>
-                <ListItemText primary="Validator Groups" 
-                  sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-              </ListItemButton>
-              
-              <Divider sx={{ 
-                opacity: 0.25,
-                height: '1px',
-                borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                borderBottom: 'none',
-                backgroundColor: 'transparent',
-                backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                }} />
+                <ListItemButton selected={selectedPage === 'val-groups'} disableRipple
+                  onClick={() => handlePageSelection('val-groups')}>
+                  <ListItemIcon>
+                    <HubIcon sx={{ color: theme.palette.text.primary }} />
+                  </ListItemIcon>
+                  <ListItemText primary="Validator Groups" 
+                    sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+                </ListItemButton>
+                
+                <Divider sx={{ 
+                  opacity: 0.25,
+                  height: '1px',
+                  borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                  borderBottom: 'none',
+                  backgroundColor: 'transparent',
+                  backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                  }} />
 
-              <ListItemButton  selected={selectedPage === 'pools'} disableRipple
-                onClick={() => handlePageSelection('pools')}>
-                <ListItemIcon >
-                  <Box><FontAwesomeIcon icon={faWaterLadder} style={{ color: theme.palette.text.primary }} /></Box>
-                </ListItemIcon>
-                <ListItemText primary="Nomination Pools" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-              </ListItemButton>
+                <ListItemButton  selected={selectedPage === 'pools'} disableRipple
+                  onClick={() => handlePageSelection('pools')}>
+                  <ListItemIcon >
+                    <Box><FontAwesomeIcon icon={faWaterLadder} style={{ color: theme.palette.text.primary }} /></Box>
+                  </ListItemIcon>
+                  <ListItemText primary="Nomination Pools" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+                </ListItemButton>
+
+                </React.Fragment> : null }
 
               <Divider sx={{ 
                 opacity: 0.25,
@@ -443,7 +456,11 @@ export default function LayoutPage({api}) {
                   }} />
 
               {selectedApp !== "onet" ? 
-                <ListItemButton onClick={() => handleAppSelection('onet')} disableRipple>
+                <ListItemButton sx={{
+                    position: 'absolute',
+                    bottom: 0,
+                    width: '100%'
+                  }} onClick={() => handleAppSelection('nomi')} disableRipple>
                   <ListItemIcon sx={{ ml: -0.5, py: 2}}>
                     <img src={onetSVG} style={{ 
                       width: 28,
@@ -452,9 +469,12 @@ export default function LayoutPage({api}) {
                   <ListItemText primary="ONE-T" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
                 </ListItemButton> : null}
 
-
               {selectedApp !== "nomi" ? 
-                <ListItemButton onClick={() => handleAppSelection('nomi')} disableRipple>
+                <ListItemButton sx={{
+                    position: 'absolute',
+                    bottom: 0,
+                    width: '100%'
+                  }} onClick={() => handleAppSelection('nomi')} disableRipple>
                   <ListItemIcon sx={{ ml: -0.5, py: 2}}>
                     <img src={nomiSVG} style={{ 
                         width: 28,
@@ -463,34 +483,34 @@ export default function LayoutPage({api}) {
                   <ListItemText primary="NOMI" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
                 </ListItemButton> : null}
 
-                <Divider sx={{ 
+                {/* <Divider sx={{ 
                   opacity: 0.25,
                   height: '1px',
                   borderTop: '0px solid rgba(0, 0, 0, 0.08)',
                   borderBottom: 'none',
                   backgroundColor: 'transparent',
                   backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                  }} />
+                  }} /> */}
                   
             </List>
           </Drawer>
       <Box
-            component="main"
-            sx={{
-              // backgroundColor: (theme) =>
-              //   theme.palette.mode === 'light'
-              //     ? theme.palette.grey[100]
-              //     : theme.palette.grey[900],
-              background: theme.palette.gradients.light180,
-              flexGrow: 1,
-              height: '100vh',
-              overflow: 'auto',
-              scrollBehavior: "smooth"
-            }}
-            ref={ref}
+          component="main"
+          sx={{
+            // backgroundColor: (theme) =>
+            //   theme.palette.mode === 'light'
+            //     ? theme.palette.grey[100]
+            //     : theme.palette.grey[900],
+            background: theme.palette.gradients.light180,
+            flexGrow: 1,
+            height: '100vh',
+            overflow: 'auto',
+            scrollBehavior: "smooth"
+          }}
+          ref={ref}
           >	
         {/*  hidden toolbar */}
-        <Toolbar/>
+        <Toolbar />
         <Outlet api={api} />
         <Footer small />
       </Box>

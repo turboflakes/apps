@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Box from '@mui/material/Box';
 import BoardAnimationCanvas from './BoardAnimationCanvas';
+// import Leaderboard from './Leaderboard';
 import { isValidAddress } from '../../util/crypto'
 import {
   addressChanged,
@@ -24,17 +25,19 @@ export default function DashboardPage() {
     }
   }
 
+  console.log("___DashboardPage");
+
   return (
-    <Box sx={{ mb: 10, display: 'flex', justifyContent: 'center', backgroundColor: '#3D3D3D'}}>
-        <Box sx={{ height: '95vh', position: 'relative', backgroundColor: '#3D3D3D'}}>
+    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ height: '95vh', position: 'relative' }}>
           <BoardAnimationCanvas 
             width={window.innerWidth - 56} 
             height={window.innerHeight * 0.95}
             topY={64}
             onBallClick={handleOnBallClick}
           />
-          {/* <AccountInfoTable onClose={this.handleOnAccountInfoClose} />
-          <Leaderboard /> */}
+          {/* <AccountInfoTable onClose={this.handleOnAccountInfoClose} /> */}
+          {/* <Leaderboard />  */}
         </Box>
     </Box>
   );
