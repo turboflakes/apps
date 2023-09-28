@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
-import { isValidAddress } from '../util/crypto'
+import { isValidAddress, addressSS58 } from '../util/crypto'
 import {
   addressChanged,
   selectChain,
@@ -33,11 +33,12 @@ export default function SearchSmall({width = 512}) {
   const handleSubmit = (event) => {
     event.preventDefault()
     if (isValidAddress(address)) {
+      const defaultSS58 = addressSS58(address)
       // setSearchParams({address});
       // dispatch(addressChanged(address));
       // setAddress("");
-      dispatch(addressChanged(address));
-      dispatch(pageChanged(`validator/${address}`));
+      dispatch(addressChanged(defaultSS58));
+      dispatch(pageChanged(`validator/${defaultSS58}`));
       // navigate(`/one-t/${selectedChain}/validator/${address}`);
       navigate(`/validator/${address}`)
       setAddress("");

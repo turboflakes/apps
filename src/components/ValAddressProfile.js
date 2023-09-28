@@ -27,7 +27,8 @@ import {
 import {
   selectIsLiveMode
 } from '../features/layout/layoutSlice';
-import { stakeDisplay } from '../util/display'
+import { stakeDisplay } from '../util/display';
+import { chainAddress } from '../util/crypto';
 
 export default function ValAddressProfile({address, maxSessions, showGrade, showSubset}) {
   // const theme = useTheme();
@@ -79,7 +80,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
           </Box>
           <Box>
             <Typography variant="h5">{valProfile._identity}</Typography>
-            <Typography variant="caption"><FontAwesomeIcon style={{ marginRight: 8 }} icon={faWallet} />{address}</Typography>
+            <Typography variant="caption"><FontAwesomeIcon style={{ marginRight: 8 }} icon={faWallet} />{chainAddress(address, chainInfo.ss58Format)}</Typography>
             <Divider sx={{ my: 2,
               opacity: 0.25,
               height: '1px',
