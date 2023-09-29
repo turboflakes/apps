@@ -131,7 +131,7 @@ export default function LayoutPage({api}) {
 	const dispatch = useDispatch();
   
 	const [open, setOpen] = React.useState(false);
-	const toggleDrawer = () => {
+  const toggleDrawer = () => {
 		setOpen(!open);
 	};
 
@@ -510,7 +510,7 @@ export default function LayoutPage({api}) {
           ref={ref}
           >	
         {/*  hidden toolbar */}
-        <Toolbar />
+        <Toolbar sx={{ height: 72 }} />
         <Outlet api={api} />
         <Footer small />
       </Box>

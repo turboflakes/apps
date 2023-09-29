@@ -64,6 +64,8 @@ let cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimat
 
 function useInitCanvas(canvasRef, ballsRef, width, height, topY, onBallClick) {
 
+  console.log("__useInitCanvas", width);
+
   const clearBallsClicked = () => {
     // Identify which ball is open to be reset
     let ball = ballsRef.current.find(ball => ball.clicked)
@@ -258,7 +260,7 @@ export default function BoardAnimationCanvas({width, height, topY, onBallClick})
   const selectedChain = useSelector(selectChain);
   const currentSelected = useSelector(selectAddress);
   const selectedPage = useSelector(selectPage);
-  const filteredAddresses = ['a'];
+  const filteredAddresses = ['a','a','a','a','a','a','a','a','a','a','a','a','a','a','a','a'];
 
   useInitCanvas(canvasRef, ballsRef, width, height, topY, onBallClick);
   useUpdateCanvas(canvasRef, ballsRef, width, height, filteredAddresses, currentSelected);
