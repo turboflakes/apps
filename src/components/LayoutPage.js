@@ -511,8 +511,9 @@ export default function LayoutPage({api}) {
           >	
         {/*  hidden toolbar */}
         <Toolbar sx={{ height: 72 }} />
-        <Outlet api={api} />
-        <Footer small />
+        <Outlet context={{ api }} />
+        {/* TODO move footer to left drawer */}
+        {/* <Footer small /> */}
       </Box>
     </Box>
   );
