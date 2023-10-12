@@ -28,7 +28,7 @@ import BoardAnimationCanvas from './BoardAnimationCanvas';
 import WeightButtonGroup from './WeightButtonGroup';
 import WeightIconButton from './WeightIconButton';
 import LeaderboardBox from './LeaderboardBox';
-import SvgIcon from '@mui/material/SvgIcon';
+import ExtensionsBox from './ExtensionsBox';
 import nominatingSVG from '../../assets/polkadot_icons/Nominating.svg';
 import { isValidAddress } from '../../util/crypto'
 import {
@@ -211,6 +211,7 @@ export default function DashboardPage() {
 							>
 							Nominate            
 						</Button>
+            { nominate ? <ExtensionsBox /> : null}
           </DrawerHeader>
           <Divider />
           <List
