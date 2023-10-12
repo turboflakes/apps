@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.911cebd8.js",
+    "main.js": "/static/js/main.e57e7ee7.js",
     "static/js/27.5757e9a4.chunk.js": "/static/js/27.5757e9a4.chunk.js",
     "static/media/manta.png": "/static/media/manta.3172e8ea9964232fe94c.png",
     "static/media/litmus.png": "/static/media/litmus.5ae2bc7c8b3c6b6f5c5a.png",
@@ -205,10 +205,10 @@
     "static/media/joystream.svg": "/static/media/joystream.d06a58a8e2e1e3307c6d0b1d9e4b2591.svg",
     "static/media/khala.svg": "/static/media/khala.3558f6d97c521d194ce8f33dfc2d223a.svg",
     "static/media/whala.svg": "/static/media/whala.3558f6d97c521d194ce8f33dfc2d223a.svg",
+    "index.html": "/index.html",
     "static/media/polkafoundry.svg": "/static/media/polkafoundry.60decd37915b39db7cb6d65e12106566.svg",
     "static/media/subsquare.svg": "/static/media/subsquare.f7fd99ea066075331a238c2136ef3f4e.svg",
     "static/media/sora-substrate.svg": "/static/media/sora-substrate.e2a4b3308a531eeacc58de6640dd6862.svg",
-    "index.html": "/index.html",
     "static/media/web3games.svg": "/static/media/web3games.08a6f047df9a8d6fd2b7ed852ec0f06a.svg",
     "static/media/polkasmith.svg": "/static/media/polkasmith.55c4589c9e0c064526451c11690ee026.svg",
     "static/media/frequency.svg": "/static/media/frequency.af6f3e027d5730babbb35e5c977dfc3b.svg",
@@ -216,6 +216,6 @@
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.911cebd8.js"
+    "static/js/main.e57e7ee7.js"
   ]
 }
