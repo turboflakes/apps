@@ -85,9 +85,16 @@ export default function DashboardPage() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  let [searchParams, setSearchParams] = useSearchParams();
   const [open, setOpen] = React.useState(true);
   const [filters, setFilters] = React.useState(false);
   const [nominate, setNominate] = React.useState(false);
+
+  // React.useEffect(() => {
+  //   if (stash && stash !== selectedAddress) {
+  //     dispatch(addressChanged(stash));
+  //   }
+  // }, [stash, selectedAddress]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -124,8 +131,8 @@ export default function DashboardPage() {
   const totalCandidates = 16
 
   return (
-    <Box sx={{ height: `calc(100vh - 72px)` }}>
-      <Main open={open} filters={filters}>
+    <Box sx={{ height: `calc(100vh - 144px)` }}>
+      <Main open={open}>
           {/* <IconButton
             color="primary"
             aria-label="open drawer"
@@ -167,13 +174,14 @@ export default function DashboardPage() {
             <TuneIcon />
           </Fab>
           <BoardAnimationCanvas 
-            width={width} 
+            width={window.innerWidth - 56} 
             height={window.innerHeight - 72}
             topY={64}
             onBallClick={handleOnBallClick}
           />
+          {/* <Typography> TESTE</Typography> */}
       </Main>
-      <Drawer
+      {/* <Drawer
           sx={{
           marginTop: 72,
           width: filters ? drawerWidth + filtersWidth : drawerWidth,
@@ -281,7 +289,7 @@ export default function DashboardPage() {
                 />
               </ListItem>
           </List>
-      </Drawer>
+      </Drawer> */}
     </Box>
   );
 }

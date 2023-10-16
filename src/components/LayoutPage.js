@@ -15,6 +15,8 @@ import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HubIcon from '@mui/icons-material/Hub';
 import Chip from '@mui/material/Chip';
+import Fab from '@mui/material/Fab';
+import TuneIcon from '@mui/icons-material/Tune';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink, faWaterLadder, faServer } from '@fortawesome/free-solid-svg-icons'
 import Footer from './Footer'
@@ -22,6 +24,8 @@ import SearchSmall from './SearchSmall'
 import SessionPerformancePieChartHeader from './SessionPerformancePieChartHeader';
 import SessionPieChartHeader from './SessionPieChartHeader';
 import SessionBoxHeader from './SessionBoxHeader';
+import RightDrawer from './nomi/RightDrawer';
+import FiltersFab from './nomi/FiltersFab';
 import onetSVG from '../assets/onet.svg';
 import nomiSVG from '../assets/nomi.svg';
 import apiSlice from '../features/api/apiSlice'
@@ -96,7 +100,7 @@ const AppBar = styled(MuiAppBar, {
     }),  
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+const LeftDrawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
 ({ theme, open, chain }) => ({
 	'& .MuiDrawer-paper': {
 	position: 'relative',
@@ -130,10 +134,19 @@ export default function LayoutPage({api}) {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
   
-	const [open, setOpen] = React.useState(false);
+	const [openLeftDrawer, setOpenLeftDrawer] = React.useState(false);
+  const [openRightDrawer, setOpenRightDrawer] = React.useState(false);
   const toggleDrawer = () => {
-		setOpen(!open);
+		setOpenLeftDrawer(!openLeftDrawer);
 	};
+
+  const handleRightDrawerOpen = () => {
+    setOpenRightDrawer(true);
+  };
+
+  const handleRightDrawerClose = () => {
+    setOpenRightDrawer(false);
+  }
 
   const selectedApp = useSelector(selectApp);
 	const selectedChain = useSelector(selectChain);
@@ -193,7 +206,7 @@ export default function LayoutPage({api}) {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar position="absolute" open={open} color="transparent" elevation={0} >
+      <AppBar position="absolute" open={openLeftDrawer} color="transparent" elevation={0} >
         <Toolbar sx={{ 
           height: 72,
           display: 'flex', 
@@ -242,7 +255,7 @@ export default function LayoutPage({api}) {
             
             {selectedApp === "onet" ? 
               <Box sx={{ ml: 4, flexGrow: 1, display: 'flex'}}>
-                <SearchSmall width={open ? 384 : 512} />
+                <SearchSmall width={openLeftDrawer ? 384 : 512} />
               </Box> : null }
             <Box sx={{ ml: 2, flexGrow: 1, display: 'flex'}}></Box>
             <Box sx={{ display: 'flex', alignItems: 'center'}}>
@@ -267,7 +280,7 @@ export default function LayoutPage({api}) {
             </Box> : null} */}
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open} chain={selectedChain}
+      <LeftDrawer variant="permanent" open={openLeftDrawer} chain={selectedChain}
         sx={{
           // borderTop: `8px solid ${selectedChain === "polkadot" ? theme.palette.polkadot : theme.palette.background.secondary}`,
         }}>
@@ -284,7 +297,7 @@ export default function LayoutPage({api}) {
               >
 
               {/* app logo/name */}
-              { open ? 
+              { openLeftDrawer ? 
                 <Box sx={{ 
                   width: "100%",
                   height: "100%",
@@ -460,7 +473,7 @@ export default function LayoutPage({api}) {
                     position: 'absolute',
                     bottom: 0,
                     width: '100%'
-                  }} onClick={() => handleAppSelection('nomi')} disableRipple>
+                  }} onClick={() => handleAppSelection('onet')} disableRipple>
                   <ListItemIcon sx={{ ml: -0.5, py: 2}}>
                     <img src={onetSVG} style={{ 
                       width: 28,
@@ -493,7 +506,9 @@ export default function LayoutPage({api}) {
                   }} /> */}
                   
             </List>
-          </Drawer>
+          </LeftDrawer>
+          {selectedApp === "nomi" ?
+            <RightDrawer open={openRightDrawer} onClose={handleRightDrawerClose} /> : null }
       <Box
           component="main"
           sx={{
@@ -504,6 +519,7 @@ export default function LayoutPage({api}) {
             background: theme.palette.gradients.light180,
             flexGrow: 1,
             height: '100vh',
+            width: '100%',
             overflow: 'auto',
             scrollBehavior: "smooth"
           }}
@@ -511,6 +527,20 @@ export default function LayoutPage({api}) {
           >	
         {/*  hidden toolbar */}
         <Toolbar sx={{ height: 72 }} />
+        {/* Nomi open/close drawer */}
+        {selectedApp === "nomi" ?
+          <FiltersFab /> : null }
+        {selectedApp === "nomi" ?
+          <Fab sx={{ 
+                position: 'absolute', 
+                top: 96 , 
+                right: theme.spacing(4),
+                ...(openRightDrawer && { display: 'none' }) 
+              }}
+              onClick={handleRightDrawerOpen}
+              size="small" color="primary" aria-label="control-panel">
+              <TuneIcon />
+          </Fab> : null}
         <Outlet context={{ api }} />
         {/* TODO move footer to left drawer */}
         {/* <Footer small /> */}

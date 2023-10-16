@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Tooltip from '../Tooltip';
 
-export default function TooltipInfo({title, description, scaleDescription, resultDescription}) {
+export default function TooltipInfo({title, description, scaleDescription, resultDescription, questionDescription}) {
   const theme = useTheme();
   return (
     <Tooltip
@@ -23,8 +23,16 @@ export default function TooltipInfo({title, description, scaleDescription, resul
                 {scaleDescription}
               </Typography> : null}
             {resultDescription ? 
+              <Typography variant="caption" paragraph>
+                {resultDescription}
+              </Typography> : null}
+            {questionDescription ? 
+              <Typography variant="caption" gutterBottom>
+                In a scale of 0 to 5
+              </Typography> : null}
+            {questionDescription ? 
               <Typography variant="caption">
-                <b><i>{resultDescription}</i></b>
+                <b><i>{questionDescription}</i></b>
               </Typography> : null}
           </Box>
         </Box>
