@@ -8,6 +8,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import {
   selectChain,
 } from '../../features/chain/chainSlice';
+import { Typography } from '@mui/material';
 
 export default function WeightIconButton({value, selected, onClick}) {
   const theme = useTheme();
@@ -23,7 +24,7 @@ export default function WeightIconButton({value, selected, onClick}) {
       // alignItems: 'center',
       border: `1px solid ${theme.palette.divider}`, 
       borderRadius: '50%',
-      backgroundColor: `rgba(11, 19, 23, ${(value) / 10})`,
+      backgroundColor: `rgba(11, 19, 23, ${(value + 1) * ((100/6)/100)})`,
       '&:hover': {
         backgroundColor: "#4D4D4D",
       }
@@ -31,8 +32,9 @@ export default function WeightIconButton({value, selected, onClick}) {
     onClick={(evt) => onClick(evt, value)}
       aria-label={`weight ${value}`} color="secondary">
         {selected && value !== 0 ? 
-          <CheckIcon sx={{ color: "#FFF" }} /> : 
-          (selected && value === 0 ? <ClearIcon sx={{ color: '#000' }} /> : null)}
+          <CheckIcon sx={{ color: theme.palette.text.secondary }} /> : 
+          (selected && value === 0 ? <ClearIcon sx={{ color: '#000' }} /> : 
+          <Typography variant='caption' style={{ color: theme.palette.text.secondary, display: "inline-block" }}>{value}</Typography>)}
     </IconButton>
   );
 }

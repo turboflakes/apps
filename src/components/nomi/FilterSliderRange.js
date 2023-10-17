@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTheme } from '@mui/material/styles';
 import { useSelector, useDispatch } from 'react-redux'
 import isUndefined from 'lodash/isUndefined'
 import isEqual from 'lodash/isEqual'
@@ -84,11 +85,10 @@ function useSessionRange(range) {
   return [value, setValue];
 }
 
-export default function FilterSliderRange() {
-  // const theme = useTheme();
+export default function FilterSliderRange({limits, labelFormat, step, showCaption}) {
+  const theme = useTheme();
   const dispatch = useDispatch();
-  // const [filterRange, setFilterRange] = useSessionRange([10, 30]);
-  const [filterRange, setFilterRange] = React.useState([10, 30]);
+  const [filterRange, setFilterRange] = React.useState([limits[0], limits[1]]);
 
   const handleChange = (event, range) => {
     setFilterRange(range);
@@ -116,32 +116,33 @@ export default function FilterSliderRange() {
     }
   ]
 
-  const showCaption = false
+  if (!limits) {
+    return null
+  }
   
   return (
     <Box
       sx={{
-        mt: 1,
-        py: 2,
+        mt: theme.spacing(3),
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
         
       }}
       >
-      <Stack spacing={3} direction="row" sx={{ ml: 1, mr: 3 }} alignItems="center">
-        {showCaption ? <Typography variant="caption" sx={{ ml: 3 }}>past</Typography> : null}
+      <Stack spacing={1} direction="row" sx={{ mx: theme.spacing(1) }} alignItems="center">
+        {showCaption ? <Typography variant="caption" sx={{ ml: 3 }}>low</Typography> : null}
         <CustomSlider
           value={filterRange}
           onChange={handleChange}
           onChangeCommitted={handleChangeCommitted}
-          step={1}
-          min={0}
-          max={50}
+          step={!!step ? step : 1}
+          min={limits[0]}
+          max={limits[1]}
           // marks={marks}
-          valueLabelFormat={valueLabelFormat}
+          valueLabelFormat={labelFormat}
           valueLabelDisplay="on"/>
-        {showCaption ? <Typography variant="caption">present</Typography> : null}
+        {showCaption ? <Typography variant="caption" sx={{ ml: 3 }}>high</Typography> : null}
       </Stack>
     </Box>
   );

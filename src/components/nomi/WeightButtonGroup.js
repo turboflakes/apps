@@ -8,7 +8,8 @@ import TooltipInfo from './TooltipInfo';
 import FilterSliderRange from './FilterSliderRange';
 
 export default function WeightButtonGroup({ 
-  title, description, scaleDescription, resultDescription, questionDescription, unit, limits, onChange, value}) {
+  title, description, scaleDescription, resultDescription, questionDescription, 
+  limits, limitsLabelFormat, limitsStep, showLimitsCaption, onChange, value}) {
   const theme = useTheme();
 
   return (
@@ -47,7 +48,7 @@ export default function WeightButtonGroup({
         <WeightIconButton value={8} selected={selected === 8} onClick={handleOnClick} />
         <WeightIconButton value={9} selected={selected === 9} onClick={handleOnClick} /> */}
       </Stack>
-      <FilterSliderRange unit={unit} limits={limits} />
+      {limits ? <FilterSliderRange limits={limits} labelFormat={limitsLabelFormat} step={limitsStep} showCaption={showLimitsCaption}/> : null}
     </Box>
     
   );

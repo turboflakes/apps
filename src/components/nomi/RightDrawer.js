@@ -36,6 +36,13 @@ import ExtensionsBox from './ExtensionsBox';
 import FiltersDialog from './FiltersDialog';
 import nominatingSVG from '../../assets/polkadot_icons/Nominating.svg';
 import { isValidAddress } from '../../util/crypto'
+import { 
+  parseCommissionIntervalToPercentage, 
+  parseIntervalToUnit } from '../../util/math';
+import { stakeDisplayWeight } from '../../util/display';
+import {
+  selectChainInfo
+} from '../../features/chain/chainSlice';
 import {
   addressChanged,
   selectChain,
@@ -49,10 +56,11 @@ import {
 /// Position 4 - Lower MVR is preferrable (MVR = Missed Votes Ratio)
 
 const drawerWidth = 288;
-const filtersWidth = 256;
 
 const DrawerHeader = styled('div')(({ theme }) => ({
-  marginTop: 72,
+  // marginTop: 72,
+  marginTop: theme.spacing(1),
+  borderTop: 0,
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(0, 1),
@@ -65,7 +73,7 @@ const resetWeights = () => {
   return "0,0,0,0,0"
 }
 
-function useInitWeightSearchParams(searchParams, setSearchParams) {
+function useInitWeightsSearchParams(searchParams, setSearchParams) {
   React.useEffect(() => {
     if (!searchParams.get("w")) {
       searchParams.set("w", resetWeights())
@@ -82,12 +90,35 @@ function useInitWeightSearchParams(searchParams, setSearchParams) {
   return [];
 }
 
+const resetintervals = () => {
+  return "0:1000000000,0:10000000000000000,0:10000000000000000,0:100000000000,0:10000000"
+}
+
+function useInitIntervalsSearchParams(searchParams, setSearchParams) {
+  React.useEffect(() => {
+    if (!searchParams.get("i")) {
+      searchParams.set("i", resetintervals())
+      setSearchParams(searchParams)
+      return
+    }
+    if (searchParams.get("i").split(",").length !== 5) {
+      searchParams.set("i", resetintervals())
+      setSearchParams(searchParams)
+      return
+    }
+  }, [searchParams]);
+
+  return [];
+}
+
 export default function RightDrawer({open, onClose}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const chainInfo = useSelector(selectChainInfo)
   let [searchParams, setSearchParams] = useSearchParams();
-  useInitWeightSearchParams(searchParams, setSearchParams);
+  useInitWeightsSearchParams(searchParams, setSearchParams);
+  useInitIntervalsSearchParams(searchParams, setSearchParams);
   
   const [openFilters, setOpenFilters] = React.useState(false);
   const [nominate, setNominate] = React.useState(false);
@@ -104,10 +135,18 @@ export default function RightDrawer({open, onClose}) {
     setSearchParams(searchParams)
   }
 
-  if (!searchParams.get("w")) {
+  const handleOnLimitsChange = (evt, value, index) => {
+    console.log("__handleOnLimitsChange", value, index);
+  }
+
+  if (!searchParams.get("w") || !searchParams.get("i")) {
     return null
   }
+
   let weights = searchParams.get("w").split(",").map(v => parseInt(v));
+  let intervals = searchParams.get("i").split(",").map(v => v.split(":").map(i => parseInt(i)));
+  console.log("__intervals", intervals, chainInfo);
+
   
   return (
     <Drawer
@@ -116,6 +155,7 @@ export default function RightDrawer({open, onClose}) {
         flexShrink: 0,
         '& .MuiDrawer-paper': {
             width: drawerWidth,
+            border: 0,
         },
         backgroundColor: "#000"
         }}
@@ -124,41 +164,31 @@ export default function RightDrawer({open, onClose}) {
         open={open}
     >
         <DrawerHeader sx={{ display: 'flex', justifyContent: 'space-between'}}>
-          <Button variant="contained"
+          {/* <Button variant="contained"
             color="primary"
             onClick={handleOnClickNominate}
             startIcon={nominate ? <NominateIcon /> : <img src={nominatingSVG} alt={"nominate"}/>}
-            // endIcon={<span style={{
-            //   backgroundColor: "#FFF",
-            //   borderRadius: "50%",
-            //   width: 26,
-            //   height: 26,
-            //   display: "flex",
-            //   alignItems: "center",
-            //   justifyContent: "center",
-            //   margin: `0 ${theme.spacing(1)}px 0px 0`,
-            //   color: theme.palette.text.primary,
-            //   ...theme.typography.caption
-            // }}>{`${totalCandidates}`}</span>}
-            // disabled={nominate && (!nominations.length || !account.address)}
             >
             Nominate            
           </Button>
           <IconButton onClick={onClose}>
               {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
-          { nominate ? <ExtensionsBox /> : null}
+          { nominate ? <ExtensionsBox /> : null} */}
         </DrawerHeader>
-        <Divider />
         <List
             subheader={
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <ListSubheader color='primary'>Weights</ListSubheader>
-                {/* <Box sx={{ mr: 1 }}>
-                  <IconButton onClick={handleFiltersToggle}>
+                <ListSubheader sx={{ ...theme.typography.h6 }} color='primary'>Weights</ListSubheader>
+                <Box sx={{ mr: 1 }}>
+                  {/* <IconButton onClick={handleFiltersToggle}>
                       {filters ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                  </IconButton> */}
+                  <IconButton onClick={onClose} size='small'>
+                    {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                   </IconButton>
-                </Box> */}
+                </Box>
+                
               </Box>
             }
           >
@@ -168,9 +198,12 @@ export default function RightDrawer({open, onClose}) {
                 description="The commission fee is the cut charged by the Validator for their services."
                 resultDescription="A lower commission results on a higher score."
                 questionDescription="How much you prioritize a validator with lower commission than one with higher commission?"
-                unit="%"
                 // limits={isEqual(_limits[1], _intervals[1]) ? parseCommissionIntervalToPercentage(_limits[1]) : parseCommissionIntervalToPercentage(_intervals[1])}
+                limits={parseCommissionIntervalToPercentage(intervals[0])}
+                limitsLabelFormat={(v) => `${v}%`}
+                limitsStep={1}
                 onChange={(e, v) => handleOnChange(e, v, 0)}
+                onLimitsChange={(e, v) => handleOnLimitsChange(e, v, 0)}
                 value={weights[0]}
               />
             </ListItem>
@@ -181,6 +214,9 @@ export default function RightDrawer({open, onClose}) {
                 resultDescription="A higher performance is preferable and results on a higher score." 
                 questionDescription="How much you prioritize a validator with higher performance than one with lower performance?"
                 // limits={isEqual(_limits[4], _intervals[4]) ? _limits[4] : _intervals[4]}
+                limits={parseIntervalToUnit(intervals[4])}
+                limitsLabelFormat={(v) => `${v}%`}
+                limitsStep={1}
                 onChange={(e, v) => handleOnChange(e, v, 4)}
                 value={weights[4]}
               />
@@ -191,8 +227,10 @@ export default function RightDrawer({open, onClose}) {
                 description="The self stake is the amount of funds the Validator has bonded to their stash account. These funds are put at stake for the security of the network and can be slashed."
                 resultDescription="A higher self stake amount results on a higher score."
                 questionDescription="How much you prioritize a validator with higher self stake one with lower self stake?"
-                unit="%"
                 // limits={isEqual(_limits[1], _intervals[1]) ? parseCommissionIntervalToPercentage(_limits[1]) : parseCommissionIntervalToPercentage(_intervals[1])}
+                limits={parseIntervalToUnit(intervals[1])}
+                limitsLabelFormat={(v) => stakeDisplayWeight(v, chainInfo)}
+                limitsStep={100}
                 onChange={(e, v) => handleOnChange(e, v, 1)}
                 value={weights[1]}
               />
@@ -204,6 +242,9 @@ export default function RightDrawer({open, onClose}) {
                 resultDescription="A higher nominators stake amount is preferable and results on a higher score." 
                 questionDescription="How much you prioritize a validator with higher nominators stake amount one with lower nominators stake?"
                 // limits={isEqual(_limits[2], _intervals[2]) ? _limits[2] : _intervals[2]}
+                limits={parseIntervalToUnit(intervals[2])}
+                limitsLabelFormat={(v) => stakeDisplayWeight(v, chainInfo)}
+                limitsStep={100}
                 onChange={(e, v) => handleOnChange(e, v, 2)}
                 value={weights[2]}
               />
@@ -215,6 +256,9 @@ export default function RightDrawer({open, onClose}) {
                 resultDescription="A lower number of nominators results on a higher score." 
                 questionDescription="How much you prioritize a validator with lower number of nominators with one with a higher number of nominators?"
                 // limits={isEqual(_limits[3], _intervals[3]) ? parsePointsInterval(_limits[3]) : parsePointsInterval(_intervals[3])}
+                limits={parseIntervalToUnit(intervals[3])}
+                // limitsLabelFormat={(v) => stakeDisplayWeight(v, chainInfo)}
+                limitsStep={1}
                 onChange={(e, v) => handleOnChange(e, v, 3)}
                 value={weights[3]}
               />

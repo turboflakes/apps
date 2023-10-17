@@ -16,7 +16,7 @@ const networkSettings = {
   polkadot: {
     name: "Polkadot",
     endpoint: process.env.REACT_APP_POLKADOT_API_ENDPOINT,
-    externalWSS: "wss://rpc.polkadot.io",
+    externalWSS: "wss://rpc.ibp.network/polkadot",
     icon: iconPolkadotSVG,
     logo: logoPolkadotSVG,
     url: "https://polkadot.network",
@@ -34,7 +34,7 @@ const networkSettings = {
   kusama: {
     name: "Kusama",
     endpoint: process.env.REACT_APP_KUSAMA_API_ENDPOINT,
-    externalWSS: "wss://kusama-rpc.polkadot.io",
+    externalWSS: "wss://rpc.ibp.network/kusama",
     icon: iconKusamaSVG,
     logo: logoKusamaSVG,
     url: "https://kusama.network",
@@ -56,7 +56,7 @@ const networkSettings = {
   westend: {
     name: "Westend",
     endpoint: process.env.REACT_APP_WESTEND_API_ENDPOINT,
-    externalWSS: "wss://westend-rpc.polkadot.io",
+    externalWSS: "wss://rpc.ibp.network/westend",
     icon: iconWestendSVG,
     logo: logoWestendSVG,
     url: "https://polkadot.network",
@@ -120,3 +120,6 @@ export const getChainLogo = (network, paraId) => {
   }
   return namedLogo 
 }
+
+// Used in all NOMI traits
+export const DECIMALS = 10000000

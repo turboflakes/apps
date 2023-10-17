@@ -46,7 +46,7 @@ import {
   getNetworkLogo, 
 } from '../constants'
 
-function useWeb3ChainInfo(api) {
+function useWeb3ChainInfo(api, setLoading) {
   const dispatch = useDispatch();
   
   React.useEffect(() => {
@@ -57,10 +57,14 @@ function useWeb3ChainInfo(api) {
     
     if (api) {
       fetchWeb3ChainInfo(api).then((info) => {
-				dispatch(chainInfoChanged(info.toHuman()));
-			});
+        setLoading(false);
+        dispatch(chainInfoChanged(info.toHuman()));
+        
+			}).catch(e => {
+        console.log("error: ",e);
+      });
 		}
-  }, []);
+  }, [api]);
 
   return [];
 }
@@ -133,7 +137,6 @@ export default function LayoutPage({api}) {
   const theme = useTheme();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-  
 	const [openLeftDrawer, setOpenLeftDrawer] = React.useState(false);
   const [openRightDrawer, setOpenRightDrawer] = React.useState(false);
   const toggleDrawer = () => {
@@ -151,8 +154,8 @@ export default function LayoutPage({api}) {
   const selectedApp = useSelector(selectApp);
 	const selectedChain = useSelector(selectChain);
   const selectedPage = useSelector(selectPage);
-  
-	useWeb3ChainInfo(api);
+  const [loading, setLoading] = React.useState(true);
+  useWeb3ChainInfo(api, setLoading);
 
   useScrollTop(ref, selectedPage);
 
@@ -200,7 +203,7 @@ export default function LayoutPage({api}) {
   }
 
   // wait for api to be ready
-  if (!api) {
+  if (loading) {
     return null
   }
 
