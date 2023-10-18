@@ -1,8 +1,5 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import { useSelector, useDispatch } from 'react-redux'
-import isUndefined from 'lodash/isUndefined'
-import isEqual from 'lodash/isEqual'
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import Stack from '@mui/material/Stack';
@@ -69,52 +66,35 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
   },
 }));
 
-function valueLabelFormat(value) {
-  return value.format();
-}
-
-function useSessionRange(range) {
-  const [value, setValue] = React.useState(range);
-
-  React.useEffect(() => {
-    if (!isEqual(value, range)) {
-      setValue(range);
-    }
-  }, [range]);
-
-  return [value, setValue];
-}
-
-export default function FilterSliderRange({limits, labelFormat, step, showCaption}) {
+export default function FilterSliderRange({limits, labelFormat, step, showCaption, onChange}) {
   const theme = useTheme();
-  const dispatch = useDispatch();
   const [filterRange, setFilterRange] = React.useState([limits[0], limits[1]]);
 
   const handleChange = (event, range) => {
     setFilterRange(range);
   }
   const handleChangeCommitted = (event, range) => {
-    // dispatch(sessionHistoryRangeChanged(range))
+    onChange(event, range)
   }
 
-  let marks = [
-    {
-      value: 10,
-      label: ''
-    },
-    {
-      value: 20,
-      label: ''
-    },
-    {
-      value: 30,
-      label: ''
-    },
-    {
-      value: 40,
-      label: ''
-    }
-  ]
+  // let marks = [
+  //   {
+  //     value: 10,
+  //     label: ''
+  //   },
+  //   {
+  //     value: 20,
+  //     label: ''
+  //   },
+  //   {
+  //     value: 30,
+  //     label: ''
+  //   },
+  //   {
+  //     value: 40,
+  //     label: ''
+  //   }
+  // ]
 
   if (!limits) {
     return null

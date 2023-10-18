@@ -9,16 +9,12 @@ import FilterSliderRange from './FilterSliderRange';
 
 export default function WeightButtonGroup({ 
   title, description, scaleDescription, resultDescription, questionDescription, 
-  limits, limitsLabelFormat, limitsStep, showLimitsCaption, onChange, value}) {
+  limits, limitsTitle, limitsLabelFormat, limitsStep, showLimitsCaption, onLimitsChange, onChange, value}) {
   const theme = useTheme();
 
   return (
     <Box sx={{ p: 0, m: 0 }}>
-      <Box sx={{
-        display: "flex",
-        ml: 0.5,
-        mb: 0.5,
-      }}>
+      <Box sx={{ display: "flex", ml: 0, my: 1 }}>
         <Box sx={{ display: 'flex' }}>
           <Typography variant="body2" align="left">
             {title}
@@ -29,11 +25,6 @@ export default function WeightButtonGroup({
             resultDescription={resultDescription}
             questionDescription={questionDescription} />
         </Box>
-          {/* {!!limits.length ?
-            <Typography variant="caption" color="textSecondary"
-              className={classes.caption}>
-              {`[${limits[0]}, ${limits[1]}]`} {unit ? `(${unit})` : null} 
-            </Typography> : null} */}
       </Box>
       <Stack direction="row" spacing={1}>
         <WeightIconButton value={0} selected={value === 0} onClick={(e) => onChange(e, 0)} />
@@ -47,8 +38,18 @@ export default function WeightButtonGroup({
         <WeightIconButton value={7} selected={selected === 7} onClick={handleOnClick} />
         <WeightIconButton value={8} selected={selected === 8} onClick={handleOnClick} />
         <WeightIconButton value={9} selected={selected === 9} onClick={handleOnClick} /> */}
+
       </Stack>
-      {limits ? <FilterSliderRange limits={limits} labelFormat={limitsLabelFormat} step={limitsStep} showCaption={showLimitsCaption}/> : null}
+      {limitsTitle ?
+        <Box sx={{ display: "flex", ml: 0, my: 1 }}>
+          <Typography variant="body2" align="left">
+            {limitsTitle}
+          </Typography>
+        </Box> : null}
+      {limits ? 
+        <FilterSliderRange 
+          limits={limits} labelFormat={limitsLabelFormat} step={limitsStep} 
+          showCaption={showLimitsCaption} onChange={(e, r) => onLimitsChange(e, r)} /> : null}
     </Box>
     
   );

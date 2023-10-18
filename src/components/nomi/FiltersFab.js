@@ -37,7 +37,7 @@ function useInitFiltersSearchParams(searchParams, setSearchParams) {
   return [];
 }
 
-export default function ExtensionsBox() {
+export default function FiltersFab({right}) {
   const theme = useTheme();
   let [searchParams, setSearchParams] = useSearchParams();
   useInitFiltersSearchParams(searchParams, setSearchParams);
@@ -67,13 +67,13 @@ export default function ExtensionsBox() {
     <Box sx={{ 
       position: 'absolute', 
       top: 96,
-      right: theme.spacing(10),
+      right,
       zIndex: 1
       // ...(openRightDrawer && { display: 'none' }) 
     }}>
       <Stack  direction="row" alignItems="center">
         {filters.map((value, index) => 
-          (value === 1 ? <Chip sx={{ mr: theme.spacing(1) }} 
+          (value === 1 ? <Chip key={index} sx={{ mr: theme.spacing(1) }} 
             label={filtersDescription[index].label} 
             icon={filtersDescription[index].type === "include" ? <CheckIcon /> : <NotApplicapleIcon />} /> : null))}
       
@@ -83,7 +83,6 @@ export default function ExtensionsBox() {
         </Fab>
       </Stack>
       <FiltersDialog
-          keepMounted
           open={openFilters}
           filters={filters}
           onClose={handleCloseFiltersDialog}    

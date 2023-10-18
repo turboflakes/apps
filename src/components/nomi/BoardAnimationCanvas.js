@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import isEqual from 'lodash/isEqual'
 import Box from '@mui/material/Box';
 import {
@@ -12,6 +12,12 @@ import {
   selectChain,
   selectAddress
 } from '../../features/chain/chainSlice';
+import {
+  selectBoardsBySessionAndHash,
+  selectBoardAddressesBySessionAndHash,
+  useGetBoardsQuery,
+} from '../../features/api/boardsSlice';
+import { getCriteriasHash } from '../../util/crypto';
 
 /**
  * Returns a random integer between min (inclusive) and max (inclusive).
@@ -64,8 +70,6 @@ let cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimat
 
 function useInitCanvas(canvasRef, ballsRef, width, height, topY, onBallClick) {
 
-  console.log("__useInitCanvas", width);
-
   const clearBallsClicked = () => {
     // Identify which ball is open to be reset
     let ball = ballsRef.current.find(ball => ball.clicked)
@@ -95,7 +99,7 @@ function useInitCanvas(canvasRef, ballsRef, width, height, topY, onBallClick) {
         clearBallsClicked()
         
         ball.clicked = true
-        onBallClick(ball.address)
+        onBallClick(ball.address, ball)
       }
     }
   }
@@ -116,7 +120,9 @@ function useInitCanvas(canvasRef, ballsRef, width, height, topY, onBallClick) {
     }
 
     return function cleanup() {
-      canvasRef.current.removeEventListener('click', handleCanvasOnClick, false);
+      if (canvasRef.current) {
+        canvasRef.current.removeEventListener('click', handleCanvasOnClick, false);
+      }      
     }
 
   }, [width, height]);
@@ -166,9 +172,13 @@ function useUpdateCanvas(canvasRef, ballsRef, width, height, filteredAddresses, 
 
       ballsRef.current.forEach((ball) => {
         if (ball.clicked) {
-          ball.radius = width / 4.4
-          ball.x = (width / 4.4) + 20
-          ball.y = (width / 4.4) + 20
+          // console.log("__ball", ball);
+          ball.radius = 0
+          ball.x = 0
+          ball.y = 0
+          // ball.radius = width / 4.4
+          // ball.x = (width / 4.4) + 20
+          // ball.y = (width / 4.4) + 20
         } else {
           if (ball.y + ball.radius >= height) {
             ball.velY *= -ball.bounce
@@ -254,32 +264,16 @@ function useUpdateCanvas(canvasRef, ballsRef, width, height, filteredAddresses, 
   return [];
 }
 
-export default function BoardAnimationCanvas({width, height, topY, onBallClick}) {
+export default function BoardAnimationCanvas({width, height, topY, onBallClick, addresses}) {
   const canvasRef = React.useRef();
   const ballsRef = React.useRef();
   const selectedChain = useSelector(selectChain);
   const currentSelected = useSelector(selectAddress);
   const selectedPage = useSelector(selectPage);
-  const filteredAddresses = ['a','a','a','a','a','a','a','a','a','a','a','a','a','a','a','a'];
-
-  useInitCanvas(canvasRef, ballsRef, width, height, topY, onBallClick);
-  useUpdateCanvas(canvasRef, ballsRef, width, height, filteredAddresses, currentSelected);
   
-
-  const handleOnBallClick = (address) => {
-    console.log("__handleOnBallClick", address);
-    // if (!!address) {
-    //   const {location} = this.props
-    //   let query = new URLSearchParams(location.search)
-    //   this.changeParams(query, address)
-    //   this.props.selectAddress(address)
-    // }
-  }
-
-  const handleOnBallClear = () => {
-    // this.removeAddress()
-  }
-
+  useInitCanvas(canvasRef, ballsRef, width, height, topY, onBallClick);
+  useUpdateCanvas(canvasRef, ballsRef, width, height, addresses, currentSelected);
+  
   return (
     <Box sx={{ 
       position: "relative",

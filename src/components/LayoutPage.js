@@ -17,6 +17,7 @@ import HubIcon from '@mui/icons-material/Hub';
 import Chip from '@mui/material/Chip';
 import Fab from '@mui/material/Fab';
 import TuneIcon from '@mui/icons-material/Tune';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink, faWaterLadder, faServer } from '@fortawesome/free-solid-svg-icons'
 import Footer from './Footer'
@@ -83,6 +84,7 @@ function useScrollTop(ref, selectedPage) {
 
 const drawerWidth = 210;
 const drawerWidthClosed = 56;
+const rightDrawerWidth = 296;
 
 const AppBar = styled(MuiAppBar, {
 	shouldForwardProp: (prop) => prop !== 'open',
@@ -143,8 +145,8 @@ export default function LayoutPage({api}) {
 		setOpenLeftDrawer(!openLeftDrawer);
 	};
 
-  const handleRightDrawerOpen = () => {
-    setOpenRightDrawer(true);
+  const handleRightDrawerToggle = () => {
+    setOpenRightDrawer(!openRightDrawer);
   };
 
   const handleRightDrawerClose = () => {
@@ -511,7 +513,7 @@ export default function LayoutPage({api}) {
             </List>
           </LeftDrawer>
           {selectedApp === "nomi" ?
-            <RightDrawer open={openRightDrawer} onClose={handleRightDrawerClose} /> : null }
+            <RightDrawer open={openRightDrawer} width={rightDrawerWidth} /> : null }
       <Box
           component="main"
           sx={{
@@ -532,17 +534,16 @@ export default function LayoutPage({api}) {
         <Toolbar sx={{ height: 72 }} />
         {/* Nomi open/close drawer */}
         {selectedApp === "nomi" ?
-          <FiltersFab /> : null }
+          <FiltersFab right={openRightDrawer ? `calc(${rightDrawerWidth}px + 64px)` : theme.spacing(10)} /> : null }
         {selectedApp === "nomi" ?
           <Fab sx={{ 
                 position: 'absolute', 
                 top: 96 , 
-                right: theme.spacing(4),
-                ...(openRightDrawer && { display: 'none' }) 
+                right: openRightDrawer ? `calc(${rightDrawerWidth}px + 16px)` : theme.spacing(4),
               }}
-              onClick={handleRightDrawerOpen}
+              onClick={handleRightDrawerToggle}
               size="small" color="primary" aria-label="control-panel">
-              <TuneIcon />
+              {openRightDrawer ? <ChevronRightIcon /> : <TuneIcon /> }
           </Fab> : null}
         <Outlet context={{ api }} />
         {/* TODO move footer to left drawer */}
@@ -551,3 +552,5 @@ export default function LayoutPage({api}) {
     </Box>
   );
 }
+
+// `calc(${rightDrawerWidth} + ${theme.spacing(4)})`

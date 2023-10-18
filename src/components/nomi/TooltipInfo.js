@@ -27,12 +27,13 @@ export default function TooltipInfo({title, description, scaleDescription, resul
                 {resultDescription}
               </Typography> : null}
             {questionDescription ? 
-              <Typography variant="caption" gutterBottom>
-                In a scale of 0 to 5
+              <Typography sx={{display: 'flex', justifyContent: 'space-between'}} variant="caption" paragraph>
+                <b>Question</b>
+                <span>(In a scale of 0 to 5)</span>
               </Typography> : null}
             {questionDescription ? 
               <Typography variant="caption">
-                <b><i>{questionDescription}</i></b>
+                <i>{questionDescription}</i>
               </Typography> : null}
           </Box>
         </Box>

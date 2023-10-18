@@ -15,6 +15,8 @@ import parachainsSlice from '../features/api/parachainsSlice';
 import valProfilesSlice from '../features/api/valProfilesSlice';
 import poolsSlice from '../features/api/poolsSlice';
 import poolsMetadataSlice from '../features/api/poolsMetadataSlice';
+import boardsSlice from '../features/api/boardsSlice';
+import boardsLimitsSlice from '../features/api/boardsLimitsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -31,6 +33,8 @@ export const store = configureStore({
     parachains: parachainsSlice.reducer,
     pools: poolsSlice.reducer,
     pools_metadata: poolsMetadataSlice.reducer,
+    boards: boardsSlice.reducer,
+    boards_limits: boardsLimitsSlice.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
     socket: socketSlice.reducer
   },

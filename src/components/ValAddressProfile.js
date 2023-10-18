@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
-// import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -29,8 +29,8 @@ import {
 } from '../features/layout/layoutSlice';
 import { stakeDisplay } from '../util/display'
 
-export default function ValAddressProfile({address, maxSessions, showGrade, showSubset}) {
-  // const theme = useTheme();
+export default function ValAddressProfile({address, maxSessions, showGrade, showSubset, showDark}) {
+  const theme = useTheme();
   const {isSuccess, isFetching} = useGetValidatorProfileByAddressQuery(address)
   const isLiveMode = useSelector(selectIsLiveMode);
   const historySession = useSelector(selectSessionHistory);
@@ -78,8 +78,8 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
               theme={'polkadot'} />
           </Box>
           <Box>
-            <Typography variant="h5">{valProfile._identity}</Typography>
-            <Typography variant="caption"><FontAwesomeIcon style={{ marginRight: 8 }} icon={faWallet} />{address}</Typography>
+            <Typography variant="h5" color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{valProfile._identity}</Typography>
+            <Typography variant="caption" color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}><FontAwesomeIcon style={{ marginRight: 8 }} icon={faWallet} />{address}</Typography>
             <Divider sx={{ my: 2,
               opacity: 0.25,
               height: '1px',
@@ -94,15 +94,19 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
                   <GradeIcon sessionIndex={sessionIndex} maxSessions={maxSessions} address={address} size={64} /> : null}
               </Box>
               <Box sx={{ mr: 3,  display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>commission</Typography>
+                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom
+                  color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>commission</Typography>
                 <Box>
-                  <Typography variant="h5" component="span">{valProfile._commission}</Typography>
+                  <Typography variant="h5" component="span"
+                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{valProfile._commission}</Typography>
                 </Box>
               </Box>
               <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>bonded</Typography>
+                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom
+                  color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>bonded</Typography>
                 <Box>
-                  <Typography variant="h5" component="span">{stakeDisplay(valProfile.own_stake, chainInfo, 4, true, true, true)}</Typography>
+                  <Typography variant="h5" component="span"
+                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.own_stake, chainInfo, 4, true, true, true)}</Typography>
                 </Box>
               </Box>
               {showSubset && valProfile.subset === "TVP" ? 

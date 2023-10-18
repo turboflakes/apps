@@ -32,14 +32,21 @@ import BoardAnimationCanvas from './BoardAnimationCanvas';
 import WeightButtonGroup from './WeightButtonGroup';
 import WeightIconButton from './WeightIconButton';
 import LeaderboardBox from './LeaderboardBox';
-import ExtensionsBox from './ExtensionsBox';
 import FiltersDialog from './FiltersDialog';
 import nominatingSVG from '../../assets/polkadot_icons/Nominating.svg';
 import { isValidAddress } from '../../util/crypto'
 import { 
-  parseCommissionIntervalToPercentage, 
-  parseIntervalToUnit } from '../../util/math';
+  parseCommissionIntervalToPercentage,
+  parsePercentageArrayToCommission,
+  parseIntervalToUnit,
+  parseIntervalToPercentage,
+  parsePercentageArrayToDecimalsInversed,
+  parseUnitArrayToDecimals,
+  parseInterval } from '../../util/math';
 import { stakeDisplayWeight } from '../../util/display';
+import {
+  useGetBoardsLimitsQuery,
+} from '../../features/api/boardsLimitsSlice';
 import {
   selectChainInfo
 } from '../../features/chain/chainSlice';
@@ -54,8 +61,6 @@ import {
 /// Position 2 - Higher Nominators stake is preferrable (limit to 256 -> oversubscribed)
 /// Position 3 - Lower Nominators is preferrable
 /// Position 4 - Lower MVR is preferrable (MVR = Missed Votes Ratio)
-
-const drawerWidth = 288;
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   // marginTop: 72,
@@ -111,7 +116,7 @@ function useInitIntervalsSearchParams(searchParams, setSearchParams) {
   return [];
 }
 
-export default function RightDrawer({open, onClose}) {
+export default function RightDrawer({open, onClose, width}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -120,6 +125,8 @@ export default function RightDrawer({open, onClose}) {
   useInitWeightsSearchParams(searchParams, setSearchParams);
   useInitIntervalsSearchParams(searchParams, setSearchParams);
   
+  const {data, isFetching, isError } = useGetBoardsLimitsQuery({session: "current"}, {refetchOnMountOrArgChange: true});
+
   const [openFilters, setOpenFilters] = React.useState(false);
   const [nominate, setNominate] = React.useState(false);
 
@@ -136,17 +143,20 @@ export default function RightDrawer({open, onClose}) {
   }
 
   const handleOnLimitsChange = (evt, value, index) => {
-    console.log("__handleOnLimitsChange", value, index);
+    let intervals = searchParams.get("i").split(",");
+    intervals[index] = value.join(':')
+
+    console.log("__intervals", intervals);
+    searchParams.set("i", intervals.toString())
+    setSearchParams(searchParams)
   }
 
-  if (!searchParams.get("w") || !searchParams.get("i")) {
+  if (isFetching || isError || !searchParams.get("w") || !searchParams.get("i")) {
     return null
   }
 
   let weights = searchParams.get("w").split(",").map(v => parseInt(v));
   let intervals = searchParams.get("i").split(",").map(v => v.split(":").map(i => parseInt(i)));
-  console.log("__intervals", intervals, chainInfo);
-
   
   return (
     <Drawer
@@ -154,7 +164,7 @@ export default function RightDrawer({open, onClose}) {
         marginTop: 72,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
-            width: drawerWidth,
+            width,
             border: 0,
         },
         backgroundColor: "#000"
@@ -163,103 +173,95 @@ export default function RightDrawer({open, onClose}) {
         anchor="right"
         open={open}
     >
-        <DrawerHeader sx={{ display: 'flex', justifyContent: 'space-between'}}>
-          {/* <Button variant="contained"
-            color="primary"
-            onClick={handleOnClickNominate}
-            startIcon={nominate ? <NominateIcon /> : <img src={nominatingSVG} alt={"nominate"}/>}
-            >
-            Nominate            
-          </Button>
-          <IconButton onClick={onClose}>
-              {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-          { nominate ? <ExtensionsBox /> : null} */}
-        </DrawerHeader>
+        <DrawerHeader sx={{ display: 'flex', justifyContent: 'space-between'}} />
         <List
             subheader={
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <ListSubheader sx={{ ...theme.typography.h6 }} color='primary'>Weights</ListSubheader>
-                <Box sx={{ mr: 1 }}>
-                  {/* <IconButton onClick={handleFiltersToggle}>
-                      {filters ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                  </IconButton> */}
+                <ListSubheader sx={{ ...theme.typography.h6, mb: theme.spacing(3) }} color='primary'>Nomination Criteria</ListSubheader>
+                {/* <Box sx={{ mr: 1 }}>
                   <IconButton onClick={onClose} size='small'>
                     {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                   </IconButton>
-                </Box>
-                
+                </Box> */}
               </Box>
             }
           >
+            <Divider />
             <ListItem >
               <WeightButtonGroup
-                title="Lower Commission"
+                title="Lower commission"
                 description="The commission fee is the cut charged by the Validator for their services."
                 resultDescription="A lower commission results on a higher score."
                 questionDescription="How much you prioritize a validator with lower commission than one with higher commission?"
-                // limits={isEqual(_limits[1], _intervals[1]) ? parseCommissionIntervalToPercentage(_limits[1]) : parseCommissionIntervalToPercentage(_intervals[1])}
-                limits={parseCommissionIntervalToPercentage(intervals[0])}
+                limitsTitle="Commission range"
+                limits={parseCommissionIntervalToPercentage(data.limits.commission)}
                 limitsLabelFormat={(v) => `${v}%`}
-                limitsStep={1}
+                limitsStep={10}
                 onChange={(e, v) => handleOnChange(e, v, 0)}
-                onLimitsChange={(e, v) => handleOnLimitsChange(e, v, 0)}
+                onLimitsChange={(e, v) => handleOnLimitsChange(e, parsePercentageArrayToCommission(v), 0)}
                 value={weights[0]}
               />
             </ListItem>
+            <Divider />
             <ListItem >
               <WeightButtonGroup
-                title="Higher Performance"
+                title="Higher performance"
                 description="The performance is measured by the ratio of the amount of points missed by the ones potential to be collected."
                 resultDescription="A higher performance is preferable and results on a higher score." 
                 questionDescription="How much you prioritize a validator with higher performance than one with lower performance?"
-                // limits={isEqual(_limits[4], _intervals[4]) ? _limits[4] : _intervals[4]}
-                limits={parseIntervalToUnit(intervals[4])}
+                limitsTitle="Performance range"
+                limits={parseIntervalToPercentage(data.limits.mvr)}
                 limitsLabelFormat={(v) => `${v}%`}
                 limitsStep={1}
                 onChange={(e, v) => handleOnChange(e, v, 4)}
+                onLimitsChange={(e, v) => handleOnLimitsChange(e, parsePercentageArrayToDecimalsInversed(v), 4)}
                 value={weights[4]}
               />
             </ListItem>
+            <Divider />
             <ListItem >
               <WeightButtonGroup
-                title="Higher Self Stake" 
+                title="Higher self stake" 
                 description="The self stake is the amount of funds the Validator has bonded to their stash account. These funds are put at stake for the security of the network and can be slashed."
                 resultDescription="A higher self stake amount results on a higher score."
                 questionDescription="How much you prioritize a validator with higher self stake one with lower self stake?"
-                // limits={isEqual(_limits[1], _intervals[1]) ? parseCommissionIntervalToPercentage(_limits[1]) : parseCommissionIntervalToPercentage(_intervals[1])}
-                limits={parseIntervalToUnit(intervals[1])}
+                limitsTitle="Self Stake range"
+                limits={parseIntervalToUnit(data.limits.own_stake)}
                 limitsLabelFormat={(v) => stakeDisplayWeight(v, chainInfo)}
-                limitsStep={100}
+                limitsStep={1000}
                 onChange={(e, v) => handleOnChange(e, v, 1)}
+                onLimitsChange={(e, v) => handleOnLimitsChange(e, parseUnitArrayToDecimals(v), 1)}
                 value={weights[1]}
               />
             </ListItem>
+            <Divider />
             <ListItem >
               <WeightButtonGroup
-                title="Higher Nominators Stake"
+                title="Higher Nominators stake"
                 description="The nominators stake is the total stake from ALL the nominators who nominate the validator. Similar to Validators self stake, these funds are used for the security of the network and can be slashed."
                 resultDescription="A higher nominators stake amount is preferable and results on a higher score." 
                 questionDescription="How much you prioritize a validator with higher nominators stake amount one with lower nominators stake?"
-                // limits={isEqual(_limits[2], _intervals[2]) ? _limits[2] : _intervals[2]}
-                limits={parseIntervalToUnit(intervals[2])}
+                limitsTitle="Nominators Stake range"
+                limits={parseIntervalToUnit(data.limits.nominators_stake)}
                 limitsLabelFormat={(v) => stakeDisplayWeight(v, chainInfo)}
-                limitsStep={100}
+                limitsStep={10000}
                 onChange={(e, v) => handleOnChange(e, v, 2)}
+                onLimitsChange={(e, v) => handleOnLimitsChange(e, parseUnitArrayToDecimals(v), 2)}
                 value={weights[2]}
               />
             </ListItem>
+            <Divider />
             <ListItem >
               <WeightButtonGroup
-                title="Lower Nominators Counter"
+                title="Lower Nominators counter"
                 description="The nominators counter is the number of nominators backing a validator."
                 resultDescription="A lower number of nominators results on a higher score." 
                 questionDescription="How much you prioritize a validator with lower number of nominators with one with a higher number of nominators?"
-                // limits={isEqual(_limits[3], _intervals[3]) ? parsePointsInterval(_limits[3]) : parsePointsInterval(_intervals[3])}
-                limits={parseIntervalToUnit(intervals[3])}
-                // limitsLabelFormat={(v) => stakeDisplayWeight(v, chainInfo)}
+                limitsTitle="Nominators counter range"
+                limits={parseInterval(data.limits.nominators_counter)}
                 limitsStep={1}
                 onChange={(e, v) => handleOnChange(e, v, 3)}
+                onLimitsChange={(e, v) => handleOnLimitsChange(e, v, 3)}
                 value={weights[3]}
               />
             </ListItem>

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -13,55 +14,72 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 
 
-const filtersDescription = ["Active Validators", "TVP Validators", "Over Subscribed", "Missing Identity"];
+const optionsDescription = ["Active Validators", "TVP Validators", "Over Subscribed", "Missing Identity"];
 
-export default function FiltersDialog(props) {
-  const { onClose, value: valueProp, open, ...other } = props;
-  const [filters, setFilters] = React.useState(props.filters);
+const StyledDialog = styled(Dialog)(({ theme, maxWidth }) => ({
+  '& .MuiDialog-paper': {
+    padding: theme.spacing(2),
+    borderRadius: theme.spacing(0),
+    backgroundColor: theme.palette.primary.main,
+    maxHeight: 435,
+  },
+}));
+
+export default function FiltersDialog({ filters, onClose, open, ...other }) {
+  const theme = useTheme();
+  const [options, setOptions] = React.useState(filters);
   
   const handleCancel = () => {
-    setFilters(props.filters)
+    setOptions(filters)
     onClose();
   };
 
   const handleDone = () => {
-    onClose(filters);
+    onClose(options);
   };
 
   const handleChange = (event, index) => {
-    let newChecked = [...filters];
+    let newChecked = [...options];
     if (newChecked[index] === 0) { 
       newChecked[index] = 1;
     } else {
       newChecked[index] = 0;
     }
-    setFilters(newChecked)
+    setOptions(newChecked)
   };
 
   return (
-    <Dialog
-      sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
-      maxWidth="xs"
-      open={open}
-      {...other}
-    >
-      <DialogTitle>Filter Validators</DialogTitle>
+    <StyledDialog fullWidth={true} maxWidth="xs" open={open} onClose={handleCancel} keepMounted>
+      <Box sx={{
+        m: 0,
+        p: 0,
+        display: 'flex',
+        justifyContent: 'space-between'
+      }}>
+        <DialogTitle sx={{ color: theme.palette.text.secondary }} >Filter Validators</DialogTitle>
+        <DialogActions>
+          {/* <Button autoFocus onClick={handleCancel} variant='outlined' color='secondary'>
+            Cancel
+          </Button> */}
+          <Button onClick={handleDone} variant='contained' color='secondary' >Done</Button>
+        </DialogActions>
+      </Box>
       <DialogContent>
         <List
           disablePadding
           subheader={
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              <ListSubheader color='primary'>Include:</ListSubheader>
+              <ListSubheader color='secondary' sx={{ bgcolor: 'transparent' }}>Only Include:</ListSubheader>
             </Box>
           }
         >
-          {filters.slice(0, 2).map((value, index) => {
+          {options.slice(0, 2).map((value, index) => {
             return (
               <ListItem
                 key={index}
               >
-                <Chip label={filtersDescription[index]} icon={value ? <TaskAltIcon /> : <RadioButtonUncheckedIcon />} variant="outlined" 
-                  onClick={(e) => handleChange(e, index)} />
+                <Chip label={optionsDescription[index]} icon={value ? <TaskAltIcon /> : <RadioButtonUncheckedIcon />} variant="outlined" 
+                  onClick={(e) => handleChange(e, index)} color='secondary' />
               </ListItem>
             );
           })}
@@ -70,28 +88,28 @@ export default function FiltersDialog(props) {
           disablePadding
           subheader={
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              <ListSubheader color='primary'>Exclude:</ListSubheader>
+              <ListSubheader color='secondary' sx={{ bgcolor: 'transparent' }} >Exclude:</ListSubheader>
             </Box>
           }
         >
-          {filters.slice(2, 4).map((value, index) => {
+          {options.slice(2, 4).map((value, index) => {
             return (
               <ListItem
                 key={index}
               >
-                <Chip label={filtersDescription[index + 2]} icon={value ? <TaskAltIcon /> : <RadioButtonUncheckedIcon />} variant="outlined" 
-                  onClick={(e) => handleChange(e, index + 2)} />
+                <Chip label={optionsDescription[index + 2]} icon={value ? <TaskAltIcon /> : <RadioButtonUncheckedIcon />} variant="outlined" 
+                  onClick={(e) => handleChange(e, index + 2)} color='secondary' />
               </ListItem>
             );
           })}
         </List>
       </DialogContent>
-      <DialogActions>
+      {/* <DialogActions>
         <Button autoFocus onClick={handleCancel}>
           Cancel
         </Button>
-        <Button onClick={handleDone}>Done</Button>
-      </DialogActions>
-    </Dialog>
+        <Button onClick={handleDone} variant='contained'>Done</Button>
+      </DialogActions> */}
+    </StyledDialog>
   );
 }

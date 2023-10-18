@@ -45,6 +45,9 @@ import {
 import {
   selectChain
 } from '../chain/chainSlice';
+import {
+  matchBoardsReceived
+} from './boardsSlice';
 import { getChainName, isChainSupported } from '../../constants'
 import { calculateMvr } from '../../util/mvr'
 import { grade } from '../../util/grade';
@@ -270,6 +273,9 @@ const sessionsSlice = createSlice({
         }
       })
 
+    })
+    .addMatcher(matchBoardsReceived, (state, action) => {
+      state.history = action.payload.data[0].session
     })
   }
 })
