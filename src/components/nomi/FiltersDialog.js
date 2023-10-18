@@ -69,7 +69,7 @@ export default function FiltersDialog({ filters, onClose, open, ...other }) {
           disablePadding
           subheader={
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              <ListSubheader color='secondary' sx={{ bgcolor: 'transparent' }}>Only Include:</ListSubheader>
+              <ListSubheader sx={{ bgcolor: 'transparent' }}>Only Include:</ListSubheader>
             </Box>
           }
         >
@@ -88,7 +88,7 @@ export default function FiltersDialog({ filters, onClose, open, ...other }) {
           disablePadding
           subheader={
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              <ListSubheader color='secondary' sx={{ bgcolor: 'transparent' }} >Exclude:</ListSubheader>
+              <ListSubheader sx={{ bgcolor: 'transparent' }} >Exclude:</ListSubheader>
             </Box>
           }
         >

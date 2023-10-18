@@ -206,7 +206,7 @@ export default function RightDrawer({open, onClose, width}) {
             <ListItem >
               <WeightButtonGroup
                 title="Higher performance"
-                description="The performance is measured by the ratio of the amount of points missed by the ones potential to be collected."
+                description="The performance is assessed by calculating the ratio of missed points to the total points that could have been obtained."
                 resultDescription="A higher performance is preferable and results on a higher score." 
                 questionDescription="How much you prioritize a validator with higher performance than one with lower performance?"
                 limitsTitle="Performance range"
@@ -222,7 +222,7 @@ export default function RightDrawer({open, onClose, width}) {
             <ListItem >
               <WeightButtonGroup
                 title="Higher self stake" 
-                description="The self stake is the amount of funds the Validator has bonded to their stash account. These funds are put at stake for the security of the network and can be slashed."
+                description="The self stake is the amount of funds the validator has bonded to their stash account. These funds are put at stake for the security of the network and are subject to potential slashing."
                 resultDescription="A higher self stake amount results on a higher score."
                 questionDescription="How much you prioritize a validator with higher self stake one with lower self stake?"
                 limitsTitle="Self Stake range"

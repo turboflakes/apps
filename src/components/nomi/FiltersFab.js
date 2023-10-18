@@ -67,6 +67,9 @@ export default function FiltersFab({right}) {
     <Box sx={{ 
       position: 'absolute', 
       top: 96,
+      transition: theme.transitions.create(['right'], {
+        duration: theme.transitions.duration.shorter,
+      }),
       right,
       zIndex: 1
       // ...(openRightDrawer && { display: 'none' }) 

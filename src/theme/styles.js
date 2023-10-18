@@ -25,7 +25,8 @@ let theme = createTheme({
     secondary: {
       // dark automatic calculated
       // main: "#343434",
-      main: "#4D4D4D",
+      // main: "#4D4D4D",
+      main: "#F1F1F0",
       contrastText: '#FFFFFF',
     },
     semantics: {
@@ -221,7 +222,7 @@ let theme = createTheme({
           backgroundColor: '#F1F1F0',
           '&:hover': {
             backgroundColor: '#FFF',
-            fontWeight: 'bold'
+            // fontWeight: 'bold'
           }
         },
         // containedPrimary: {
@@ -231,6 +232,36 @@ let theme = createTheme({
           borderColor: '#FFF',
           color: '#FFF'
         },
+      }
+    },
+    MuiStepLabel: {
+      styleOverrides: {
+        label: {
+          color: '#4D4D4D',
+          '&.Mui-active': {
+            color: '#FFF',
+          },
+          '&.Mui-completed': {
+            color: '#FFF',
+          }
+        }
+      }
+    },
+    MuiStepIcon: {
+      styleOverrides: {
+        root: {
+          color: '#4D4D4D',
+          '&.Mui-active': {
+            color: '#FFF',
+          },
+          '&.Mui-completed': {
+            color: '#FFF',
+          }
+        },
+        text: {
+          color: '#0B1317',
+          fill: '#0B1317',
+        }
       }
     },
     MuiListSubheader: {

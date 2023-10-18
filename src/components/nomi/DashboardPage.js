@@ -3,8 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import BoardAnimationCanvas from './BoardAnimationCanvas';
 import ValidatorDialog from './ValidatorDialog';
+import WelcomeDialog from './WelcomeDialog';
 import { getCriteriasHash } from '../../util/crypto'
 import {
   useGetBoardsQuery,
@@ -45,16 +47,6 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   }),
 );
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  marginTop: 72,
-  display: 'flex',
-  alignItems: 'center',
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: 'flex-start',
-}));
-
 const getHashFromParams = (searchParams) => {
   const weights = searchParams.get("w").toString();
   const intervals = searchParams.get("i").toString();
@@ -64,21 +56,29 @@ const getHashFromParams = (searchParams) => {
 
 export default function DashboardPage() {
   const theme = useTheme();
-  const dispatch = useDispatch();
   const [openValidatorDialog, setOpenValidatorDialog] = React.useState(false);
+  const [openWelcomeDialog, setOpenWelcomeDialog] = React.useState(false);
   const [selectedAddress, setSelectedAddress] = React.useState();
   let [searchParams, setSearchParams] = useSearchParams();
   
+  React.useEffect(() => {
+    let t = setTimeout(() => {
+        setOpenWelcomeDialog(true)
+    }, 1000);
+    return () => {
+      clearTimeout(t);
+    };
+  }, []);
+
   const { data, isFetching, isError } = useGetBoardsQuery({
     w: searchParams.get("w"), 
     i: searchParams.get("i"), 
     f: searchParams.get("f")}, {refetchOnMountOrArgChange: true});
 
-  const addresses = isFetching ? [] : data.data[0].addresses;
+  const addresses = isFetching ? [] : (!!data ? data.data[0].addresses : []);
 
   const handleOnBallClick = (address, options) => {
     if (isValidAddress(address)) {
-      console.log("__options", options);
       setSelectedAddress(address)
       setOpenValidatorDialog(true)
     }
@@ -87,6 +87,10 @@ export default function DashboardPage() {
   const handleCloseValidatorDialog = () => {
     setOpenValidatorDialog(false);
     setSelectedAddress();
+  }
+
+  const handleCloseWelcomeDialog = () => {
+    setOpenWelcomeDialog(false);
   }
   
   return (
@@ -106,6 +110,10 @@ export default function DashboardPage() {
         address={selectedAddress}
         open={openValidatorDialog}
         onClose={handleCloseValidatorDialog}
+      />
+      <WelcomeDialog
+        open={openWelcomeDialog}
+        onClose={handleCloseWelcomeDialog}
       />
     </Box>
   );

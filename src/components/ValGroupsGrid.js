@@ -56,10 +56,10 @@ export default function ValGroupsGrid({sessionIndex}) {
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Val. Groups</Typography>
           {isLiveMode ? 
-            <Typography variant="subtitle" color="secondary">
+            <Typography variant="subtitle">
               Attestations of Validity by Val. Groups
             </Typography> :
-            <Typography variant="subtitle" color="secondary">
+            <Typography variant="subtitle">
               Attestations of Validity by Val. Groups at session {sessionIndex.format()}
             </Typography>}
         </Box>

@@ -71,10 +71,10 @@ export default function ParachainsGrid({sessionIndex}) {
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Parachains</Typography>
           {isLiveMode ? 
-            <Typography variant="subtitle" color="secondary">
+            <Typography variant="subtitle">
               Attestations of Validity by Parachain
             </Typography> :
-            <Typography variant="subtitle" color="secondary">
+            <Typography variant="subtitle">
               Attestations of Validity by Parachain at session {sessionIndex.format()}
             </Typography>}
         </Box>

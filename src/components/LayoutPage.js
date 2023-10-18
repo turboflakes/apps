@@ -539,6 +539,9 @@ export default function LayoutPage({api}) {
           <Fab sx={{ 
                 position: 'absolute', 
                 top: 96 , 
+                transition: theme.transitions.create(['right'], {
+                  duration: theme.transitions.duration.shorter,
+                }),
                 right: openRightDrawer ? `calc(${rightDrawerWidth}px + 16px)` : theme.spacing(4),
               }}
               onClick={handleRightDrawerToggle}
