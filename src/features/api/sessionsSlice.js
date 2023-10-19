@@ -276,6 +276,7 @@ const sessionsSlice = createSlice({
     })
     .addMatcher(matchBoardsReceived, (state, action) => {
       state.boards_session = action.payload.data[0].session
+      state.boards_session_block_number = action.payload.data[0].block_number
       // NOTE: also change history session so that history timeline cna be loaded from this session
       state.history = action.payload.data[0].session
     })
@@ -291,6 +292,7 @@ export const {
 export const selectSessionCurrent = (state) => state.sessions.current;
 export const selectSessionHistory = (state) => state.sessions.history;
 export const selectSessionBoards = (state) => state.sessions.boards_session;
+export const selectSessionBlockNumberBoards = (state) => state.sessions.boards_session_block_number;
 export const selectSessionHistoryRange = (state) => isUndefined(state.sessions.history_range) ?
   [state.sessions.current - 6, state.sessions.current - 1] : state.sessions.history_range;
 export const selectSessionHistoryRangeIds = (state) => buildSessionIdsArrayHelper(selectSessionHistoryRange(state)[1], 1 + selectSessionHistoryRange(state)[1] - selectSessionHistoryRange(state)[0])

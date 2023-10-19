@@ -16,7 +16,11 @@ import {
 } from '../../features/api/boardsSlice';
 import {
   selectSessionBoards,
+  selectSessionBlockNumberBoards
 } from '../../features/api/sessionsSlice';
+import {
+  selectBestBlock,
+} from '../../features/api/blocksSlice';
 import { getCriteriasHash } from '../../util/crypto'
 
 const steps = ['Intro', 'Commission', 'Performance', 'Self Stake', 'Nominators Stake', 'Nominators Counter'];
@@ -55,6 +59,10 @@ const weightTexts = [
 
 function StepWelcome() {
   const theme = useTheme();
+  const board_block_number = useSelector(selectSessionBlockNumberBoards);
+  const best_block = useSelector(selectBestBlock);
+  const blocks_counter = !!best_block ? best_block.block_number - board_block_number : 0;
+  
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection:'column', justifyContent: 'space-between'}}>
       <Box>
@@ -75,7 +83,7 @@ function StepWelcome() {
         </Typography>
       </Box>
       <Box>
-        <Typography sx={{color: theme.palette.neutrals[200]}} color='secondary' variant='caption' gutterBottom>Most up-to-date validator data synced at block #</Typography>
+        <Typography sx={{color: theme.palette.neutrals[200]}} color='secondary' variant='caption' gutterBottom>Most up-to-date validator data included in NOMI boards synced {blocks_counter} blocks ago.</Typography>
       </Box>
     </Box>
   )
