@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import BoardAnimationCanvas from './BoardAnimationCanvas';
 import ValidatorDialog from './ValidatorDialog';
 import WelcomeDialog from './WelcomeDialog';
-import { getCriteriasHash } from '../../util/crypto'
 import {
   useGetBoardsQuery,
 } from '../../features/api/boardsSlice';
@@ -46,13 +45,6 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     }),
   }),
 );
-
-const getHashFromParams = (searchParams) => {
-  const weights = searchParams.get("w").toString();
-  const intervals = searchParams.get("i").toString();
-  const filters = searchParams.get("f").toString();
-  return getCriteriasHash(weights, intervals, filters)
-}
 
 export default function DashboardPage() {
   const theme = useTheme();

@@ -1,5 +1,9 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
@@ -7,188 +11,198 @@ import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import WeightButtonGroup from './WeightButtonGroup';
+import {
+  selectBoardAddressesBySessionAndHash,
+} from '../../features/api/boardsSlice';
+import {
+  selectSessionBoards,
+} from '../../features/api/sessionsSlice';
+import { getCriteriasHash } from '../../util/crypto'
 
 const steps = ['Intro', 'Commission', 'Performance', 'Self Stake', 'Nominators Stake', 'Nominators Counter'];
-
-function Step0() {
-  return (
-    <Box>
-      <Typography color='secondary' variant='h5'>What is this?</Typography>
-      <Typography color='secondary' paragraph>
-      This tool — <b>NOMI</b> — aims to engage Nominators in active staking and improve the nomination experience. It uses <Link href="https://en.wikipedia.org/wiki/Multiple-criteria_decision_analysis" target="_blank" rel="noreferrer" color="inherit">Multi-Criteria Decision Analysis</Link>, 
-      which is an open and transparent way of evaluating multiple conflicting traits in decision making.
-      </Typography>
-      <Typography color='secondary' paragraph>
-      <b>NOMI</b> takes into account five validator-specific traits and the level of importance assigned to each trait by you — The Nominator. It is easy to use and helps you to focus on what is important and logical to you.
-      </Typography>
-      <Typography color='secondary' gutterBottom>
-      So, let's get started, shall we? :)
-      </Typography>
-      <Typography color='secondary' variant='caption' gutterBottom>Most up-to-date validator data synced at block #</Typography>
-    </Box>
-  )
-}
-
-function Step1() {
-  const [weight, setWeight] = React.useState(-1);
-
-  const handleOnChange = (evt, value) => {
-    setWeight(value)
+const weightTexts = [
+  {
+    title: "Commission fee",
+    titleDescription: "The commission fee is the cut charged by the Validator for their services.",
+    question: "How much you prioritize a validator with lower commission than one with higher commission?",
+    questionCaption: "In a scale of 0 to 5 - where 0 means that lower commission is not important and 5 the most important thing, please pick your weight."
+  },
+  {
+    title: "Validator performance",
+    titleDescription: "The performance is assessed by calculating the ratio of missed points to the total points that could have been obtained.",
+    question: "How much you prioritize a validator with higher performance than one with lower performance?",
+    questionCaption: "In a scale of 0 to 5 - where 0 means that higher performance is not important and 5 the most important thing, please pick your weight."
+  },
+  {
+    title: "Self stake",
+    titleDescription: "The validator self stake is the amount of funds the validator has bonded to their stash account. These funds are put at stake for the security of the network and are subject to potential slashing.",
+    question: "How much you prioritize a validator with higher self stake than one with lower self stake?",
+    questionCaption: "In a scale of 0 to 5 - where 0 means that higher self stake is not important and 5 the most important thing, please pick your weight."
+  },
+  {
+    title: "Nominators stake",
+    titleDescription: "The nominators stake is the total stake from ALL the nominators who nominate the validator. Similar to Validators self stake, these funds are put at stake for the security of the network and are subject to potential slashing.",
+    question: "How much you prioritize a validator with higher nominators stake amount one with lower nominators stake?",
+    questionCaption: "In a scale of 0 to 5 - where 0 means that higher nominators stake is not important and 5 the most important thing, please pick your weight."
+  },
+  {
+    title: "Nominators counter",
+    titleDescription: "The nominators counter is the number of nominators backing a validator.",
+    question: "How much you prioritize a validator with lower number of nominators with one with a higher number?",
+    questionCaption: "In a scale of 0 to 5 - where 0 means that higher nominators counter is not important and 5 the most important thing, please pick your weight."
   }
+];
 
+function StepWelcome() {
+  const theme = useTheme();
   return (
-    <Box sx={{ width: '100%' }}>
-      <Typography color='secondary' variant='h5'>Commission fee</Typography>
-      <Typography color='secondary' paragraph>
-      The commission fee is the cut charged by the Validator for their services.
-      </Typography>
-      <Typography color='secondary' variant='h5'>
-      How much you prioritize a validator with lower commission than one with higher commission?
-      </Typography>
-      <Typography color='secondary' gutterBottom>
-      In a scale of 0 to 5 - where 0 means that a low commission is not important and 5 the most important thing, please pick your weight.
-      </Typography>
-      <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}} align="center">
-        <WeightButtonGroup
-          showDark
-          size="lg"
-          onChange={(e, v) => handleOnChange(e, v)}
-          value={weight}
-        />
+    <Box sx={{ height: '100%', display: 'flex', flexDirection:'column', justifyContent: 'space-between'}}>
+      <Box>
+        <Box sx={{ mt: theme.spacing(2), minHeight: theme.spacing(20) }}>
+          <Typography sx={{ fontFamily: 'Gilroy-Extrabold'}} variant="h2"  color='secondary'>WELCOME TO NOMI</Typography>
+          <Typography variant="subtitle" color='secondary'>Craft your own criteria to better suit your nominations</Typography>
+        </Box>
+        <Typography color='secondary' variant='h5'>What is this?</Typography>
+        <Typography color='secondary' paragraph>
+        This tool — <b>NOMI</b> — aims to engage Nominators in active staking and improve the nomination experience. It uses <Link href="https://en.wikipedia.org/wiki/Multiple-criteria_decision_analysis" target="_blank" rel="noreferrer" color="inherit">Multi-Criteria Decision Analysis</Link>, 
+        which is an open and transparent way of evaluating multiple conflicting traits in decision making.
+        </Typography>
+        <Typography color='secondary' paragraph>
+        <b>NOMI</b> considers five validator-specific traits and their weights, as determined by your preferences. It's user-friendly and helps in concentrating on what holds significance and logic for you.
+        </Typography>
+        <Typography color='secondary' gutterBottom>
+        So, let's get started :)
+        </Typography>
+      </Box>
+      <Box>
+        <Typography sx={{color: theme.palette.neutrals[200]}} color='secondary' variant='caption' gutterBottom>Most up-to-date validator data synced at block #</Typography>
       </Box>
     </Box>
   )
 }
 
-function Step2() {
-  const [weight, setWeight] = React.useState(-1);
+function StepWeight({title, titleDescription, question, questionCaption, value, onChange}) {
+  const theme = useTheme();
+  const [weight, setWeight] = React.useState(value);
 
-  const handleOnChange = (evt, value) => {
-    setWeight(value)
+  const handleOnChange = (evt, v) => {
+    setWeight(v)
+    onChange(evt, v)
   }
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Typography color='secondary' variant='h5'>Validator performance</Typography>
-      <Typography color='secondary' paragraph>
-      The performance is assessed by calculating the ratio of missed points to the total points that could have been obtained.
-      </Typography>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ mt: theme.spacing(2), minHeight: theme.spacing(20) }}>
+        <Typography color='secondary' variant='h3'>{title}</Typography>
+        <Typography color='secondary' variant='subtitle'>
+          {titleDescription}
+          </Typography>
+      </Box>
       <Typography color='secondary' variant='h5'>
-      How much you prioritize a validator with higher performance than one with lower performance?
+      {question}
       </Typography>
-      <Typography color='secondary' gutterBottom>
-      In a scale of 0 to 5 - where 0 means that a high performance is not important and 5 the most important thing, please pick your weight.
-      </Typography>
-      <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}} align="center">
-        <WeightButtonGroup
-          showDark
-          size="lg"
-          onChange={(e, v) => handleOnChange(e, v)}
-          value={weight}
-        />
+      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+        <Box sx={{ mt: theme.spacing(5), mb: theme.spacing(3), display: 'flex', justifyContent: 'center', alignItems: 'center'}} align="center">
+          <WeightButtonGroup
+            showDark
+            size="lg"
+            onChange={(e, v) => handleOnChange(e, v)}
+            value={weight}
+          />
+        </Box>
+        <Typography sx={{ maxWidth: 500, color: theme.palette.neutrals[200] }} color='secondary' variant='caption' align='center' gutterBottom>
+        {questionCaption}
+        </Typography>
       </Box>
     </Box>
   )
 }
 
-function Step3() {
-  const [weight, setWeight] = React.useState(-1);
+const getHashFromParams = (searchParams) => {
+  const weights = searchParams.get("w").toString();
+  const intervals = searchParams.get("i").toString();
+  const filters = searchParams.get("f").toString();
+  return getCriteriasHash(weights, intervals, filters)
+}
 
-  const handleOnChange = (evt, value) => {
-    setWeight(value)
-  }
+function StepFinish({onClose}) {
+  const theme = useTheme();
+  let [searchParams, setSearchParams] = useSearchParams();
+  const session = useSelector(selectSessionBoards);
+  const addresses = useSelector((state) => selectBoardAddressesBySessionAndHash(state, session, getHashFromParams(searchParams)));
+
+  React.useEffect(() => {
+    let t = setTimeout(() => {
+      onClose()
+    }, 60000);
+    
+    return function cleanup() {
+      if (t) {
+        clearTimeout(t)
+      }
+    }
+
+  }, []);
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Typography color='secondary' variant='h5'>Self stake</Typography>
-      <Typography color='secondary' paragraph>
-      The validator self stake is the amount of funds the validator has bonded to their stash account. These funds are put at stake for the security of the network and are subject to potential slashing.
-      </Typography>
-      <Typography color='secondary' variant='h5'>
-      How much you prioritize a validator with higher self stake than one with lower self stake?
-      </Typography>
-      <Typography color='secondary' gutterBottom>
-      In a scale of 0 to 5 - where 0 means that higher self stake is not important and 5 the most important thing, please pick your weight.
-      </Typography>
-      <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}} align="center">
-        <WeightButtonGroup
-          showDark
-          size="lg"
-          onChange={(e, v) => handleOnChange(e, v)}
-          value={weight}
-        />
+    <Box sx={{ height: '100%', display: 'flex', flexDirection:'column', justifyContent: 'space-between'}}>
+      <Box>
+        <Box sx={{ mt: theme.spacing(2), minHeight: theme.spacing(14) }}>
+          <Typography sx={{ fontFamily: 'Gilroy-Extrabold'}} variant="h3"  color='secondary'>That's IT!</Typography>
+          <Typography variant="subtitle" color='secondary'>{`See the bouncing DOTs in the background? As per your preferences, they represent the ${addresses.length} highest-ranked Validators.`}</Typography>
+        </Box>
+        <Typography color='secondary' variant='h5'>What can I do next?</Typography>
+        <Typography sx={{ color: theme.palette.neutrals[200] }} variant='subtitle' paragraph>
+        Each bouncing DOT is clickable. Amoung other things you can obtain the identity and history performance about the validator. You can also include the validator in your list of nomination candidates and start the nomination process directly from this tool when you're ready.
+        </Typography>
+        <Typography color='secondary' variant='h5'>Can I change my preferences once more?</Typography>
+        <Typography sx={{ color: theme.palette.neutrals[200] }} variant='subtitle' paragraph>
+        Absolutely, feel free to iterate as many times as you wish, explore all the criterias, filters, and ranges available in the toolbars. <b>NOMI</b> is just another tool to help your own nomination research.
+        </Typography>
+        <Typography color='secondary' variant='h5'>Did you run into issues, or have questions?</Typography>
+        <Typography sx={{ color: theme.palette.neutrals[200] }} variant='subtitle' paragraph>
+        You can always report an issue <Link href="https://github.com/turboflakes/apps/issues" target="_blank" rel="noreferrer" color="inherit">here</Link>, send an email to <Link href="mailto:support@turboflakes.io" rel="noreferrer" color="inherit">support@turboflakes.io</Link> or reach me on Matrix.
+        </Typography>
+        <Typography color='secondary' variant='h5'>Do you enjoy this tool, or did it help you?</Typography>
+        <Typography sx={{ color: theme.palette.neutrals[200] }} variant='subtitle' paragraph>
+        You can always star the repository in <Link href="https://github.com/turboflakes/apps" target="_blank" rel="noreferrer" color="inherit">Github</Link> and help us share it with the Polkadot community and beyond.
+        </Typography>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+        <Button
+          color='secondary' variant='contained'
+          onClick={onClose}
+          sx={{ mr: 1 }}
+        >
+          Close
+        </Button>
       </Box>
     </Box>
   )
 }
 
-function Step4() {
-  const [weight, setWeight] = React.useState(-1);
-
-  const handleOnChange = (evt, value) => {
-    setWeight(value)
-  }
-
-  return (
-    <Box sx={{ width: '100%' }}>
-      <Typography color='secondary' variant='h5'>Self stake</Typography>
-      <Typography color='secondary' paragraph>
-      The validator self stake is the amount of funds the validator has bonded to their stash account. These funds are put at stake for the security of the network and are subject to potential slashing.
-      </Typography>
-      <Typography color='secondary' variant='h5'>
-      How much you prioritize a validator with higher self stake than one with lower self stake?
-      </Typography>
-      <Typography color='secondary' gutterBottom>
-      In a scale of 0 to 5 - where 0 means that higher self stake is not important and 5 the most important thing, please pick your weight.
-      </Typography>
-      <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}} align="center">
-        <WeightButtonGroup
-          showDark
-          size="lg"
-          onChange={(e, v) => handleOnChange(e, v)}
-          value={weight}
-        />
-      </Box>
-    </Box>
-  )
+function getWeight(weights = "-1,-1,-1,-1,-1", index) {
+  return parseInt(weights.split(",")[index])
 }
 
-function Step5() {
-  const [weight, setWeight] = React.useState(-1);
-
-  const handleOnChange = (evt, value) => {
-    setWeight(value)
-  }
-
-  return (
-    <Box sx={{ width: '100%' }}>
-      <Typography color='secondary' variant='h5'>Self stake</Typography>
-      <Typography color='secondary' paragraph>
-      The validator self stake is the amount of funds the validator has bonded to their stash account. These funds are put at stake for the security of the network and are subject to potential slashing.
-      </Typography>
-      <Typography color='secondary' variant='h5'>
-      How much you prioritize a validator with higher self stake than one with lower self stake?
-      </Typography>
-      <Typography color='secondary' gutterBottom>
-      In a scale of 0 to 5 - where 0 means that higher self stake is not important and 5 the most important thing, please pick your weight.
-      </Typography>
-      <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}} align="center">
-        <WeightButtonGroup
-          showDark
-          size="lg"
-          onChange={(e, v) => handleOnChange(e, v)}
-          value={weight}
-        />
-      </Box>
-    </Box>
-  )
-}
-
-export default function WelcomeStepper() {
+export default function WelcomeStepper({onClose}) {
+  const theme = useTheme();
+  let [searchParams, setSearchParams] = useSearchParams();
   const [activeStep, setActiveStep] = React.useState(0);
+  const [weights, setWeights] = React.useState([-1,-1,-1,-1,-1].toString());
   
+  const handleOnChange = (evt, value, index) => {
+    let temp = weights.split(",")
+    temp[index] = value
+    setWeights(temp.toString())
+  }
+
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (activeStep === steps.length - 1) {
+      searchParams.set("w", weights)
+      setSearchParams(searchParams)
+    }
   };
 
   const handleBack = () => {
@@ -197,54 +211,90 @@ export default function WelcomeStepper() {
 
   const handleReset = () => {
     setActiveStep(0);
+    setWeights([-1,-1,-1,-1,-1].toString());
   };
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'column', width: '100%', height: '100%' }}>
+    <Box sx={{ height: '100%', display: 'flex', justifyContent: 'space-between' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
+        <Stepper sx={{ minWidth: theme.spacing(10)}} activeStep={activeStep} orientation="vertical">
+          {steps.map((label, index) => {
+            return (
+              <Step key={index}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            );
+          })}
+        </Stepper>
+      </Box>
+      <Box sx={{display: 'flex', justifyContent: 'space-between', flexDirection: 'column', width: '80%', height: '100%'}}>
       {activeStep === steps.length ? (
-        <React.Fragment>
-          <Typography sx={{ mt: 2, mb: 1 }} color='secondary'>
-            All steps completed - you&apos;re finished
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Box sx={{ flex: '1 1 auto' }} />
-            <Button color='secondary' variant='contained' onClick={handleReset}>Reset</Button>
-          </Box>
-        </React.Fragment>
+        <StepFinish onClose={onClose} />
       ) : (
         <React.Fragment>
-          { activeStep === 0 ? <Step0 /> : null }
-          { activeStep === 1 ? <Step1 /> : null }
-          { activeStep === 2 ? <Step2 /> : null }
-          { activeStep === 3 ? <Step3 /> : null }
-          { activeStep === 4 ? <Step4 /> : null }
-          { activeStep === 5 ? <Step5 /> : null }
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Button
-              color='secondary' variant='contained'
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
-              Back
-            </Button>
+          { activeStep === 0 ? <StepWelcome /> : null }
+          { activeStep === 1 ? <StepWeight 
+            title={weightTexts[0].title} 
+            titleDescription={weightTexts[0].titleDescription}
+            question={weightTexts[0].question}
+            questionCaption={weightTexts[0].questionCaption }
+            value={getWeight(weights, 0)}
+            onChange={(e, v) => handleOnChange(e, v, 0)} /> : null }
+          { activeStep === 2 ? <StepWeight 
+            title={weightTexts[1].title} 
+            titleDescription={weightTexts[1].titleDescription}
+            question={weightTexts[1].question}
+            questionCaption={weightTexts[1].questionCaption } 
+            value={getWeight(weights, 4)}
+            onChange={(e, v) => handleOnChange(e, v, 4)} /> : null }
+          { activeStep === 3 ? <StepWeight 
+            title={weightTexts[2].title} 
+            titleDescription={weightTexts[2].titleDescription}
+            question={weightTexts[2].question}
+            questionCaption={weightTexts[2].questionCaption } 
+            value={getWeight(weights, 1)}
+            onChange={(e, v) => handleOnChange(e, v, 1)} /> : null }
+          { activeStep === 4 ? <StepWeight 
+            title={weightTexts[3].title} 
+            titleDescription={weightTexts[3].titleDescription}
+            question={weightTexts[3].question}
+            questionCaption={weightTexts[3].questionCaption } 
+            value={getWeight(weights, 2)}
+            onChange={(e, v) => handleOnChange(e, v, 2)} /> : null }
+          { activeStep === 5 ? <StepWeight 
+            title={weightTexts[4].title} 
+            titleDescription={weightTexts[4].titleDescription}
+            question={weightTexts[4].question}
+            questionCaption={weightTexts[4].questionCaption } 
+            value={getWeight(weights, 3)}
+            onChange={(e, v) => handleOnChange(e, v, 3)} /> : null }
+          <Box sx={{display: 'flex', flexDirection: 'row', pt: 2 }}>
+            {activeStep > 0 ?
+              <Button
+                  color='secondary' variant='contained'
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
+                >
+                  Back
+                </Button> : null}
             <Box sx={{ flex: '1 1 auto' }} />
-            <Button color='secondary' variant='contained' onClick={handleNext}>
+            <Button color='secondary' variant='contained' 
+              disabled={
+                (getWeight(weights, 0) === -1 && activeStep === 1) || 
+                (getWeight(weights, 4) === -1 && activeStep === 2) || 
+                (getWeight(weights, 1) === -1 && activeStep === 3) || 
+                (getWeight(weights, 2) === -1 && activeStep === 4) || 
+                (getWeight(weights, 3) === -1 && activeStep === 5)
+              }
+              onClick={handleNext}>
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
           </Box>
         </React.Fragment>
       )}
-
-      <Stepper activeStep={activeStep}>
-        {steps.map((label, index) => {
-          return (
-            <Step key={index}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
+        <Typography sx={{ position: 'absolute', bottom: theme.spacing(1), color: theme.palette.neutrals[300]}} color='secondary' variant='caption' gutterBottom>Disclaimer: NOMI is a complementary tool, always DYOR: Do Your Own Research.</Typography>
+      </Box>
     </Box>
   );
 }

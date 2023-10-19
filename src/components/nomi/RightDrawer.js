@@ -1,40 +1,14 @@
 import * as React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import Fab from '@mui/material/Fab';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import TuneIcon from '@mui/icons-material/Tune';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListSubheader from '@mui/material/ListSubheader';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import NominateIcon from '@mui/icons-material/PanToolRounded';
-import MailIcon from '@mui/icons-material/Mail';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-import CheckIcon from '@mui/icons-material/Check';
-import FilterIcon from '@mui/icons-material/FilterAlt';
-import NotApplicapleIcon from '@mui/icons-material/NotInterested';
-import Stack from '@mui/material/Stack';
-import Fingerprint from '@mui/icons-material/NotInterested';
-import BoardAnimationCanvas from './BoardAnimationCanvas';
 import WeightButtonGroup from './WeightButtonGroup';
-import WeightIconButton from './WeightIconButton';
-import LeaderboardBox from './LeaderboardBox';
-import FiltersDialog from './FiltersDialog';
-import nominatingSVG from '../../assets/polkadot_icons/Nominating.svg';
-import { isValidAddress } from '../../util/crypto'
 import { 
   parseCommissionIntervalToPercentage,
   parsePercentageArrayToCommission,
@@ -49,11 +23,6 @@ import {
 } from '../../features/api/boardsLimitsSlice';
 import {
   selectChainInfo
-} from '../../features/chain/chainSlice';
-import {
-  addressChanged,
-  selectChain,
-  selectAddress
 } from '../../features/chain/chainSlice';
 
 /// Position 0 - Lower Commission is preferrable
@@ -118,8 +87,6 @@ function useInitIntervalsSearchParams(searchParams, setSearchParams) {
 
 export default function RightDrawer({open, onClose, width}) {
   const theme = useTheme();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const chainInfo = useSelector(selectChainInfo)
   let [searchParams, setSearchParams] = useSearchParams();
   useInitWeightsSearchParams(searchParams, setSearchParams);
@@ -127,12 +94,8 @@ export default function RightDrawer({open, onClose, width}) {
   
   const {data, isFetching, isError } = useGetBoardsLimitsQuery({session: "current"}, {refetchOnMountOrArgChange: true});
 
-  const [openFilters, setOpenFilters] = React.useState(false);
-  const [nominate, setNominate] = React.useState(false);
-
   const handleOnClickNominate = (address) => {
     console.log("TODO__handleOnClickNominate");
-    
   }
 
   const handleOnChange = (evt, value, index) => {
@@ -145,18 +108,15 @@ export default function RightDrawer({open, onClose, width}) {
   const handleOnLimitsChange = (evt, value, index) => {
     let intervals = searchParams.get("i").split(",");
     intervals[index] = value.join(':')
-
-    console.log("__intervals", intervals);
     searchParams.set("i", intervals.toString())
     setSearchParams(searchParams)
   }
 
-  if (isFetching || isError || !searchParams.get("w") || !searchParams.get("i")) {
+  if (isFetching || isError || !searchParams.get("w")) {
     return null
   }
 
   let weights = searchParams.get("w").split(",").map(v => parseInt(v));
-  let intervals = searchParams.get("i").split(",").map(v => v.split(":").map(i => parseInt(i)));
   
   return (
     <Drawer

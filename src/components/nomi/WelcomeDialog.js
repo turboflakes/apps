@@ -27,12 +27,8 @@ export default function WelcomeDialog({ onClose, open }) {
 
   return (
     <StyledDialog onClose={handleClose} open={open} fullWidth={true} maxWidth={"lg"} keepMounted>
-        <Box sx={{ mt: theme.spacing(2) }}>
-        <Typography variant="h1" color='secondary' align='center'>WELCOME TO NOMI</Typography>
-        <Typography variant="subtitle1" color='secondary' align='center'>Craft your own criteria to better suit your nominations</Typography>
-        </Box>
         <DialogContent>
-          <WelcomeStepper />
+          <WelcomeStepper onClose={handleClose} />
         </DialogContent>
     </StyledDialog>
   );
