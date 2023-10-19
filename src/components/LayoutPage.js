@@ -18,6 +18,7 @@ import Chip from '@mui/material/Chip';
 import Fab from '@mui/material/Fab';
 import TuneIcon from '@mui/icons-material/Tune';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink, faWaterLadder, faServer } from '@fortawesome/free-solid-svg-icons'
 import Footer from './Footer'
@@ -141,12 +142,21 @@ export default function LayoutPage({api}) {
 	const dispatch = useDispatch();
 	const [openLeftDrawer, setOpenLeftDrawer] = React.useState(false);
   const [openRightDrawer, setOpenRightDrawer] = React.useState(false);
+  const [openWelcomeDialog, setOpenWelcomeDialog] = React.useState(false);
   const toggleDrawer = () => {
 		setOpenLeftDrawer(!openLeftDrawer);
 	};
 
   const handleRightDrawerToggle = () => {
     setOpenRightDrawer(!openRightDrawer);
+  };
+
+  const handleOpenWelcomeDialog = () => {
+    setOpenWelcomeDialog(true);
+  };
+
+  const handleCloseWelcomeDialog = () => {
+    setOpenWelcomeDialog(false);
   };
 
   const handleRightDrawerClose = () => {
@@ -513,7 +523,7 @@ export default function LayoutPage({api}) {
             </List>
           </LeftDrawer>
           {selectedApp === "nomi" ?
-            <RightDrawer open={openRightDrawer} width={rightDrawerWidth} /> : null }
+            <RightDrawer open={openRightDrawer} width={rightDrawerWidth} showDark={true} /> : null }
       <Box
           component="main"
           sx={{
@@ -537,18 +547,31 @@ export default function LayoutPage({api}) {
           <FiltersFab right={openRightDrawer ? `calc(${rightDrawerWidth}px + 64px)` : theme.spacing(10)} /> : null }
         {selectedApp === "nomi" ?
           <Fab sx={{ 
-                position: 'absolute', 
-                top: 96 , 
-                transition: theme.transitions.create(['right'], {
-                  duration: theme.transitions.duration.shorter,
-                }),
-                right: openRightDrawer ? `calc(${rightDrawerWidth}px + 16px)` : theme.spacing(4),
-              }}
-              onClick={handleRightDrawerToggle}
-              size="small" color="primary" aria-label="control-panel">
-              {openRightDrawer ? <ChevronRightIcon /> : <TuneIcon /> }
+              position: 'absolute', 
+              top: 96 , 
+              transition: theme.transitions.create(['right'], {
+                duration: theme.transitions.duration.shorter,
+              }),
+              right: openRightDrawer ? `calc(${rightDrawerWidth}px + 16px)` : theme.spacing(4),
+            }}
+            onClick={handleRightDrawerToggle}
+            size="small" color="primary" aria-label="control-panel">
+            {openRightDrawer ? <ChevronRightIcon /> : <TuneIcon /> }
           </Fab> : null}
-        <Outlet context={{ api }} />
+        {selectedApp === "nomi" ?
+          <Fab sx={{ 
+            position: 'absolute', 
+            bottom: theme.spacing(4) , 
+            transition: theme.transitions.create(['right'], {
+              duration: theme.transitions.duration.shorter,
+            }),
+            right: openRightDrawer ? `calc(${rightDrawerWidth}px + 16px)` : theme.spacing(4),
+            }}
+            onClick={handleOpenWelcomeDialog}
+            size="small" color="primary" aria-label="control-panel">
+            <QuestionMarkIcon />
+          </Fab> : null}
+        <Outlet context={{ api, openWelcomeDialog, handleOpenWelcomeDialog, handleCloseWelcomeDialog }} />
         {/* TODO move footer to left drawer */}
         {/* <Footer small /> */}
       </Box>

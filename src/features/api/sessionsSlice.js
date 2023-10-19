@@ -276,6 +276,8 @@ const sessionsSlice = createSlice({
     })
     .addMatcher(matchBoardsReceived, (state, action) => {
       state.boards_session = action.payload.data[0].session
+      // NOTE: also change history session so that history timeline cna be loaded from this session
+      state.history = action.payload.data[0].session
     })
   }
 })

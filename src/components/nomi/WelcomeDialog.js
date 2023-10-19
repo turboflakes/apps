@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { styled, useTheme } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import WelcomeStepper from './WelcomeStepper';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -18,7 +16,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function WelcomeDialog({ onClose, open }) {
+export default function WelcomeDialog({ onClose, open, showDark }) {
   const theme = useTheme();
   
   const handleClose = () => {
@@ -28,7 +26,7 @@ export default function WelcomeDialog({ onClose, open }) {
   return (
     <StyledDialog onClose={handleClose} open={open} fullWidth={true} maxWidth={"lg"} keepMounted>
         <DialogContent>
-          <WelcomeStepper onClose={handleClose} />
+          <WelcomeStepper onClose={handleClose} showDark={showDark} />
         </DialogContent>
     </StyledDialog>
   );

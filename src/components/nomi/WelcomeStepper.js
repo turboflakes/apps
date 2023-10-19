@@ -30,25 +30,25 @@ const weightTexts = [
   {
     title: "Validator performance",
     titleDescription: "The performance is assessed by calculating the ratio of missed points to the total points that could have been obtained.",
-    question: "How much you prioritize a validator with higher performance than one with lower performance?",
+    question: "How much you prioritize a validator with higher performance compared to one with lower performance?",
     questionCaption: "In a scale of 0 to 5 - where 0 means that higher performance is not important and 5 the most important thing, please pick your weight."
   },
   {
     title: "Self stake",
     titleDescription: "The validator self stake is the amount of funds the validator has bonded to their stash account. These funds are put at stake for the security of the network and are subject to potential slashing.",
-    question: "How much you prioritize a validator with higher self stake than one with lower self stake?",
+    question: "How much you prioritize a validator with higher self stake compared to one with lower self stake?",
     questionCaption: "In a scale of 0 to 5 - where 0 means that higher self stake is not important and 5 the most important thing, please pick your weight."
   },
   {
     title: "Nominators stake",
     titleDescription: "The nominators stake is the total stake from ALL the nominators who nominate the validator. Similar to Validators self stake, these funds are put at stake for the security of the network and are subject to potential slashing.",
-    question: "How much you prioritize a validator with higher nominators stake amount one with lower nominators stake?",
+    question: "How much you prioritize a validator with higher nominators stake amount compared to one with lower nominators stake?",
     questionCaption: "In a scale of 0 to 5 - where 0 means that higher nominators stake is not important and 5 the most important thing, please pick your weight."
   },
   {
     title: "Nominators counter",
     titleDescription: "The nominators counter is the number of nominators backing a validator.",
-    question: "How much you prioritize a validator with lower number of nominators with one with a higher number?",
+    question: "How much you prioritize a validator with lower number of nominators compared to one with a higher number of nominators?",
     questionCaption: "In a scale of 0 to 5 - where 0 means that higher nominators counter is not important and 5 the most important thing, please pick your weight."
   }
 ];
@@ -62,15 +62,15 @@ function StepWelcome() {
           <Typography sx={{ fontFamily: 'Gilroy-Extrabold'}} variant="h2"  color='secondary'>WELCOME TO NOMI</Typography>
           <Typography variant="subtitle" color='secondary'>Craft your own criteria to better suit your nominations</Typography>
         </Box>
-        <Typography color='secondary' variant='h5'>What is this?</Typography>
-        <Typography color='secondary' paragraph>
+        <Typography color='secondary' variant='h5' gutterBottom>What is this?</Typography>
+        <Typography sx={{ color: theme.palette.neutrals[200] }} paragraph>
         This tool — <b>NOMI</b> — aims to engage Nominators in active staking and improve the nomination experience. It uses <Link href="https://en.wikipedia.org/wiki/Multiple-criteria_decision_analysis" target="_blank" rel="noreferrer" color="inherit">Multi-Criteria Decision Analysis</Link>, 
-        which is an open and transparent way of evaluating multiple conflicting traits in decision making.
+        which is an open and transparent approach for evaluating numerous conflicting traits in your decision-making process.
         </Typography>
-        <Typography color='secondary' paragraph>
-        <b>NOMI</b> considers five validator-specific traits and their weights, as determined by your preferences. It's user-friendly and helps in concentrating on what holds significance and logic for you.
+        <Typography sx={{ color: theme.palette.neutrals[200] }} paragraph>
+        <b>NOMI</b> takes into account five validator-specific traits and their weights, which are determined by your personal preferences. It's user-friendly and aims to help you focus on what truly matters and makes sense to you.
         </Typography>
-        <Typography color='secondary' gutterBottom>
+        <Typography sx={{ color: theme.palette.neutrals[200] }} gutterBottom>
         So, let's get started :)
         </Typography>
       </Box>
@@ -81,7 +81,7 @@ function StepWelcome() {
   )
 }
 
-function StepWeight({title, titleDescription, question, questionCaption, value, onChange}) {
+function StepWeight({title, titleDescription, question, questionCaption, value, onChange, showDark}) {
   const theme = useTheme();
   const [weight, setWeight] = React.useState(value);
 
@@ -104,7 +104,7 @@ function StepWeight({title, titleDescription, question, questionCaption, value, 
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
         <Box sx={{ mt: theme.spacing(5), mb: theme.spacing(3), display: 'flex', justifyContent: 'center', alignItems: 'center'}} align="center">
           <WeightButtonGroup
-            showDark
+            showDark={showDark}
             size="lg"
             onChange={(e, v) => handleOnChange(e, v)}
             value={weight}
@@ -125,7 +125,7 @@ const getHashFromParams = (searchParams) => {
   return getCriteriasHash(weights, intervals, filters)
 }
 
-function StepFinish({onClose}) {
+function StepFinish({onClose, onReset}) {
   const theme = useTheme();
   let [searchParams, setSearchParams] = useSearchParams();
   const session = useSelector(selectSessionBoards);
@@ -151,29 +151,28 @@ function StepFinish({onClose}) {
           <Typography sx={{ fontFamily: 'Gilroy-Extrabold'}} variant="h3"  color='secondary'>That's IT!</Typography>
           <Typography variant="subtitle" color='secondary'>{`See the bouncing DOTs in the background? As per your preferences, they represent the ${addresses.length} highest-ranked Validators.`}</Typography>
         </Box>
-        <Typography color='secondary' variant='h5'>What can I do next?</Typography>
+        <Typography color='secondary' variant='h5' gutterBottom>What can I do next?</Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} variant='subtitle' paragraph>
-        Each bouncing DOT is clickable. Amoung other things you can obtain the identity and history performance about the validator. You can also include the validator in your list of nomination candidates and start the nomination process directly from this tool when you're ready.
+        Each bouncing DOT is clickable — amoung other things you can obtain the identity and history performance about the validator. You can also include the validator in your list of nomination candidates and start the nomination process directly from this tool when you're ready.
         </Typography>
-        <Typography color='secondary' variant='h5'>Can I change my preferences once more?</Typography>
+        <Typography color='secondary' variant='h5' gutterBottom>Can I change my preferences once more?</Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} variant='subtitle' paragraph>
-        Absolutely, feel free to iterate as many times as you wish, explore all the criterias, filters, and ranges available in the toolbars. <b>NOMI</b> is just another tool to help your own nomination research.
+        Absolutely, feel free to <i>Reset</i> and iterate as many times as you wish, explore all the criterias, filters, and ranges available from the menus and toolbars in the background. <b>NOMI</b> is just another tool to help your own nomination research.
         </Typography>
-        <Typography color='secondary' variant='h5'>Did you run into issues, or have questions?</Typography>
+        <Typography color='secondary' variant='h5' gutterBottom>Did you run into issues, or have questions?</Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} variant='subtitle' paragraph>
-        You can always report an issue <Link href="https://github.com/turboflakes/apps/issues" target="_blank" rel="noreferrer" color="inherit">here</Link>, send an email to <Link href="mailto:support@turboflakes.io" rel="noreferrer" color="inherit">support@turboflakes.io</Link> or reach me on Matrix.
+        You can always report an issue <Link href="https://github.com/turboflakes/apps/issues" target="_blank" rel="noreferrer" color="inherit">here</Link>, send an email to <Link href="mailto:support@turboflakes.io" rel="noreferrer" color="inherit">support@turboflakes.io</Link> or reach me out on [matrix].
         </Typography>
-        <Typography color='secondary' variant='h5'>Do you enjoy this tool, or did it help you?</Typography>
+        {/* <Typography color='secondary' variant='h5' gutterBottom>Do you enjoy this tool, or did it help you?</Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} variant='subtitle' paragraph>
         You can always star the repository in <Link href="https://github.com/turboflakes/apps" target="_blank" rel="noreferrer" color="inherit">Github</Link> and help us share it with the Polkadot community and beyond.
-        </Typography>
+        </Typography> */}
       </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-        <Button
-          color='secondary' variant='contained'
-          onClick={onClose}
-          sx={{ mr: 1 }}
-        >
+      <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+        <Button color='secondary' variant='contained' onClick={onReset} >
+          Reset
+        </Button>
+        <Button color='secondary' variant='contained' onClick={onClose} sx={{ mr: 1 }} >
           Close
         </Button>
       </Box>
@@ -185,7 +184,7 @@ function getWeight(weights = "-1,-1,-1,-1,-1", index) {
   return parseInt(weights.split(",")[index])
 }
 
-export default function WelcomeStepper({onClose}) {
+export default function WelcomeStepper({onClose, showDark}) {
   const theme = useTheme();
   let [searchParams, setSearchParams] = useSearchParams();
   const [activeStep, setActiveStep] = React.useState(0);
@@ -229,11 +228,12 @@ export default function WelcomeStepper({onClose}) {
       </Box>
       <Box sx={{display: 'flex', justifyContent: 'space-between', flexDirection: 'column', width: '80%', height: '100%'}}>
       {activeStep === steps.length ? (
-        <StepFinish onClose={onClose} />
+        <StepFinish onClose={onClose} onReset={handleReset} />
       ) : (
         <React.Fragment>
           { activeStep === 0 ? <StepWelcome /> : null }
           { activeStep === 1 ? <StepWeight 
+            showDark={showDark}
             title={weightTexts[0].title} 
             titleDescription={weightTexts[0].titleDescription}
             question={weightTexts[0].question}
@@ -241,6 +241,7 @@ export default function WelcomeStepper({onClose}) {
             value={getWeight(weights, 0)}
             onChange={(e, v) => handleOnChange(e, v, 0)} /> : null }
           { activeStep === 2 ? <StepWeight 
+            showDark={showDark}
             title={weightTexts[1].title} 
             titleDescription={weightTexts[1].titleDescription}
             question={weightTexts[1].question}
@@ -248,6 +249,7 @@ export default function WelcomeStepper({onClose}) {
             value={getWeight(weights, 4)}
             onChange={(e, v) => handleOnChange(e, v, 4)} /> : null }
           { activeStep === 3 ? <StepWeight 
+            showDark={showDark}
             title={weightTexts[2].title} 
             titleDescription={weightTexts[2].titleDescription}
             question={weightTexts[2].question}
@@ -255,6 +257,7 @@ export default function WelcomeStepper({onClose}) {
             value={getWeight(weights, 1)}
             onChange={(e, v) => handleOnChange(e, v, 1)} /> : null }
           { activeStep === 4 ? <StepWeight 
+            showDark={showDark}
             title={weightTexts[3].title} 
             titleDescription={weightTexts[3].titleDescription}
             question={weightTexts[3].question}
@@ -262,6 +265,7 @@ export default function WelcomeStepper({onClose}) {
             value={getWeight(weights, 2)}
             onChange={(e, v) => handleOnChange(e, v, 2)} /> : null }
           { activeStep === 5 ? <StepWeight 
+            showDark={showDark}
             title={weightTexts[4].title} 
             titleDescription={weightTexts[4].titleDescription}
             question={weightTexts[4].question}

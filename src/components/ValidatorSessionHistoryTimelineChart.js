@@ -174,7 +174,7 @@ function usePrevious(value) {
   return ref.current;
 }
 
-export default function ValidatorSessionHistoryTimelineChart({address, maxSessions, noBorderRadius}) {
+export default function ValidatorSessionHistoryTimelineChart({address, maxSessions, noBorderRadius, showDark}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const currentSession = useSelector(selectSessionCurrent);
@@ -197,8 +197,8 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
       width: '100%',
       minHeight: 400,
       borderRadius: noBorderRadius ? 0 : 3,
-      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-      bgcolor: 'white'
+      boxShadow: showDark ? 'rgba(149, 157, 165, 0) 0px 8px 24px' : 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: showDark ? theme.palette.background.secondary : theme.palette.background.primary
     }} />)
   }
 

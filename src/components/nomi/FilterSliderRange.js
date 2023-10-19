@@ -6,9 +6,8 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 
-
-const CustomSlider = styled(Slider)(({ theme }) => ({
-  color: '#000',
+const CustomSlider = styled(Slider)(({ theme, showDark }) => ({
+  color: showDark ? theme.palette.text.secondary : theme.palette.text.primary,
   height: 2,
   padding: '15px 0',
   '& .MuiSlider-thumb': {
@@ -37,7 +36,7 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
     },
     '& *': {
       background: 'transparent',
-      color: '#000',
+      color: showDark ? theme.palette.text.secondary : theme.palette.text.primary,
     },
   },
   '& .MuiSlider-track': {
@@ -45,10 +44,10 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
   },
   '& .MuiSlider-rail': {
     opacity: 0.5,
-    backgroundColor: '#bfbfbf',
+    backgroundColor: showDark ? theme.palette.background.primary : theme.palette.background.secondary,
   },
   '& .MuiSlider-mark': {
-    backgroundColor: '#bfbfbf',
+    backgroundColor: showDark ? theme.palette.background.primary : theme.palette.background.secondary,
     height: 8,
     width: 1,
     '&.MuiSlider-markActive': {
@@ -60,13 +59,13 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
   '& .MuiSlider-markLabel': {
     color: '#bfbfbf',
     '&.MuiSlider-markLabelActive': {
-      color: theme.palette.text.primary,
+      color: showDark ? theme.palette.text.secondary : theme.palette.text.primary,
       fontWeight: '600'
     },
   },
 }));
 
-export default function FilterSliderRange({limits, labelFormat, step, showCaption, onChange}) {
+export default function FilterSliderRange({limits, labelFormat, step, showCaption, onChange, showDark}) {
   const theme = useTheme();
   const [filterRange, setFilterRange] = React.useState([limits[0], limits[1]]);
 
@@ -111,8 +110,9 @@ export default function FilterSliderRange({limits, labelFormat, step, showCaptio
       }}
       >
       <Stack spacing={1} direction="row" sx={{ mx: theme.spacing(1) }} alignItems="center">
-        {showCaption ? <Typography variant="caption" sx={{ ml: 3 }}>low</Typography> : null}
+        {showCaption ? <Typography variant="caption" color={showDark ? 'secondary' : 'primary'} sx={{ ml: 3 }}>low</Typography> : null}
         <CustomSlider
+          showDark={showDark}
           value={filterRange}
           onChange={handleChange}
           onChangeCommitted={handleChangeCommitted}
@@ -122,7 +122,7 @@ export default function FilterSliderRange({limits, labelFormat, step, showCaptio
           // marks={marks}
           valueLabelFormat={labelFormat}
           valueLabelDisplay="on"/>
-        {showCaption ? <Typography variant="caption" sx={{ ml: 3 }}>high</Typography> : null}
+        {showCaption ? <Typography variant="caption" color={showDark ? 'secondary' : 'primary'} sx={{ ml: 3 }}>high</Typography> : null}
       </Stack>
     </Box>
   );

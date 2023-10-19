@@ -31,11 +31,10 @@ export default function ValidatorDialog({ onClose, open, address }) {
     return null
   }
 
-  console.log("__ValidatorDialog");
   return (
     <StyledDialog onClose={handleClose} open={open} fullWidth={true} maxWidth={"lg"} keepMounted>
       { open ? <ValAddressProfile address={address} maxSessions={maxHistorySessions} showGrade showSubset showDark /> : null }
-      { open ? <ValidatorSessionHistoryTimelineChart address={address} maxSessions={maxHistorySessions} noBorderRadius /> : null }
+      { open ? <ValidatorSessionHistoryTimelineChart address={address} maxSessions={maxHistorySessions} noBorderRadius showDark /> : null }
     </StyledDialog>
   );
 }

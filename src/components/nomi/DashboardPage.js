@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams, useOutletContext } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -48,14 +47,15 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 
 export default function DashboardPage() {
   const theme = useTheme();
+  const {openWelcomeDialog, handleOpenWelcomeDialog,  handleCloseWelcomeDialog } = useOutletContext();
   const [openValidatorDialog, setOpenValidatorDialog] = React.useState(false);
-  const [openWelcomeDialog, setOpenWelcomeDialog] = React.useState(false);
+  // const [openWelcomeDialog, setOpenWelcomeDialog] = React.useState(false);
   const [selectedAddress, setSelectedAddress] = React.useState();
   let [searchParams, setSearchParams] = useSearchParams();
   
   React.useEffect(() => {
     let t = setTimeout(() => {
-        setOpenWelcomeDialog(true)
+      handleOpenWelcomeDialog()
     }, 1000);
     return () => {
       clearTimeout(t);
@@ -81,9 +81,10 @@ export default function DashboardPage() {
     setSelectedAddress();
   }
 
-  const handleCloseWelcomeDialog = () => {
-    setOpenWelcomeDialog(false);
-  }
+  // const handleCloseWelcomeDialog = () => {
+  //   // setOpenWelcomeDialog(false);
+  //   onCloseWelcomeDialog()
+  // }
   
   return (
     <Box sx={{ height: `calc(100vh - 144px)` }}>
@@ -106,6 +107,7 @@ export default function DashboardPage() {
       <WelcomeDialog
         open={openWelcomeDialog}
         onClose={handleCloseWelcomeDialog}
+        showDark={true}
       />
     </Box>
   );

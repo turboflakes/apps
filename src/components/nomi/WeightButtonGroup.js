@@ -8,7 +8,7 @@ import TooltipInfo from './TooltipInfo';
 import FilterSliderRange from './FilterSliderRange';
 
 export default function WeightButtonGroup({ 
-  shwoDark,
+  showDark,
   size,
   title, description, scaleDescription, resultDescription, questionDescription, 
   limits, limitsTitle, limitsLabelFormat, limitsStep, showLimitsCaption, onLimitsChange, onChange, value}) {
@@ -19,7 +19,7 @@ export default function WeightButtonGroup({
       { !!title ? 
         <Box sx={{ display: "flex", ml: 0, my: 1 }}>
           <Box sx={{ display: 'flex' }}>
-            <Typography variant="body2" align="left">
+            <Typography variant="body2" color={showDark ? 'secondary' : 'primary'} align="left">
               {title}
             </Typography>
             <TooltipInfo 
@@ -30,12 +30,12 @@ export default function WeightButtonGroup({
           </Box>
         </Box> : null}
       <Stack direction="row" spacing={size === "lg" ? 3 : 1}>
-        <WeightIconButton value={0} size={size} shwoDark selected={value === 0} onClick={(e) => onChange(e, 0)} />
-        <WeightIconButton value={1} size={size} shwoDark selected={value === 1} onClick={(e) => onChange(e, 1)} />
-        <WeightIconButton value={2} size={size} shwoDark selected={value === 2} onClick={(e) => onChange(e, 2)} />
-        <WeightIconButton value={3} size={size} shwoDark selected={value === 3} onClick={(e) => onChange(e, 3)} />
-        <WeightIconButton value={4} size={size} shwoDark selected={value === 4} onClick={(e) => onChange(e, 4)} />
-        <WeightIconButton value={5} size={size} shwoDark selected={value === 5} onClick={(e) => onChange(e, 5)} />
+        <WeightIconButton value={0} size={size} showDark={showDark} selected={value === 0} onClick={(e) => onChange(e, 0)} />
+        <WeightIconButton value={1} size={size} showDark={showDark} selected={value === 1} onClick={(e) => onChange(e, 1)} />
+        <WeightIconButton value={2} size={size} showDark={showDark} selected={value === 2} onClick={(e) => onChange(e, 2)} />
+        <WeightIconButton value={3} size={size} showDark={showDark} selected={value === 3} onClick={(e) => onChange(e, 3)} />
+        <WeightIconButton value={4} size={size} showDark={showDark} selected={value === 4} onClick={(e) => onChange(e, 4)} />
+        <WeightIconButton value={5} size={size} showDark={showDark} selected={value === 5} onClick={(e) => onChange(e, 5)} />
         {/* 
           <WeightIconButton value={6} selected={selected === 6} onClick={handleOnClick} />
           <WeightIconButton value={7} selected={selected === 7} onClick={handleOnClick} />
@@ -45,12 +45,13 @@ export default function WeightButtonGroup({
       </Stack>
       {limitsTitle ?
         <Box sx={{ display: "flex", ml: 0, my: 1 }}>
-          <Typography variant="body2" align="left">
+          <Typography variant="body2" color={showDark ? 'secondary' : 'primary'} align="left">
             {limitsTitle}
           </Typography>
         </Box> : null}
       {limits ? 
         <FilterSliderRange 
+          showDark={showDark}
           limits={limits} labelFormat={limitsLabelFormat} step={limitsStep} 
           showCaption={showLimitsCaption} onChange={(e, r) => onLimitsChange(e, r)} /> : null}
     </Box>

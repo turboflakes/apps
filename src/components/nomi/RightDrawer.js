@@ -31,8 +31,12 @@ import {
 /// Position 3 - Lower Nominators is preferrable
 /// Position 4 - Lower MVR is preferrable (MVR = Missed Votes Ratio)
 
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  backgroundColor: theme.palette.background.secondary,
+  backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0))'
+}));
+
 const DrawerHeader = styled('div')(({ theme }) => ({
-  // marginTop: 72,
   marginTop: theme.spacing(1),
   borderTop: 0,
   display: 'flex',
@@ -41,6 +45,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
   justifyContent: 'flex-start',
+  backgroundColor: theme.palette.background.primary
 }));
 
 const resetWeights = () => {
@@ -85,7 +90,7 @@ function useInitIntervalsSearchParams(searchParams, setSearchParams) {
   return [];
 }
 
-export default function RightDrawer({open, onClose, width}) {
+export default function RightDrawer({open, onClose, width, showDark}) {
   const theme = useTheme();
   const chainInfo = useSelector(selectChainInfo)
   let [searchParams, setSearchParams] = useSearchParams();
@@ -121,38 +126,40 @@ export default function RightDrawer({open, onClose, width}) {
   return (
     <Drawer
         sx={{
-        marginTop: 72,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
             width,
             border: 0,
+            backgroundColor: showDark ? theme.palette.background.secondary : theme.palette.background.primary,
         },
-        backgroundColor: "#000"
         }}
         variant="persistent"
         anchor="right"
         open={open}
     >
         <DrawerHeader sx={{ display: 'flex', justifyContent: 'space-between'}} />
-        <List
+        <List 
             subheader={
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <ListSubheader sx={{ ...theme.typography.h6, mb: theme.spacing(3) }} color='primary'>Nomination Criteria</ListSubheader>
-                {/* <Box sx={{ mr: 1 }}>
-                  <IconButton onClick={onClose} size='small'>
-                    {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                  </IconButton>
-                </Box> */}
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                >
+                <ListSubheader sx={{ 
+                  ...theme.typography.h6, 
+                  mt: theme.spacing(2), 
+                  mb: theme.spacing(3), 
+                  color: showDark ? theme.palette.text.secondary : theme.palette.text.primary,
+                  backgroundColor: 'transparent' 
+                  }}>Nomination Criteria</ListSubheader>
               </Box>
             }
           >
-            <Divider />
+            <StyledDivider />
             <ListItem >
               <WeightButtonGroup
+                showDark={showDark}
                 title="Lower commission"
                 description="The commission fee is the cut charged by the Validator for their services."
                 resultDescription="A lower commission results on a higher score."
-                questionDescription="How much you prioritize a validator with lower commission than one with higher commission?"
+                questionDescription="How much you prioritize a validator with lower commission compared to one with higher commission?"
                 limitsTitle="Commission range"
                 limits={parseCommissionIntervalToPercentage(data.limits.commission)}
                 limitsLabelFormat={(v) => `${v}%`}
@@ -162,13 +169,14 @@ export default function RightDrawer({open, onClose, width}) {
                 value={weights[0]}
               />
             </ListItem>
-            <Divider />
+            <StyledDivider />
             <ListItem >
               <WeightButtonGroup
+                showDark={showDark}
                 title="Higher performance"
                 description="The performance is assessed by calculating the ratio of missed points to the total points that could have been obtained."
                 resultDescription="A higher performance is preferable and results on a higher score." 
-                questionDescription="How much you prioritize a validator with higher performance than one with lower performance?"
+                questionDescription="How much you prioritize a validator with higher performance compared to one with lower performance?"
                 limitsTitle="Performance range"
                 limits={parseIntervalToPercentage(data.limits.mvr)}
                 limitsLabelFormat={(v) => `${v}%`}
@@ -178,13 +186,14 @@ export default function RightDrawer({open, onClose, width}) {
                 value={weights[4]}
               />
             </ListItem>
-            <Divider />
+            <StyledDivider />
             <ListItem >
               <WeightButtonGroup
+                showDark={showDark}
                 title="Higher self stake" 
                 description="The self stake is the amount of funds the validator has bonded to their stash account. These funds are put at stake for the security of the network and are subject to potential slashing."
                 resultDescription="A higher self stake amount results on a higher score."
-                questionDescription="How much you prioritize a validator with higher self stake one with lower self stake?"
+                questionDescription="How much you prioritize a validator with higher self stake compared to one with lower self stake?"
                 limitsTitle="Self Stake range"
                 limits={parseIntervalToUnit(data.limits.own_stake)}
                 limitsLabelFormat={(v) => stakeDisplayWeight(v, chainInfo)}
@@ -194,13 +203,14 @@ export default function RightDrawer({open, onClose, width}) {
                 value={weights[1]}
               />
             </ListItem>
-            <Divider />
+            <StyledDivider />
             <ListItem >
               <WeightButtonGroup
+                showDark={showDark}
                 title="Higher Nominators stake"
                 description="The nominators stake is the total stake from ALL the nominators who nominate the validator. Similar to Validators self stake, these funds are used for the security of the network and can be slashed."
                 resultDescription="A higher nominators stake amount is preferable and results on a higher score." 
-                questionDescription="How much you prioritize a validator with higher nominators stake amount one with lower nominators stake?"
+                questionDescription="How much you prioritize a validator with higher nominators stake amount compared to one with lower nominators stake?"
                 limitsTitle="Nominators Stake range"
                 limits={parseIntervalToUnit(data.limits.nominators_stake)}
                 limitsLabelFormat={(v) => stakeDisplayWeight(v, chainInfo)}
@@ -210,13 +220,14 @@ export default function RightDrawer({open, onClose, width}) {
                 value={weights[2]}
               />
             </ListItem>
-            <Divider />
+            <StyledDivider />
             <ListItem >
               <WeightButtonGroup
+                showDark={showDark}
                 title="Lower Nominators counter"
                 description="The nominators counter is the number of nominators backing a validator."
                 resultDescription="A lower number of nominators results on a higher score." 
-                questionDescription="How much you prioritize a validator with lower number of nominators with one with a higher number of nominators?"
+                questionDescription="How much you prioritize a validator with lower number of nominators compared to one with a higher number of nominators?"
                 limitsTitle="Nominators counter range"
                 limits={parseInterval(data.limits.nominators_counter)}
                 limitsStep={1}
