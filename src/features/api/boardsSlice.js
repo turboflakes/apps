@@ -46,6 +46,8 @@ const boardsSlice = createSlice({
         }
       })
       adapter.upsertMany(state, boards)
+      state.synced_session = action.payload.data.length > 0 ? action.payload.data[0].session : 0;
+      state.synced_at_block = action.payload.data.length > 0 ? action.payload.data[0].block_number : 0;
     })
   }
 })
@@ -66,3 +68,6 @@ export const selectBoardAddressesBySessionAndHash = (state, session, hash) => {
   }
   return []
 }
+
+export const selectSyncedSession = (state) => state.boards.synced_session;
+export const selectSyncedAtBlock = (state) => state.boards.synced_at_block;

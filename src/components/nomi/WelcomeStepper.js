@@ -13,11 +13,9 @@ import Typography from '@mui/material/Typography';
 import WeightButtonGroup from './WeightButtonGroup';
 import {
   selectBoardAddressesBySessionAndHash,
+  selectSyncedSession,
+  selectSyncedAtBlock
 } from '../../features/api/boardsSlice';
-import {
-  selectSessionBoards,
-  selectSessionBlockNumberBoards
-} from '../../features/api/sessionsSlice';
 import {
   selectBestBlock,
 } from '../../features/api/blocksSlice';
@@ -59,7 +57,7 @@ const weightTexts = [
 
 function StepWelcome() {
   const theme = useTheme();
-  const board_block_number = useSelector(selectSessionBlockNumberBoards);
+  const board_block_number = useSelector(selectSyncedAtBlock);
   const best_block = useSelector(selectBestBlock);
   const blocks_counter = !!best_block ? best_block.block_number - board_block_number : 0;
   
@@ -136,7 +134,7 @@ const getHashFromParams = (searchParams) => {
 function StepFinish({onClose, onReset}) {
   const theme = useTheme();
   let [searchParams, setSearchParams] = useSearchParams();
-  const session = useSelector(selectSessionBoards);
+  const session = useSelector(selectSyncedSession);
   const addresses = useSelector((state) => selectBoardAddressesBySessionAndHash(state, session, getHashFromParams(searchParams)));
 
   React.useEffect(() => {
