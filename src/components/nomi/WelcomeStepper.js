@@ -51,7 +51,7 @@ const weightTexts = [
     title: "Nominators counter",
     titleDescription: "The nominators counter is the number of nominators backing a validator.",
     question: "How much you prioritize a validator with lower number of nominators compared to one with a higher number of nominators?",
-    questionCaption: "In a scale of 0 to 5 - where 0 means that higher nominators counter is not important and 5 the most important thing, please pick your weight."
+    questionCaption: "In a scale of 0 to 5 - where 0 means that a low number of nominators is not important and 5 the most important thing, please pick your weight."
   }
 ];
 
