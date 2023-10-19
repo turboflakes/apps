@@ -71,7 +71,7 @@ function StepWelcome() {
         <Typography color='secondary' variant='h5' gutterBottom>What is this?</Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} paragraph>
         This tool — <b>NOMI</b> — aims to engage Nominators in active staking and improve the nomination experience. It uses <Link href="https://en.wikipedia.org/wiki/Multiple-criteria_decision_analysis" target="_blank" rel="noreferrer" color="inherit">Multi-Criteria Decision Analysis</Link>, 
-        which is an open and transparent approach for evaluating numerous conflicting traits in your decision-making process.
+        which is an open and transparent approach for evaluating numerous conflicting traits in your decision-making process. For the analysis, validator data is collected at the last block of a session, with the last sync taking place {`${blocks_counter}`} blocks ago. 
         </Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} paragraph>
         <b>NOMI</b> takes into account five validator-specific traits and their weights, which are determined by your personal preferences. It's user-friendly and aims to help you focus on what truly matters and makes sense to you.
@@ -79,9 +79,6 @@ function StepWelcome() {
         <Typography sx={{ color: theme.palette.neutrals[200] }} gutterBottom>
         So, let's get started :)
         </Typography>
-      </Box>
-      <Box>
-        <Typography sx={{color: theme.palette.neutrals[200]}} color='secondary' variant='caption' gutterBottom>Most up-to-date validator data included in NOMI boards synced {blocks_counter} blocks ago.</Typography>
       </Box>
     </Box>
   )

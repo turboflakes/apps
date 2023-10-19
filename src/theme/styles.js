@@ -216,6 +216,9 @@ let theme = createTheme({
         root: {
           borderRadius: 30,
           padding: `4px 12px`,
+          '&.Mui-disabled': {
+            backgroundColor: '#FFF',
+          }
         },
         containedSecondary: {
           color: '#0B1317',
@@ -223,7 +226,7 @@ let theme = createTheme({
           '&:hover': {
             backgroundColor: '#FFF',
             // fontWeight: 'bold'
-          }
+          },
         },
         // containedPrimary: {
         //   backgroundColor: '#FFF'
