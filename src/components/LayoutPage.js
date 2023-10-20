@@ -18,7 +18,6 @@ import Chip from '@mui/material/Chip';
 import Fab from '@mui/material/Fab';
 import TuneIcon from '@mui/icons-material/Tune';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink, faWaterLadder, faServer } from '@fortawesome/free-solid-svg-icons'
 import Footer from './Footer'
@@ -27,7 +26,6 @@ import SessionPerformancePieChartHeader from './SessionPerformancePieChartHeader
 import SessionPieChartHeader from './SessionPieChartHeader';
 import SessionBoxHeader from './SessionBoxHeader';
 import RightDrawer from './nomi/RightDrawer';
-import FiltersFab from './nomi/FiltersFab';
 import onetSVG from '../assets/onet.svg';
 import nomiSVG from '../assets/nomi.svg';
 import apiSlice from '../features/api/apiSlice'
@@ -83,8 +81,8 @@ function useScrollTop(ref, selectedPage) {
   return [];
 }
 
-const drawerWidth = 210;
-const drawerWidthClosed = 56;
+const leftDrawerWidth = 210;
+const leftDrawerWidthClosed = 56;
 const rightDrawerWidth = 296;
 
 const AppBar = styled(MuiAppBar, {
@@ -92,14 +90,14 @@ const AppBar = styled(MuiAppBar, {
   })(({ theme, open }) => ({
 	zIndex: theme.zIndex.drawer + 1,
   left: theme.spacing(7),
-  width: `calc(100% - ${drawerWidthClosed}px)`,
+  width: `calc(100% - ${leftDrawerWidthClosed}px)`,
   transition: theme.transitions.create(['width', 'left'], {
 	  easing: theme.transitions.easing.sharp,
 	  duration: theme.transitions.duration.leavingScreen,
 	}),
 	...(open && {
-      left: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`,
+      left: leftDrawerWidth,
+      width: `calc(100% - ${leftDrawerWidth}px)`,
       transition: theme.transitions.create(['width', 'left'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -112,7 +110,7 @@ const LeftDrawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'op
 	'& .MuiDrawer-paper': {
 	position: 'relative',
 	whiteSpace: 'nowrap',
-	width: drawerWidth,
+	width: leftDrawerWidth,
   borderRight: 0,
   borderTop: `4px solid ${chain === "polkadot" ? theme.palette.polkadot : theme.palette.background.secondary}`,
   transition: theme.transitions.create('width', {
@@ -143,6 +141,7 @@ export default function LayoutPage({api}) {
 	const [openLeftDrawer, setOpenLeftDrawer] = React.useState(false);
   const [openRightDrawer, setOpenRightDrawer] = React.useState(false);
   const [openWelcomeDialog, setOpenWelcomeDialog] = React.useState(false);
+  // const [openWelcomeDialog, setOpenWelcomeDialog] = React.useState(false);
   const toggleDrawer = () => {
 		setOpenLeftDrawer(!openLeftDrawer);
 	};
@@ -543,10 +542,7 @@ export default function LayoutPage({api}) {
         {/*  hidden toolbar */}
         <Toolbar sx={{ height: 72 }} />
         {/* Nomi open/close drawer */}
-        {selectedApp === "nomi" ?
-          <FiltersFab right={openRightDrawer ? `calc(${rightDrawerWidth}px + 64px)` : theme.spacing(10)} /> : null }
-        {selectedApp === "nomi" ?
-          <Fab sx={{ 
+        <Fab sx={{ 
               position: 'absolute', 
               top: 96 , 
               transition: theme.transitions.create(['right'], {
@@ -557,21 +553,12 @@ export default function LayoutPage({api}) {
             onClick={handleRightDrawerToggle}
             size="small" color="primary" aria-label="control-panel">
             {openRightDrawer ? <ChevronRightIcon /> : <TuneIcon /> }
-          </Fab> : null}
-        {selectedApp === "nomi" ?
-          <Fab sx={{ 
-            position: 'absolute', 
-            bottom: theme.spacing(4) , 
-            transition: theme.transitions.create(['right'], {
-              duration: theme.transitions.duration.shorter,
-            }),
-            right: openRightDrawer ? `calc(${rightDrawerWidth}px + 16px)` : theme.spacing(4),
-            }}
-            onClick={handleOpenWelcomeDialog}
-            size="small" color="primary" aria-label="control-panel">
-            <QuestionMarkIcon />
-          </Fab> : null}
-        <Outlet context={{ api, openWelcomeDialog, handleOpenWelcomeDialog, handleCloseWelcomeDialog }} />
+          </Fab>
+        <Outlet context={{ 
+          api, 
+          leftDrawerWidth, leftDrawerWidthClosed, openLeftDrawer,
+          rightDrawerWidth, openRightDrawer,
+          openWelcomeDialog, handleOpenWelcomeDialog, handleCloseWelcomeDialog }} />
         {/* TODO move footer to left drawer */}
         {/* <Footer small /> */}
       </Box>

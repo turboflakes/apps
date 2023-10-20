@@ -1,13 +1,21 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import { useSearchParams, useOutletContext } from 'react-router-dom';
+import union from 'lodash/union';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import Fab from '@mui/material/Fab';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import BoardAnimationCanvas from './BoardAnimationCanvas';
 import ValidatorDialog from './ValidatorDialog';
 import WelcomeDialog from './WelcomeDialog';
+import NominationFab from './NominationFab';
+import FiltersFab from './FiltersFab';
 import {
   useGetBoardsQuery,
+} from '../../features/api/boardsSlice';
+import {
+  selectCandidates
 } from '../../features/api/boardsSlice';
 import { isValidAddress } from '../../util/crypto'
 
@@ -47,10 +55,12 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 
 export default function DashboardPage() {
   const theme = useTheme();
-  const {openWelcomeDialog, handleOpenWelcomeDialog,  handleCloseWelcomeDialog } = useOutletContext();
+  const {openWelcomeDialog, handleOpenWelcomeDialog,  handleCloseWelcomeDialog, 
+    leftDrawerWidth, leftDrawerWidthClosed, openLeftDrawer,
+    rightDrawerWidth, openRightDrawer } = useOutletContext();
   const [openValidatorDialog, setOpenValidatorDialog] = React.useState(false);
-  // const [openWelcomeDialog, setOpenWelcomeDialog] = React.useState(false);
   const [selectedAddress, setSelectedAddress] = React.useState();
+  const candidates = useSelector(selectCandidates);
   let [searchParams, setSearchParams] = useSearchParams();
   
   React.useEffect(() => {
@@ -76,6 +86,13 @@ export default function DashboardPage() {
     }
   }
 
+  const handleOnCandidateClick = (address) => {
+    if (isValidAddress(address)) {
+      setSelectedAddress(address)
+      setOpenValidatorDialog(true)
+    }
+  }
+
   const handleCloseValidatorDialog = () => {
     setOpenValidatorDialog(false);
     setSelectedAddress();
@@ -90,14 +107,31 @@ export default function DashboardPage() {
     <Box sx={{ height: `calc(100vh - 144px)` }}>
       <Main>
           <BoardAnimationCanvas
-            // network={network}
             addresses={addresses}
+            candidates={candidates}
             // selected={selected}
             width={window.innerWidth - 56} 
             height={window.innerHeight - 72}
             topY={64}
             onBallClick={handleOnBallClick}
           />
+          {/* left button / menus */}
+          <NominationFab onClick={handleOnCandidateClick}
+            left={openLeftDrawer ? `calc(${leftDrawerWidth}px + 16px)` : `calc(${leftDrawerWidthClosed}px + 24px)` } />
+          {/* right button / menus */}
+          <FiltersFab right={openRightDrawer ? `calc(${rightDrawerWidth}px + 64px)` : theme.spacing(10)} />
+          <Fab sx={{ 
+            position: 'absolute', 
+            bottom: theme.spacing(4) , 
+            transition: theme.transitions.create(['right'], {
+              duration: theme.transitions.duration.shorter,
+            }),
+            right: openRightDrawer ? `calc(${rightDrawerWidth}px + 16px)` : theme.spacing(4),
+            }}
+            onClick={handleOpenWelcomeDialog}
+            size="small" color="primary" aria-label="control-panel">
+            <QuestionMarkIcon />
+          </Fab>
       </Main>
       <ValidatorDialog
         address={selectedAddress}

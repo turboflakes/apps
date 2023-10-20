@@ -3,6 +3,7 @@ import {
   createEntityAdapter,
   isAnyOf,
 } from '@reduxjs/toolkit'
+import union from 'lodash/union'
 import isUndefined from 'lodash/isUndefined'
 import apiSlice from './apiSlice'
 
@@ -34,8 +35,18 @@ export const matchBoardsReceived = isAnyOf(
 
 const boardsSlice = createSlice({
   name: 'boards',
-  initialState: adapter.getInitialState(),
-  reducers: {},
+  initialState: {
+    candidates: [],
+    ...adapter.getInitialState()
+  },
+  reducers: {
+    candidateAdded: (state, action) => {
+      state.candidates = union(state.candidates, [action.payload]);
+    },
+    candidateRemoved: (state, action) => {
+      state.candidates = state.candidates.filter(c => c !== action.payload);
+    },
+  },
   extraReducers(builder) {
     builder
     .addMatcher(matchBoardsReceived, (state, action) => {
@@ -53,6 +64,7 @@ const boardsSlice = createSlice({
 })
 
 export default boardsSlice;
+export const { candidateAdded, candidateRemoved } = boardsSlice.actions;
 
 // Selectors
 export const { 
@@ -71,3 +83,5 @@ export const selectBoardAddressesBySessionAndHash = (state, session, hash) => {
 
 export const selectSyncedSession = (state) => state.boards.synced_session;
 export const selectSyncedAtBlock = (state) => state.boards.synced_at_block;
+export const selectCandidates = (state) => state.boards.candidates;
+export const selectIsCandidate = (state, stash) => state.boards.candidates.includes(stash);

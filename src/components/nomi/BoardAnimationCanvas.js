@@ -131,7 +131,7 @@ function useInitCanvas(canvasRef, ballsRef, width, height, topY, onBallClick) {
 }
 
 
-function useUpdateCanvas(canvasRef, ballsRef, width, height, filteredAddresses, currentSelected) {
+function useUpdateCanvas(canvasRef, ballsRef, width, height, addresses, currentSelected) {
   const [friction, setFriction] = React.useState(0.98);
   const [context, setContext] = React.useState();
   // Note: use useRef for mutable variables that we want to persist
@@ -221,11 +221,11 @@ function useUpdateCanvas(canvasRef, ballsRef, width, height, filteredAddresses, 
     if (ctx) {
       let balls = []
       
-      for (let i = 0; i < filteredAddresses.length; i++) {
+      for (let i = 0; i < addresses.length; i++) {
         const g = gradient(),
-        radius = 30 * (1+3*(filteredAddresses.length-i)/filteredAddresses.length);
+        radius = 30 * (1+3*(addresses.length-i)/addresses.length);
         const ball = {
-          address: filteredAddresses[i],
+          address: addresses[i],
           bounce: 1,
           radius: radius,
           originalRadius: radius,
@@ -247,6 +247,7 @@ function useUpdateCanvas(canvasRef, ballsRef, width, height, filteredAddresses, 
         }
       }
 
+
       setContext(ctx)
       ballsRef.current = balls
       requestRef.current = requestAnimationFrame(update)
@@ -259,7 +260,7 @@ function useUpdateCanvas(canvasRef, ballsRef, width, height, filteredAddresses, 
       }
     }
 
-  }, [width, height, filteredAddresses, currentSelected]);
+  }, [width, height, addresses, currentSelected]);
 
   return [];
 }
