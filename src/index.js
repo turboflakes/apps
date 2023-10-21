@@ -8,6 +8,7 @@ import 'animate.css';
 import './index.css';
 import './util';
 
+
 const container = document.getElementById('root');
 const root = createRoot(container);
 

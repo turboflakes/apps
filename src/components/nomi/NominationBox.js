@@ -17,7 +17,7 @@ import {
 } from '../../features/api/boardsSlice';
 import { stashDisplay, nameDisplay } from '../../util/display'
 
-function ChipCandidate({key, stash, onClick}) {
+function CandidateChip({key, stash, onClick}) {
   const theme = useTheme();
   const valProfile = useSelector(state => selectValProfileByAddress(state, stash));
 
@@ -29,7 +29,8 @@ function ChipCandidate({key, stash, onClick}) {
     />
   )
 }
-export default function NominationBox({left, onClick }) {
+
+export default function NominationBox({api, left, onClick }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const candidates = useSelector(selectCandidates);
@@ -58,8 +59,7 @@ export default function NominationBox({left, onClick }) {
     }}>
       <Stack direction="column" sx={{ width: 145 }}>
         <Typography variant='h6' paragraph>Candidates</Typography>
-        {candidates.map((value, index) => (<ChipCandidate key={index} stash={value} onClick={onClick} />))}
-        <Button sx={{my: theme.spacing(1)}} startIcon={<NominationIcon />} variant='contained'>
+        <Button sx={{mb: theme.spacing(2)}} onClick={handleOpenDialog} startIcon={<NominationIcon />} variant='contained'>
           {candidates.length > 0 ?
             <Box component="span" sx={{ 
                 position: 'absolute',
@@ -74,11 +74,13 @@ export default function NominationBox({left, onClick }) {
                 </Box> : null }
           Nominate
         </Button>
+        {candidates.map((value, index) => (<CandidateChip key={index} stash={value} onClick={onClick} />))}
       </Stack>
       <NominationDialog
-          open={open}
-          onClose={handleCloseDialog}    
-        />
+        api={api}
+        open={open}
+        onClose={handleCloseDialog}    
+      />
     </Box>
   );
 }

@@ -68,6 +68,7 @@ const getHashFromParams = (searchParams) => {
 export default function DashboardPage() {
   const theme = useTheme();
   const { 
+    api,
     leftDrawerWidth, leftDrawerWidthClosed, openLeftDrawer, 
     rightDrawerWidth, openRightDrawer } = useOutletContext();
   const [openValidatorDialog, setOpenValidatorDialog] = React.useState(false);
@@ -155,7 +156,7 @@ export default function DashboardPage() {
             onBallClick={handleOnBallClick}
           />
           {/* left button / menus */}
-          <NominationBox onClick={handleOnCandidateClick} 
+          <NominationBox api={api} onClick={handleOnCandidateClick} 
             left={openLeftDrawer ? `calc(${leftDrawerWidth}px + 16px)` : `calc(${leftDrawerWidthClosed}px + 24px)` } />
           {/* right button / menus */}
           <FiltersFab right={openRightDrawer ? `calc(${rightDrawerWidth}px + 64px)` : theme.spacing(10)} />

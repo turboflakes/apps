@@ -64,7 +64,7 @@ export default function FiltersDialog({ filters, onClose, open, ...other }) {
           <Button onClick={handleDone} variant='contained' color='secondary' >Done</Button>
         </DialogActions>
       </Box>
-      <DialogContent>
+      <DialogContent sx={{ py: 0, mb: theme.spacing(2) }} >
         <List
           disablePadding
           subheader={
