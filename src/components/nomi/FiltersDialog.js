@@ -78,7 +78,8 @@ export default function FiltersDialog({ filters, onClose, open, ...other }) {
               <ListItem
                 key={index}
               >
-                <Chip label={optionsDescription[index]} icon={value ? <TaskAltIcon /> : <RadioButtonUncheckedIcon />} variant="outlined" 
+                <Chip sx={{ minWidth: 160, justifyContent: 'flex-start' }} label={optionsDescription[index]} 
+                  icon={value ? <TaskAltIcon /> : <RadioButtonUncheckedIcon />} variant="outlined" 
                   onClick={(e) => handleChange(e, index)} color='secondary' />
               </ListItem>
             );
@@ -97,7 +98,8 @@ export default function FiltersDialog({ filters, onClose, open, ...other }) {
               <ListItem
                 key={index}
               >
-                <Chip label={optionsDescription[index + 2]} icon={value ? <TaskAltIcon /> : <RadioButtonUncheckedIcon />} variant="outlined" 
+                <Chip sx={{ minWidth: 160, justifyContent: 'flex-start' }} label={optionsDescription[index + 2]} 
+                  icon={value ? <TaskAltIcon /> : <RadioButtonUncheckedIcon />} variant="outlined" 
                   onClick={(e) => handleChange(e, index + 2)} color='secondary' />
               </ListItem>
             );

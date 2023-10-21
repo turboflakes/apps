@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Fab from '@mui/material/Fab';
+import Button from '@mui/material/Button';
 import NominationDialog from './NominationDialog';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -10,10 +10,26 @@ import Chip from '@mui/material/Chip';
 import Identicon from '@polkadot/react-identicon';
 import { ReactComponent as NominationIcon } from '../../assets/polkadot_icons/nominating.svg';
 import {
+  selectValProfileByAddress,
+} from '../../features/api/valProfilesSlice';
+import {
   selectCandidates
 } from '../../features/api/boardsSlice';
+import { stashDisplay, nameDisplay } from '../../util/display'
 
-export default function NominationFab({left, onClick }) {
+function ChipCandidate({key, stash, onClick}) {
+  const theme = useTheme();
+  const valProfile = useSelector(state => selectValProfileByAddress(state, stash));
+
+  return (
+    <Chip key={key} sx={{ mb: theme.spacing(1), minWidth: 128, justifyContent: 'flex-start'}} 
+      onClick={() => onClick(stash)}
+      label={nameDisplay(!!valProfile ? valProfile._identity : stashDisplay(stash, 4), 12)} 
+      icon={<Identicon value={stash} size={24} theme={'polkadot'} />} 
+    />
+  )
+}
+export default function NominationBox({left, onClick }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const candidates = useSelector(selectCandidates);
@@ -26,6 +42,10 @@ export default function NominationFab({left, onClick }) {
     setOpen(false);
   };
 
+  if (candidates.length === 0) {
+    return null
+  }
+
   return (
     <Box sx={{ 
       position: 'absolute', 
@@ -36,13 +56,15 @@ export default function NominationFab({left, onClick }) {
       left,
       zIndex: 1
     }}>
-      <Stack direction="column">
-        <Fab sx={{ mb: theme.spacing(2)}} onClick={handleOpenDialog} size="large" color="primary" aria-label="nominating">
+      <Stack direction="column" sx={{ width: 145 }}>
+        <Typography variant='h6' paragraph>Candidates</Typography>
+        {candidates.map((value, index) => (<ChipCandidate key={index} stash={value} onClick={onClick} />))}
+        <Button sx={{my: theme.spacing(1)}} startIcon={<NominationIcon />} variant='contained'>
           {candidates.length > 0 ?
             <Box component="span" sx={{ 
                 position: 'absolute',
-                top: -6,
-                right: -6,
+                top: -10,
+                right: -10,
                 backgroundColor: theme.palette.semantics.red, width: 28, height: 28, borderRadius: '50%',
                 color: theme.palette.text.secondary,
                 display: 'center',
@@ -50,13 +72,8 @@ export default function NominationFab({left, onClick }) {
                 justifyContent: 'center'
                 }}><Typography variant='caption' color="secondary">{candidates.length}</Typography>
                 </Box> : null }
-          <NominationIcon />
-        </Fab>
-        {candidates.map((value, index) => 
-          (<Chip key={index} sx={{ mb: theme.spacing(1), minWidth: 128, justifyContent: 'flex-start'}} onClick={() => onClick(value)}
-            label={value} 
-            icon={<Identicon value={value} size={24} theme={'polkadot'} />} 
-          />))}
+          Nominate
+        </Button>
       </Stack>
       <NominationDialog
           open={open}

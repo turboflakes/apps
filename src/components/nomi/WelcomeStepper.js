@@ -27,31 +27,31 @@ const weightTexts = [
     title: "Commission fee",
     titleDescription: "The commission fee is the cut charged by the Validator for their services.",
     question: "How much you prioritize a validator with lower commission than one with higher commission?",
-    questionCaption: "In a scale of 0 to 5 - where 0 means that lower commission is not important and 5 the most important thing, please pick your weight."
+    questionCaption: "In a scale of 0 to 5 - where 0 means that lower commission is not important and 5 the most important, please tick your weight."
   },
   {
     title: "Validator performance",
     titleDescription: "The performance is assessed by calculating the ratio of missed points to the total points that could have been obtained.",
     question: "How much you prioritize a validator with higher performance compared to one with lower performance?",
-    questionCaption: "In a scale of 0 to 5 - where 0 means that higher performance is not important and 5 the most important thing, please pick your weight."
+    questionCaption: "In a scale of 0 to 5 - where 0 means that higher performance is not important and 5 the most important, please tick your weight."
   },
   {
     title: "Self stake",
     titleDescription: "The validator self stake is the amount of funds the validator has bonded to their stash account. These funds are put at stake for the security of the network and are subject to potential slashing.",
     question: "How much you prioritize a validator with higher self stake compared to one with lower self stake?",
-    questionCaption: "In a scale of 0 to 5 - where 0 means that higher self stake is not important and 5 the most important thing, please pick your weight."
+    questionCaption: "In a scale of 0 to 5 - where 0 means that higher self stake is not important and 5 the most important, please tick your weight."
   },
   {
     title: "Nominators stake",
     titleDescription: "The nominators stake is the total stake from ALL the nominators who nominate the validator. Similar to Validators self stake, these funds are put at stake for the security of the network and are subject to potential slashing.",
     question: "How much you prioritize a validator with higher nominators stake amount compared to one with lower nominators stake?",
-    questionCaption: "In a scale of 0 to 5 - where 0 means that higher nominators stake is not important and 5 the most important thing, please pick your weight."
+    questionCaption: "In a scale of 0 to 5 - where 0 means that higher nominators stake is not important and 5 the most important, please tick your weight."
   },
   {
     title: "Nominators counter",
     titleDescription: "The nominators counter is the number of nominators backing a validator.",
     question: "How much you prioritize a validator with lower number of nominators compared to one with a higher number of nominators?",
-    questionCaption: "In a scale of 0 to 5 - where 0 means that a low number of nominators is not important and 5 the most important thing, please pick your weight."
+    questionCaption: "In a scale of 0 to 5 - where 0 means that a low number of nominators is not important and 5 the most important, please tick your weight."
   }
 ];
 
@@ -71,7 +71,7 @@ function StepWelcome() {
         <Typography color='secondary' variant='h5' gutterBottom>What is this?</Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} paragraph>
         This tool — <b>NOMI</b> — aims to engage Nominators in active staking and improve the nomination experience. It uses <Link href="https://en.wikipedia.org/wiki/Multiple-criteria_decision_analysis" target="_blank" rel="noreferrer" color="inherit">Multi-Criteria Decision Analysis</Link>, 
-        which is an open and transparent approach for evaluating numerous conflicting traits in your decision-making process. For the analysis, validator data is collected at the last block of a session, with the last sync taking place {`${blocks_counter}`} blocks ago. 
+        which is an open and transparent approach for evaluating numerous conflicting traits in your decision-making process. For the analysis, validator data is collected at the last block of a session. The most recent synchronization occurred {`${blocks_counter}`} blocks ago. 
         </Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} paragraph>
         <b>NOMI</b> takes into account five validator-specific traits and their weights, which are determined by your personal preferences. It's user-friendly and aims to help you focus on what truly matters and makes sense to you.
@@ -101,11 +101,14 @@ function StepWeight({title, titleDescription, question, questionCaption, value, 
           {titleDescription}
           </Typography>
       </Box>
-      <Typography color='secondary' variant='h5'>
-      {question}
-      </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-        <Box sx={{ mt: theme.spacing(5), mb: theme.spacing(3), display: 'flex', justifyContent: 'center', alignItems: 'center'}} align="center">
+      <Box sx={{ display: 'flex', flexDirection: 'column'}}>
+        <Typography color='secondary' variant='h5' paragraph>
+        {question}
+        </Typography>
+        {/* <Typography color='secondary' gutterBottom>
+        {questionCaption}
+        </Typography> */}
+        <Box sx={{ mt: theme.spacing(5), mb: theme.spacing(3), display: 'flex'}} align="center">
           <WeightButtonGroup
             showDark={showDark}
             size="lg"
@@ -113,7 +116,7 @@ function StepWeight({title, titleDescription, question, questionCaption, value, 
             value={weight}
           />
         </Box>
-        <Typography sx={{ maxWidth: 500, color: theme.palette.neutrals[200] }} color='secondary' variant='caption' align='center' gutterBottom>
+        <Typography sx={{ color: theme.palette.neutrals[200] }} color='secondary' variant='caption' gutterBottom>
         {questionCaption}
         </Typography>
       </Box>

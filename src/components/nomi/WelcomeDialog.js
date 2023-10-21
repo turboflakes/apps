@@ -24,7 +24,7 @@ export default function WelcomeDialog({ onClose, open, showDark }) {
   };
 
   return (
-    <StyledDialog onClose={handleClose} open={open} fullWidth={true} maxWidth={"lg"} keepMounted>
+    <StyledDialog onClose={handleClose} open={open} maxWidth={"lg"} keepMounted>
         <DialogContent>
           <WelcomeStepper onClose={handleClose} showDark={showDark} />
         </DialogContent>

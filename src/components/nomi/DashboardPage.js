@@ -9,7 +9,7 @@ import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import BoardAnimationCanvas from './BoardAnimationCanvas';
 import ValidatorDialog from './ValidatorDialog';
 import WelcomeDialog from './WelcomeDialog';
-import NominationFab from './NominationFab';
+import NominationBox from './NominationBox';
 import FiltersFab from './FiltersFab';
 import {
   selectBoardProfilesBySessionAndHash,
@@ -155,7 +155,7 @@ export default function DashboardPage() {
             onBallClick={handleOnBallClick}
           />
           {/* left button / menus */}
-          <NominationFab onClick={handleOnCandidateClick} 
+          <NominationBox onClick={handleOnCandidateClick} 
             left={openLeftDrawer ? `calc(${leftDrawerWidth}px + 16px)` : `calc(${leftDrawerWidthClosed}px + 24px)` } />
           {/* right button / menus */}
           <FiltersFab right={openRightDrawer ? `calc(${rightDrawerWidth}px + 64px)` : theme.spacing(10)} />

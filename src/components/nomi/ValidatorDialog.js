@@ -84,12 +84,12 @@ export default function ValidatorDialog({ onClose, onDiscard, onNext, onBack, op
         <StyledIconButton showDark={showDark} disableRipple onClick={onBack} size='small'>
           <ChevronLeftIcon fontSize="small" />
         </StyledIconButton>
+        <Button sx= {{minWidth: 112, ml: theme.spacing(3)}} onClick={handleOnClose} variant='contained' color='secondary'>Done</Button>
         <Button sx={{ minWidth: 112 }} onClick={handleOnClick} color='secondary' variant='contained'
           startIcon={<SvgIcon component={isCandidate ? RemoveUserIcon : AddUserIcon} inheritViewBox />} >{isCandidate ? 'Remove' : 'Add'}</Button>
         <StyledIconButton showDark={showDark} disableRipple onClick={onNext} size='small'>
           <ChevronRightIcon fontSize="small" />
         </StyledIconButton>
-        {/* <Button sx= {{ml: theme.spacing(3)}} onClick={handleOnClose} variant='contained' color='secondary'>Done</Button> */}
       </Stack>
       { open ? <ValAddressProfile address={address} maxSessions={maxHistorySessions} showGrade showSubset showDark /> : null }
       { open ? <ValidatorSessionHistoryTimelineChart address={address} maxSessions={maxHistorySessions} noBorderRadius showDark /> : null }
