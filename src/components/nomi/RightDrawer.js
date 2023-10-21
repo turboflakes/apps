@@ -19,6 +19,9 @@ import {
   parseInterval } from '../../util/math';
 import { stakeDisplayWeight } from '../../util/display';
 import {
+  useGetBoardsQuery,
+} from '../../features/api/boardsSlice';
+import {
   useGetBoardsLimitsQuery,
 } from '../../features/api/boardsLimitsSlice';
 import {
@@ -98,6 +101,11 @@ export default function RightDrawer({open, onClose, width, showDark}) {
   useInitIntervalsSearchParams(searchParams, setSearchParams);
   
   const {data, isFetching, isError } = useGetBoardsLimitsQuery({session: "current"}, {refetchOnMountOrArgChange: true});
+  useGetBoardsQuery({
+    w: searchParams.get("w"), 
+    i: searchParams.get("i"), 
+    f: searchParams.get("f")
+  }, {refetchOnMountOrArgChange: true});
 
   const handleOnClickNominate = (address) => {
     console.log("TODO__handleOnClickNominate");

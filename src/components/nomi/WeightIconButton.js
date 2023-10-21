@@ -9,6 +9,7 @@ const sizes = {
   sm: 32,
   lg: 64
 }
+
 export default function WeightIconButton({value, size = 'sm', selected, onClick, showDark}) {
   const theme = useTheme();
   
@@ -21,7 +22,7 @@ export default function WeightIconButton({value, size = 'sm', selected, onClick,
       borderRadius: '50%',
       backgroundColor: (showDark && selected) ? theme.palette.secondary.main : `rgba(11, 19, 23, ${(value + 1) * ((100/6)/100)})`,
       '&:hover': {
-        backgroundColor: showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300],
+        backgroundColor: showDark ? theme.palette.neutrals[300] : theme.palette.neutrals[300],
       }
     }} 
     onClick={(evt) => onClick(evt, value)}
@@ -30,7 +31,11 @@ export default function WeightIconButton({value, size = 'sm', selected, onClick,
           <CheckIcon sx={{ color: showDark ? theme.palette.text.primary : theme.palette.text.secondary }} /> : 
           (selected && value === 0 ? <ClearIcon sx={{ color: showDark ? theme.palette.text.primary : theme.palette.text.secondary }} /> : 
           <Typography variant={size === "lg" ? 'body1' : 'caption'} 
-            style={{ color: theme.palette.text.secondary, display: "inline-block" }}>{value}</Typography>)}
+            style={{ 
+              color: theme.palette.text.secondary, display: "inline-block",
+             }}>
+              {value}
+          </Typography>)}
     </IconButton>
   );
 }

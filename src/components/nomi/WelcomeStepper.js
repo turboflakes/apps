@@ -171,8 +171,8 @@ function StepFinish({onClose, onReset}) {
         You can always star the repository in <Link href="https://github.com/turboflakes/apps" target="_blank" rel="noreferrer" color="inherit">Github</Link> and help us share it with the Polkadot community and beyond.
         </Typography> */}
       </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
-        <Button color='secondary' variant='contained' onClick={onReset} >
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
+        <Button sx={{ mr: 1 }} color='secondary' variant='contained' onClick={onReset} >
           Reset
         </Button>
         <Button color='secondary' variant='contained' onClick={onClose} sx={{ mr: 1 }} >
@@ -275,7 +275,7 @@ export default function WelcomeStepper({onClose, showDark}) {
             questionCaption={weightTexts[4].questionCaption } 
             value={getWeight(weights, 3)}
             onChange={(e, v) => handleOnChange(e, v, 3)} /> : null }
-          <Box sx={{display: 'flex', flexDirection: 'row', pt: 2 }}>
+          <Box sx={{display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
             {activeStep > 0 ?
               <Button
                   color='secondary' variant='contained'
@@ -285,7 +285,7 @@ export default function WelcomeStepper({onClose, showDark}) {
                 >
                   Back
                 </Button> : null}
-            <Box sx={{ flex: '1 1 auto' }} />
+            {/* <Box sx={{ flex: '1 1 auto' }} /> */}
             <Button color='secondary' variant='contained' 
               disabled={
                 (getWeight(weights, 0) === -1 && activeStep === 1) || 
@@ -300,7 +300,10 @@ export default function WelcomeStepper({onClose, showDark}) {
           </Box>
         </React.Fragment>
       )}
-        <Typography sx={{ position: 'absolute', bottom: theme.spacing(1), color: theme.palette.neutrals[300]}} color='secondary' variant='caption' gutterBottom>Disclaimer: NOMI is a complementary tool, always DYOR: Do Your Own Research.</Typography>
+        <Typography sx={{ position: 'absolute', bottom: theme.spacing(1), color: theme.palette.neutrals[300]}} 
+          color='secondary' variant='caption' gutterBottom>
+            Disclaimer: NOMI is a complementary tool, always DYOR: Do Your Own Research.
+        </Typography>
       </Box>
     </Box>
   );

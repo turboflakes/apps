@@ -140,22 +140,13 @@ export default function LayoutPage({api}) {
 	const dispatch = useDispatch();
 	const [openLeftDrawer, setOpenLeftDrawer] = React.useState(false);
   const [openRightDrawer, setOpenRightDrawer] = React.useState(false);
-  const [openWelcomeDialog, setOpenWelcomeDialog] = React.useState(false);
-  // const [openWelcomeDialog, setOpenWelcomeDialog] = React.useState(false);
+  
   const toggleDrawer = () => {
 		setOpenLeftDrawer(!openLeftDrawer);
 	};
 
   const handleRightDrawerToggle = () => {
     setOpenRightDrawer(!openRightDrawer);
-  };
-
-  const handleOpenWelcomeDialog = () => {
-    setOpenWelcomeDialog(true);
-  };
-
-  const handleCloseWelcomeDialog = () => {
-    setOpenWelcomeDialog(false);
   };
 
   const handleRightDrawerClose = () => {
@@ -557,8 +548,7 @@ export default function LayoutPage({api}) {
         <Outlet context={{ 
           api, 
           leftDrawerWidth, leftDrawerWidthClosed, openLeftDrawer,
-          rightDrawerWidth, openRightDrawer,
-          openWelcomeDialog, handleOpenWelcomeDialog, handleCloseWelcomeDialog }} />
+          rightDrawerWidth, openRightDrawer }} />
         {/* TODO move footer to left drawer */}
         {/* <Footer small /> */}
       </Box>

@@ -95,7 +95,7 @@ const App = () => {
       <Router>
         <Routes>
           {/* <Route path="/" element={<UnderMaintenancePage />} /> */}
-          {/*<Route path="*" element={<Navigate to="/" />} /> */}
+          {/* <Route path="*" element={<Navigate to="/" />} />  */}
           <Route path="/" element={<LayoutPage api={api} />}>
             {selectedApp === "onet" ?
               <React.Fragment>
@@ -115,7 +115,7 @@ const App = () => {
                 <Route path="dashboard" element={<NomiDashboardPage />} />
               </React.Fragment> : null }
           </Route>
-          <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/" />} />
         </Routes>
         {/* <Routes>
           <Route path="/" element={<LayoutPage api={api} />}>

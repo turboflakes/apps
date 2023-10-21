@@ -42,10 +42,10 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
   if (isFetching || isUndefined(valProfile) || isUndefined(chainInfo)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
-      height: 208,
+      height: 212,
       borderRadius: 3,
       // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-      bgcolor: 'white'
+      bgcolor: showDark ? theme.palette.background.secondary : theme.palette.background.primary
     }} />)
   }
 
@@ -61,7 +61,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: 208,
+        height: 212,
         // borderRadius: 3,
         // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
         // boxShadow: 'rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;'

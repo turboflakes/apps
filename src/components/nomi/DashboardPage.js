@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { useSearchParams, useOutletContext } from 'react-router-dom';
-import union from 'lodash/union';
+import isNull from 'lodash/isNull';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
@@ -12,12 +12,14 @@ import WelcomeDialog from './WelcomeDialog';
 import NominationFab from './NominationFab';
 import FiltersFab from './FiltersFab';
 import {
-  useGetBoardsQuery,
+  selectBoardProfilesBySessionAndHash,
+  selectSyncedSession,
 } from '../../features/api/boardsSlice';
 import {
   selectCandidates
 } from '../../features/api/boardsSlice';
 import { isValidAddress } from '../../util/crypto'
+import { getCriteriasHash } from '../../util/crypto'
 
 const drawerWidth = 448;
 const filtersWidth = 256;
@@ -53,31 +55,44 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   }),
 );
 
+const getHashFromParams = (searchParams) => {
+  if (isNull(searchParams.get("w")) || isNull(searchParams.get("i")) || isNull(searchParams.get("f"))) {
+    return undefined
+  }
+  const weights = searchParams.get("w").toString();
+  const intervals = searchParams.get("i").toString();
+  const filters = searchParams.get("f").toString();
+  return getCriteriasHash(weights, intervals, filters)
+}
+
 export default function DashboardPage() {
   const theme = useTheme();
-  const {openWelcomeDialog, handleOpenWelcomeDialog,  handleCloseWelcomeDialog, 
-    leftDrawerWidth, leftDrawerWidthClosed, openLeftDrawer,
+  const { 
+    leftDrawerWidth, leftDrawerWidthClosed, openLeftDrawer, 
     rightDrawerWidth, openRightDrawer } = useOutletContext();
   const [openValidatorDialog, setOpenValidatorDialog] = React.useState(false);
+  const [openWelcomeDialog, setOpenWelcomeDialog] = React.useState(false);
   const [selectedAddress, setSelectedAddress] = React.useState();
   const candidates = useSelector(selectCandidates);
   let [searchParams, setSearchParams] = useSearchParams();
+  const session = useSelector(selectSyncedSession);
   
-  React.useEffect(() => {
-    let t = setTimeout(() => {
-      handleOpenWelcomeDialog()
-    }, 1000);
-    return () => {
-      clearTimeout(t);
-    };
-  }, []);
+  const temp =  useSelector((state) => selectBoardProfilesBySessionAndHash(state, session, getHashFromParams(searchParams)));
+  const profiles = temp.map(a => {
+    return {
+      ...a,
+      isCandidate: candidates.includes(a.stash),
+    }
+  })
 
-  const { data, isFetching, isError } = useGetBoardsQuery({
-    w: searchParams.get("w"), 
-    i: searchParams.get("i"), 
-    f: searchParams.get("f")}, {refetchOnMountOrArgChange: true});
-
-  const addresses = isFetching ? [] : (!!data ? data.data[0].addresses : []);
+  // React.useEffect(() => {
+  //   let t = setTimeout(() => {
+  //     handleOpenWelcomeDialog()
+  //   }, 1000);
+  //   return () => {
+  //     clearTimeout(t);
+  //   };
+  // }, []);
 
   const handleOnBallClick = (address, options) => {
     if (isValidAddress(address)) {
@@ -93,22 +108,46 @@ export default function DashboardPage() {
     }
   }
 
-  const handleCloseValidatorDialog = () => {
+  const handleOnCloseValidatorDialog = () => {
     setOpenValidatorDialog(false);
     setSelectedAddress();
   }
 
-  // const handleCloseWelcomeDialog = () => {
-  //   // setOpenWelcomeDialog(false);
-  //   onCloseWelcomeDialog()
-  // }
+  const handleOnNext = () => {
+    const i = profiles.findIndex(p => p.stash === selectedAddress)
+    if (i !== -1 && i < profiles.length - 1) {
+      const next = profiles[i+1].stash
+      handleOnBallClick(next)
+    } else {
+      const next = profiles[0].stash
+      handleOnBallClick(next)
+    }
+  }
+
+  const handleOnBack = () => {
+    const i = profiles.findIndex(p => p.stash === selectedAddress)
+    if (i !== -1 && i > 0) {
+      const next = profiles[i-1].stash
+      handleOnBallClick(next)
+    } else {
+      const next = profiles[profiles.length-1].stash
+      handleOnBallClick(next)
+    }
+  }
+
+  const handleOnOpenWelcomeDialog = () => {
+    setOpenWelcomeDialog(true);
+  };
+
+  const handleOnCloseWelcomeDialog = () => {
+    setOpenWelcomeDialog(false);
+  };
   
   return (
     <Box sx={{ height: `calc(100vh - 144px)` }}>
       <Main>
           <BoardAnimationCanvas
-            addresses={addresses}
-            candidates={candidates}
+            profiles={profiles}
             // selected={selected}
             width={window.innerWidth - 56} 
             height={window.innerHeight - 72}
@@ -116,7 +155,7 @@ export default function DashboardPage() {
             onBallClick={handleOnBallClick}
           />
           {/* left button / menus */}
-          <NominationFab onClick={handleOnCandidateClick}
+          <NominationFab onClick={handleOnCandidateClick} 
             left={openLeftDrawer ? `calc(${leftDrawerWidth}px + 16px)` : `calc(${leftDrawerWidthClosed}px + 24px)` } />
           {/* right button / menus */}
           <FiltersFab right={openRightDrawer ? `calc(${rightDrawerWidth}px + 64px)` : theme.spacing(10)} />
@@ -128,7 +167,7 @@ export default function DashboardPage() {
             }),
             right: openRightDrawer ? `calc(${rightDrawerWidth}px + 16px)` : theme.spacing(4),
             }}
-            onClick={handleOpenWelcomeDialog}
+            onClick={handleOnOpenWelcomeDialog}
             size="small" color="primary" aria-label="control-panel">
             <QuestionMarkIcon />
           </Fab>
@@ -136,11 +175,14 @@ export default function DashboardPage() {
       <ValidatorDialog
         address={selectedAddress}
         open={openValidatorDialog}
-        onClose={handleCloseValidatorDialog}
+        onClose={handleOnCloseValidatorDialog} 
+        onNext={handleOnNext}
+        onBack={handleOnBack}
+        showDark={false}
       />
       <WelcomeDialog
         open={openWelcomeDialog}
-        onClose={handleCloseWelcomeDialog}
+        onClose={handleOnCloseWelcomeDialog}
         showDark={true}
       />
     </Box>

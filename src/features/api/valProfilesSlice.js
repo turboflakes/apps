@@ -1,13 +1,18 @@
 import {
   createSlice,
   createEntityAdapter,
+  current
 } from '@reduxjs/toolkit'
 import isUndefined from 'lodash/isUndefined'
 import apiSlice from './apiSlice'
 import { 
   matchValidatorsReceived,
- } from './validatorsSlice'
+} from './validatorsSlice'
+import { 
+  matchBoardsReceived,
+ } from './boardsSlice'
 import { stashDisplay, commissionDisplay } from '../../util/display'
+import { gradient } from '../../util/gradients';
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['ValProfiles'],
@@ -64,27 +69,42 @@ const valProfilesSlice = createSlice({
       }
 
       const profiles = action.payload.data.filter(validator => !!validator.profile)
-          .map(validator => {
-            let obj = {
-              ...validator.profile,
-            };
-            if (validator.ranking) {
-              obj = {
-                ...obj,
-                [setKey(action)]: validator.ranking
-              }
-            }
-            return {
+        .map(validator => {
+          let obj = {
+            ...validator.profile,
+          };
+          if (validator.ranking) {
+            obj = {
               ...obj,
-              _commission: !!validator.profile.commission ? commissionDisplay(validator.profile.commission) : '',
-              _identity: !!validator.profile.identity ? 
-                (!!validator.profile.identity.sub ? 
-                  `${validator.profile.identity.name}/${validator.profile.identity.sub}` : 
-                  `${validator.profile.identity.name}`) 
-                : stashDisplay(validator.profile.stash, 4),
-              _ts: + new Date()
+              [setKey(action)]: validator.ranking
             }
-          })
+          }
+          // generate a gradient
+          return {
+            ...obj,
+            _commission: !!validator.profile.commission ? commissionDisplay(validator.profile.commission) : '',
+            _identity: !!validator.profile.identity ? 
+              (!!validator.profile.identity.sub ? 
+                `${validator.profile.identity.name}/${validator.profile.identity.sub}` : 
+                `${validator.profile.identity.name}`)
+              : stashDisplay(validator.profile.stash, 4),
+            _ts: + new Date()
+          }
+        })
+      adapter.upsertMany(state, profiles)
+    })
+    .addMatcher(matchBoardsReceived, (state, action) => {
+      // NOTE: when a new board is received (NOMI) update/create profiles with a new gradient
+      // TODO: don't change gradient if it has already been assigned, this could be obtain from current state
+      let currentState = current(state);
+      const profiles = action.payload.data[0].addresses.map(a => {
+        const g = gradient();
+        return {
+          stash: a,
+          colorStart: g.start,
+          colorEnd: g.end
+        }
+      })
       adapter.upsertMany(state, profiles)
     })
   }

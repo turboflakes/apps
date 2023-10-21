@@ -224,7 +224,7 @@ let theme = createTheme({
           color: '#0B1317',
           backgroundColor: '#F1F1F0',
           '&:hover': {
-            backgroundColor: '#FFF',
+            backgroundColor: '#4D4D4D',
             // fontWeight: 'bold'
           },
         },

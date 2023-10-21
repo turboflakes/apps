@@ -1,65 +1,15 @@
 import * as React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import isEqual from 'lodash/isEqual'
+import { useSelector } from 'react-redux';
+import { isUndefined } from 'lodash';
 import Box from '@mui/material/Box';
 import {
-  pageChanged,
-  selectPage,
-} from '../../features/layout/layoutSlice';
-import {
-  addressChanged,
   selectChain,
   selectAddress
 } from '../../features/chain/chainSlice';
-import {
-  selectBoardsBySessionAndHash,
-  selectBoardAddressesBySessionAndHash,
-  useGetBoardsQuery,
-} from '../../features/api/boardsSlice';
-import { getCriteriasHash } from '../../util/crypto';
+import { getRandomInt } from '../../util/gradients';
 
-/**
- * Returns a random integer between min (inclusive) and max (inclusive).
- * The value is no lower than min (or the next integer greater than min
- * if min isn't an integer) and no greater than max (or the next integer
- * lower than max if max isn't an integer).
- * Using Math.round() will give you a non-uniform distribution!
- */
- function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getRandomVel() {
+export function getRandomVel() {
   return Math.random() * 2 - 1;
-}
-
-// function rgb(i) {
-//   return 'rgb(' + getRandomInt(0, 255) + ', ' + Math.floor(255 - i) + ', ' +
-//   getRandomInt(127, 255) + ')';
-// }
-
-function contrast(hue) {
-  let h = hue + getRandomInt(90, 180)
-  if (h > 360) {
-    return h - 360
-  }
-  return h
-}
-
-function gradient() {
-  const hue = getRandomInt(0, 360);
-  return {
-    start: hsla(hue),
-    end: hsla(contrast(hue))
-  }
-}
-
-function hsla(hue) {
-  return 'hsla(' + hue + ', ' + getRandomInt(50, 100) + '%, ' +
-  getRandomInt(50, 80) + '%, 1)'; 
 }
 
 let requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
@@ -96,10 +46,10 @@ function useInitCanvas(canvasRef, ballsRef, width, height, topY, onBallClick) {
       let ball = ballsRef.current.find(ball => Math.sqrt((x-ball.x)*(x-ball.x) + (y-ball.y)*(y-ball.y)) < ball.radius)
       if (ball) {
         // Reset previous ball selected
-        clearBallsClicked()
+        // clearBallsClicked()
         
-        ball.clicked = true
-        onBallClick(ball.address, ball)
+        // ball.clicked = true
+        onBallClick(ball.stash)
       }
     }
   }
@@ -130,8 +80,25 @@ function useInitCanvas(canvasRef, ballsRef, width, height, topY, onBallClick) {
   return [];
 }
 
+function initializeBalls (profiles = [], startPoint= {}) {
+ return profiles
+  .filter(p => !p.isCandidate)
+  .map((p, i) => {
+    const radius = 30 * (1+3*(profiles.length-i)/profiles.length);
+    return {
+      ...p,
+      bounce: 1,
+      radius: radius,
+      originalRadius: radius,
+      x: startPoint.x,
+      y: startPoint.y,
+      velX: getRandomVel(),
+      velY: getRandomVel(),
+    }
+  })
+}
 
-function useUpdateCanvas(canvasRef, ballsRef, width, height, addresses, currentSelected) {
+function useUpdateCanvas(canvasRef, ballsRef, width, height, profiles, selected) {
   const [friction, setFriction] = React.useState(0.98);
   const [context, setContext] = React.useState();
   // Note: use useRef for mutable variables that we want to persist
@@ -139,19 +106,24 @@ function useUpdateCanvas(canvasRef, ballsRef, width, height, addresses, currentS
   const requestRef = React.useRef();
 
   const drawBall = (ball) => {
+    // If is candidate just hide it
+    if (ball.isCandidate) {
+      return
+    }
+
     context.beginPath()
-    // Define gradient
-    let g = context.createLinearGradient(ball.x-ball.radius, ball.y-ball.radius, ball.x+ball.radius, ball.y+ball.radius);
-    g.addColorStop(0, ball.colorStart);
-    g.addColorStop(1, ball.colorEnd);
-    context.fillStyle = g
-    
     // Draw the dot
     context.arc(
       ball.x, ball.y,
       ball.radius,
       0, Math.PI * 2, true
     )
+
+    // Define gradient
+    let g = context.createLinearGradient(ball.x-ball.radius, ball.y-ball.radius, ball.x+ball.radius, ball.y+ball.radius);
+    g.addColorStop(0, ball.colorStart);
+    g.addColorStop(1, ball.colorEnd);
+    context.fillStyle = g
 
     // Sets the type of compositing operation to apply when drawing new shapes
     if (!ball.clicked) {
@@ -171,15 +143,15 @@ function useUpdateCanvas(canvasRef, ballsRef, width, height, addresses, currentS
       context.clearRect(0, 0, width, height)
 
       ballsRef.current.forEach((ball) => {
-        if (ball.clicked) {
-          // console.log("__ball", ball);
-          ball.radius = 0
-          ball.x = 0
-          ball.y = 0
-          // ball.radius = width / 4.4
-          // ball.x = (width / 4.4) + 20
-          // ball.y = (width / 4.4) + 20
-        } else {
+        // if (ball.clicked) {
+        //   // console.log("__ball", ball);
+        //   ball.radius = 0
+        //   ball.x = 0
+        //   ball.y = 0
+        //   // ball.radius = width / 4.4
+        //   // ball.x = (width / 4.4) + 20
+        //   // ball.y = (width / 4.4) + 20
+        // } else {
           if (ball.y + ball.radius >= height) {
             ball.velY *= -ball.bounce
             ball.y = height - ball.radius
@@ -208,7 +180,7 @@ function useUpdateCanvas(canvasRef, ballsRef, width, height, addresses, currentS
   
           ball.x += ball.velX
           ball.y += ball.velY
-        }
+        // }
         drawBall(ball)
       })
     }
@@ -219,34 +191,37 @@ function useUpdateCanvas(canvasRef, ballsRef, width, height, addresses, currentS
     const ctx = canvasRef.current.getContext('2d')
     
     if (ctx) {
-      let balls = []
+
+      let startPoint = {
+        x: canvasRef.current.width / 2,
+        y: canvasRef.current.height / 2,
+      };
       
-      for (let i = 0; i < addresses.length; i++) {
-        const g = gradient(),
-        radius = 30 * (1+3*(addresses.length-i)/addresses.length);
-        const ball = {
-          address: addresses[i],
-          bounce: 1,
-          radius: radius,
-          originalRadius: radius,
-          x: canvasRef.current.width / 2,
-          y: canvasRef.current.height / 2,
-          velX: getRandomVel(),
-          velY: getRandomVel(),
-          colorStart: g.start,
-          colorEnd: g.end
-        }
-        balls.push(ball);
+      let balls = []
+      if (isUndefined(ballsRef.current)) {
+        balls = initializeBalls(profiles, startPoint)
+      } else if (ballsRef.current.length === 0) {
+        balls = initializeBalls(profiles, startPoint)
+      } else if (ballsRef.current.map(a => a.stash).join() !== profiles.map(a => a.stash).join()){
+        balls = initializeBalls(profiles, startPoint)
+      } else {
+        // identify balls that are on the candidates list
+        const candidates = profiles.filter(p => p.isCandidate).map(p => p.stash)
+        balls = ballsRef.current.map(b => {
+          return {
+            ...b,
+            isCandidate: candidates.includes(b.stash)
+          }
+        })          
       }
 
-      if (!!currentSelected) {
-        // Initialize any selected address
-        const ball = balls.find(ball => ball.address === currentSelected)
-        if (!!ball) {
-          ball.clicked = true
-        }
-      }
-
+      // if (!!selected) {
+      //   // Initialize any selected address
+      //   const ball = balls.find(ball => ball.stash === selected)
+      //   if (!!ball) {
+      //     ball.clicked = true
+      //   }
+      // }
 
       setContext(ctx)
       ballsRef.current = balls
@@ -260,23 +235,21 @@ function useUpdateCanvas(canvasRef, ballsRef, width, height, addresses, currentS
       }
     }
 
-  }, [width, height, addresses, currentSelected]);
+  }, [width, height, profiles, selected]);
 
   return [];
 }
 
-export default function BoardAnimationCanvas({width, height, topY, onBallClick, addresses}) {
+export default function BoardAnimationCanvas({width, height, topY, onBallClick, profiles}) {
   const canvasRef = React.useRef();
   const ballsRef = React.useRef();
-  const selectedChain = useSelector(selectChain);
-  const currentSelected = useSelector(selectAddress);
-  const selectedPage = useSelector(selectPage);
+  const selected = useSelector(selectAddress);
   
   useInitCanvas(canvasRef, ballsRef, width, height, topY, onBallClick);
-  useUpdateCanvas(canvasRef, ballsRef, width, height, addresses, currentSelected);
+  useUpdateCanvas(canvasRef, ballsRef, width, height, profiles, selected);
   
   return (
-    <Box sx={{ 
+    <Box sx={{
       position: "relative",
       // backgroundColor: "rgba(241, 241, 240, 0.95)",
       borderBottom: `solid 2px #FFF`,

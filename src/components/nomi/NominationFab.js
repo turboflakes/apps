@@ -54,7 +54,7 @@ export default function NominationFab({left, onClick }) {
         </Fab>
         {candidates.map((value, index) => 
           (<Chip key={index} sx={{ mb: theme.spacing(1), minWidth: 128, justifyContent: 'flex-start'}} onClick={() => onClick(value)}
-            label={"teste"} 
+            label={value} 
             icon={<Identicon value={value} size={24} theme={'polkadot'} />} 
           />))}
       </Stack>

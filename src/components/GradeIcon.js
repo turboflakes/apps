@@ -42,8 +42,8 @@ export default function GradeIcon({sessionIndex, address, size = 96, maxSessions
     return (
       <Tooltip title={`Grade not available.`} arrow>
         <img src={GRADES['-']} style={{ 
-            width: size,
-            height: "auto" }} alt={`Grade not available.`}/>
+            width: "auto",
+            height: size }} alt={`Grade not available.`}/>
       </Tooltip>  
     );
   }
@@ -54,8 +54,8 @@ export default function GradeIcon({sessionIndex, address, size = 96, maxSessions
   return (
     <Tooltip title={`Validator grade for the last ${maxSessions} sessions.`} arrow>
       <img src={GRADES[isSuccess ? data.grade : '-']} style={{ 
-          width: size,
-          height: "auto" }} alt={isSuccess ? `Grade: ${data.grade}` : '-' }/>
+          width: "auto",
+          height: size }} alt={isSuccess ? `Grade: ${data.grade}` : '-' }/>
     </Tooltip>  
   );
 }

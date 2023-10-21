@@ -6,6 +6,9 @@ import {
 import union from 'lodash/union'
 import isUndefined from 'lodash/isUndefined'
 import apiSlice from './apiSlice'
+import {
+  selectValProfileByAddress
+} from '../api/valProfilesSlice';
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Boards'],
@@ -74,11 +77,26 @@ export const {
 
 export const selectBoardBySessionAndHash = (state, session, hash) => selectBoardById(state, `${session}_${hash}`)
 export const selectBoardAddressesBySessionAndHash = (state, session, hash) => {
+  if (isUndefined(session) || isUndefined(hash)) {
+    return []
+  }
   const board = selectBoardBySessionAndHash(state, session, hash)
   if (!isUndefined(board)) {
     return board.addresses
   }
   return []
+}
+
+export const selectBoardProfilesBySessionAndHash = (state, session, hash) => {
+  let addresses = selectBoardAddressesBySessionAndHash(state, session, hash);
+  return addresses.map(a => {
+    const p = selectValProfileByAddress(state, a);
+    return {
+      stash: a,
+      colorStart: p.colorStart,
+      colorEnd: p.colorEnd
+    }
+  })
 }
 
 export const selectSyncedSession = (state) => state.boards.synced_session;

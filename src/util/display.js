@@ -7,7 +7,7 @@ export const hashDisplay = (hash) => {
     return !!hash ? `${hash.slice(0, 6)}...${hash.slice(hash.length-4, hash.length)}` : `-`
 }
   
-export const nameDisplay = (name, len, prefix = '') => {
+export const nameDisplay = (name = '', len, prefix = '') => {
     if (!len) {
         len = 24
     }
