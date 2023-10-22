@@ -7,6 +7,7 @@ import {
   selectAddress
 } from '../../features/chain/chainSlice';
 import { getRandomInt } from '../../util/gradients';
+import nomiSVG from '../../assets/nomi.svg';
 
 export function getRandomVel() {
   return Math.random() * 2 - 1;
@@ -250,16 +251,28 @@ export default function BoardAnimationCanvas({width, height, topY, onBallClick, 
   
   return (
     <Box sx={{
-      position: "relative",
-      // backgroundColor: "rgba(241, 241, 240, 0.95)",
-      borderBottom: `solid 2px #FFF`,
-      }}>
-        <canvas ref={canvasRef}
-          style={{
-            padding: 0,
-            margin: "0 auto",
-            display: "block"
-          }}></canvas>
+      overflow: 'hidden',
+      position: 'relative'
+    }}>
+      <img
+        src={nomiSVG} style={{
+          opacity: 0.04,
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: width / 6,
+          height: 'auto',
+        }}
+        alt="nomi"
+      ></img>
+      <canvas ref={canvasRef}
+        style={{
+          position: 'relative',
+          padding: 0,
+          margin: "0 auto",
+          display: "block",
+        }}></canvas>      
     </Box>
   );
 }

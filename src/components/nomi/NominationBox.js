@@ -76,11 +76,12 @@ export default function NominationBox({api, left, onClick }) {
         </Button>
         {candidates.map((value, index) => (<CandidateChip key={index} stash={value} onClick={onClick} />))}
       </Stack>
-      <NominationDialog
-        api={api}
-        open={open}
-        onClose={handleCloseDialog}    
-      />
+      { open ?
+          <NominationDialog
+          api={api}
+          open={open}
+          onClose={handleCloseDialog}    
+        /> : null}
     </Box>
   );
 }

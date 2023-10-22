@@ -6,7 +6,6 @@ import {
   web3Accounts,
   web3FromSource,
 } from '@polkadot/extension-dapp';
-import { ApiPromise, WsProvider } from '@polkadot/api';
 import Identicon from '@polkadot/react-identicon';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -18,10 +17,7 @@ import List from '@mui/material/List';
 import ListSubheader from '@mui/material/ListSubheader';
 import ListItem from '@mui/material/ListItem';
 import Chip from '@mui/material/Chip';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { ReactComponent as NominationIcon } from '../../assets/polkadot_icons/nominating_dark.svg';
-import { getNetworkExternalWSS } from '../../constants';
 import {
   selectValProfileByAddress,
 } from '../../features/api/valProfilesSlice';
@@ -31,10 +27,8 @@ import {
 import {
   selectChain,
 } from '../../features/chain/chainSlice';
-import { addressSS58 } from '../../util/crypto'
+import { addressSS58, isValidAddress } from '../../util/crypto'
 import { stashDisplay, nameDisplay, hashDisplay } from '../../util/display'
-
-const optionsDescription = ["Active Validators", "TVP Validators", "Over Subscribed", "Missing Identity"];
 
 const StyledDialog = styled(Dialog)(({ theme, maxWidth }) => ({
   '& .MuiDialog-paper': {
@@ -53,23 +47,11 @@ const getBondedAccounts = (api, accounts = []) => {
   return Promise.all(calls);
 }
 
-
-function AccountChip({key, account, onClick, onDelete}) {
+function AccountChip({key, account, onClick}) {
   const theme = useTheme();
   
   if (!account) {
     return null
-  }
-
-  if (onDelete) {
-    return (
-      <Chip key={key} sx={{ width: 160, justifyContent: 'flex-start'}} 
-        onDelete={() => onDelete(account)}
-        label={account.meta.name} 
-        variant="outlined" color="secondary"
-        icon={<Identicon value={account.address} size={24} theme={'polkadot'} />} 
-      />
-    )
   }
 
   return (
@@ -102,7 +84,7 @@ export default function NominationDialog({ api, open, onClose }) {
   const [options, setOptions] = React.useState();
   const [extensionEnabled, setExtensionEnabled] = React.useState(false);
   const [controllerAccounts, setControllerAccounts] = React.useState([]);
-  const [account, setAccount] = React.useState(localStorage.getItem(`${selectedChain}_account`));
+  const [account, setAccount] = React.useState();
 
   React.useEffect(() => {
     // Polkadot{.js} extension
@@ -144,6 +126,12 @@ export default function NominationDialog({ api, open, onClose }) {
         })
       }			
     });
+
+    return function cleanup() {
+      if (localStorage.getItem(`${selectedChain}_account`)) {
+        localStorage.removeItem(`${selectedChain}_account`);
+      }      
+    }
 
   }, [selectedChain]);
   
