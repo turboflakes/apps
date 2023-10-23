@@ -109,6 +109,22 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
                     color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.own_stake, chainInfo, 4, true, true, true)}</Typography>
                 </Box>
               </Box>
+              <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom
+                  color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>nominators</Typography>
+                <Box>
+                  <Typography variant="h5" component="span"
+                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{valProfile.nominators_counter}</Typography>
+                </Box>
+              </Box>
+              <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom
+                  color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>nominators bonded</Typography>
+                <Box>
+                  <Typography variant="h5" component="span"
+                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.nominators_raw_stake, chainInfo, 4, true, true, true)}</Typography>
+                </Box>
+              </Box>
               {showSubset && valProfile.subset === "TVP" ? 
                 <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                   <Tooltip title={`TVP Member`} arrow>
