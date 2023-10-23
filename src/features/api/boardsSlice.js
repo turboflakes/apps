@@ -92,7 +92,7 @@ export const selectBoardAddressesBySessionAndHash = (state, session, hash) => {
 }
 
 export const selectBoardProfilesBySessionAndHash = (state, session, hash) => {
-  let addresses = selectBoardAddressesBySessionAndHash(state, session, hash);
+  const addresses = selectBoardAddressesBySessionAndHash(state, session, hash);
   return addresses.map(a => {
     const p = selectValProfileByAddress(state, a);
     return {

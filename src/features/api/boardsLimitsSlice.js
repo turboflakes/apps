@@ -14,7 +14,7 @@ export const extendedApi = apiSlice.injectEndpoints({
         url: `/boards/limits`,
         params: { session }
       }),
-      providesTags: (result, error, arg) => [{ type: 'Boards', id: arg }],
+      providesTags: (result, error, arg) => [{ type: 'BoardsLimits', id: arg }],
     }),
   }),
 })
@@ -47,6 +47,6 @@ export default boardsLimitsSlice;
 export const { 
   selectAll,
   selectById: selectBoardLimitsById,
-} = adapter.getSelectors(state => state.blocks)
+} = adapter.getSelectors(state => state.boards_limits)
 
 export const selectBoardsLimitsBySession = (state, session) => selectBoardLimitsById(state, `${session}`);

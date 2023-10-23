@@ -137,15 +137,6 @@ export default function LayoutPage({api}) {
 	const dispatch = useDispatch();
 	const [openLeftDrawer, setOpenLeftDrawer] = React.useState(false);
   const [openRightDrawer, setOpenRightDrawer] = React.useState(false);
-  
-  const toggleDrawer = () => {
-		setOpenLeftDrawer(!openLeftDrawer);
-	};
-
-  const onRightDrawerToggle = () => {
-    setOpenRightDrawer(!openRightDrawer);
-  };
-
   const selectedApp = useSelector(selectApp);
 	const selectedChain = useSelector(selectChain);
   const selectedPage = useSelector(selectPage);
@@ -153,6 +144,14 @@ export default function LayoutPage({api}) {
   useWeb3ChainInfo(api, setLoading);
 
   useScrollTop(ref, selectedPage);
+
+  const toggleDrawer = () => {
+		setOpenLeftDrawer(!openLeftDrawer);
+	};
+
+  const onRightDrawerToggle = () => {
+    setOpenRightDrawer(!openRightDrawer);
+  };
 
   const handleAppSelection = (appName) => {
 		if (appName === null) {
@@ -535,5 +534,3 @@ export default function LayoutPage({api}) {
     </Box>
   );
 }
-
-// `calc(${rightDrawerWidth} + ${theme.spacing(4)})`

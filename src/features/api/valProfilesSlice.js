@@ -11,6 +11,9 @@ import {
 import { 
   matchBoardsReceived,
  } from './boardsSlice'
+import {
+  selectBoardAddressesBySessionAndHash
+} from '../api/boardsSlice'
 import { stashDisplay, commissionDisplay } from '../../util/display'
 import { gradient } from '../../util/gradients';
 
@@ -115,5 +118,6 @@ export default valProfilesSlice;
 // Selectors
 
 export const { 
+  selectAll,
   selectById: selectValProfileByAddress 
 } = adapter.getSelectors(state => state.val_profiles)

@@ -83,7 +83,6 @@ function useInitCanvas(canvasRef, ballsRef, width, height, topY, onBallClick) {
 
 function initializeBalls (profiles = [], startPoint= {}) {
  return profiles
-  .filter(p => !p.isCandidate)
   .map((p, i) => {
     const radius = 30 * (1+3*(profiles.length-i)/profiles.length);
     return {

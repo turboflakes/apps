@@ -104,7 +104,8 @@ export default function RightDrawer({open, onClose, width, showDark}) {
   useGetBoardsQuery({
     w: searchParams.get("w"), 
     i: searchParams.get("i"), 
-    f: searchParams.get("f")
+    f: searchParams.get("f"),
+    n: 32
   }, {refetchOnMountOrArgChange: true});
 
   const handleOnClickNominate = (address) => {
