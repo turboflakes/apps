@@ -5,11 +5,12 @@ import {
 } from '@polkadot-cloud/react/providers';
 import App from './App'
 import { getNetworkSS58Format } from './constants'
+import { validateChain } from './features/chain/chainSlice';
 
 export default function AppWithProviders() {
   const [activeAccount, setActiveAccount] = React.useState();
   const dappName = "Apps by Turboflakes";
-  const chain = new URL(document.location.href).searchParams.get('chain')
+  const chain = validateChain()
   const ss58 = getNetworkSS58Format(chain);
   
   return (
