@@ -2,11 +2,8 @@ import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { styled, useTheme } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import SvgIcon from '@mui/material/SvgIcon';
@@ -14,6 +11,9 @@ import ValAddressProfile from '../ValAddressProfile';
 import ValidatorSessionHistoryTimelineChart from '../ValidatorSessionHistoryTimelineChart';
 import { ReactComponent as AddUserIcon } from '../../assets/polkadot_icons/add_user.svg';
 import { ReactComponent as RemoveUserIcon } from '../../assets/polkadot_icons/remove_user.svg';
+import {
+  selectCandidates
+} from '../../features/api/boardsSlice';
 import {
   selectMaxHistorySessions,
 } from '../../features/layout/layoutSlice';
@@ -35,16 +35,15 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const StyledIconButton = styled(IconButton)(({ theme, showDark }) => ({
-  // width: 32,
-  // height: 32,
-  color: showDark ? theme.palette.text.secondary : theme.palette.text.primary,
-  border: showDark ? `1px solid ${theme.palette.text.secondary}` : `1px solid ${theme.palette.text.primary}`, 
-  borderRadius: '50%',
-  backgroundColor: showDark ? theme.palette.background.secondary : theme.palette.background.primary,
-  '&:hover': {
-    backgroundColor: showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300],
-  }
+const StyledIconButton = styled(IconButton)(({ theme }) => ({
+    width: 32,
+    height: 32,
+    color: theme.palette.text.secondary,
+    border: `1px solid ${theme.palette.text.primary}`, 
+    backgroundColor: theme.palette.background.secondary,
+    '&:hover': {
+      backgroundColor: theme.palette.neutrals[300],
+    }
 }));
 
 export default function ValidatorDialog({ onClose, onDiscard, onNext, onBack, open, address, showDark }) {
@@ -52,6 +51,7 @@ export default function ValidatorDialog({ onClose, onDiscard, onNext, onBack, op
   const dispatch = useDispatch();
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
   const isCandidate = useSelector((state) => selectIsCandidate(state, address));
+  const candidates = useSelector(selectCandidates);
 
   const handleOnClose = () => {
     onClose();
@@ -61,7 +61,9 @@ export default function ValidatorDialog({ onClose, onDiscard, onNext, onBack, op
     if (isCandidate) {
       dispatch(candidateRemoved(address))
     } else {
-      dispatch(candidateAdded(address))
+      if (candidates.length < 16) {
+        dispatch(candidateAdded(address))
+      }
     }
   }
 
@@ -84,8 +86,9 @@ export default function ValidatorDialog({ onClose, onDiscard, onNext, onBack, op
         <StyledIconButton showDark={showDark} disableRipple onClick={onBack} size='small'>
           <ChevronLeftIcon fontSize="small" />
         </StyledIconButton>
-        <Button sx= {{minWidth: 112, ml: theme.spacing(3)}} onClick={handleOnClose} variant='contained' color='secondary'>Done</Button>
+        <Button sx= {{minWidth: 112, ml: theme.spacing(3)}} onClick={handleOnClose} variant='outlined' color='secondary'>Done</Button>
         <Button sx={{ minWidth: 112 }} onClick={handleOnClick} color='secondary' variant='contained'
+          disabled={candidates.length === 16 && !isCandidate}
           startIcon={<SvgIcon component={isCandidate ? RemoveUserIcon : AddUserIcon} inheritViewBox />} >{isCandidate ? 'Remove' : 'Add'}</Button>
         <StyledIconButton showDark={showDark} disableRipple onClick={onNext} size='small'>
           <ChevronRightIcon fontSize="small" />

@@ -15,9 +15,6 @@ import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HubIcon from '@mui/icons-material/Hub';
 import Chip from '@mui/material/Chip';
-import Fab from '@mui/material/Fab';
-import TuneIcon from '@mui/icons-material/Tune';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink, faWaterLadder, faServer } from '@fortawesome/free-solid-svg-icons'
 import Footer from './Footer'
@@ -145,13 +142,9 @@ export default function LayoutPage({api}) {
 		setOpenLeftDrawer(!openLeftDrawer);
 	};
 
-  const handleRightDrawerToggle = () => {
+  const onRightDrawerToggle = () => {
     setOpenRightDrawer(!openRightDrawer);
   };
-
-  const handleRightDrawerClose = () => {
-    setOpenRightDrawer(false);
-  }
 
   const selectedApp = useSelector(selectApp);
 	const selectedChain = useSelector(selectChain);
@@ -532,23 +525,10 @@ export default function LayoutPage({api}) {
           >	
         {/*  hidden toolbar */}
         <Toolbar sx={{ height: 72 }} />
-        {/* Nomi open/close drawer */}
-        <Fab sx={{ 
-              position: 'absolute', 
-              top: 96 , 
-              transition: theme.transitions.create(['right'], {
-                duration: theme.transitions.duration.shorter,
-              }),
-              right: openRightDrawer ? `calc(${rightDrawerWidth}px + 16px)` : theme.spacing(4),
-            }}
-            onClick={handleRightDrawerToggle}
-            size="small" color="primary" aria-label="control-panel">
-            {openRightDrawer ? <ChevronRightIcon /> : <TuneIcon /> }
-          </Fab>
         <Outlet context={{ 
           api, 
           leftDrawerWidth, leftDrawerWidthClosed, openLeftDrawer,
-          rightDrawerWidth, openRightDrawer }} />
+          rightDrawerWidth, openRightDrawer, onRightDrawerToggle }} />
         {/* TODO move footer to left drawer */}
         {/* <Footer small /> */}
       </Box>

@@ -99,7 +99,7 @@ function initializeBalls (profiles = [], startPoint= {}) {
   })
 }
 
-function useUpdateCanvas(canvasRef, ballsRef, width, height, profiles, selected) {
+function useUpdateCanvas(canvasRef, ballsRef, width, height, profiles, selected, selectedChain) {
   const [friction, setFriction] = React.useState(0.98);
   const [context, setContext] = React.useState();
   // Note: use useRef for mutable variables that we want to persist
@@ -107,11 +107,7 @@ function useUpdateCanvas(canvasRef, ballsRef, width, height, profiles, selected)
   const requestRef = React.useRef();
 
   const drawBall = (ball) => {
-    // If is candidate just hide it
-    if (ball.isCandidate) {
-      return
-    }
-
+    
     context.beginPath()
     // Draw the dot
     context.arc(
@@ -120,11 +116,16 @@ function useUpdateCanvas(canvasRef, ballsRef, width, height, profiles, selected)
       0, Math.PI * 2, true
     )
 
-    // Define gradient
-    let g = context.createLinearGradient(ball.x-ball.radius, ball.y-ball.radius, ball.x+ball.radius, ball.y+ball.radius);
-    g.addColorStop(0, ball.colorStart);
-    g.addColorStop(1, ball.colorEnd);
-    context.fillStyle = g
+    if (ball.isCandidate) {
+      context.fillStyle = selectedChain === 'polkadot' ?  'rgba(230,0,122, 0.9)' : 'rgba(0,0,0, 0.9)';
+    } else {
+      // Define gradient
+      let g = context.createLinearGradient(ball.x-ball.radius, ball.y-ball.radius, ball.x+ball.radius, ball.y+ball.radius);
+      g.addColorStop(0, ball.colorStart);
+      g.addColorStop(1, ball.colorEnd);
+      context.fillStyle = g
+    }
+    
 
     // Sets the type of compositing operation to apply when drawing new shapes
     if (!ball.clicked) {
@@ -245,16 +246,17 @@ export default function BoardAnimationCanvas({width, height, topY, onBallClick, 
   const canvasRef = React.useRef();
   const ballsRef = React.useRef();
   const selected = useSelector(selectAddress);
-  
+  const selectedChain = useSelector(selectChain);
+
   useInitCanvas(canvasRef, ballsRef, width, height, topY, onBallClick);
-  useUpdateCanvas(canvasRef, ballsRef, width, height, profiles, selected);
+  useUpdateCanvas(canvasRef, ballsRef, width, height, profiles, selected, selectedChain);
   
   return (
     <Box sx={{
       overflow: 'hidden',
       position: 'relative'
     }}>
-      <img
+      {/* <img
         src={nomiSVG} style={{
           opacity: 0.04,
           position: 'absolute',
@@ -265,7 +267,7 @@ export default function BoardAnimationCanvas({width, height, topY, onBallClick, 
           height: 'auto',
         }}
         alt="nomi"
-      ></img>
+      ></img> */}
       <canvas ref={canvasRef}
         style={{
           position: 'relative',

@@ -28,6 +28,7 @@ import {
   selectIsLiveMode
 } from '../features/layout/layoutSlice';
 import { stakeDisplay } from '../util/display'
+import { chainAddress } from '../util/crypto';
 
 export default function ValAddressProfile({address, maxSessions, showGrade, showSubset, showDark}) {
   const theme = useTheme();
@@ -71,15 +72,30 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
       >
       <Box sx={{ display: "flex", height: '100%', justifyContent: 'space-between'}}>
         <Box sx={{ display: "flex" }}>
-          <Box>
-            <Identicon style={{marginRight: '16px'}}
+          <Box sx={{ mt: theme.spacing(1/2) }}>
+            <Identicon style={{marginRight: theme.spacing(1)}}
               value={address}
-              size={32}
+              size={24}
               theme={'polkadot'} />
           </Box>
           <Box>
-            <Typography variant="h5" color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{valProfile._identity}</Typography>
-            <Typography variant="caption" color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}><FontAwesomeIcon style={{ marginRight: 8 }} icon={faWallet} />{address}</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+              <Box sx={{ display: 'flex', flexDirection: 'column'}}>
+                <Typography variant="h5" color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{valProfile._identity}</Typography>
+                <Typography variant="caption" color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>
+                  <FontAwesomeIcon style={{ marginRight: 8 }} icon={faWallet} />{chainAddress(address, chainInfo.ss58Format)}
+                </Typography>
+              </Box>
+              {showSubset && valProfile.subset === "TVP" ? 
+                <Box sx={{ }}>
+                  <Tooltip title={`TVP Member`} arrow>
+                    <img src={tvpValid} style={{ 
+                        width: 48,
+                        height: "auto" }} alt="TVP Member" />
+                  </Tooltip>  
+                </Box>
+              : null}
+            </Box>
             <Divider sx={{ my: 2,
               opacity: 0.25,
               height: '1px',
@@ -106,7 +122,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
                   color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>bonded</Typography>
                 <Box>
                   <Typography variant="h5" component="span"
-                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.own_stake, chainInfo, 4, true, true, true)}</Typography>
+                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.own_stake, chainInfo, 2, true, true, true)}</Typography>
                 </Box>
               </Box>
               <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
@@ -122,10 +138,10 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
                   color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>nominators bonded</Typography>
                 <Box>
                   <Typography variant="h5" component="span"
-                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.nominators_raw_stake, chainInfo, 4, true, true, true)}</Typography>
+                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.nominators_raw_stake, chainInfo, 2, true, true, true)}</Typography>
                 </Box>
               </Box>
-              {showSubset && valProfile.subset === "TVP" ? 
+              {/* {showSubset && valProfile.subset === "TVP" ? 
                 <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                   <Tooltip title={`TVP Member`} arrow>
                     <img src={tvpValid} style={{ 
@@ -133,7 +149,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
                         height: "auto" }} alt="TVP Member" />
                   </Tooltip>  
                 </Box>
-              : null}
+              : null} */}
             </Box>
           </Box>
         </Box>

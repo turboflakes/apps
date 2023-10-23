@@ -175,7 +175,7 @@ function StepFinish({onClose, onReset}) {
         </Typography> */}
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
-        <Button sx={{ mr: 1 }} color='secondary' variant='contained' onClick={onReset} >
+        <Button sx={{ mr: 1 }} color='secondary' variant='outlined' onClick={onReset} >
           Reset
         </Button>
         <Button color='secondary' variant='contained' onClick={onClose} sx={{ mr: 1 }} >
@@ -281,7 +281,7 @@ export default function WelcomeStepper({onClose, showDark}) {
           <Box sx={{display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
             {activeStep > 0 ?
               <Button
-                  color='secondary' variant='contained'
+                  color='secondary' variant='outlined'
                   disabled={activeStep === 0}
                   onClick={handleBack}
                   sx={{ mr: 1 }}

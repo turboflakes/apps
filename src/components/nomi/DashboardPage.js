@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useSearchParams, useOutletContext } from 'react-router-dom';
 import isNull from 'lodash/isNull';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import TuneIcon from '@mui/icons-material/Tune';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import BoardAnimationCanvas from './BoardAnimationCanvas';
 import ValidatorDialog from './ValidatorDialog';
 import WelcomeDialog from './WelcomeDialog';
@@ -16,7 +18,8 @@ import {
   selectSyncedSession,
 } from '../../features/api/boardsSlice';
 import {
-  selectCandidates
+  selectCandidates,
+  candidatesAdded,
 } from '../../features/api/boardsSlice';
 import { isValidAddress } from '../../util/crypto'
 import { getCriteriasHash } from '../../util/crypto'
@@ -67,10 +70,11 @@ const getHashFromParams = (searchParams) => {
 
 export default function DashboardPage() {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const { 
     api,
     leftDrawerWidth, leftDrawerWidthClosed, openLeftDrawer, 
-    rightDrawerWidth, openRightDrawer } = useOutletContext();
+    rightDrawerWidth, openRightDrawer, onRightDrawerToggle } = useOutletContext();
   const [openValidatorDialog, setOpenValidatorDialog] = React.useState(false);
   const [openWelcomeDialog, setOpenWelcomeDialog] = React.useState(false);
   const [selectedAddress, setSelectedAddress] = React.useState();
@@ -95,6 +99,10 @@ export default function DashboardPage() {
   //   };
   // }, []);
 
+  const handleRightDrawerToggle = () => {
+    onRightDrawerToggle();
+  };
+
   const handleOnBallClick = (address, options) => {
     if (isValidAddress(address)) {
       setSelectedAddress(address)
@@ -107,6 +115,11 @@ export default function DashboardPage() {
       setSelectedAddress(address)
       setOpenValidatorDialog(true)
     }
+  }
+
+  const handleOnAddAllClick = () => {
+    const addresses = profiles.map(a => a.stash)
+    dispatch(candidatesAdded(addresses))
   }
 
   const handleOnCloseValidatorDialog = () => {
@@ -156,9 +169,21 @@ export default function DashboardPage() {
             onBallClick={handleOnBallClick}
           />
           {/* left button / menus */}
-          <NominationBox api={api} onClick={handleOnCandidateClick} 
+          <NominationBox api={api} onClick={handleOnCandidateClick} onAddAllClick={handleOnAddAllClick}
             left={openLeftDrawer ? `calc(${leftDrawerWidth}px + 16px)` : `calc(${leftDrawerWidthClosed}px + 24px)` } />
           {/* right button / menus */}
+          <Fab sx={{ 
+              position: 'absolute', 
+              top: 96 , 
+              transition: theme.transitions.create(['right'], {
+                duration: theme.transitions.duration.shorter,
+              }),
+              right: openRightDrawer ? `calc(${rightDrawerWidth}px + 16px)` : theme.spacing(4),
+            }}
+            onClick={onRightDrawerToggle}
+            size="small" color="primary" aria-label="control-panel">
+            {openRightDrawer ? <ChevronRightIcon /> : <TuneIcon /> }
+          </Fab>
           <FiltersFab right={openRightDrawer ? `calc(${rightDrawerWidth}px + 64px)` : theme.spacing(10)} />
           <Fab sx={{ 
             position: 'absolute', 
