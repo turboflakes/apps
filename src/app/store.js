@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import appSlice from '../features/app/appSlice';
 import apiSlice from '../features/api/apiSlice'
 import chainSlice from '../features/chain/chainSlice';
 import web3Slice from '../features/web3/web3Slice';
@@ -14,9 +15,12 @@ import parachainsSlice from '../features/api/parachainsSlice';
 import valProfilesSlice from '../features/api/valProfilesSlice';
 import poolsSlice from '../features/api/poolsSlice';
 import poolsMetadataSlice from '../features/api/poolsMetadataSlice';
+import boardsSlice from '../features/api/boardsSlice';
+import boardsLimitsSlice from '../features/api/boardsLimitsSlice';
 
 export const store = configureStore({
   reducer: {
+    app: appSlice.reducer,
     chain: chainSlice.reducer,
     web3: web3Slice.reducer,
     layout: layoutSlice.reducer,
@@ -29,6 +33,8 @@ export const store = configureStore({
     parachains: parachainsSlice.reducer,
     pools: poolsSlice.reducer,
     pools_metadata: poolsMetadataSlice.reducer,
+    boards: boardsSlice.reducer,
+    boards_limits: boardsLimitsSlice.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
     socket: socketSlice.reducer
   },

@@ -56,7 +56,7 @@ export default function InsightsGrid() {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Validator Insights</Typography>
-          <Typography variant="subtitle" color="secondary">
+          <Typography variant="subtitle">
           {isLiveMode ? 
             `Active validators in the current session ${sessionIndex.format()}` : 
             `Active validators between session ${historySessionRangeIds[0].format()} and ${historySessionRangeIds[historySessionRangeIds.length - 1].format()}`}

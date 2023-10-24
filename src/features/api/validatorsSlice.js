@@ -382,8 +382,8 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
       isFetching
     }
   }).filter(v => (!isUndefined(v.identity) && !isUndefined(v.address)) ? 
-    v.identity.toLowerCase().includes(identityFilter.toLowerCase()) || 
-    v.address.toLowerCase().includes(identityFilter.toLowerCase()) : false)
+    v.identity?.toLowerCase().includes(identityFilter?.toLowerCase()) || 
+    v.address?.toLowerCase().includes(identityFilter?.toLowerCase()) : false)
   
   if (subsetFilter !== '') {
     return filteredRows.filter(v => (!isUndefined(v.subset) ? v.subset === subsetFilter : false))

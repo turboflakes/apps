@@ -16,10 +16,11 @@ const networkSettings = {
   polkadot: {
     name: "Polkadot",
     endpoint: process.env.REACT_APP_POLKADOT_API_ENDPOINT,
-    externalWSS: "wss://rpc.polkadot.io",
+    externalWSS: "wss://rpc.ibp.network/polkadot",
     icon: iconPolkadotSVG,
     logo: logoPolkadotSVG,
     url: "https://polkadot.network",
+    ss58Format: 0,
     maxValidators: 16,
     maxHistoryEras: 32,
     coreAssignmentsTarget: 240,
@@ -34,10 +35,11 @@ const networkSettings = {
   kusama: {
     name: "Kusama",
     endpoint: process.env.REACT_APP_KUSAMA_API_ENDPOINT,
-    externalWSS: "wss://kusama-rpc.polkadot.io",
+    externalWSS: "wss://rpc.ibp.network/kusama",
     icon: iconKusamaSVG,
     logo: logoKusamaSVG,
     url: "https://kusama.network",
+    ss58Format: 2,
     maxValidators: 24,
     // maxHistoryEras: 16,
     maxHistoryEras: 32,
@@ -56,10 +58,11 @@ const networkSettings = {
   westend: {
     name: "Westend",
     endpoint: process.env.REACT_APP_WESTEND_API_ENDPOINT,
-    externalWSS: "wss://westend-rpc.polkadot.io",
+    externalWSS: "wss://rpc.ibp.network/westend",
     icon: iconWestendSVG,
     logo: logoWestendSVG,
     url: "https://polkadot.network",
+    ss58Format: 42,
     maxValidators: 16,
     maxHistoryEras: 4,
     coreAssignmentsTarget: 60, 
@@ -76,6 +79,7 @@ export const getNetworkExternalWSS = (network) => networkSettings[network].exter
 export const getNetworkIcon = (network) => networkSettings[network].icon
 export const getNetworkLogo = (network) => networkSettings[network].logo
 export const getNetworkURL = (network) => networkSettings[network].url
+export const getNetworkSS58Format = (network) => networkSettings[network].ss58Format
 export const getMaxHistoryEras = (network) => networkSettings[network].maxHistoryEras
 export const getMaxHistorySessions = (network) => networkSettings[network].maxHistoryEras * 6
 export const getCoreAssignmentsTarget = (network) => networkSettings[network].coreAssignmentsTarget
@@ -120,3 +124,6 @@ export const getChainLogo = (network, paraId) => {
   }
   return namedLogo 
 }
+
+// Used in all NOMI traits
+export const DECIMALS = 10000000

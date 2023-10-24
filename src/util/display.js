@@ -7,7 +7,7 @@ export const hashDisplay = (hash) => {
     return !!hash ? `${hash.slice(0, 6)}...${hash.slice(hash.length-4, hash.length)}` : `-`
 }
   
-export const nameDisplay = (name, len, prefix = '') => {
+export const nameDisplay = (name = '', len, prefix = '') => {
     if (!len) {
         len = 24
     }
@@ -39,6 +39,13 @@ export const stakeDisplay = (stake, networkDetails, decimals = 2, format = false
     return stake
 }
 
+export const stakeDisplayWeight = (stake, networkDetails) => {
+    if (!!networkDetails.tokenSymbol[0]) {
+        return `${convertToIU(stake, 0)}${networkDetails.tokenSymbol[0]}`
+    }
+    return stake
+}
+
 export const stakeDisplayNoSymbol = (stake, networkDetails) => {
     if (!!networkDetails.token_decimals) {
         const networkDecimals = Math.pow(10, networkDetails.token_decimals)
@@ -50,7 +57,6 @@ export const stakeDisplayNoSymbol = (stake, networkDetails) => {
 export const commissionDisplay = (commission) => {
     return `${parseFloat((Math.round((commission/10000000)*100)/100).toFixed(2))}%`
 }
-
 
 export const scoreDisplay = (score) => {
     return `${parseFloat((Math.round(score*1000000)/1000000).toFixed(6))}`

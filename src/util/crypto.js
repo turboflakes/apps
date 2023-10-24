@@ -1,4 +1,4 @@
-import { encodeAddress, decodeAddress } from '@polkadot/util-crypto'
+import { encodeAddress, decodeAddress, blake2AsHex } from '@polkadot/util-crypto'
 import { hexToU8a, isHex } from '@polkadot/util';
 
 export const isValidAddress = (address) => {
@@ -26,3 +26,11 @@ export const chainAddress = (address, SS58Prefix) => {
     }
 }
 
+export const getCriteriasHash = (weights, intervals, filters) => {
+    try {
+        const data = `${weights}|${intervals}|${filters}`;
+		return blake2AsHex(data, 256);
+	} catch (e) {
+		console.error(e);
+	}
+}

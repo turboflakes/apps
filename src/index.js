@@ -7,16 +7,18 @@ import reportWebVitals from './reportWebVitals';
 import 'animate.css';
 import './index.css';
 import './util';
+import AppWithProviders from './AppWithProviders';
+
 
 const container = document.getElementById('root');
 const root = createRoot(container);
 
 root.render(
-  <React.StrictMode>
+  <React.Fragment>
     <Provider store={store}>
-      <App />
+      <AppWithProviders />
     </Provider>
-  </React.StrictMode>
+  </React.Fragment>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import isUndefined from 'lodash/isUndefined'
-// import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -27,11 +27,11 @@ import {
 import {
   selectIsLiveMode
 } from '../features/layout/layoutSlice';
-import { stakeDisplay } from '../util/display';
+import { stakeDisplay } from '../util/display'
 import { chainAddress } from '../util/crypto';
 
-export default function ValAddressProfile({address, maxSessions, showGrade, showSubset}) {
-  // const theme = useTheme();
+export default function ValAddressProfile({address, maxSessions, showGrade, showSubset, showDark}) {
+  const theme = useTheme();
   const {isSuccess, isFetching} = useGetValidatorProfileByAddressQuery(address)
   const isLiveMode = useSelector(selectIsLiveMode);
   const historySession = useSelector(selectSessionHistory);
@@ -43,10 +43,10 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
   if (isFetching || isUndefined(valProfile) || isUndefined(chainInfo)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
-      height: 208,
+      height: 212,
       borderRadius: 3,
       // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-      bgcolor: 'white'
+      bgcolor: showDark ? theme.palette.background.secondary : theme.palette.background.primary
     }} />)
   }
 
@@ -62,7 +62,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: 208,
+        height: 212,
         // borderRadius: 3,
         // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
         // boxShadow: 'rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;'
@@ -72,15 +72,30 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
       >
       <Box sx={{ display: "flex", height: '100%', justifyContent: 'space-between'}}>
         <Box sx={{ display: "flex" }}>
-          <Box>
-            <Identicon style={{marginRight: '16px'}}
+          <Box sx={{ mt: theme.spacing(1/2) }}>
+            <Identicon style={{marginRight: theme.spacing(1)}}
               value={address}
-              size={32}
+              size={24}
               theme={'polkadot'} />
           </Box>
           <Box>
-            <Typography variant="h5">{valProfile._identity}</Typography>
-            <Typography variant="caption"><FontAwesomeIcon style={{ marginRight: 8 }} icon={faWallet} />{chainAddress(address, chainInfo.ss58Format)}</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+              <Box sx={{ display: 'flex', flexDirection: 'column'}}>
+                <Typography variant="h5" color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{valProfile._identity}</Typography>
+                <Typography variant="caption" color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>
+                  <FontAwesomeIcon style={{ marginRight: 8 }} icon={faWallet} />{chainAddress(address, chainInfo.ss58Format)}
+                </Typography>
+              </Box>
+              {showSubset && valProfile.subset === "TVP" ? 
+                <Box sx={{ }}>
+                  <Tooltip title={`TVP Member`} arrow>
+                    <img src={tvpValid} style={{ 
+                        width: 48,
+                        height: "auto" }} alt="TVP Member" />
+                  </Tooltip>  
+                </Box>
+              : null}
+            </Box>
             <Divider sx={{ my: 2,
               opacity: 0.25,
               height: '1px',
@@ -95,18 +110,38 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
                   <GradeIcon sessionIndex={sessionIndex} maxSessions={maxSessions} address={address} size={64} /> : null}
               </Box>
               <Box sx={{ mr: 3,  display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>commission</Typography>
+                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom
+                  color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>commission</Typography>
                 <Box>
-                  <Typography variant="h5" component="span">{valProfile._commission}</Typography>
+                  <Typography variant="h5" component="span"
+                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{valProfile._commission}</Typography>
                 </Box>
               </Box>
               <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom>bonded</Typography>
+                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom
+                  color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>bonded</Typography>
                 <Box>
-                  <Typography variant="h5" component="span">{stakeDisplay(valProfile.own_stake, chainInfo, 4, true, true, true)}</Typography>
+                  <Typography variant="h5" component="span"
+                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.own_stake, chainInfo, 2, true, true, true)}</Typography>
                 </Box>
               </Box>
-              {showSubset && valProfile.subset === "TVP" ? 
+              <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom
+                  color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>nominators</Typography>
+                <Box>
+                  <Typography variant="h5" component="span"
+                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{valProfile.nominators_counter}</Typography>
+                </Box>
+              </Box>
+              <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+                <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom
+                  color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>nominators bonded</Typography>
+                <Box>
+                  <Typography variant="h5" component="span"
+                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.nominators_raw_stake, chainInfo, 2, true, true, true)}</Typography>
+                </Box>
+              </Box>
+              {/* {showSubset && valProfile.subset === "TVP" ? 
                 <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                   <Tooltip title={`TVP Member`} arrow>
                     <img src={tvpValid} style={{ 
@@ -114,7 +149,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
                         height: "auto" }} alt="TVP Member" />
                   </Tooltip>  
                 </Box>
-              : null}
+              : null} */}
             </Box>
           </Box>
         </Box>

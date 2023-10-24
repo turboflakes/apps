@@ -174,7 +174,7 @@ function usePrevious(value) {
   return ref.current;
 }
 
-export default function ValidatorSessionHistoryTimelineChart({address, maxSessions}) {
+export default function ValidatorSessionHistoryTimelineChart({address, maxSessions, noBorderRadius, showDark}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const currentSession = useSelector(selectSessionCurrent);
@@ -190,14 +190,15 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
   // const [sessionIndex, setSessionIndex] = useSessionIndex(historySession);
   const prevCount = usePrevious(paraSessions.length);
   const historySessionSelected = useSelector(state => selectSessionByIndex(state, historySession));
-
+  
   if (isFetching || isUndefined(paraSessions) || isUndefined(historySessionSelected)) {
     return (<Skeleton variant="rounded" sx={{
+      mt: 2,
       width: '100%',
-      height: 390,
-      borderRadius: 3,
-      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-      bgcolor: 'white'
+      minHeight: 400,
+      borderRadius: noBorderRadius ? 0 : 3,
+      boxShadow: showDark ? 'rgba(149, 157, 165, 0) 0px 8px 24px' : 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+      bgcolor: showDark ? theme.palette.background.secondary : theme.palette.background.primary
     }} />)
   }
 
@@ -243,8 +244,8 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
       // justifyContent: 'center',
       // alignItems: 'center',
       width: "100%",
-      // height: 256,
-      borderRadius: 3,
+      minHeight: 400,
+      borderRadius: noBorderRadius ? 0 : 3,
       // bgcolor: theme.palette.neutrals[300],
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' 
       }}>

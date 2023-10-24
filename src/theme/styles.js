@@ -25,7 +25,8 @@ let theme = createTheme({
     secondary: {
       // dark automatic calculated
       // main: "#343434",
-      main: "#4D4D4D",
+      // main: "#4D4D4D",
+      main: "#F1F1F0",
       contrastText: '#FFFFFF',
     },
     semantics: {
@@ -214,7 +215,89 @@ let theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 30,
-          padding: `8px 16px`
+          padding: `4px 12px`,
+          '&.Mui-disabled': {
+            backgroundColor: '#FFF',
+          }
+        },
+        containedSecondary: {
+          color: '#0B1317',
+          backgroundColor: '#F1F1F0',
+          '&:hover': {
+            backgroundColor: '#4D4D4D',
+            // fontWeight: 'bold'
+          },
+        },
+        // containedPrimary: {
+        //   backgroundColor: '#FFF'
+        // },
+        outlinedSecondary: {
+          borderColor: '#FFF',
+          color: '#FFF'
+        },
+      }
+    },
+    MuiStepLabel: {
+      styleOverrides: {
+        label: {
+          color: '#4D4D4D',
+          '&.Mui-active': {
+            color: '#FFF',
+          },
+          '&.Mui-completed': {
+            color: '#FFF',
+          }
+        }
+      }
+    },
+    MuiStepIcon: {
+      styleOverrides: {
+        root: {
+          color: '#4D4D4D',
+          '&.Mui-active': {
+            color: '#FFF',
+          },
+          '&.Mui-completed': {
+            color: '#FFF',
+          }
+        },
+        text: {
+          color: '#0B1317',
+          fill: '#0B1317',
+        }
+      }
+    },
+    MuiListSubheader: {
+      styleOverrides: {
+        root: {},
+        colorSecondary: {
+          color: '#C8C9CC'
+        }
+      }
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {},
+        colorSecondary: {
+          color: '#F1F1F0',
+          borderColor: '#F1F1F0',
+        },
+        clickable: {
+          '&:hover': {
+            fontWeight: 'bold'
+          }
+        }
+      }
+    },
+    MuiDivider: {
+      styleOverrides: {
+        root: {
+          opacity: 0.25,
+          height: '1px',
+          borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+          borderBottom: 'none',
+          backgroundColor: 'transparent',
+          backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
         },
       }
     },

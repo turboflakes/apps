@@ -37,7 +37,7 @@ export default function ValBodyBox({address, sessionIndex}) {
               opacity: 0.1,
               width: 256,
               height: 256 }} alt={"ONE-T logo"}/>
-          <Typography variant="h6" color="secondary">{status}</Typography>
+          <Typography variant="h6">{status}</Typography>
         </Box>
       </Box>
     )

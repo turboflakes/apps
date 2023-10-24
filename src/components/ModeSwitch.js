@@ -14,9 +14,7 @@ import {
   selectBlock,
  } from '../features/api/blocksSlice'
 import { 
-  useGetSessionByIndexQuery,
   selectSessionHistory,
-  selectSessionHistoryIds,
   selectSessionCurrent,
   selectSessionByIndex,
   sessionHistoryChanged,
