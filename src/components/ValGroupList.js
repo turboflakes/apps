@@ -10,7 +10,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Identicon from '@polkadot/react-identicon';
 import {
-  addressChanged
+  addressChanged,
+  selectChain
 } from '../features/chain/chainSlice';
 import {
   pageChanged
@@ -21,6 +22,8 @@ import {
 import { calculateMvr } from '../util/mvr'
 import { stashDisplay, nameDisplay } from '../util/display'
 import { grade } from '../util/grade';
+import { chainAddress } from '../util/crypto';
+import { getNetworkSS58Format } from '../constants'
 
 
 const gradeValue = (v) => grade(1-calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
@@ -29,6 +32,7 @@ export default function ValGroupList({sessionIndex, groupId}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const selectedChain = useSelector(selectChain);
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex, groupId));  
   const validatorsOrderedByPoints = orderBy(validators, o => o.auth.ep - o.auth.sp, "desc");  
 
@@ -55,7 +59,7 @@ export default function ValGroupList({sessionIndex, groupId}) {
                   theme={'polkadot'} />
               </ListItemIcon>
               <ListItemText sx={{whiteSpace: "nowrap"}}
-                primary={nameDisplay(!!v.profile ? v.profile._identity : stashDisplay(v.address, 4), 12)}
+                primary={nameDisplay(v.profile?.identity ? v.profile._identity : stashDisplay(chainAddress(v.address, getNetworkSS58Format(selectedChain)), 4), 12)}
               />
             </ListItemButton>
           ))}

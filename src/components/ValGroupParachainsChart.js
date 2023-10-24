@@ -27,6 +27,8 @@ import {
 } from '../features/layout/layoutSlice';
 import { isChainSupported, getChainNameShort } from '../constants'
 import { stashDisplay, nameDisplay } from '../util/display'
+import { chainAddress } from '../util/crypto';
+import { getNetworkSS58Format } from '../constants';
 
 function createParachainsData(x, y, a, m, p, z, pid) {
   return { x, y, a, m, p, z, pid };
@@ -117,7 +119,7 @@ export default function ValGroupParachainsChart({sessionIndex, groupId}) {
   const paraIdsSorted = data.map(o => o[0].pid);
   
   const identities = filtered.map((v, i) => ({
-    identity: nameDisplay(!!v.profile ? v.profile._identity : stashDisplay(v.address, 3), 10, selectedAddress === v.address ? '★ ' : '')
+    identity: nameDisplay(v.profile?.identity ? v.profile._identity : stashDisplay(chainAddress(v.address, getNetworkSS58Format(selectedChain)), 3), 10, selectedAddress === v.address ? '★ ' : '')
   }))
 
   const maxRange = Math.max(...data.map(o => o[0].a + o[0].m))

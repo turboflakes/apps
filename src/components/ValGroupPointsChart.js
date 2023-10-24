@@ -7,7 +7,8 @@ import { BarChart, Bar, XAxis, YAxis, Cell, CartesianGrid, Tooltip, ResponsiveCo
 import { Typography } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import {
-  selectAddress
+  selectAddress,
+  selectChain
 } from '../features/chain/chainSlice';
 import {
   selectValidatorsBySessionAndGroupId
@@ -15,6 +16,8 @@ import {
 import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
 import { stashDisplay, nameDisplay } from '../util/display'
+import { chainAddress } from '../util/crypto';
+import { getNetworkSS58Format } from '../constants';
 
 const renderTooltip = (props, theme) => {
   const { active, payload } = props;
@@ -61,6 +64,7 @@ const renderTooltip = (props, theme) => {
 export default function ValGroupPointsChart({sessionIndex, groupId}) {
   const theme = useTheme();
   const selectedAddress = useSelector(selectAddress);
+  const selectedChain = useSelector(selectChain);
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
 
   if (!validators.length || validators.length !== validators.filter(v => !!v.para_stats).length) {
@@ -73,7 +77,7 @@ export default function ValGroupPointsChart({sessionIndex, groupId}) {
     pvPoints: (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20),
     abPoints: v.auth.ab.length * 20,
     gradeValue: grade(1 - calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)),
-    name: nameDisplay(!!v.profile ? v.profile._identity : stashDisplay(v.address, 4), 10, selectedAddress === v.address ? '★ ' : '')
+    name: nameDisplay(v.profile?.identity ? v.profile._identity : stashDisplay(chainAddress(v.address, getNetworkSS58Format(selectedChain)), 4), 12, selectedAddress === v.address ? '★ ' : '')
   }))
   
   return (

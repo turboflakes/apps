@@ -52,7 +52,7 @@ const valProfilesSlice = createSlice({
           (!!action.payload.identity.sub ? 
             `${action.payload.identity.name}/${action.payload.identity.sub}` : 
             `${action.payload.identity.name}`) 
-          : stashDisplay(action.payload.stash),
+          : action.payload.stash,
         _ts: + new Date()})
     })
     .addMatcher(matchValidatorsReceived, (state, action) => {
