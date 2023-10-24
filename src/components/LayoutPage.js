@@ -25,6 +25,7 @@ import SessionBoxHeader from './SessionBoxHeader';
 import RightDrawer from './nomi/RightDrawer';
 import onetSVG from '../assets/onet.svg';
 import nomiSVG from '../assets/nomi.svg';
+import turboflakesSVG from '../assets/logo/logo_mark_black-subtract_turboflakes_.svg';
 import apiSlice from '../features/api/apiSlice'
 import {
   pageChanged,
@@ -349,22 +350,24 @@ export default function LayoutPage({api}) {
               sx={{ 
                 m: 0,
                 p: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
                 height: '100%',
                 '> .MuiListItemButton-root.Mui-selected': {
                 bgcolor: "rgba(0, 0, 0, 0.12)"}, '> .MuiListItemButton-root.Mui-selected:hover': { bgcolor: "rgba(0, 0, 0, 0.18)"}
               }}>
 
-              <Divider sx={{ 
-                opacity: 0.25,
-                height: '1px',
-                borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                borderBottom: 'none',
-                backgroundColor: 'transparent',
-                backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                }} />
-              
               {selectedApp === "onet" ? 
-                <React.Fragment>
+                <Box component="span">
+                  <Divider sx={{ 
+                    opacity: 0.25,
+                    height: '1px',
+                    borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                    borderBottom: 'none',
+                    backgroundColor: 'transparent',
+                    backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                    }} /> 
                   <ListItemButton selected={selectedPage === 'dashboard'} disableRipple
                     onClick={() => handlePageSelection('dashboard')}>
                     <ListItemIcon>
@@ -373,134 +376,249 @@ export default function LayoutPage({api}) {
                     <ListItemText primary="Dashboard" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
                   </ListItemButton>
                 
-                <Divider sx={{ 
-                  opacity: 0.25,
-                  height: '1px',
-                  borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                  borderBottom: 'none',
-                  backgroundColor: 'transparent',
-                  backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                  }} />
+                  <Divider sx={{ 
+                    opacity: 0.25,
+                    height: '1px',
+                    borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                    borderBottom: 'none',
+                    backgroundColor: 'transparent',
+                    backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                    }} />
 
-                <ListItemButton selected={selectedPage === 'insights'} disableRipple
-                  onClick={() => handlePageSelection('insights')}>
-                  <ListItemIcon sx={{ml: '2px'}}>
-                    <Box><FontAwesomeIcon icon={faServer} style={{ color: theme.palette.text.primary }} /></Box>
-                  </ListItemIcon>
-                  <ListItemText primary="Validator Insights" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-                </ListItemButton>
+                  <ListItemButton selected={selectedPage === 'insights'} disableRipple
+                    onClick={() => handlePageSelection('insights')}>
+                    <ListItemIcon sx={{ml: '2px'}}>
+                      <Box><FontAwesomeIcon icon={faServer} style={{ color: theme.palette.text.primary }} /></Box>
+                    </ListItemIcon>
+                    <ListItemText primary="Validator Insights" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+                  </ListItemButton>
+                  
+                  <ListItemButton selected={selectedPage === 'parachains'} disableRipple
+                    onClick={() => handlePageSelection('parachains')}>
+                    <ListItemIcon>
+                      <Box><FontAwesomeIcon icon={faLink} style={{ color: theme.palette.text.primary }} /></Box>
+                    </ListItemIcon>
+                    <ListItemText primary="Parachains" 
+                      sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+                  </ListItemButton>
                 
-                <ListItemButton selected={selectedPage === 'parachains'} disableRipple
-                  onClick={() => handlePageSelection('parachains')}>
-                  <ListItemIcon>
-                    <Box><FontAwesomeIcon icon={faLink} style={{ color: theme.palette.text.primary }} /></Box>
-                  </ListItemIcon>
-                  <ListItemText primary="Parachains" 
-                    sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-                </ListItemButton>
-              
-                <ListItemButton selected={selectedPage === 'val-groups'} disableRipple
-                  onClick={() => handlePageSelection('val-groups')}>
-                  <ListItemIcon>
-                    <HubIcon sx={{ color: theme.palette.text.primary }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Validator Groups" 
-                    sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-                </ListItemButton>
+                  <ListItemButton selected={selectedPage === 'val-groups'} disableRipple
+                    onClick={() => handlePageSelection('val-groups')}>
+                    <ListItemIcon>
+                      <HubIcon sx={{ color: theme.palette.text.primary }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Validator Groups" 
+                      sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+                  </ListItemButton>
+                  
+                  <Divider sx={{ 
+                    opacity: 0.25,
+                    height: '1px',
+                    borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                    borderBottom: 'none',
+                    backgroundColor: 'transparent',
+                    backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                    }} />
+
+                  <ListItemButton  selected={selectedPage === 'pools'} disableRipple
+                    onClick={() => handlePageSelection('pools')}>
+                    <ListItemIcon >
+                      <Box><FontAwesomeIcon icon={faWaterLadder} style={{ color: theme.palette.text.primary }} /></Box>
+                    </ListItemIcon>
+                    <ListItemText primary="Nomination Pools" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+                  </ListItemButton>
+
+                  {selectedChain === "kusama" ? 
+                    <React.Fragment>
+                      <Divider sx={{ 
+                        opacity: 0.25,
+                        height: '1px',
+                        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                        borderBottom: 'none',
+                        backgroundColor: 'transparent',
+                        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                        }} />
+                      <ListItemButton onClick={() => handleChainSelection('polkadot')} disableRipple>
+                        <ListItemIcon sx={{ ml: -0.5, py: 2}}>
+                          <img src={getNetworkIcon("polkadot")} style={{ 
+                              width: 28,
+                              height: 28 }} alt={"polkadot"}/>
+                        </ListItemIcon>
+                        <ListItemText primary="POLKADOT" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+                      </ListItemButton>
+                      <Divider sx={{ 
+                        opacity: 0.25,
+                        height: '1px',
+                        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                        borderBottom: 'none',
+                        backgroundColor: 'transparent',
+                        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                        }} />
+                    </React.Fragment> : null}
+
+                  {selectedChain === "polkadot" ? 
+                    <React.Fragment>
+                      <Divider sx={{ 
+                        opacity: 0.25,
+                        height: '1px',
+                        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                        borderBottom: 'none',
+                        backgroundColor: 'transparent',
+                        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                        }} />
+                      <ListItemButton onClick={() => handleChainSelection('kusama')} disableRipple>
+                        <ListItemIcon sx={{ ml: -0.5, py: 2}}>
+                          <img src={getNetworkIcon("kusama")} style={{ 
+                              width: 28,
+                              height: 28 }} alt={"kusama"}/>
+                        </ListItemIcon>
+                        <ListItemText primary="KUSAMA" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+                      </ListItemButton>
+                      <Divider sx={{ 
+                        opacity: 0.25,
+                        height: '1px',
+                        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                        borderBottom: 'none',
+                        backgroundColor: 'transparent',
+                        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                        }} />
+                    </React.Fragment> : null}
+
+                </Box> : null }
+
+              {selectedApp === "nomi" && selectedChain === "kusama" ? 
+                <Box component="span">
+                  <Divider sx={{ 
+                    opacity: 0.25,
+                    height: '1px',
+                    borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                    borderBottom: 'none',
+                    backgroundColor: 'transparent',
+                    backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                    }} />
+                  <ListItemButton onClick={() => handleChainSelection('polkadot')} disableRipple>
+                    <ListItemIcon sx={{ ml: -0.5, py: 2}}>
+                      <img src={getNetworkIcon("polkadot")} style={{ 
+                          width: 28,
+                          height: 28 }} alt={"polkadot"}/>
+                    </ListItemIcon>
+                    <ListItemText primary="POLKADOT" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+                  </ListItemButton>
+                  <Divider sx={{ 
+                    opacity: 0.25,
+                    height: '1px',
+                    borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                    borderBottom: 'none',
+                    backgroundColor: 'transparent',
+                    backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                    }} />
+                </Box> : null}
+
+              {/* {selectedApp === "nomi" && selectedChain === "polkadot" ? 
+                <Box component="span">
+                  <Divider sx={{ 
+                    opacity: 0.25,
+                    height: '1px',
+                    borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                    borderBottom: 'none',
+                    backgroundColor: 'transparent',
+                    backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                    }} />
+                  <ListItemButton onClick={() => handleChainSelection('kusama')} disableRipple>
+                    <ListItemIcon sx={{ ml: -0.5, py: 2}}>
+                      <img src={getNetworkIcon("kusama")} style={{ 
+                          width: 28,
+                          height: 28 }} alt={"kusama"}/>
+                    </ListItemIcon>
+                    <ListItemText primary="KUSAMA" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+                  </ListItemButton>
+                  <Divider sx={{ 
+                    opacity: 0.25,
+                    height: '1px',
+                    borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                    borderBottom: 'none',
+                    backgroundColor: 'transparent',
+                    backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                    }} />
+                </Box> : null}
+
                 
-                <Divider sx={{ 
-                  opacity: 0.25,
-                  height: '1px',
-                  borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                  borderBottom: 'none',
-                  backgroundColor: 'transparent',
-                  backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                  }} />
+                <Box component="span">
+                  {selectedApp !== "onet" ? 
+                    <React.Fragment>
+                      <Divider sx={{ 
+                        opacity: 0.25,
+                        height: '1px',
+                        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                        borderBottom: 'none',
+                        backgroundColor: 'transparent',
+                        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                        }} />
+                      <ListItemButton sx={{
+                          // position: 'absolute',
+                          // bottom: 0,
+                          width: '100%'
+                        }} onClick={() => handleAppSelection('onet')} disableRipple>
+                        <ListItemIcon sx={{ ml: -0.5, py: 2}}>
+                          <img src={onetSVG} style={{ 
+                            width: 28,
+                            height: 28 }} alt={"one-t"}/>
+                        </ListItemIcon>
+                        <ListItemText primary="ONE-T" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+                      </ListItemButton> 
+                    </React.Fragment> : null}
 
-                <ListItemButton  selected={selectedPage === 'pools'} disableRipple
-                  onClick={() => handlePageSelection('pools')}>
-                  <ListItemIcon >
-                    <Box><FontAwesomeIcon icon={faWaterLadder} style={{ color: theme.palette.text.primary }} /></Box>
-                  </ListItemIcon>
-                  <ListItemText primary="Nomination Pools" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-                </ListItemButton>
+                  {selectedApp !== "nomi" ? 
+                    <React.Fragment>
+                      <Divider sx={{ 
+                        opacity: 0.25,
+                        height: '1px',
+                        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                        borderBottom: 'none',
+                        backgroundColor: 'transparent',
+                        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                        }} />
+                      <ListItemButton sx={{
+                          // position: 'absolute',
+                          // bottom: 0,
+                          width: '100%'
+                        }} onClick={() => handleAppSelection('nomi')} disableRipple>
+                        <ListItemIcon sx={{ ml: -0.5, py: 2}}>
+                          <img src={nomiSVG} style={{ 
+                              width: 28,
+                              height: 28 }} alt={"nomi"}/>
+                        </ListItemIcon>
+                        <ListItemText primary="NOMI" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+                      </ListItemButton> 
+                    </React.Fragment>: null}
 
-                </React.Fragment> : null }
-
-              <Divider sx={{ 
-                opacity: 0.25,
-                height: '1px',
-                borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                borderBottom: 'none',
-                backgroundColor: 'transparent',
-                backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                }} />
-
-              {selectedChain === "kusama" ? 
-                <ListItemButton onClick={() => handleChainSelection('polkadot')} disableRipple>
-                  <ListItemIcon sx={{ ml: -0.5, py: 2}}>
-                    <img src={getNetworkIcon("polkadot")} style={{ 
-                        width: 28,
-                        height: 28 }} alt={"polkadot"}/>
-                  </ListItemIcon>
-                  <ListItemText primary="POLKADOT" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-                </ListItemButton> : null}
-
-              {selectedChain === "polkadot" ? 
-                <ListItemButton onClick={() => handleChainSelection('kusama')} disableRipple>
-                  <ListItemIcon sx={{ ml: -0.5, py: 2}}>
-                    <img src={getNetworkIcon("kusama")} style={{ 
-                        width: 28,
-                        height: 28 }} alt={"kusama"}/>
-                  </ListItemIcon>
-                  <ListItemText primary="KUSAMA" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-                </ListItemButton> : null}
-
-                <Divider sx={{ 
-                  opacity: 0.25,
-                  height: '1px',
-                  borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                  borderBottom: 'none',
-                  backgroundColor: 'transparent',
-                  backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                  }} />
-
-              {selectedApp !== "onet" ? 
-                <ListItemButton sx={{
-                    position: 'absolute',
-                    bottom: 0,
-                    width: '100%'
-                  }} onClick={() => handleAppSelection('onet')} disableRipple>
-                  <ListItemIcon sx={{ ml: -0.5, py: 2}}>
-                    <img src={onetSVG} style={{ 
-                      width: 28,
-                      height: 28 }} alt={"one-t"}/>
-                  </ListItemIcon>
-                  <ListItemText primary="ONE-T" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-                </ListItemButton> : null}
-
-              {selectedApp !== "nomi" ? 
-                <ListItemButton sx={{
-                    position: 'absolute',
-                    bottom: 0,
-                    width: '100%'
-                  }} onClick={() => handleAppSelection('nomi')} disableRipple>
-                  <ListItemIcon sx={{ ml: -0.5, py: 2}}>
-                    <img src={nomiSVG} style={{ 
-                        width: 28,
-                        height: 28 }} alt={"nomi"}/>
-                  </ListItemIcon>
-                  <ListItemText primary="NOMI" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-                </ListItemButton> : null}
-
-                {/* <Divider sx={{ 
-                  opacity: 0.25,
-                  height: '1px',
-                  borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                  borderBottom: 'none',
-                  backgroundColor: 'transparent',
-                  backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                  }} /> */}
+                  
+                
+                <Box component="span">
+                  <React.Fragment>
+                    <Divider sx={{ 
+                      opacity: 0.25,
+                      height: '1px',
+                      borderTop: '0px solid rgba(0, 0, 0, 0.08)',
+                      borderBottom: 'none',
+                      backgroundColor: 'transparent',
+                      backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
+                      }} />
+                    <ListItemButton sx={{
+                        // position: 'absolute',
+                        // bottom: 0,
+                        width: '100%'
+                      }} onClick={() => handleAppSelection('nomi')} disableRipple>
+                      <ListItemIcon sx={{ ml: -0.5, py: 2}}>
+                        <img src={turboflakesSVG} style={{ 
+                            width: 28,
+                            height: 28 }} alt={"turboflakes"}/>
+                      </ListItemIcon>
+                      <ListItemText primary="Powered by TurboFlakes" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+                    </ListItemButton> 
+                  </React.Fragment>
+                </Box>
+              </Box> */}
                   
             </List>
           </LeftDrawer>
@@ -529,7 +647,7 @@ export default function LayoutPage({api}) {
           leftDrawerWidth, leftDrawerWidthClosed, openLeftDrawer,
           rightDrawerWidth, openRightDrawer, onRightDrawerToggle }} />
         {/* TODO move footer to left drawer */}
-        {/* <Footer small /> */}
+        <Footer small />
       </Box>
     </Box>
   );
