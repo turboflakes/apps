@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 import Identicon from '@polkadot/react-identicon';
-import { ReactComponent as NominationIcon } from '../../assets/polkadot_icons/nominating.svg';
+import { ReactComponent as NominationIcon } from '../../assets/polkadot_icons/nominating_white.svg';
 import {
   selectValProfileByAddress,
   useGetValidatorProfileByAddressQuery
