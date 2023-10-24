@@ -9,6 +9,7 @@ import ValHeaderBox from './ValHeaderBox';
 import ValBodyBox from './ValBodyBox';
 import ModeSwitch from './ModeSwitch';
 import onetSVG from '../assets/onet.svg';
+import { isValidAddress, addressSS58 } from '../util/crypto'
 import {
   selectAddress,
   addressChanged
@@ -51,11 +52,11 @@ export default function ValidatorPage() {
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
   const {isSuccess, isError} = useGetValidatorByAddressQuery({address: stash, session: sessionIndex, show_summary: true, show_stats: true});
   const {isError: isProfileError} = useGetValidatorProfileByAddressQuery(stash)
-  const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, stash))
-
+  const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, addressSS58(stash)))
+  
   React.useEffect(() => {
-    if (stash && stash !== selectedAddress) {
-      dispatch(addressChanged(stash));
+    if (isValidAddress(stash) && addressSS58(stash) !== selectedAddress) {
+      dispatch(addressChanged(addressSS58(stash)));
     }
   }, [stash, selectedAddress]);
 
