@@ -70,7 +70,7 @@ function StepWelcome() {
         </Box>
         <Typography color='secondary' variant='h5' gutterBottom>What is this?</Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} paragraph>
-        This tool — <b>NOMI</b> — aims to engage Nominators in active Native Staking and improve their nomination experience. It uses <Link href="https://en.wikipedia.org/wiki/Multiple-criteria_decision_analysis" target="_blank" rel="noreferrer" color="inherit">Multi-Criteria Decision Analysis</Link>, 
+        This tool — <b>NOMI</b> — is designed to actively involve Nominators in Native Staking offering a unique and enhanced nomination experience. It uses <Link href="https://en.wikipedia.org/wiki/Multiple-criteria_decision_analysis" target="_blank" rel="noreferrer" color="inherit">Multi-Criteria Decision Analysis</Link>, 
         which is an open and transparent approach for evaluating numerous conflicting traits in the decision-making process. For the analysis, validator data is collected at the last block of a session. The most recent synchronization occurred {`${blocks_counter}`} blocks ago. 
         </Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} paragraph>
@@ -168,6 +168,10 @@ function StepFinish({onClose, onReset}) {
         <Typography color='secondary' variant='h5' gutterBottom>Did you run into issues, or have questions?</Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} variant='subtitle' paragraph>
         You can always report an issue <Link href="https://github.com/turboflakes/apps/issues" target="_blank" rel="noreferrer" color="inherit">here</Link>, send an email to <Link href="mailto:support@turboflakes.io" rel="noreferrer" color="inherit">support@turboflakes.io</Link> or reach me out on [matrix].
+        </Typography>
+        <Typography color='secondary' variant='h5' gutterBottom>Bonded less than the minimum to earn rewards?</Typography>
+        <Typography sx={{ color: theme.palette.neutrals[200] }} paragraph>
+        Nomination Pools are much more a better fit. Look for ONE-T Nomination Pools <Link href="https://one-t.turboflakes.io/#/polkadot" target="_blank" rel="noreferrer" color="inherit">here</Link> to find out more.
         </Typography>
         {/* <Typography color='secondary' variant='h5' gutterBottom>Do you enjoy this tool, or did it help you?</Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} variant='subtitle' paragraph>

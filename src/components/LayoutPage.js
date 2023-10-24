@@ -17,6 +17,8 @@ import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HubIcon from '@mui/icons-material/Hub';
 import Chip from '@mui/material/Chip';
+import IconButton from '@mui/material/IconButton';
+import EmailIcon from '@mui/icons-material/EmailRounded';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink, faWaterLadder, faServer } from '@fortawesome/free-solid-svg-icons'
 import Footer from './Footer'
@@ -32,6 +34,8 @@ import scoutySVG from '../assets/scouty.svg';
 import polkadotSVG from '../assets/polkadot_icon.svg';
 import kusamaSVG from '../assets/kusama_icon.svg';
 import turboflakesSVG from '../assets/logo/logo_mark_black_subtract_turboflakes_.svg';
+import twitterSVG from '../assets/twitter_black.svg';
+import githubSVG from '../assets/github_black.svg';
 import apiSlice from '../features/api/apiSlice';
 import { getTurboValidators } from '../constants/index';
 import Identicon from '@polkadot/react-identicon';
@@ -414,7 +418,7 @@ function NomiOptions({openLeftDrawer, onChainChanged, onAppChanged, onToolClicke
   )
 }
 
-function FooterLeftDrawer() {
+function FooterLeftDrawer({openLeftDrawer}) {
   const theme = useTheme();
 
   const handleOnClick = () => {
@@ -440,16 +444,72 @@ function FooterLeftDrawer() {
               width: 28,
               height: 28 }} alt={"turboflakes"}/>
         </ListItemIcon>
-        <ListItemText primary="TurboFlakes © 2023"
+        <ListItemText primary="TurboFlakes © 2023" secondary="Supported by Kusama Treasury"
           variant="caption" 
-          sx={{ ml: theme.spacing(-1), '> .MuiTypography-root': {
-            ...theme.typography.caption,
-            } 
+          sx={{ 
+            ml: theme.spacing(-2), 
+            visibility: openLeftDrawer ? 'visible' : 'hidden',
+            '> .MuiTypography-root': {
+              ...theme.typography.caption,
+              },
+            '> .MuiListItemText-secondary': {
+              ...theme.typography.caption,
+              fontSize: "0.625rem",
+            }
           }} />
       </ListItem> 
 
     </Box>
     
+  )
+}
+
+function SocialIcons() {
+  const theme = useTheme();
+
+  const handleTwitter = () => {
+		window.open('https://twitter.com/turboflakes', '_blank')
+	}
+	
+	const handleGithub = () => {
+		window.open('https://github.com/turboflakes', '_blank')
+	}
+
+	const handleEmail = () => {
+		window.location.href = "mailto:support@turboflakes.io"
+	}
+  return (
+    <Box>
+      <IconButton size="small" sx={{ 
+        margin: '0 8px', 
+        border: '1px solid #FFF',
+        width: 30,
+        height: 30,
+        color: theme.palette.text.primary
+        }} onClick={handleEmail}>
+        <EmailIcon sx={{ width: 20 , height: 20 }}/>
+      </IconButton>
+      <IconButton color="secondary" size="small" sx={{ 
+        margin: '0 8px', 
+        border: '1px solid #FFF', 
+        color: 'text.secondary',
+        width: 30,
+        height: 30 }} onClick={handleTwitter}>
+        <img src={twitterSVG}  style={{ 
+          width: 18,
+          height: 18 }} alt={"github"}/>
+      </IconButton>
+      <IconButton color="secondary" size="small" sx={{ 
+        ml: 1, 
+        border: '1px solid #FFF', 
+        color: 'text.secondary',
+        width: 30,
+        height: 30 }} onClick={handleGithub}>
+        <img src={githubSVG} style={{ 
+          width: 18,
+          height: 18 }} alt={"github"}/>
+      </IconButton>
+    </Box>
   )
 }
 
@@ -661,6 +721,9 @@ export default function LayoutPage({api}) {
               {selectedApp === "onet" ? `ONE-T // explorer` : ''}
               {selectedApp === "nomi" ? `NOMI` : ''}
               </Typography>
+
+              <SocialIcons />
+
               <Chip sx={{ my: 2, p: 1}} label="beta version" color='primary'/>
             </Box> : 
             <Box sx={{ 
@@ -719,7 +782,7 @@ export default function LayoutPage({api}) {
             onToolClicked={handleToolClicked} 
             onValidatorClicked={handleValidatorClicked} />
                               
-          <FooterLeftDrawer />
+          <FooterLeftDrawer openLeftDrawer={openLeftDrawer} />
               
         </List>
       </LeftDrawer>

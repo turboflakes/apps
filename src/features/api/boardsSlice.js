@@ -47,6 +47,9 @@ const boardsSlice = createSlice({
     candidatesAdded: (state, action) => {
       state.candidates = union(state.candidates, [...action.payload]).slice(0, 16);
     },
+    candidatesCleared: (state) => {
+      state.candidates = [];
+    },
     candidateAdded: (state, action) => {
       state.candidates = union(state.candidates, [action.payload]);
     },
@@ -71,7 +74,7 @@ const boardsSlice = createSlice({
 })
 
 export default boardsSlice;
-export const { candidateAdded, candidatesAdded, candidateRemoved } = boardsSlice.actions;
+export const { candidateAdded, candidatesAdded, candidatesCleared, candidateRemoved } = boardsSlice.actions;
 
 // Selectors
 export const { 

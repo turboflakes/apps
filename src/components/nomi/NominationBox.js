@@ -16,17 +16,25 @@ import {
 import {
   selectCandidates
 } from '../../features/api/boardsSlice';
-import { stashDisplay, nameDisplay } from '../../util/display'
+import {
+  selectChainInfo
+} from '../../features/chain/chainSlice';
+import { stashDisplay, nameDisplay } from '../../util/display';
+import { chainAddress } from '../../util/crypto';
 
 function CandidateChip({stash, onClick}) {
   const theme = useTheme();
   useGetValidatorProfileByAddressQuery(stash);
+  const chainInfo = useSelector(selectChainInfo)
   const valProfile = useSelector(state => selectValProfileByAddress(state, stash));
 
   return (
-    <Chip sx={{ mb: theme.spacing(1), minWidth: 128, justifyContent: 'flex-start'}} 
+    <Chip sx={{ 
+      '&:hover': { bgcolor: theme.palette.neutrals[100], opacity: 1 }, 
+      bgcolor: theme.palette.neutrals[200], opacity: 0.8, 
+      mb: theme.spacing(1), minWidth: 128, justifyContent: 'flex-start'}} 
       onClick={() => onClick(stash)}
-      label={nameDisplay(!!valProfile ? valProfile._identity : stashDisplay(stash, 4), 12)} 
+      label={nameDisplay(!!valProfile ? valProfile._identity : stashDisplay(chainAddress(stash, chainInfo.ss58Format), 4), 12)} 
       icon={<Identicon value={stash} size={24} theme={'polkadot'} />} 
     />
   )
@@ -71,10 +79,9 @@ export default function NominationBox({api, left, onClick, onAddAllClick }) {
                 }}><Typography variant='caption' color="secondary">{candidates.length}</Typography>
               </Box> : null }
           </Typography>
-          { candidates.length < 16 ?
-            <Button sx={{mb: theme.spacing(1)}} onClick={onAddAllClick} align="flex-start" variant='contained'>
-              Add All
-            </Button> : null }
+          <Button sx={{mb: theme.spacing(1)}} onClick={onAddAllClick} align="flex-start" variant='contained'>
+            Add Top 16
+          </Button>
           {candidates.length > 0 ?
             <Button sx={{mb: theme.spacing(1)}} onClick={handleOpenDialog} startIcon={<NominationIcon />} variant='contained'>
               {/* <Box component="span" sx={{ 

@@ -20,6 +20,7 @@ import {
 import {
   selectCandidates,
   candidatesAdded,
+  candidatesCleared,
 } from '../../features/api/boardsSlice';
 import { isValidAddress } from '../../util/crypto'
 import { getCriteriasHash } from '../../util/crypto'
@@ -118,6 +119,8 @@ export default function DashboardPage() {
   }
 
   const handleOnAddAllClick = () => {
+    // Reset first the candidates
+    dispatch(candidatesCleared())
     const addresses = profiles.map(a => a.stash)
     dispatch(candidatesAdded(addresses))
   }
