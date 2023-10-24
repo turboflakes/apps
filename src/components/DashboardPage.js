@@ -169,7 +169,8 @@ export default function DashboardPage() {
           </Grid>
         </Grid>
        
-        <Grid item xs={12}>
+        {/* hide nomination pools until sync is finished */}
+        {/* <Grid item xs={12}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography sx={{ ml: 2}} variant='h6'>
@@ -183,7 +184,7 @@ export default function DashboardPage() {
               <NetPoolHistoryBox sessionIndex={currentSession} skip={isNaN(currentSession)}/>
             </Grid>
           </Grid>
-        </Grid>
+        </Grid> */}
       </Grid>      
 		</Container>
     </Box>

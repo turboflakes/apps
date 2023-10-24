@@ -421,6 +421,7 @@ export default function LayoutPage({api}) {
                     }} />
 
                   <ListItemButton  selected={selectedPage === 'pools'} disableRipple
+                    disabled={true}
                     onClick={() => handlePageSelection('pools')}>
                     <ListItemIcon >
                       <Box><FontAwesomeIcon icon={faWaterLadder} style={{ color: theme.palette.text.primary }} /></Box>
