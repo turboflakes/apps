@@ -157,7 +157,7 @@ function AppsOptions({openLeftDrawer, onToolClicked, onAppChanged}) {
 
       { selectedApp !== 'nomi' ?
         <ListItemButton onClick={() => onAppChanged('nomi')} disableRipple>
-          <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+          <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1/2) }}>
             <img src={nomiSVG} style={{ 
                 width: 32,
                 height: 32 }} alt={"nomi"}/>
@@ -167,7 +167,7 @@ function AppsOptions({openLeftDrawer, onToolClicked, onAppChanged}) {
 
       { selectedApp !== 'onet' ?
         <ListItemButton onClick={() => onAppChanged('onet')} disableRipple>
-          <ListItemIcon sx={{ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+          <ListItemIcon sx={{ml: theme.spacing(-1/2), py: theme.spacing(1/2) }}>
             <img src={onetSVG} style={{ 
               width: 32,
               height: 32 }} alt={"one-t"}/>
@@ -176,7 +176,7 @@ function AppsOptions({openLeftDrawer, onToolClicked, onAppChanged}) {
         </ListItemButton> : null }
 
       <ListItemButton onClick={() => onToolClicked('crunch')} disableRipple>
-        <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+        <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1/2) }}>
           <img src={crunchSVG} style={{ 
             width: 32,
             height: 32 }} alt={"crunch"}/>
@@ -185,7 +185,7 @@ function AppsOptions({openLeftDrawer, onToolClicked, onAppChanged}) {
       </ListItemButton>
 
       <ListItemButton onClick={() => onToolClicked('scouty')} disableRipple>
-        <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+        <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1/2) }}>
           <img src={scoutySVG} style={{ 
             width: 32,
             height: 32 }} alt={"scouty"}/>
@@ -247,7 +247,7 @@ function ValidatorOptions({openLeftDrawer, onValidatorClicked}) {
   )
 }
 
-function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChanged, onToolClicked}) {
+function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChanged, onToolClicked, onValidatorClicked}) {
   const theme = useTheme();
 	const selectedApp = useSelector(selectApp);
 	const selectedChain = useSelector(selectChain);
@@ -323,9 +323,7 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
           sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
       </ListItemButton>
 
-      {/* TODO enable as soon as polkadot is synced */}
       <ListItemButton  selected={selectedPage === 'pools'} disableRipple
-        disabled={selectedChain === 'polkadot'}
         onClick={() => onOptionChanged('pools')}>
         <ListItemIcon >
           <Box><FontAwesomeIcon icon={faWaterLadder} style={{ color: theme.palette.text.primary }} /></Box>
@@ -345,7 +343,7 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
 
         <Divider />
 
-        <ValidatorOptions openLeftDrawer={openLeftDrawer} />
+        <ValidatorOptions openLeftDrawer={openLeftDrawer} onValidatorClicked={onValidatorClicked} />
       </Box>
 
     </Box>
@@ -605,7 +603,15 @@ export default function LayoutPage({api}) {
   // }
 
   const handleValidatorClicked = (stash) => {
-    dispatch(addressChanged(addressSS58(stash)))
+    console.log("___stash", stash);
+    const defaultSS58 = addressSS58(stash)
+    dispatch(addressChanged(defaultSS58))
+    if (selectedApp === 'onet') {
+      console.log("___selectedApp", selectedApp);
+      dispatch(addressChanged(defaultSS58));
+      dispatch(pageChanged(`validator/${defaultSS58}`));
+      navigate(`/validator/${stash}`)
+    }
   }
 
   // wait for api to be ready

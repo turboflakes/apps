@@ -34,12 +34,8 @@ export default function SearchSmall({width = 512}) {
     event.preventDefault()
     if (isValidAddress(address)) {
       const defaultSS58 = addressSS58(address)
-      // setSearchParams({address});
-      // dispatch(addressChanged(address));
-      // setAddress("");
       dispatch(addressChanged(defaultSS58));
       dispatch(pageChanged(`validator/${defaultSS58}`));
-      // navigate(`/one-t/${selectedChain}/validator/${address}`);
       navigate(`/validator/${address}`)
       setAddress("");
     }
