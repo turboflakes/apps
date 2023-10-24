@@ -159,8 +159,8 @@ function AppsOptions({openLeftDrawer, onToolClicked, onAppChanged}) {
         <ListItemButton onClick={() => onAppChanged('nomi')} disableRipple>
           <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
             <img src={nomiSVG} style={{ 
-                width: 28,
-                height: 28 }} alt={"nomi"}/>
+                width: 32,
+                height: 32 }} alt={"nomi"}/>
           </ListItemIcon>
           <ListItemText primary="NOMI" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
         </ListItemButton> : null }
@@ -169,8 +169,8 @@ function AppsOptions({openLeftDrawer, onToolClicked, onAppChanged}) {
         <ListItemButton onClick={() => onAppChanged('onet')} disableRipple>
           <ListItemIcon sx={{ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
             <img src={onetSVG} style={{ 
-              width: 28,
-              height: 28 }} alt={"one-t"}/>
+              width: 32,
+              height: 32 }} alt={"one-t"}/>
           </ListItemIcon>
           <ListItemText primary="ONE-T" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
         </ListItemButton> : null }
@@ -178,8 +178,8 @@ function AppsOptions({openLeftDrawer, onToolClicked, onAppChanged}) {
       <ListItemButton onClick={() => onToolClicked('crunch')} disableRipple>
         <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
           <img src={crunchSVG} style={{ 
-            width: 28,
-            height: 28 }} alt={"crunch"}/>
+            width: 32,
+            height: 32 }} alt={"crunch"}/>
         </ListItemIcon>
         <ListItemText primary="CRUNCH" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
       </ListItemButton>
@@ -187,8 +187,8 @@ function AppsOptions({openLeftDrawer, onToolClicked, onAppChanged}) {
       <ListItemButton onClick={() => onToolClicked('scouty')} disableRipple>
         <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
           <img src={scoutySVG} style={{ 
-            width: 28,
-            height: 28 }} alt={"scouty"}/>
+            width: 32,
+            height: 32 }} alt={"scouty"}/>
         </ListItemIcon>
         <ListItemText primary="SCOUTY" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
       </ListItemButton>
@@ -213,12 +213,10 @@ function ValidatorOptions({openLeftDrawer, onValidatorClicked}) {
           <ListItemIcon sx={{ 
             ml: theme.spacing(-1/2), py: theme.spacing(0),
             display: 'flex', alignItems: 'center' }}>
-            
               <img src={v.svg} 
                 style={{ 
                   width: 32,
                   height: 32 }} alt={v.name}/>
-            
           </ListItemIcon>
           <ListItemText primary={v.name} sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
         </ListItemButton>
