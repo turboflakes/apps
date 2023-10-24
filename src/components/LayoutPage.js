@@ -748,7 +748,7 @@ export default function LayoutPage({api}) {
           leftDrawerWidth, leftDrawerWidthClosed, openLeftDrawer,
           rightDrawerWidth, openRightDrawer, onRightDrawerToggle }} />
         {/* TODO move footer to left drawer */}
-        <Footer small />
+        {/* <Footer small /> */}
       </Box>
     </Box>
   );
