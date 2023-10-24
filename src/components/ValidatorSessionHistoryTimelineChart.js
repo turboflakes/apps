@@ -174,7 +174,7 @@ function usePrevious(value) {
   return ref.current;
 }
 
-export default function ValidatorSessionHistoryTimelineChart({address, maxSessions, noBorderRadius, showDark}) {
+export default function ValidatorSessionHistoryTimelineChart({address, maxSessions, noBorderRadius, showDark, noDots}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const currentSession = useSelector(selectSessionCurrent);
@@ -244,7 +244,7 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
       // justifyContent: 'center',
       // alignItems: 'center',
       width: "100%",
-      minHeight: 400,
+      minHeight: noDots ? 256 : 400,
       borderRadius: noBorderRadius ? 0 : 3,
       // bgcolor: theme.palette.neutrals[300],
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' 
@@ -352,22 +352,23 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
           <Legend verticalAlign="top" content={() => renderLegend(theme)} height={24} />
         </ComposedChart>
       </ResponsiveContainer>
-      <Box sx={{mt: 2, width: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-        <Box>
-          {data.filter(d => d.isPara).map((d, i) => 
-            (<Tooltip key={i} title={`Grade ${d.gradeValue} at Session ${d.session.format()}`}>
-              <IconButton key={i} aria-label={d.session} onClick={() => handleClick(d.session)} size="small"
-                sx={{mr: 1/4, bgcolor: historySession === d.session ? theme.palette.grey[800] : 'transparent'}} 
-                >
-                <CircleIcon fontSize="inherit" sx={{ color: theme.palette.grade[d.gradeValue] }}/>
-              </IconButton>
-            </Tooltip>)
-          )}
-        </Box>
-        <Box>
-          <Typography variant="caption">para-validator sessions</Typography>
-        </Box>
-      </Box>
+      {!noDots ? 
+        <Box sx={{mt: 2, width: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+          <Box>
+            {data.filter(d => d.isPara).map((d, i) => 
+              (<Tooltip key={i} title={`Grade ${d.gradeValue} at Session ${d.session.format()}`}>
+                <IconButton key={i} aria-label={d.session} onClick={() => handleClick(d.session)} size="small"
+                  sx={{mr: 1/4, bgcolor: historySession === d.session ? theme.palette.grey[800] : 'transparent'}} 
+                  >
+                  <CircleIcon fontSize="inherit" sx={{ color: theme.palette.grade[d.gradeValue] }}/>
+                </IconButton>
+              </Tooltip>)
+            )}
+          </Box>
+          <Box>
+            <Typography variant="caption">para-validator sessions</Typography>
+          </Box>
+        </Box> : null}
     </Paper>
   );
 }

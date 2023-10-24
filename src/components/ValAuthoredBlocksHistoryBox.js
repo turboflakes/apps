@@ -56,7 +56,7 @@ const renderTooltip = (props, theme) => {
   return null;
 };
 
-export default function ValAuthoredBlocksHistoryBox({address, maxSessions}) {
+export default function ValAuthoredBlocksHistoryBox({address, maxSessions, showDark, noChart}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
   const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true});
@@ -91,17 +91,19 @@ export default function ValAuthoredBlocksHistoryBox({address, maxSessions}) {
     <Paper sx={{
         p: 2,
         display: 'flex',
+        flexGrow: 1,
         // flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
         height: 96,
-        borderRadius: 3,
-        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
+        borderRadius: showDark ? 0 : 3,
+        backgroundColor: showDark ? theme.palette.background.secondary : theme.palette.background.primary,
+        boxShadow: showDark ? 'none' : 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left', maxWidth: '128px'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>authored blocks</Typography>
-        <Typography variant="h5">
+        <Typography variant="caption" color={showDark ? theme.palette.neutrals[200] : 'default'} sx={{whiteSpace: 'nowrap'}}>authored blocks</Typography>
+        <Typography variant="h5" color={showDark ? theme.palette.text.secondary : 'default'}>
           {!isUndefined(authoredBlocksTotal) ? authoredBlocksTotal : '-'}
         </Typography>
         <Tooltip title={`${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of Authored Blocks per session of all the Authorities of the last ${allAuthoredBlocks.length} sessions.`} arrow>
@@ -112,23 +114,24 @@ export default function ValAuthoredBlocksHistoryBox({address, maxSessions}) {
           </Typography>
         </Tooltip>
       </Box>
-      <ResponsiveContainer height='100%' sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-        <BarChart data={data}
-          margin={{
-            top: 4,
-            right: 0,
-            left: 0,
-            bottom: 4,
-          }}>
-          <Bar dataKey="value" barSize={12} fill={theme.palette.text.primary} />
-          <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
-          <ChartTooltip 
-                cursor={{fill: 'transparent'}}
-                offset={48}
-                wrapperStyle={{ zIndex: 100 }}
-                content={props => renderTooltip(props, theme)} />
-        </BarChart>
-      </ResponsiveContainer>
+      { !noChart ? 
+        <ResponsiveContainer height='100%' sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+          <BarChart data={data}
+            margin={{
+              top: 4,
+              right: 0,
+              left: 0,
+              bottom: 4,
+            }}>
+            <Bar dataKey="value" barSize={12} fill={showDark ? theme.palette.grey[500] : theme.palette.text.primary} />
+            <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
+            <ChartTooltip 
+                  cursor={{fill: 'transparent'}}
+                  offset={48}
+                  wrapperStyle={{ zIndex: 100 }}
+                  content={props => renderTooltip(props, theme)} />
+          </BarChart>
+        </ResponsiveContainer> : null}
     </Paper>
   );
 }

@@ -62,6 +62,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
+        maxWidth: 656,
         height: 212,
         // borderRadius: 3,
         // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
@@ -79,7 +80,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
               theme={'polkadot'} />
           </Box>
           <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+            <Box sx={{ maxWidth: 540, minHeight: 56, display: 'flex', justifyContent: 'space-between'}}>
               <Box sx={{ display: 'flex', flexDirection: 'column'}}>
                 <Typography variant="h5" color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{valProfile._identity}</Typography>
                 <Typography variant="caption" color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>

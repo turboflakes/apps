@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-// import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -16,8 +16,8 @@ import {
   buildSessionIdsArrayHelper
 } from '../features/api/sessionsSlice';
 
-export default function ValInclusionBox({address, maxSessions}) {
-  // const theme = useTheme();
+export default function ValInclusionBox({address, maxSessions, showDark}) {
+  const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
   const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true});
   const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
@@ -41,12 +41,13 @@ export default function ValInclusionBox({address, maxSessions}) {
         alignItems: 'center',
         width: '100%',
         height: 96,
-        borderRadius: 3,
-        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
+        borderRadius: showDark ? 0 : 3,
+        backgroundColor: showDark ? theme.palette.background.secondary : theme.palette.background.primary,
+        boxShadow: showDark ? 'none' : 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>authority inclusion</Typography>
-        <Typography variant="h5">
+        <Typography variant="caption" color={showDark ? theme.palette.neutrals[200] : 'default'} sx={{whiteSpace: 'nowrap'}}>authority inclusion</Typography>
+        <Typography variant="h5" color={showDark ? theme.palette.text.secondary : 'default'}>
           {!isUndefined(inclusion) ? `${inclusion}%` : '-'}
         </Typography>
         <Tooltip title={`${nAuth} authority sessions out of ${maxSessions} history sessions.`} arrow>
@@ -54,7 +55,7 @@ export default function ValInclusionBox({address, maxSessions}) {
             lineHeight: 0.875,
             whiteSpace: 'nowrap'
             }}>
-            <b style={{whiteSpace: 'pre'}}>{`${nAuth} / ${maxSessions}`}</b>
+            <b style={{whiteSpace: 'pre', color: showDark ? theme.palette.neutrals[200] : 'default' }}>{`${nAuth} / ${maxSessions}`}</b>
           </Typography>
         </Tooltip>
       </Box>

@@ -3,11 +3,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import { styled, useTheme } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import SvgIcon from '@mui/material/SvgIcon';
 import ValAddressProfile from '../ValAddressProfile';
+import ValAuthoredBlocksHistoryBox from '../ValAuthoredBlocksHistoryBox';
+import ValMvrHistoryBox from '../ValMvrHistoryBox';
+import ValEraPointsHistoryBox from '../ValEraPointsHistoryBox';
+import ValInclusionBox from '../ValInclusionBox';
 import ValidatorSessionHistoryTimelineChart from '../ValidatorSessionHistoryTimelineChart';
 import { ReactComponent as AddUserIcon } from '../../assets/polkadot_icons/add_user.svg';
 import { ReactComponent as RemoveUserIcon } from '../../assets/polkadot_icons/remove_user.svg';
@@ -101,8 +106,17 @@ export default function ValidatorDialog({ onClose, onDiscard, onNext, onBack, op
           <ChevronRightIcon fontSize="small" />
         </StyledIconButton>
       </Stack>
-      { open ? <ValAddressProfile address={address} maxSessions={maxHistorySessions} showGrade showSubset showDark /> : null }
-      { open ? <ValidatorSessionHistoryTimelineChart address={address} maxSessions={maxHistorySessions} noBorderRadius showDark /> : null }
+      { open ? 
+        <Box sx={{ display: 'flex' }} >
+          <ValAddressProfile address={address} maxSessions={maxHistorySessions} showGrade showSubset showDark />
+          <Box sx={{ height: 256, display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+            <ValMvrHistoryBox address={address} maxSessions={maxHistorySessions} showDark={showDark} noChart={true} />
+            <ValEraPointsHistoryBox address={address} maxSessions={maxHistorySessions} showDark={showDark} noChart={true} />
+            <ValAuthoredBlocksHistoryBox address={address} maxSessions={maxHistorySessions} showDark={showDark} noChart={true} />
+            <ValInclusionBox address={address} maxSessions={maxHistorySessions} showDark={showDark} />
+          </Box>
+        </Box> : null }
+      { open ? <ValidatorSessionHistoryTimelineChart address={address} maxSessions={maxHistorySessions} noBorderRadius showDark noDots /> : null }
     </StyledDialog>
   );
 }

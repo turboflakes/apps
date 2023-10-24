@@ -226,7 +226,7 @@ export default function DashboardPage() {
         onClose={handleOnCloseValidatorDialog} 
         onNext={handleOnNext}
         onBack={handleOnBack}
-        showDark={false}
+        showDark={true}
       />
       <WelcomeDialog
         open={openWelcomeDialog}
