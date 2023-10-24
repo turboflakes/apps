@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";
+import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -38,7 +39,7 @@ import Spinner from './Spinner';
 import { isUndefined } from 'lodash';
 
 export default function ValidatorPage() {
-	// const theme = useTheme();
+	const theme = useTheme();
   const { stash } = useParams();
   const dispatch = useDispatch();
   const selectedMode = useSelector(selectMode);
@@ -73,11 +74,11 @@ export default function ValidatorPage() {
           <Box sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
             <img src={onetSVG} style={{ 
                 margin: "32px",
-                opacity: 0.1,
+                opacity: 0.2,
                 width: 256,
                 height: 256 }} alt={"ONE-T logo"}/>
-            <Typography variant="h6" color="secondary">The stash address was not found.</Typography>
-            <Typography variant="h6" color="secondary">{document.location.href}</Typography>
+            <Typography variant="h6" sx={{color: theme.palette.neutrals[200]}}>The stash address was not found.</Typography>
+            <Typography variant="h6" sx={{color: theme.palette.neutrals[200]}}>{document.location.href}</Typography>
           </Box>
         </Box>
       </Box>

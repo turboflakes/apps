@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   HashRouter as Router,
   Routes,
@@ -22,6 +22,8 @@ import ValidatorPage from './components/ValidatorPage'
 import PoolsOverviewPage from './components/PoolsOverviewPage'
 // NOMI Pages
 import NomiDashboardPage from './components/nomi/DashboardPage'
+// TODO: (StakePage)
+// import StakePage from './components/stake/StakePage'
 
 import withTheme from './theme/withTheme'
 import {
@@ -129,32 +131,12 @@ const App = () => {
                 <Route index element={<Navigate to="/dashboard" />} />
                 <Route path="dashboard" element={<NomiDashboardPage />} />
               </React.Fragment> : null }
+            {/* <Route path="stake" >
+              <Route path=":name" element={<StakePage />} />
+            </Route> */}
           </Route>
         <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-        {/* <Routes>
-          <Route path="/" element={<LayoutPage api={api} />}>
-            <Route index element={<Navigate to="/one-t/kusama/dashboard" />} />
-            <Route path="one-t">
-              <Route index element={<Navigate to="/one-t/kusama/dashboard" />} />
-              <Route path=":chainName" element={<ValidateChain />} >
-                <Route index element={<Navigate to="/one-t/kusama/dashboard" />} />
-                <Route path="dashboard" element={<DashboardPage />} />
-                <Route path="parachains">
-                  <Route path="overview" element={<ParachainsOverviewPage tab={0} />} />
-                  <Route path="val-groups" element={<ParachainsOverviewPage tab={1} />} />
-                </Route>
-                <Route path="validator" element={<ValidatorPage />} >
-                  <Route path=":stash" element={<ValidatorPage />} />
-                </Route>
-                <Route path="validators" element={<InsightsPage />}>
-                  <Route path="insights" element={<InsightsPage />} />
-                </Route>
-              </Route>
-            </Route>
-            <Route path="*" element={<Navigate to="/one-t/kusama/dashboard" />} />
-          </Route>
-        </Routes> */}
       </Router>
   );
 }

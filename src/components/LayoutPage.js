@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useNavigate, Outlet } from 'react-router-dom'
+import { useNavigate, useSearchParams, Outlet } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -9,6 +9,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListSubheader from '@mui/material/ListSubheader';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -25,8 +27,14 @@ import SessionBoxHeader from './SessionBoxHeader';
 import RightDrawer from './nomi/RightDrawer';
 import onetSVG from '../assets/onet.svg';
 import nomiSVG from '../assets/nomi.svg';
-import turboflakesSVG from '../assets/logo/logo_mark_black-subtract_turboflakes_.svg';
-import apiSlice from '../features/api/apiSlice'
+import crunchSVG from '../assets/crunchbot.svg';
+import scoutySVG from '../assets/scouty.svg';
+import polkadotSVG from '../assets/polkadot_icon.svg';
+import kusamaSVG from '../assets/kusama_icon.svg';
+import turboflakesSVG from '../assets/logo/logo_mark_black_subtract_turboflakes_.svg';
+import apiSlice from '../features/api/apiSlice';
+import { getTurboValidators } from '../constants/index';
+import Identicon from '@polkadot/react-identicon';
 import {
   pageChanged,
   selectPage,
@@ -131,6 +139,320 @@ const LeftDrawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'op
 }),
 );
 
+function AppsOptions({openLeftDrawer, onToolClicked, onAppChanged}) {
+  const theme = useTheme();
+  const selectedApp = useSelector(selectApp);
+
+  return (
+    <React.Fragment>
+
+      <ListSubheader sx={{ m: 0, p: 0, pl: theme.spacing(3/2), color: theme.palette.neutrals[300] }}>
+        { openLeftDrawer ? `Apps & Tools` : `Apps`}
+      </ListSubheader>
+
+      { selectedApp !== 'nomi' ?
+        <ListItemButton onClick={() => onAppChanged('nomi')} disableRipple>
+          <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+            <img src={nomiSVG} style={{ 
+                width: 28,
+                height: 28 }} alt={"nomi"}/>
+          </ListItemIcon>
+          <ListItemText primary="NOMI" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+        </ListItemButton> : null }
+
+      { selectedApp !== 'onet' ?
+        <ListItemButton onClick={() => onAppChanged('onet')} disableRipple>
+          <ListItemIcon sx={{ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+            <img src={onetSVG} style={{ 
+              width: 28,
+              height: 28 }} alt={"one-t"}/>
+          </ListItemIcon>
+          <ListItemText primary="ONE-T" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+        </ListItemButton> : null }
+
+      <ListItemButton onClick={() => onToolClicked('crunch')} disableRipple>
+        <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+          <img src={crunchSVG} style={{ 
+            width: 28,
+            height: 28 }} alt={"crunch"}/>
+        </ListItemIcon>
+        <ListItemText primary="CRUNCH" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+      </ListItemButton>
+
+      <ListItemButton onClick={() => onToolClicked('scouty')} disableRipple>
+        <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+          <img src={scoutySVG} style={{ 
+            width: 28,
+            height: 28 }} alt={"scouty"}/>
+        </ListItemIcon>
+        <ListItemText primary="SCOUTY" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+      </ListItemButton>
+
+    </React.Fragment>
+  )
+}
+
+function ValidatorOptions({openLeftDrawer}) {
+  const theme = useTheme();
+
+  return (
+    <React.Fragment>
+
+      <ListSubheader sx={{ m: 0, p: 0, pl: theme.spacing(3/2), color: theme.palette.neutrals[300] }}>
+        { openLeftDrawer ? `TurboFlakes Validators` : `Vals`}
+      </ListSubheader>
+
+      {getTurboValidators("polkadot").map((v, i) => (
+        <ListItem key={i}>
+          <ListItemIcon sx={{ 
+            ml: theme.spacing(-1/2), py: theme.spacing(0),
+            display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ position: 'relative'}}>
+              <img src={polkadotSVG} 
+                style={{ 
+                  position: 'absolute', 
+                  border: '1px solid #FFF', borderRadius: '50%', 
+                  height: 20, right: -8, bottom: 2 }} alt={"github"}/>
+              <Identicon
+                value={v.stash}
+                size={28}
+                theme={'polkadot'} />
+            </Box>
+          </ListItemIcon>
+          <ListItemText primary={v.name} sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+        </ListItem>
+      ))}
+
+      {getTurboValidators("kusama").map((v, i) => (
+        <ListItem key={i}>
+          <ListItemIcon sx={{ 
+            ml: theme.spacing(-1/2), py: theme.spacing(0),
+            display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ position: 'relative'}}>
+              <img src={kusamaSVG} 
+                style={{ 
+                  position: 'absolute', 
+                  border: '1px solid #FFF', borderRadius: '50%', 
+                  height: 20, right: -8, bottom: 2 }} alt={"github"}/>
+              <Identicon
+                value={v.stash}
+                size={28}
+                theme={'polkadot'} />
+            </Box>
+          </ListItemIcon>
+          <ListItemText primary={v.name} sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+        </ListItem>
+      ))}
+    </React.Fragment>
+  )
+}
+
+function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChanged, onToolClicked}) {
+  const theme = useTheme();
+	const selectedApp = useSelector(selectApp);
+	const selectedChain = useSelector(selectChain);
+  const selectedPage = useSelector(selectPage);
+  
+  if (selectedApp !== "onet") {
+    return null
+  }
+
+  return (
+    <Box component="span">
+
+      <Divider />
+
+      {selectedChain === "kusama" ? 
+        <ListItemButton sx={{  }} onClick={() => onChainChanged('polkadot')} disableRipple>
+          <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(2) }}>
+            <img src={getNetworkIcon("polkadot")} style={{ 
+                width: 28,
+                height: 28 }} alt={"polkadot"}/>
+          </ListItemIcon>
+          <ListItemText primary="POLKADOT" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+        </ListItemButton> : null}
+
+      {selectedChain === "polkadot" ? 
+        <ListItemButton onClick={() => onChainChanged('kusama')} disableRipple>
+          <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(2) }}>
+            <img src={getNetworkIcon("kusama")} style={{ 
+                width: 28,
+                height: 28 }} alt={"kusama"}/>
+          </ListItemIcon>
+          <ListItemText primary="KUSAMA" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+        </ListItemButton>
+          : null}
+
+      <Divider />
+
+      <ListSubheader sx={{ m: 0, p: 0, pl: theme.spacing(3/2), color: theme.palette.neutrals[300] }}>
+        { `Pages`}
+      </ListSubheader>
+
+      <ListItemButton selected={selectedPage === 'dashboard'} disableRipple
+        onClick={() => onOptionChanged('dashboard')}>
+        <ListItemIcon>
+          <DashboardIcon sx={{ color: theme.palette.text.primary }} />
+        </ListItemIcon>
+        <ListItemText primary="Dashboard" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+      </ListItemButton>
+
+      <ListItemButton selected={selectedPage === 'insights'} disableRipple
+        onClick={() => onOptionChanged('insights')}>
+        <ListItemIcon sx={{ml: '2px'}}>
+          <Box><FontAwesomeIcon icon={faServer} style={{ color: theme.palette.text.primary }} /></Box>
+        </ListItemIcon>
+        <ListItemText primary="Validator Insights" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+      </ListItemButton>
+      
+      <ListItemButton selected={selectedPage === 'parachains'} disableRipple
+        onClick={() => onOptionChanged('parachains')}>
+        <ListItemIcon>
+          <Box><FontAwesomeIcon icon={faLink} style={{ color: theme.palette.text.primary }} /></Box>
+        </ListItemIcon>
+        <ListItemText primary="Parachains" 
+          sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+      </ListItemButton>
+    
+      <ListItemButton selected={selectedPage === 'val-groups'} disableRipple
+        onClick={() => onOptionChanged('val-groups')}>
+        <ListItemIcon>
+          <HubIcon sx={{ color: theme.palette.text.primary }} />
+        </ListItemIcon>
+        <ListItemText primary="Validator Groups" 
+          sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+      </ListItemButton>
+
+      <ListItemButton  selected={selectedPage === 'pools'} disableRipple
+        disabled={true}
+        onClick={() => onOptionChanged('pools')}>
+        <ListItemIcon >
+          <Box><FontAwesomeIcon icon={faWaterLadder} style={{ color: theme.palette.text.primary }} /></Box>
+        </ListItemIcon>
+        <ListItemText primary="Nomination Pools" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+      </ListItemButton>
+
+      <Divider />
+
+      <Box sx={{
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        maxHeight: 320,
+      }}>
+        
+        <AppsOptions openLeftDrawer={openLeftDrawer} onAppChanged={onAppChanged} onToolClicked={onToolClicked} />
+
+        <Divider />
+
+        <ValidatorOptions openLeftDrawer={openLeftDrawer} />
+      </Box>
+
+    </Box>
+  )
+}
+
+function NomiOptions({openLeftDrawer, onChainChanged, onAppChanged, onToolClicked, onValidatorClicked}) {
+  const theme = useTheme();
+	const selectedApp = useSelector(selectApp);
+	const selectedChain = useSelector(selectChain);
+  
+  if (selectedApp !== "nomi") {
+    return null
+  }
+
+  return (
+    <Box component="span">
+
+      <Divider />
+
+      {selectedChain === "kusama" ? 
+        <ListItemButton onClick={() => onChainChanged('polkadot')} disableRipple>
+          <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(2) }}>
+            <img src={getNetworkIcon("polkadot")} style={{ 
+                width: 28,
+                height: 28 }} alt={"polkadot"}/>
+          </ListItemIcon>
+          <ListItemText primary="POLKADOT" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+        </ListItemButton> : null}
+
+      {selectedChain === "polkadot" ? 
+        <ListItemButton onClick={() => onChainChanged('kusama')} disableRipple>
+          <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(2) }}>
+            <img src={getNetworkIcon("kusama")} style={{ 
+                width: 28,
+                height: 28 }} alt={"kusama"}/>
+          </ListItemIcon>
+          <ListItemText primary="KUSAMA" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+        </ListItemButton>
+          : null}
+
+      <Divider />
+
+      <Box sx={{
+
+      }}>
+
+        <AppsOptions openLeftDrawer={openLeftDrawer} onAppChanged={onAppChanged} onToolClicked={onToolClicked} />
+
+        <Divider />
+
+        <ValidatorOptions openLeftDrawer={openLeftDrawer} />
+
+      </Box>
+
+      {/* {selectedChain === "polkadot" ?
+        <ListItemButton onClick={() => onValidatorClicked('raiden')} disableRipple>
+          <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+            <img src={raidenSVG} style={{ 
+              width: 28,
+              height: 28 }} alt={"raiden"}/>
+          </ListItemIcon>
+          <ListItemText primary="RAIDEN" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+        </ListItemButton> : null } */}
+
+    </Box>
+  )
+}
+
+function FooterLeftDrawer() {
+  const theme = useTheme();
+
+  const handleOnClick = () => {
+    window.open(`https://www.turboflakes.io`, '_blank')
+  }
+	
+  return (
+    <Box component="span" sx={{
+      height: '100%',
+      display: 'flex',
+      alignItems: 'flex-end',
+      justifyContent: 'flex-end'
+    }}>
+      <Divider />
+        
+      <ListItem disableRipple>
+        <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: 0, 
+        '&:hover': {
+          cursor: 'pointer'
+        }}} onClick={handleOnClick} >
+          <img src={turboflakesSVG}  
+            style={{ 
+              width: 28,
+              height: 28 }} alt={"turboflakes"}/>
+        </ListItemIcon>
+        <ListItemText primary="TurboFlakes © 2023"
+          variant="caption" 
+          sx={{ ml: theme.spacing(-1), '> .MuiTypography-root': {
+            ...theme.typography.caption,
+            } 
+          }} />
+      </ListItem> 
+
+    </Box>
+    
+  )
+}
+
 export default function LayoutPage({api}) {
   const ref = React.useRef();
   const theme = useTheme();
@@ -142,6 +464,7 @@ export default function LayoutPage({api}) {
 	const selectedChain = useSelector(selectChain);
   const selectedPage = useSelector(selectPage);
   const [loading, setLoading] = React.useState(true);
+  let [searchParams, setSearchParams] = useSearchParams();
   useWeb3ChainInfo(api, setLoading);
 
   useScrollTop(ref, selectedPage);
@@ -158,9 +481,19 @@ export default function LayoutPage({api}) {
 		if (appName === null) {
 			return;
 		}
-    var searchParams = new URLSearchParams(document.location.search);
-    searchParams.set("app", appName);
-    document.location.search = searchParams.toString();
+
+    // change path to dashboard and delete app specific query params
+    for (const key of searchParams.keys()) {
+      searchParams.delete(key);
+    }
+    setSearchParams(searchParams);
+    dispatch(pageChanged('dashboard'));
+    navigate(`/dashboard`);
+    
+    // hard reload
+    var urlSearchParams = new URLSearchParams(document.location.search);
+    urlSearchParams.set("app", appName);
+    document.location.search = urlSearchParams.toString();
 
 		// Invalidate cache
 		dispatch(apiSlice.util.invalidateTags(['Pools']));
@@ -170,16 +503,15 @@ export default function LayoutPage({api}) {
     dispatch(apiSlice.util.invalidateTags(['Parachains']));
     dispatch(apiSlice.util.invalidateTags(['Sessions']));
     
-    // dispatch(chainChanged(chain));
   };
 
   const handleChainSelection = (chain) => {
 		if (chain === null) {
 			return;
 		}
-    var searchParams = new URLSearchParams(document.location.search);
-    searchParams.set("chain", chain);
-    document.location.search = searchParams.toString();
+    var urlSearchParams = new URLSearchParams(document.location.search);
+    urlSearchParams.set("chain", chain);
+    document.location.search = urlSearchParams.toString();
 
 		// Invalidate cache
 		dispatch(apiSlice.util.invalidateTags(['Pools']));
@@ -195,6 +527,24 @@ export default function LayoutPage({api}) {
   const handlePageSelection = (page) => {
     dispatch(pageChanged(page));
     navigate(`/${page}`);
+  }
+
+  const handleToolClicked = (tool) => {
+    switch (tool) {
+      case 'crunch':
+        window.open('https://github.com/turboflakes/crunch', '_blank')
+        break;
+      case 'scouty':
+        window.open('https://github.com/turboflakes/scouty', '_blank')
+        break;
+    }
+  }
+
+  const handleValidatorClicked = (name) => {
+    if (name === null) {
+			return;
+		}
+    window.open(`https://www.turboflakes.io/#/${name}`, '_blank')
   }
 
   // wait for api to be ready
@@ -278,351 +628,101 @@ export default function LayoutPage({api}) {
             </Box> : null} */}
         </Toolbar>
       </AppBar>
-      <LeftDrawer variant="permanent" open={openLeftDrawer} chain={selectedChain}
-        sx={{
-          // borderTop: `8px solid ${selectedChain === "polkadot" ? theme.palette.polkadot : theme.palette.background.secondary}`,
-        }}>
-            <Box
-                sx={{
-                  my: 2,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: 288,
-                  position: 'relative',
-                }}
-              >
+      <LeftDrawer variant="permanent" open={openLeftDrawer} chain={selectedChain} >
+        <Box
+            sx={{
+              my: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+            }}
+          >
 
-              {/* app logo/name */}
-              { openLeftDrawer ? 
-                <Box sx={{ 
-                  width: "100%",
-                  height: "100%",
-                  display: 'flex', flexDirection: 'column', justifyContent: 'center', 
-                  alignItems: 'center', cursor: 'pointer'
-                }}
-                  onClick={toggleDrawer}>
-                  {selectedApp === "onet" ?
-                    <img src={onetSVG} style={{ 
-                      width: 96,
-                      height: 96 }} alt={"one-t"}/> : null }
-                  {selectedApp === "nomi" ?
-                    <img src={nomiSVG} style={{ 
-                      width: 96,
-                      height: 96 }} alt={"nomi"}/> : null }
-                  <Typography sx={{mt: 2}} variant="h6" color="textPrimary" gutterBottom>
-                  {selectedApp === "onet" ? `ONE-T // explorer` : ''}
-                  {selectedApp === "nomi" ? `NOMI` : ''}
-                  </Typography>
-                  <Chip sx={{ my: 2, p: 1}} label="beta version" color='primary'/>
-                </Box> : 
-                <Box sx={{ 
-                  width: "100%",
-                  height: "100%",
-                  display: 'flex', flexDirection: 'column', justifyContent: 'center', 
-                  alignItems: 'center', cursor: 'pointer'}}
-                  onClick={toggleDrawer} >
-                    {selectedApp === "onet" ? 
-                      <React.Fragment>
-                        <Typography variant="h5">O</Typography>
-                        <Typography variant="h5">N</Typography>
-                        <Typography variant="h5">E</Typography>
-                        <Typography variant="h5">·</Typography>
-                        <Typography variant="h5" gutterBottom>T</Typography>
-                      </React.Fragment>
-                    : null }
-                    {selectedApp === "nomi" ? 
-                      <React.Fragment>
-                        <Typography variant="h5">N</Typography>
-                        <Typography variant="h5">O</Typography>
-                        <Typography variant="h5">M</Typography>
-                        <Typography variant="h5">I</Typography>
-                      </React.Fragment>
-                    : null }
-                  
-                </Box>
-              }
-            </Box>
-
-            {/* menu */}
-            <List component="nav" 
-              sx={{ 
-                m: 0,
-                p: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                height: '100%',
-                '> .MuiListItemButton-root.Mui-selected': {
-                bgcolor: "rgba(0, 0, 0, 0.12)"}, '> .MuiListItemButton-root.Mui-selected:hover': { bgcolor: "rgba(0, 0, 0, 0.18)"}
-              }}>
-
-              {selectedApp === "onet" ? 
-                <Box component="span">
-                  <Divider sx={{ 
-                    opacity: 0.25,
-                    height: '1px',
-                    borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                    borderBottom: 'none',
-                    backgroundColor: 'transparent',
-                    backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                    }} /> 
-                  <ListItemButton selected={selectedPage === 'dashboard'} disableRipple
-                    onClick={() => handlePageSelection('dashboard')}>
-                    <ListItemIcon>
-                      <DashboardIcon sx={{ color: theme.palette.text.primary }} />
-                    </ListItemIcon>
-                    <ListItemText primary="Dashboard" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-                  </ListItemButton>
-                
-                  <Divider sx={{ 
-                    opacity: 0.25,
-                    height: '1px',
-                    borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                    borderBottom: 'none',
-                    backgroundColor: 'transparent',
-                    backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                    }} />
-
-                  <ListItemButton selected={selectedPage === 'insights'} disableRipple
-                    onClick={() => handlePageSelection('insights')}>
-                    <ListItemIcon sx={{ml: '2px'}}>
-                      <Box><FontAwesomeIcon icon={faServer} style={{ color: theme.palette.text.primary }} /></Box>
-                    </ListItemIcon>
-                    <ListItemText primary="Validator Insights" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-                  </ListItemButton>
-                  
-                  <ListItemButton selected={selectedPage === 'parachains'} disableRipple
-                    onClick={() => handlePageSelection('parachains')}>
-                    <ListItemIcon>
-                      <Box><FontAwesomeIcon icon={faLink} style={{ color: theme.palette.text.primary }} /></Box>
-                    </ListItemIcon>
-                    <ListItemText primary="Parachains" 
-                      sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-                  </ListItemButton>
-                
-                  <ListItemButton selected={selectedPage === 'val-groups'} disableRipple
-                    onClick={() => handlePageSelection('val-groups')}>
-                    <ListItemIcon>
-                      <HubIcon sx={{ color: theme.palette.text.primary }} />
-                    </ListItemIcon>
-                    <ListItemText primary="Validator Groups" 
-                      sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-                  </ListItemButton>
-                  
-                  <Divider sx={{ 
-                    opacity: 0.25,
-                    height: '1px',
-                    borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                    borderBottom: 'none',
-                    backgroundColor: 'transparent',
-                    backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                    }} />
-
-                  <ListItemButton  selected={selectedPage === 'pools'} disableRipple
-                    disabled={true}
-                    onClick={() => handlePageSelection('pools')}>
-                    <ListItemIcon >
-                      <Box><FontAwesomeIcon icon={faWaterLadder} style={{ color: theme.palette.text.primary }} /></Box>
-                    </ListItemIcon>
-                    <ListItemText primary="Nomination Pools" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-                  </ListItemButton>
-
-                  {selectedChain === "kusama" ? 
-                    <React.Fragment>
-                      <Divider sx={{ 
-                        opacity: 0.25,
-                        height: '1px',
-                        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                        borderBottom: 'none',
-                        backgroundColor: 'transparent',
-                        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                        }} />
-                      <ListItemButton onClick={() => handleChainSelection('polkadot')} disableRipple>
-                        <ListItemIcon sx={{ ml: -0.5, py: 2}}>
-                          <img src={getNetworkIcon("polkadot")} style={{ 
-                              width: 28,
-                              height: 28 }} alt={"polkadot"}/>
-                        </ListItemIcon>
-                        <ListItemText primary="POLKADOT" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-                      </ListItemButton>
-                      <Divider sx={{ 
-                        opacity: 0.25,
-                        height: '1px',
-                        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                        borderBottom: 'none',
-                        backgroundColor: 'transparent',
-                        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                        }} />
-                    </React.Fragment> : null}
-
-                  {selectedChain === "polkadot" ? 
-                    <React.Fragment>
-                      <Divider sx={{ 
-                        opacity: 0.25,
-                        height: '1px',
-                        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                        borderBottom: 'none',
-                        backgroundColor: 'transparent',
-                        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                        }} />
-                      <ListItemButton onClick={() => handleChainSelection('kusama')} disableRipple>
-                        <ListItemIcon sx={{ ml: -0.5, py: 2}}>
-                          <img src={getNetworkIcon("kusama")} style={{ 
-                              width: 28,
-                              height: 28 }} alt={"kusama"}/>
-                        </ListItemIcon>
-                        <ListItemText primary="KUSAMA" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-                      </ListItemButton>
-                      <Divider sx={{ 
-                        opacity: 0.25,
-                        height: '1px',
-                        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                        borderBottom: 'none',
-                        backgroundColor: 'transparent',
-                        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                        }} />
-                    </React.Fragment> : null}
-
-                </Box> : null }
-
-              {selectedApp === "nomi" && selectedChain === "kusama" ? 
-                <Box component="span">
-                  <Divider sx={{ 
-                    opacity: 0.25,
-                    height: '1px',
-                    borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                    borderBottom: 'none',
-                    backgroundColor: 'transparent',
-                    backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                    }} />
-                  <ListItemButton onClick={() => handleChainSelection('polkadot')} disableRipple>
-                    <ListItemIcon sx={{ ml: -0.5, py: 2}}>
-                      <img src={getNetworkIcon("polkadot")} style={{ 
-                          width: 28,
-                          height: 28 }} alt={"polkadot"}/>
-                    </ListItemIcon>
-                    <ListItemText primary="POLKADOT" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-                  </ListItemButton>
-                  <Divider sx={{ 
-                    opacity: 0.25,
-                    height: '1px',
-                    borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                    borderBottom: 'none',
-                    backgroundColor: 'transparent',
-                    backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                    }} />
-                </Box> : null}
-
-              {/* {selectedApp === "nomi" && selectedChain === "polkadot" ? 
-                <Box component="span">
-                  <Divider sx={{ 
-                    opacity: 0.25,
-                    height: '1px',
-                    borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                    borderBottom: 'none',
-                    backgroundColor: 'transparent',
-                    backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                    }} />
-                  <ListItemButton onClick={() => handleChainSelection('kusama')} disableRipple>
-                    <ListItemIcon sx={{ ml: -0.5, py: 2}}>
-                      <img src={getNetworkIcon("kusama")} style={{ 
-                          width: 28,
-                          height: 28 }} alt={"kusama"}/>
-                    </ListItemIcon>
-                    <ListItemText primary="KUSAMA" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-                  </ListItemButton>
-                  <Divider sx={{ 
-                    opacity: 0.25,
-                    height: '1px',
-                    borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                    borderBottom: 'none',
-                    backgroundColor: 'transparent',
-                    backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                    }} />
-                </Box> : null}
-
-                
-                <Box component="span">
-                  {selectedApp !== "onet" ? 
-                    <React.Fragment>
-                      <Divider sx={{ 
-                        opacity: 0.25,
-                        height: '1px',
-                        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                        borderBottom: 'none',
-                        backgroundColor: 'transparent',
-                        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                        }} />
-                      <ListItemButton sx={{
-                          // position: 'absolute',
-                          // bottom: 0,
-                          width: '100%'
-                        }} onClick={() => handleAppSelection('onet')} disableRipple>
-                        <ListItemIcon sx={{ ml: -0.5, py: 2}}>
-                          <img src={onetSVG} style={{ 
-                            width: 28,
-                            height: 28 }} alt={"one-t"}/>
-                        </ListItemIcon>
-                        <ListItemText primary="ONE-T" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-                      </ListItemButton> 
-                    </React.Fragment> : null}
-
-                  {selectedApp !== "nomi" ? 
-                    <React.Fragment>
-                      <Divider sx={{ 
-                        opacity: 0.25,
-                        height: '1px',
-                        borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                        borderBottom: 'none',
-                        backgroundColor: 'transparent',
-                        backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                        }} />
-                      <ListItemButton sx={{
-                          // position: 'absolute',
-                          // bottom: 0,
-                          width: '100%'
-                        }} onClick={() => handleAppSelection('nomi')} disableRipple>
-                        <ListItemIcon sx={{ ml: -0.5, py: 2}}>
-                          <img src={nomiSVG} style={{ 
-                              width: 28,
-                              height: 28 }} alt={"nomi"}/>
-                        </ListItemIcon>
-                        <ListItemText primary="NOMI" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-                      </ListItemButton> 
-                    </React.Fragment>: null}
-
-                  
-                
-                <Box component="span">
+          {/* app logo/name */}
+          { openLeftDrawer ? 
+            <Box sx={{ 
+              width: "100%",
+              height: 224,
+              display: 'flex', flexDirection: 'column', justifyContent: 'center', 
+              alignItems: 'center', cursor: 'pointer'
+            }}
+              onClick={toggleDrawer}>
+              {selectedApp === "onet" ?
+                <img src={onetSVG} style={{ 
+                  width: 96,
+                  height: 96 }} alt={"one-t"}/> : null }
+              {selectedApp === "nomi" ?
+                <img src={nomiSVG} style={{ 
+                  width: 96,
+                  height: 96 }} alt={"nomi"}/> : null }
+              <Typography sx={{mt: 2}} variant="h6" color="textPrimary" gutterBottom>
+              {selectedApp === "onet" ? `ONE-T // explorer` : ''}
+              {selectedApp === "nomi" ? `NOMI` : ''}
+              </Typography>
+              <Chip sx={{ my: 2, p: 1}} label="beta version" color='primary'/>
+            </Box> : 
+            <Box sx={{ 
+              width: "100%",
+              height: 224,
+              display: 'flex', flexDirection: 'column', justifyContent: 'center', 
+              alignItems: 'center', cursor: 'pointer'}}
+              onClick={toggleDrawer} >
+                {selectedApp === "onet" ? 
                   <React.Fragment>
-                    <Divider sx={{ 
-                      opacity: 0.25,
-                      height: '1px',
-                      borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-                      borderBottom: 'none',
-                      backgroundColor: 'transparent',
-                      backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-                      }} />
-                    <ListItemButton sx={{
-                        // position: 'absolute',
-                        // bottom: 0,
-                        width: '100%'
-                      }} onClick={() => handleAppSelection('nomi')} disableRipple>
-                      <ListItemIcon sx={{ ml: -0.5, py: 2}}>
-                        <img src={turboflakesSVG} style={{ 
-                            width: 28,
-                            height: 28 }} alt={"turboflakes"}/>
-                      </ListItemIcon>
-                      <ListItemText primary="Powered by TurboFlakes" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-                    </ListItemButton> 
+                    <Typography variant="h5">O</Typography>
+                    <Typography variant="h5">N</Typography>
+                    <Typography variant="h5">E</Typography>
+                    <Typography variant="h5">·</Typography>
+                    <Typography variant="h5" gutterBottom>T</Typography>
                   </React.Fragment>
-                </Box>
-              </Box> */}
-                  
-            </List>
-          </LeftDrawer>
+                : null }
+                {selectedApp === "nomi" ? 
+                  <React.Fragment>
+                    <Typography variant="h5">N</Typography>
+                    <Typography variant="h5">O</Typography>
+                    <Typography variant="h5">M</Typography>
+                    <Typography variant="h5">I</Typography>
+                  </React.Fragment>
+                : null }
+              
+            </Box>
+          }
+        </Box>
+
+        {/* menu */}
+        <List component="nav" 
+          sx={{ 
+            m: 0,
+            p: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            height: '100%',
+            '> .MuiListItemButton-root.Mui-selected': {
+            bgcolor: "rgba(0, 0, 0, 0.12)"}, '> .MuiListItemButton-root.Mui-selected:hover': { bgcolor: "rgba(0, 0, 0, 0.18)"}
+          }}>
+
+          <OnetOptions 
+            openLeftDrawer={openLeftDrawer}
+            onOptionChanged={handlePageSelection} 
+            onChainChanged={handleChainSelection} 
+            onAppChanged={handleAppSelection}
+            onToolClicked={handleToolClicked} 
+            onValidatorClicked={handleValidatorClicked} />
+
+          <NomiOptions 
+            openLeftDrawer={openLeftDrawer}
+            onChainChanged={handleChainSelection} 
+            onAppChanged={handleAppSelection}
+            onToolClicked={handleToolClicked} 
+            onValidatorClicked={handleValidatorClicked} />
+                              
+          <FooterLeftDrawer />
+              
+        </List>
+      </LeftDrawer>
           {selectedApp === "nomi" ?
             <RightDrawer open={openRightDrawer} width={rightDrawerWidth} showDark={true} /> : null }
       <Box
