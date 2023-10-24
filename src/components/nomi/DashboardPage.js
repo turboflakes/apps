@@ -22,8 +22,13 @@ import {
   candidatesAdded,
   candidatesCleared,
 } from '../../features/api/boardsSlice';
-import { isValidAddress } from '../../util/crypto'
-import { getCriteriasHash } from '../../util/crypto'
+import {
+  selectChain,
+  selectAddress,
+  addressChanged
+} from '../../features/chain/chainSlice';
+import { isValidAddress, getCriteriasHash } from '../../util/crypto'
+import { getMaxValidators } from '../../constants';
 
 const drawerWidth = 448;
 const filtersWidth = 256;
@@ -76,9 +81,11 @@ export default function DashboardPage() {
     api,
     leftDrawerWidth, leftDrawerWidthClosed, openLeftDrawer, 
     rightDrawerWidth, openRightDrawer, onRightDrawerToggle } = useOutletContext();
+  const selectedChain = useSelector(selectChain);
   const [openValidatorDialog, setOpenValidatorDialog] = React.useState(false);
   const [openWelcomeDialog, setOpenWelcomeDialog] = React.useState(false);
   const [selectedAddress, setSelectedAddress] = React.useState();
+  const featureAddress = useSelector(selectAddress);
   const candidates = useSelector(selectCandidates);
   let [searchParams, setSearchParams] = useSearchParams();
   const session = useSelector(selectSyncedSession);
@@ -91,14 +98,26 @@ export default function DashboardPage() {
     }
   })
 
-  // React.useEffect(() => {
-  //   let t = setTimeout(() => {
-  //     handleOpenWelcomeDialog()
-  //   }, 1000);
-  //   return () => {
-  //     clearTimeout(t);
-  //   };
-  // }, []);
+  // Welcome dialog
+  React.useEffect(() => {
+    let t = setTimeout(() => {
+      setOpenWelcomeDialog(true);
+    }, 1000);
+    return () => {
+      clearTimeout(t);
+    };
+  }, []);
+
+  // TurboFlakes dialog clicked
+  React.useEffect(() => {
+    if (featureAddress) {
+      setSelectedAddress(featureAddress)
+      setOpenValidatorDialog(true)
+    }
+
+    return () => dispatch(addressChanged(''));
+  }, [featureAddress]);
+
 
   const handleRightDrawerToggle = () => {
     onRightDrawerToggle();
@@ -121,7 +140,7 @@ export default function DashboardPage() {
   const handleOnAddAllClick = () => {
     // Reset first the candidates
     dispatch(candidatesCleared())
-    const addresses = profiles.map(a => a.stash)
+    const addresses = profiles.slice(0, getMaxValidators(selectedChain)).map(a => a.stash)
     dispatch(candidatesAdded(addresses))
   }
 

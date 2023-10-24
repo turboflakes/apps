@@ -169,22 +169,23 @@ export default function DashboardPage() {
           </Grid>
         </Grid>
        
-        {/* hide nomination pools until sync is finished */}
-        {/* <Grid item xs={12}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography sx={{ ml: 2}} variant='h6'>
-              Nomination Pools
-              </Typography>
+        {/* TODO enable as soon as polkadot is synced */}
+        {selectedChain !== 'polkadot' ?
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography sx={{ ml: 2}} variant='h6'>
+                Nomination Pools
+                </Typography>
+              </Grid>
+              <Grid item xs={4}>
+                <PoolsValidatorsRankingBox sessionIndex={currentSession} maxSessions={maxHistorySessions} skip={isNaN(currentSession)}/>
+              </Grid>
+              <Grid item xs={8}>
+                <NetPoolHistoryBox sessionIndex={currentSession} skip={isNaN(currentSession)}/>
+              </Grid>
             </Grid>
-            <Grid item xs={4}>
-              <PoolsValidatorsRankingBox sessionIndex={currentSession} maxSessions={maxHistorySessions} skip={isNaN(currentSession)}/>
-            </Grid>
-            <Grid item xs={8}>
-              <NetPoolHistoryBox sessionIndex={currentSession} skip={isNaN(currentSession)}/>
-            </Grid>
-          </Grid>
-        </Grid> */}
+          </Grid> : null }
       </Grid>      
 		</Container>
     </Box>

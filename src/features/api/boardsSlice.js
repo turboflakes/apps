@@ -4,7 +4,6 @@ import {
   isAnyOf,
 } from '@reduxjs/toolkit'
 import union from 'lodash/union'
-import uniq from 'lodash/uniq'
 import isUndefined from 'lodash/isUndefined'
 import apiSlice from './apiSlice'
 import {
@@ -45,7 +44,7 @@ const boardsSlice = createSlice({
   },
   reducers: {
     candidatesAdded: (state, action) => {
-      state.candidates = union(state.candidates, [...action.payload]).slice(0, 16);
+      state.candidates = union(state.candidates, [...action.payload]);
     },
     candidatesCleared: (state) => {
       state.candidates = [];

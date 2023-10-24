@@ -18,11 +18,17 @@ import {
   selectMaxHistorySessions,
 } from '../../features/layout/layoutSlice';
 import {
+  selectChain,
+  selectAddress,
+  addressChanged
+} from '../../features/chain/chainSlice';
+import {
   candidateAdded,
   candidateRemoved,
   selectIsCandidate
 } from '../../features/api/boardsSlice';
 import { Stack } from '@mui/material';
+import { getMaxValidators } from '../../constants';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
@@ -50,6 +56,7 @@ export default function ValidatorDialog({ onClose, onDiscard, onNext, onBack, op
   const theme = useTheme();
   const dispatch = useDispatch();
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
+  const selectedChain = useSelector(selectChain);
   const isCandidate = useSelector((state) => selectIsCandidate(state, address));
   const candidates = useSelector(selectCandidates);
 
@@ -61,7 +68,7 @@ export default function ValidatorDialog({ onClose, onDiscard, onNext, onBack, op
     if (isCandidate) {
       dispatch(candidateRemoved(address))
     } else {
-      if (candidates.length < 16) {
+      if (candidates.length < getMaxValidators(selectedChain)) {
         dispatch(candidateAdded(address))
       }
     }
@@ -88,7 +95,7 @@ export default function ValidatorDialog({ onClose, onDiscard, onNext, onBack, op
         </StyledIconButton>
         <Button sx= {{minWidth: 112, ml: theme.spacing(3)}} onClick={handleOnClose} variant='outlined' color='secondary'>Done</Button>
         <Button sx={{ minWidth: 112 }} onClick={handleOnClick} color='secondary' variant='contained'
-          disabled={candidates.length === 16 && !isCandidate}
+          disabled={candidates.length === getMaxValidators(selectedChain) && !isCandidate}
           startIcon={<SvgIcon component={isCandidate ? RemoveUserIcon : AddUserIcon} inheritViewBox />} >{isCandidate ? 'Remove' : 'Add'}</Button>
         <StyledIconButton showDark={showDark} disableRipple onClick={onNext} size='small'>
           <ChevronRightIcon fontSize="small" />

@@ -17,10 +17,12 @@ import {
   selectCandidates
 } from '../../features/api/boardsSlice';
 import {
+  selectChain,
   selectChainInfo
 } from '../../features/chain/chainSlice';
 import { stashDisplay, nameDisplay } from '../../util/display';
 import { chainAddress } from '../../util/crypto';
+import { getMaxValidators } from '../../constants';
 
 function CandidateChip({stash, onClick}) {
   const theme = useTheme();
@@ -32,7 +34,7 @@ function CandidateChip({stash, onClick}) {
     <Chip sx={{ 
       '&:hover': { bgcolor: theme.palette.neutrals[100], opacity: 1 }, 
       bgcolor: theme.palette.neutrals[200], opacity: 0.8, 
-      mb: theme.spacing(1), minWidth: 128, justifyContent: 'flex-start'}} 
+      mb: theme.spacing(1), width: 128, justifyContent: 'flex-start'}} 
       onClick={() => onClick(stash)}
       label={nameDisplay(!!valProfile ? valProfile._identity : stashDisplay(chainAddress(stash, chainInfo.ss58Format), 4), 12)} 
       icon={<Identicon value={stash} size={24} theme={'polkadot'} />} 
@@ -43,6 +45,7 @@ function CandidateChip({stash, onClick}) {
 export default function NominationBox({api, left, onClick, onAddAllClick }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const selectedChain = useSelector(selectChain);
   const candidates = useSelector(selectCandidates);
   
   const handleOpenDialog = () => {
@@ -70,7 +73,7 @@ export default function NominationBox({api, left, onClick, onAddAllClick }) {
               <Box component="span" sx={{ 
                 position: 'absolute',
                 top: 0,
-                right: -10,
+                right: 0,
                 backgroundColor: theme.palette.background.secondary, width: 28, height: 28, borderRadius: '50%',
                 color: theme.palette.text.secondary,
                 display: 'center',
@@ -80,7 +83,7 @@ export default function NominationBox({api, left, onClick, onAddAllClick }) {
               </Box> : null }
           </Typography>
           <Button sx={{mb: theme.spacing(1)}} onClick={onAddAllClick} align="flex-start" variant='contained'>
-            Add Top 16
+            {`Add Top ${getMaxValidators(selectedChain)}`}
           </Button>
           {candidates.length > 0 ?
             <Button sx={{mb: theme.spacing(1)}} onClick={handleOpenDialog} startIcon={<NominationIcon />} variant='contained'>
@@ -97,7 +100,15 @@ export default function NominationBox({api, left, onClick, onAddAllClick }) {
                   </Box> */}
               Nominate
             </Button> : null}
+          <Box sx={{
+            maxHeight: window.innerHeight * 0.6,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            borderBottom: `2px solid ${theme.palette.primary.main}`,
+            width: 144
+          }}>
           {candidates.map((value, index) => (<CandidateChip key={index} stash={value} onClick={onClick} />))}
+          </Box>
         </Stack>
         { open ?
             <NominationDialog

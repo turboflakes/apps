@@ -48,13 +48,14 @@ import {
 } from '../features/app/appSlice';
 import {
   chainInfoChanged,
-  // chainChanged,
+  addressChanged,
   selectChain,
 } from '../features/chain/chainSlice';
 import { 
   getNetworkIcon, 
   getNetworkLogo, 
 } from '../constants'
+import { addressSS58 } from '../util/crypto';
 
 function useWeb3ChainInfo(api, setLoading) {
   const dispatch = useDispatch();
@@ -196,8 +197,9 @@ function AppsOptions({openLeftDrawer, onToolClicked, onAppChanged}) {
   )
 }
 
-function ValidatorOptions({openLeftDrawer}) {
+function ValidatorOptions({openLeftDrawer, onValidatorClicked}) {
   const theme = useTheme();
+  const selectedChain = useSelector(selectChain);
 
   return (
     <React.Fragment>
@@ -206,34 +208,29 @@ function ValidatorOptions({openLeftDrawer}) {
         { openLeftDrawer ? `TurboFlakes Validators` : `Vals`}
       </ListSubheader>
 
-      {getTurboValidators("polkadot").map((v, i) => (
-        <ListItem key={i}>
+      {getTurboValidators(selectedChain).map((v, i) => (
+        <ListItemButton key={i} onClick={() => onValidatorClicked(v.stash)}>
           <ListItemIcon sx={{ 
             ml: theme.spacing(-1/2), py: theme.spacing(0),
             display: 'flex', alignItems: 'center' }}>
-            <Box sx={{ position: 'relative'}}>
-              <img src={polkadotSVG} 
+            
+              <img src={v.svg} 
                 style={{ 
-                  position: 'absolute', 
-                  border: '1px solid #FFF', borderRadius: '50%', 
-                  height: 20, right: -8, bottom: 2 }} alt={"github"}/>
-              <Identicon
-                value={v.stash}
-                size={28}
-                theme={'polkadot'} />
-            </Box>
+                  width: 32,
+                  height: 32 }} alt={v.name}/>
+            
           </ListItemIcon>
           <ListItemText primary={v.name} sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-        </ListItem>
+        </ListItemButton>
       ))}
 
-      {getTurboValidators("kusama").map((v, i) => (
-        <ListItem key={i}>
+      {/* {getTurboValidators(selectedChain).map((v, i) => (
+        <ListItemButton key={i} onClick={() => onValidatorClicked(v.stash)}>
           <ListItemIcon sx={{ 
             ml: theme.spacing(-1/2), py: theme.spacing(0),
             display: 'flex', alignItems: 'center' }}>
             <Box sx={{ position: 'relative'}}>
-              <img src={kusamaSVG} 
+              <img src={selectedChain === 'polkadot' ? polkadotSVG : kusamaSVG } 
                 style={{ 
                   position: 'absolute', 
                   border: '1px solid #FFF', borderRadius: '50%', 
@@ -245,8 +242,9 @@ function ValidatorOptions({openLeftDrawer}) {
             </Box>
           </ListItemIcon>
           <ListItemText primary={v.name} sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-        </ListItem>
-      ))}
+        </ListItemButton>
+      ))} */}
+      
     </React.Fragment>
   )
 }
@@ -327,8 +325,9 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
           sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
       </ListItemButton>
 
+      {/* TODO enable as soon as polkadot is synced */}
       <ListItemButton  selected={selectedPage === 'pools'} disableRipple
-        disabled={true}
+        disabled={selectedChain === 'polkadot'}
         onClick={() => onOptionChanged('pools')}>
         <ListItemIcon >
           <Box><FontAwesomeIcon icon={faWaterLadder} style={{ color: theme.palette.text.primary }} /></Box>
@@ -400,7 +399,7 @@ function NomiOptions({openLeftDrawer, onChainChanged, onAppChanged, onToolClicke
 
         <Divider />
 
-        <ValidatorOptions openLeftDrawer={openLeftDrawer} />
+        <ValidatorOptions openLeftDrawer={openLeftDrawer} onValidatorClicked={onValidatorClicked} />
 
       </Box>
 
@@ -600,11 +599,15 @@ export default function LayoutPage({api}) {
     }
   }
 
-  const handleValidatorClicked = (name) => {
-    if (name === null) {
-			return;
-		}
-    window.open(`https://www.turboflakes.io/#/${name}`, '_blank')
+  // const handleValidatorClicked = (name) => {
+  //   if (name === null) {
+	// 		return;
+	// 	}
+  //   window.open(`https://www.turboflakes.io/#/${name}`, '_blank')
+  // }
+
+  const handleValidatorClicked = (stash) => {
+    dispatch(addressChanged(addressSS58(stash)))
   }
 
   // wait for api to be ready
@@ -722,9 +725,9 @@ export default function LayoutPage({api}) {
               {selectedApp === "nomi" ? `NOMI` : ''}
               </Typography>
 
-              <SocialIcons />
+              <Chip sx={{ mb: theme.spacing(2), p: theme.spacing(1)}} label="beta version" color='primary'/>
 
-              <Chip sx={{ my: 2, p: 1}} label="beta version" color='primary'/>
+              <SocialIcons />
             </Box> : 
             <Box sx={{ 
               width: "100%",

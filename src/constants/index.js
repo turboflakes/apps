@@ -10,6 +10,11 @@ import {prodParasPolkadot} from './productionRelayPolkadot';
 import {chainColors, nodeColors} from './colors';
 import {chainLogos, nodeLogos, namedLogos} from '../assets/logos';
 import {sanitize} from '../util/sanitize';
+import raidenSVG from '../assets/raiden.svg';
+import cocoSVG from '../assets/coco.svg';
+import momoSVG from '../assets/momo.svg';
+import totoSVG from '../assets/toto.svg';
+import dodoSVG from '../assets/dodo.svg';
 
 // Define Network settings
 const networkSettings = {
@@ -29,7 +34,7 @@ const networkSettings = {
     poolIds: [process.env.REACT_APP_POLKADOT_POOL_ID_1],
     chains: prodParasPolkadot,
     validators: [
-      { stash: "12gPFmRqnsDhc9C5DuXyXBFA23io5fSGtKTSAimQtAWgueD2", name: "RAIDEN"}
+      { stash: "12gPFmRqnsDhc9C5DuXyXBFA23io5fSGtKTSAimQtAWgueD2", name: "RAIDEN", svg: raidenSVG }
     ]
   },
   kusama: {
@@ -49,10 +54,10 @@ const networkSettings = {
     poolIds: [process.env.REACT_APP_KUSAMA_POOL_ID_1, process.env.REACT_APP_KUSAMA_POOL_ID_2],
     chains: prodParasKusama,
     validators: [
-      { stash: "FZsMKYHoQG1dAVhXBMyC7aYFYpASoBrrMYsAn1gJJUAueZX", name: "COCO" },
-      { stash: "GA7j1FHWXpEU4kavowEte6LWR3NgZ8bkv4spWa9joiQF5R2", name: "MOMO" },
-      { stash: "GwJweN3Q8VjBMkd2wWLQsgMXrwmFLD6ihfS146GkmiYg5gw", name: "TOTO" },
-      { stash: "FUu6iSzpfStHnbtbzFy2gsnBLttwNgNSULSCQCgMjPfkYwF", name: "DODO" }
+      { stash: "FZsMKYHoQG1dAVhXBMyC7aYFYpASoBrrMYsAn1gJJUAueZX", name: "COCO", svg: cocoSVG },
+      { stash: "GA7j1FHWXpEU4kavowEte6LWR3NgZ8bkv4spWa9joiQF5R2", name: "MOMO", svg: momoSVG },
+      { stash: "GwJweN3Q8VjBMkd2wWLQsgMXrwmFLD6ihfS146GkmiYg5gw", name: "TOTO", svg: totoSVG },
+      { stash: "FUu6iSzpfStHnbtbzFy2gsnBLttwNgNSULSCQCgMjPfkYwF", name: "DODO", svg: dodoSVG }
     ]
   },
   westend: {
@@ -80,6 +85,7 @@ export const getNetworkIcon = (network) => networkSettings[network].icon
 export const getNetworkLogo = (network) => networkSettings[network].logo
 export const getNetworkURL = (network) => networkSettings[network].url
 export const getNetworkSS58Format = (network) => networkSettings[network].ss58Format
+export const getMaxValidators = (network) => networkSettings[network].maxValidators
 export const getMaxHistoryEras = (network) => networkSettings[network].maxHistoryEras
 export const getMaxHistorySessions = (network) => networkSettings[network].maxHistoryEras * 6
 export const getCoreAssignmentsTarget = (network) => networkSettings[network].coreAssignmentsTarget
