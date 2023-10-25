@@ -44,13 +44,21 @@ const StyledDialog = styled(Dialog)(({ theme, maxWidth }) => ({
     padding: theme.spacing(2),
     borderRadius: theme.spacing(0),
     backgroundColor: theme.palette.primary.main,
-    maxHeight: 435,
+    // maxHeight: 435,
   },
 }));
 
 const getBondedAccounts = (api, accounts = []) => {
   const calls = accounts.map(acc => {
     return api.query.staking.bonded(acc.address)
+  })
+  // Retrieve the chain & node information information via rpc calls
+  return Promise.all(calls);
+}
+
+const getProxiesAccounts = (api, accounts = []) => {
+  const calls = accounts.map(acc => {
+    return api.query.proxy.proxies(acc.address)
   })
   // Retrieve the chain & node information information via rpc calls
   return Promise.all(calls);
@@ -82,7 +90,7 @@ function ExtensionChip({extension, onClick}) {
   )
 }
 
-function AccountChip({account, onClick}) {
+function AccountChip({account, onClick, isProxy = false}) {
   const theme = useTheme();
   
   if (!account) {
@@ -91,7 +99,7 @@ function AccountChip({account, onClick}) {
 
   return (
     <Chip sx={{ width: 160, justifyContent: 'flex-start'}} 
-      onClick={() => onClick(account)}
+      onClick={() => onClick(account, isProxy)}
       label={account.name} 
       variant="outlined" color="secondary"
       icon={<Identicon value={account.address} size={24} theme={'polkadot'} />} 
@@ -120,7 +128,9 @@ export default function NominationDialog({ api, open, onClose }) {
   const { extensionAccounts, connectExtensionAccounts } = useExtensionAccounts();
   const [extensionEnabled, setExtensionEnabled] = React.useState();
   const [controllerAccounts, setControllerAccounts] = React.useState([]);
+  const [proxyAccounts, setProxyAccounts] = React.useState([]);
   const [activeAccount, setActiveAccount] = React.useState();
+  const [isProxyAccount, setIsProxyAccount] = React.useState(false);
 
   // TODO: better handle tx status 
   const [successTx, setSuccessTx] = React.useState();
@@ -134,14 +144,37 @@ export default function NominationDialog({ api, open, onClose }) {
       // filter accounts specific to the selected extension
       const filteredAccounts = extensionAccounts.filter(acc => acc.source  === extensionEnabled)
 
-      // TODO: look for proxy accounts
-      // filter and set only controller accounts
-      getBondedAccounts(api, filteredAccounts).then(responses => {
-        const controllers = responses.filter(bonded => bonded.isSome).map(bonded => bonded.unwrap().toString())
-        const accounts = filteredAccounts.filter(acc => !!controllers.find(address => address === acc.address.toString()))
-        setControllerAccounts(accounts)
-      })
+      try {
+        // filter and set only controller accounts
+        getBondedAccounts(api, filteredAccounts).then(responses => {
+          const controllers = responses.filter(bonded => bonded.isSome).map(bonded => bonded.unwrap().toString())
+          const accounts = filteredAccounts.filter(acc => !!controllers.find(address => address === acc.address.toString()))
+          setControllerAccounts(accounts)
+        })
+      } catch(e) {
+        console.error(e);
+      }
 
+      // TODO: look for proxy accounts
+      try {
+        
+        getProxiesAccounts(api, filteredAccounts).then(responses => {
+          let proxies = []
+          responses.forEach(o => {
+            if (o[0].length !== 0) {
+              o[0].forEach(proxy => {
+                if (proxy.proxyType.toString() === "Staking" || proxy.proxyType.toString() === "Any") {
+                  proxies.push(proxy.delegate.toString())
+                }
+              })
+            }          
+          })
+          const accounts = filteredAccounts.filter(acc => !!proxies.find(address => address === acc.address.toString()))
+          setProxyAccounts(accounts)
+        })
+      } catch(e) {
+        console.error(e);
+      }
     }
 
   }, [extensionEnabled, extensionAccounts]);
@@ -205,22 +238,25 @@ export default function NominationDialog({ api, open, onClose }) {
     connectExtensionAccounts(extension).then(() => setExtensionEnabled(extension.id));
   }
 
-  const handleOnClickAccount = (account) => {
+  const handleOnClickAccount = (account, isProxy = false) => {
     setActiveAccount(account)
+    setIsProxyAccount(isProxy)
     localStorage.setItem(`${selectedChain}_account`, account.address)
   }
 
   const handleOnClickAccountRemove = (account) => {
     setActiveAccount()
+    setIsProxyAccount(false)
     localStorage.removeItem(`${selectedChain}_account`)
   }
 
   const handleOnBack = () => {
     if (!activeAccount) {
       setExtensionEnabled()
-    } else (
+    } else {
       setActiveAccount()
-    )
+      setIsProxyAccount(false)
+    }
   }
 
 return (
@@ -277,25 +313,43 @@ return (
               </List> : 
           
             (!activeAccount ?
-              <List disablePadding 
-                subheader={
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                    <ListSubheader sx={{ bgcolor: 'transparent' }}>Select Controller Account:</ListSubheader>
-                  </Box>
-                }>
-                {controllerAccounts.map((value, index) => {
-                  return (
-                    <ListItem key={index} sx={{ py: 0, mb: theme.spacing(1) }}>
-                      <AccountChip account={value} onClick={handleOnClickAccount} />
+              <React.Fragment>
+                <List disablePadding 
+                  subheader={
+                    controllerAccounts.length > 0 ? 
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <ListSubheader sx={{ bgcolor: 'transparent' }}>Select Controller Account:</ListSubheader>
+                      </Box> : null
+                  }>
+                  {controllerAccounts.map((value, index) => {
+                    return (
+                      <ListItem key={index} sx={{ py: 0, mb: theme.spacing(1) }}>
+                        <AccountChip account={value} onClick={handleOnClickAccount} />
+                      </ListItem>
+                    );
+                  })}
+                </List>
+                <List disablePadding 
+                  subheader={
+                    proxyAccounts.length > 0 ? 
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <ListSubheader sx={{ bgcolor: 'transparent' }}>Select Staking Proxy Account:</ListSubheader>
+                      </Box> : null
+                  }>
+                  {proxyAccounts.map((value, index) => {
+                    return (
+                      <ListItem key={index} sx={{ py: 0, mb: theme.spacing(1) }}>
+                        <AccountChip account={value} onClick={handleOnClickAccount} isProxy={true} />
+                      </ListItem>
+                    );
+                  })}
+                  {proxyAccounts.length === 0 && controllerAccounts.length === 0 ? 
+                    <ListItem sx={{ py: 0 }}>
+                      <ListItemText sx={{ color: theme.palette.text.secondary }} primary="No controller or staking proxy account detected." ></ListItemText>
                     </ListItem>
-                  );
-                })}
-                {controllerAccounts.length === 0 ? 
-                  <ListItem sx={{ py: 0 }}>
-                    <ListItemText sx={{ color: theme.palette.text.secondary }} primary="No controllers account detected." ></ListItemText>
-                  </ListItem>
-                  : null }
-              </List> : 
+                    : null }
+                </List>
+              </React.Fragment> : 
               <React.Fragment>
                 <List disablePadding 
                   subheader={
