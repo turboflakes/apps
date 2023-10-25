@@ -20,6 +20,7 @@ import {
   selectBestBlock,
 } from '../../features/api/blocksSlice';
 import { getCriteriasHash } from '../../util/crypto'
+import nomiSVG from '../../assets/nomi_white.svg';
 
 const steps = ['Intro', 'Commission', 'Performance', 'Self Stake', 'Nominators Stake', 'Nominators Counter'];
 const weightTexts = [
@@ -64,9 +65,18 @@ function StepWelcome() {
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection:'column', justifyContent: 'space-between'}}>
       <Box>
-        <Box sx={{ mt: theme.spacing(2), minHeight: theme.spacing(20) }}>
-          <Typography sx={{ fontFamily: 'Gilroy-Extrabold'}} variant="h2"  color='secondary'>WELCOME TO NOMI</Typography>
-          <Typography variant="subtitle" color='secondary'>Craft your own criteria to better suit your nominations</Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+          <Box sx={{ mt: theme.spacing(2), minHeight: theme.spacing(20) }}>
+            <Typography sx={{ fontFamily: 'Gilroy-Extrabold'}} variant="h2"  color='secondary'>WELCOME TO NOMI</Typography>
+            <Typography variant="subtitle" color='secondary'>Craft your own criteria to better suit your nominations</Typography>
+          </Box>
+          <Box sx={{mr: theme.spacing(3),}}>
+            <img src={nomiSVG} style={{ 
+                
+                width: 192,
+                height: 192 }} alt={"NOMI"} />
+            
+          </Box>
         </Box>
         <Typography color='secondary' variant='h5' gutterBottom>What is this?</Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} paragraph>
