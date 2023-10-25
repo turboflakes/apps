@@ -67,16 +67,18 @@ export default function NominationBox({api, left, onClick, onAddAllClick }) {
         zIndex: 1
       }}>
         <Stack direction="column" sx={{ width: 145 }}>
-          <Typography variant='h6' sx={{ whiteSpace: 'nowrap'}} paragraph>
+          <Typography variant='h6' sx={{ whiteSpace: 'nowrap', display: 'flex', }} paragraph>
+            <React.Fragment>
             Nomination Candidates
+            </React.Fragment>
             {candidates.length > 0 ?
               <Box component="span" sx={{ 
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                backgroundColor: theme.palette.background.secondary, width: 28, height: 28, borderRadius: '50%',
+                ml: 1,
+                backgroundColor: theme.palette.background.secondary, 
+                minWidth: 28, height: 28, 
+                borderRadius: '50%',
                 color: theme.palette.text.secondary,
-                display: 'center',
+                display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
                 }}><Typography variant='caption' color="secondary">{candidates.length}</Typography>
