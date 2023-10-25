@@ -36,7 +36,7 @@ function CandidateChip({stash, onClick}) {
       bgcolor: theme.palette.neutrals[200], opacity: 0.8, 
       mb: theme.spacing(1), width: 128, justifyContent: 'flex-start'}} 
       onClick={() => onClick(stash)}
-      label={nameDisplay(!!valProfile ? valProfile._identity : stashDisplay(chainAddress(stash, chainInfo.ss58Format), 4), 12)} 
+      label={nameDisplay(valProfile?.identity ? valProfile._identity : stashDisplay(chainAddress(stash, chainInfo.ss58Format), 4), 12)} 
       icon={<Identicon value={stash} size={24} theme={'polkadot'} />} 
     />
   )
