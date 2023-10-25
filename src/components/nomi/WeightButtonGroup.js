@@ -11,7 +11,7 @@ export default function WeightButtonGroup({
   showDark,
   size,
   title, description, scaleDescription, resultDescription, questionDescription, 
-  limits, limitsTitle, limitsLabelFormat, limitsStep, showLimitsCaption, onLimitsChange, onChange, value}) {
+  rangeSelected, limits, limitsTitle, limitsLabelFormat, limitsStep, showLimitsCaption, onLimitsChange, onChange, value}) {
   const theme = useTheme();
 
   return (
@@ -52,7 +52,7 @@ export default function WeightButtonGroup({
       {limits ? 
         <FilterSliderRange 
           showDark={showDark}
-          limits={limits} labelFormat={limitsLabelFormat} step={limitsStep} 
+          rangeSelected={rangeSelected} limits={limits} labelFormat={limitsLabelFormat} step={limitsStep} 
           showCaption={showLimitsCaption} onChange={(e, r) => onLimitsChange(e, r)} /> : null}
     </Box>
     

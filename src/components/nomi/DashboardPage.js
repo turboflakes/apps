@@ -5,6 +5,7 @@ import isNull from 'lodash/isNull';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
+import Typography from '@mui/material/Typography';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import TuneIcon from '@mui/icons-material/Tune';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -89,7 +90,7 @@ export default function DashboardPage() {
   const candidates = useSelector(selectCandidates);
   let [searchParams, setSearchParams] = useSearchParams();
   const session = useSelector(selectSyncedSession);
-  
+
   const temp =  useSelector((state) => selectBoardProfilesBySessionAndHash(state, session, getHashFromParams(searchParams)));
   const profiles = temp.map(a => {
     return {
@@ -185,43 +186,48 @@ export default function DashboardPage() {
   return (
     <Box sx={{ height: `calc(100vh - 144px)` }}>
       <Main>
-          <BoardAnimationCanvas
-            profiles={profiles}
-            // selected={selected}
-            width={window.innerWidth - 56} 
-            height={window.innerHeight - 72}
-            topY={64}
-            onBallClick={handleOnBallClick}
-          />
-          {/* left button / menus */}
-          <NominationBox api={api} onClick={handleOnCandidateClick} onAddAllClick={handleOnAddAllClick}
-            left={openLeftDrawer ? `calc(${leftDrawerWidth}px + 16px)` : `calc(${leftDrawerWidthClosed}px + 24px)` } />
-          {/* right button / menus */}
-          <Fab sx={{ 
-              position: 'absolute', 
-              top: 96 , 
-              transition: theme.transitions.create(['right'], {
-                duration: theme.transitions.duration.shorter,
-              }),
-              right: openRightDrawer ? `calc(${rightDrawerWidth}px + 16px)` : theme.spacing(4),
-            }}
-            onClick={onRightDrawerToggle}
-            size="small" color="primary" aria-label="control-panel">
-            {openRightDrawer ? <ChevronRightIcon /> : <TuneIcon /> }
-          </Fab>
-          <FiltersFab right={openRightDrawer ? `calc(${rightDrawerWidth}px + 64px)` : theme.spacing(10)} />
-          <Fab sx={{ 
+        <BoardAnimationCanvas
+          profiles={profiles}
+          // selected={selected}
+          width={window.innerWidth - 56} 
+          height={window.innerHeight - 72}
+          topY={64}
+          onBallClick={handleOnBallClick}
+        />
+        {/* left button / menus */}
+        <NominationBox api={api} onClick={handleOnCandidateClick} onAddAllClick={handleOnAddAllClick}
+          left={openLeftDrawer ? `calc(${leftDrawerWidth}px + 16px)` : `calc(${leftDrawerWidthClosed}px + 24px)` } />
+        {/* right button / menus */}
+        <Fab sx={{ 
             position: 'absolute', 
-            bottom: theme.spacing(4) , 
+            top: 96 , 
             transition: theme.transitions.create(['right'], {
               duration: theme.transitions.duration.shorter,
             }),
             right: openRightDrawer ? `calc(${rightDrawerWidth}px + 16px)` : theme.spacing(4),
-            }}
-            onClick={handleOnOpenWelcomeDialog}
-            size="small" color="primary" aria-label="control-panel">
-            <QuestionMarkIcon />
-          </Fab>
+          }}
+          onClick={onRightDrawerToggle}
+          size="small" color="primary" aria-label="control-panel">
+          {openRightDrawer ? <ChevronRightIcon /> : <TuneIcon /> }
+        </Fab>
+        <FiltersFab right={openRightDrawer ? `calc(${rightDrawerWidth}px + 64px)` : theme.spacing(10)} />
+        <Fab sx={{ 
+          position: 'absolute', 
+          bottom: theme.spacing(4) , 
+          transition: theme.transitions.create(['right'], {
+            duration: theme.transitions.duration.shorter,
+          }),
+          right: openRightDrawer ? `calc(${rightDrawerWidth}px + 16px)` : theme.spacing(4),
+          }}
+          onClick={handleOnOpenWelcomeDialog}
+          size="small" color="primary" aria-label="control-panel">
+          <QuestionMarkIcon />
+        </Fab>
+        <Typography sx={{ 
+          position: 'absolute', ml: theme.spacing(2),  bottom: theme.spacing(1), color: theme.palette.neutrals[200]}} 
+          color='secondary' variant='caption' gutterBottom>
+            Disclaimer: NOMI is a complementary tool, always DYOR: Do Your Own Research.
+        </Typography>
       </Main>
       <ValidatorDialog
         address={selectedAddress}

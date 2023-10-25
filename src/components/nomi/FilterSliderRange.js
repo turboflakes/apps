@@ -65,9 +65,15 @@ const CustomSlider = styled(Slider)(({ theme, showDark }) => ({
   },
 }));
 
-export default function FilterSliderRange({limits, labelFormat, step, showCaption, onChange, showDark}) {
+export default function FilterSliderRange({rangeSelected = [0,100], limits, labelFormat, step, showCaption, onChange, showDark}) {
   const theme = useTheme();
-  const [filterRange, setFilterRange] = React.useState([limits[0], limits[1]]);
+  const [filterRange, setFilterRange] = React.useState([rangeSelected[0] ? rangeSelected[0] : limits[0], rangeSelected[1] ? rangeSelected[1] : limits[1]]);
+
+  React.useEffect(() => {
+    if (rangeSelected) {
+      setFilterRange(rangeSelected)
+    }
+  }, [rangeSelected.toString()])
 
   const handleChange = (event, range) => {
     setFilterRange(range);

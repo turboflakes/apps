@@ -169,9 +169,9 @@ function StepFinish({onClose, onReset}) {
         <Typography sx={{ color: theme.palette.neutrals[200] }} variant='subtitle' paragraph>
         You can always report an issue <Link href="https://github.com/turboflakes/apps/issues" target="_blank" rel="noreferrer" color="inherit">here</Link>, send an email to <Link href="mailto:support@turboflakes.io" rel="noreferrer" color="inherit">support@turboflakes.io</Link> or reach me out on [matrix].
         </Typography>
-        <Typography color='secondary' variant='h5' gutterBottom>Bonded less than the minimum to earn rewards?</Typography>
+        <Typography color='secondary' variant='h5' gutterBottom>{`Have you bonded less than the minimum to earn rewards, < 500 DOTs?`}</Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} paragraph>
-        Nomination Pools are much more a better fit. Look for ONE-T Nomination Pools <Link href="https://one-t.turboflakes.io/#/polkadot" target="_blank" rel="noreferrer" color="inherit">here</Link> to find out more.
+        Nomination Pools are much more a better fit for you than direct staking. Look for ONE-T Nomination Pools <Link href="https://one-t.turboflakes.io/#/polkadot" target="_blank" rel="noreferrer" color="inherit">here</Link> to find out more.
         </Typography>
         {/* <Typography color='secondary' variant='h5' gutterBottom>Do you enjoy this tool, or did it help you?</Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} variant='subtitle' paragraph>

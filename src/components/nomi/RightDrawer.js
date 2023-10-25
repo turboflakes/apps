@@ -13,8 +13,11 @@ import {
   parseCommissionIntervalToPercentage,
   parsePercentageArrayToCommission,
   parseIntervalToUnit,
+  parseIntervalArrayToUnit,
+  parseDecimalsArrayToPercentageInversed,
   parseIntervalToPercentage,
   parsePercentageArrayToDecimalsInversed,
+  parseCommissionIntervalArrayToPercentage,
   parseUnitArrayToDecimals,
   parseInterval } from '../../util/math';
 import { stakeDisplayWeight } from '../../util/display';
@@ -25,8 +28,13 @@ import {
   useGetBoardsLimitsQuery,
 } from '../../features/api/boardsLimitsSlice';
 import {
+  selectChain,
   selectChainInfo
 } from '../../features/chain/chainSlice';
+import {
+  selectApp,
+} from '../../features/app/appSlice';
+import { Button } from '@mui/material';
 
 /// Position 0 - Lower Commission is preferrable
 /// Position 1 - Higher own stake is preferrable
@@ -51,12 +59,24 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.primary
 }));
 
+const resetFilters = () => {
+  return "0,0,0,0"
+}
+
 const resetWeights = () => {
   return "0,0,0,0,0"
 }
 
-function useInitWeightsSearchParams(searchParams, setSearchParams) {
+function useInitWeightsSearchParams(searchParams, setSearchParams, selectedApp, selectedChain) {
   React.useEffect(() => {
+    const search = localStorage.getItem(`${selectedApp}_${selectedChain}_search`);
+    if (search) {
+      const searchParams = new URLSearchParams(search);
+      if (searchParams.get("w").split(",").length === 5) {
+        setSearchParams(searchParams)
+        return
+      }
+    }
     if (!searchParams.get("w")) {
       searchParams.set("w", resetWeights())
       setSearchParams(searchParams)
@@ -72,19 +92,28 @@ function useInitWeightsSearchParams(searchParams, setSearchParams) {
   return [];
 }
 
-const resetintervals = () => {
+const resetIntervals = () => {
   return "0:1000000000,0:10000000000000000,0:10000000000000000,0:100000000000,0:10000000"
 }
 
-function useInitIntervalsSearchParams(searchParams, setSearchParams) {
+function useInitIntervalsSearchParams(searchParams, setSearchParams, selectedApp, selectedChain) {
+
   React.useEffect(() => {
+    const search = localStorage.getItem(`${selectedApp}_${selectedChain}_search`);
+    if (search) {
+      const searchParams = new URLSearchParams(search);
+      if (searchParams.get("i").split(",").length === 5) {
+        setSearchParams(searchParams)
+        return
+      }
+    }
     if (!searchParams.get("i")) {
-      searchParams.set("i", resetintervals())
+      searchParams.set("i", resetIntervals())
       setSearchParams(searchParams)
       return
     }
     if (searchParams.get("i").split(",").length !== 5) {
-      searchParams.set("i", resetintervals())
+      searchParams.set("i", resetIntervals())
       setSearchParams(searchParams)
       return
     }
@@ -95,10 +124,12 @@ function useInitIntervalsSearchParams(searchParams, setSearchParams) {
 
 export default function RightDrawer({open, onClose, width, showDark}) {
   const theme = useTheme();
-  const chainInfo = useSelector(selectChainInfo)
+  const chainInfo = useSelector(selectChainInfo);
+  const selectedChain = useSelector(selectChain);
+  const selectedApp = useSelector(selectApp);
   let [searchParams, setSearchParams] = useSearchParams();
-  useInitWeightsSearchParams(searchParams, setSearchParams);
-  useInitIntervalsSearchParams(searchParams, setSearchParams);
+  useInitWeightsSearchParams(searchParams, setSearchParams, selectedApp, selectedChain);
+  useInitIntervalsSearchParams(searchParams, setSearchParams, selectedApp, selectedChain);
   
   const {data, isFetching, isError } = useGetBoardsLimitsQuery({session: "current"}, {refetchOnMountOrArgChange: true});
   useGetBoardsQuery({
@@ -108,22 +139,29 @@ export default function RightDrawer({open, onClose, width, showDark}) {
     n: 32
   }, {refetchOnMountOrArgChange: true});
 
-  const handleOnClickNominate = (address) => {
-    console.log("TODO__handleOnClickNominate");
-  }
-
   const handleOnChange = (evt, value, index) => {
     let weights = searchParams.get("w").split(",");
     weights[index] = value
     searchParams.set("w", weights.toString())
     setSearchParams(searchParams)
+    localStorage.setItem(`${selectedApp}_${selectedChain}_search`, decodeURIComponent(searchParams.toString()));
   }
 
   const handleOnLimitsChange = (evt, value, index) => {
     let intervals = searchParams.get("i").split(",");
     intervals[index] = value.join(':')
     searchParams.set("i", intervals.toString())
+
+    setSearchParams(searchParams);
+    localStorage.setItem(`${selectedApp}_${selectedChain}_search`, decodeURIComponent(searchParams.toString()));
+  }
+
+  const handleOnReset = (e) => {
+    searchParams.set("i", resetIntervals())
+    searchParams.set("w", resetWeights())
+    searchParams.set("f", resetFilters())
     setSearchParams(searchParams)
+    localStorage.removeItem(`${selectedApp}_${selectedChain}_search`)
   }
 
   if (isFetching || isError || !searchParams.get("w")) {
@@ -131,7 +169,8 @@ export default function RightDrawer({open, onClose, width, showDark}) {
   }
 
   let weights = searchParams.get("w").split(",").map(v => parseInt(v));
-  
+  let intervals = searchParams.get("i").split(",");
+
   return (
     <Drawer
         sx={{
@@ -158,6 +197,9 @@ export default function RightDrawer({open, onClose, width, showDark}) {
                   color: showDark ? theme.palette.text.secondary : theme.palette.text.primary,
                   backgroundColor: 'transparent' 
                   }}>Nomination Criteria</ListSubheader>
+                  <Button sx={{ p: theme.spacing(1/2)}} onClick={handleOnReset} size='small' color='secondary' variant='outlined'>
+                    Reset
+                  </Button>
               </Box>
             }
           >
@@ -170,6 +212,7 @@ export default function RightDrawer({open, onClose, width, showDark}) {
                 resultDescription="A lower commission results on a higher score."
                 questionDescription="How much you prioritize a validator with lower commission compared to one with higher commission?"
                 limitsTitle="Commission range"
+                rangeSelected={parseCommissionIntervalArrayToPercentage(intervals[0].split(":"))}
                 limits={parseCommissionIntervalToPercentage(data.limits.commission)}
                 limitsLabelFormat={(v) => `${v}%`}
                 limitsStep={10}
@@ -187,6 +230,7 @@ export default function RightDrawer({open, onClose, width, showDark}) {
                 resultDescription="A higher performance is preferable and results on a higher score." 
                 questionDescription="How much you prioritize a validator with higher performance compared to one with lower performance?"
                 limitsTitle="Performance range"
+                rangeSelected={parseDecimalsArrayToPercentageInversed(intervals[4].split(":"))}
                 limits={parseIntervalToPercentage(data.limits.mvr)}
                 limitsLabelFormat={(v) => `${v}%`}
                 limitsStep={1}
@@ -204,6 +248,7 @@ export default function RightDrawer({open, onClose, width, showDark}) {
                 resultDescription="A higher self stake amount results on a higher score."
                 questionDescription="How much you prioritize a validator with higher self stake compared to one with lower self stake?"
                 limitsTitle="Self Stake range"
+                rangeSelected={parseIntervalArrayToUnit(intervals[1].split(":"))}
                 limits={parseIntervalToUnit(data.limits.own_stake)}
                 limitsLabelFormat={(v) => stakeDisplayWeight(v, chainInfo)}
                 limitsStep={1000}
@@ -221,6 +266,7 @@ export default function RightDrawer({open, onClose, width, showDark}) {
                 resultDescription="A higher nominators stake amount is preferable and results on a higher score." 
                 questionDescription="How much you prioritize a validator with higher nominators stake amount compared to one with lower nominators stake?"
                 limitsTitle="Nominators Stake range"
+                rangeSelected={parseIntervalArrayToUnit(intervals[2].split(":"))}
                 limits={parseIntervalToUnit(data.limits.nominators_stake)}
                 limitsLabelFormat={(v) => stakeDisplayWeight(v, chainInfo)}
                 limitsStep={10000}
@@ -238,6 +284,7 @@ export default function RightDrawer({open, onClose, width, showDark}) {
                 resultDescription="A lower number of nominators results on a higher score." 
                 questionDescription="How much you prioritize a validator with lower number of nominators compared to one with a higher number of nominators?"
                 limitsTitle="Nominators counter range"
+                rangeSelected={intervals[3].split(":").map(n => Number(n))}
                 limits={parseInterval(data.limits.nominators_counter)}
                 limitsStep={1}
                 onChange={(e, v) => handleOnChange(e, v, 3)}

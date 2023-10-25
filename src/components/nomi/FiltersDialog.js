@@ -28,7 +28,13 @@ const StyledDialog = styled(Dialog)(({ theme, maxWidth }) => ({
 export default function FiltersDialog({ filters, onClose, open, ...other }) {
   const theme = useTheme();
   const [options, setOptions] = React.useState(filters);
-  
+
+  React.useEffect(() => {
+    if (filters) {
+      setOptions(filters)
+    }
+  }, [filters])
+
   const handleCancel = () => {
     setOptions(filters)
     onClose();
@@ -49,7 +55,7 @@ export default function FiltersDialog({ filters, onClose, open, ...other }) {
   };
 
   return (
-    <StyledDialog fullWidth={true} maxWidth="xs" open={open} onClose={handleCancel} keepMounted>
+    <StyledDialog fullWidth={true} maxWidth="xs" open={open} onClose={handleCancel}>
       <Box sx={{
         m: 0,
         p: 0,

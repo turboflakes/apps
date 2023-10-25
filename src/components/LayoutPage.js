@@ -603,7 +603,6 @@ export default function LayoutPage({api}) {
   // }
 
   const handleValidatorClicked = (stash) => {
-    console.log("___stash", stash);
     const defaultSS58 = addressSS58(stash)
     dispatch(addressChanged(defaultSS58))
     if (selectedApp === 'onet') {

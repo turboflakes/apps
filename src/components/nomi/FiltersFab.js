@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -9,19 +10,33 @@ import Chip from '@mui/material/Chip';
 import CheckIcon from '@mui/icons-material/Check';
 import NotApplicapleIcon from '@mui/icons-material/NotInterested';
 import Stack from '@mui/material/Stack';
+import {
+  selectChain
+} from '../../features/chain/chainSlice';
+import {
+  selectApp
+} from '../../features/app/appSlice';
 
 const filtersDescription = [
   {label: "Active Validators", type: "include"}, 
   {label: "TVP Validators", type: "include"}, 
-  {label: "Over Subscribed", type: "exclude"}, 
+  {label: "Over Subscribed", type: "exclude"},
   {label: "Missing Identity", type: "exclude"}];
 
 const resetFilters = () => {
   return "0,0,0,0"
 }
   
-function useInitFiltersSearchParams(searchParams, setSearchParams) {
+function useInitFiltersSearchParams(searchParams, setSearchParams, selectedApp, selectedChain) {
   React.useEffect(() => {
+    const search = localStorage.getItem(`${selectedApp}_${selectedChain}_search`);
+    if (search) {
+      const searchParams = new URLSearchParams(search);
+      if (searchParams.get("f").split(",").length === 4) {
+        setSearchParams(searchParams)
+        return
+      }
+    }
     if (!searchParams.get("f")) {
       searchParams.set("f", resetFilters())
       setSearchParams(searchParams)
@@ -39,6 +54,8 @@ function useInitFiltersSearchParams(searchParams, setSearchParams) {
 
 export default function FiltersFab({right}) {
   const theme = useTheme();
+  const selectedChain = useSelector(selectChain);
+  const selectedApp = useSelector(selectApp);
   let [searchParams, setSearchParams] = useSearchParams();
   useInitFiltersSearchParams(searchParams, setSearchParams);
   const [openFilters, setOpenFilters] = React.useState(false);
@@ -53,6 +70,7 @@ export default function FiltersFab({right}) {
     if (newFilters) {
       searchParams.set("f", newFilters.toString())
       setSearchParams(searchParams)
+      localStorage.setItem(`${selectedApp}_${selectedChain}_search`, decodeURIComponent(searchParams.toString()));
     }
     
   };
