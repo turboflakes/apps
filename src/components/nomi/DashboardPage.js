@@ -101,7 +101,10 @@ export default function DashboardPage() {
   // Welcome dialog
   React.useEffect(() => {
     let t = setTimeout(() => {
-      setOpenWelcomeDialog(true);
+      if (!localStorage.getItem('nomi_welcome')) {
+        setOpenWelcomeDialog(true);
+        localStorage.setItem('nomi_welcome', true)
+      }
     }, 1000);
     return () => {
       clearTimeout(t);
