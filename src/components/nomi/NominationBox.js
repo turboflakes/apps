@@ -67,8 +67,8 @@ export default function NominationBox({api, left, onClick, onAddAllClick }) {
         zIndex: 1
       }}>
         <Stack direction="column" sx={{ width: 145 }}>
-          <Typography variant='h6' paragraph>
-            Candidates
+          <Typography variant='h6' sx={{ whiteSpace: 'nowrap'}} paragraph>
+            Nomination Candidates
             {candidates.length > 0 ?
               <Box component="span" sx={{ 
                 position: 'absolute',
