@@ -37,10 +37,10 @@ export default function WeightButtonGroup({
         <WeightIconButton value={4} size={size} showDark={showDark} selected={value === 4} onClick={(e) => onChange(e, 4)} />
         <WeightIconButton value={5} size={size} showDark={showDark} selected={value === 5} onClick={(e) => onChange(e, 5)} />
         {/* 
-          <WeightIconButton value={6} selected={selected === 6} onClick={handleOnClick} />
-          <WeightIconButton value={7} selected={selected === 7} onClick={handleOnClick} />
-          <WeightIconButton value={8} selected={selected === 8} onClick={handleOnClick} />
-          <WeightIconButton value={9} selected={selected === 9} onClick={handleOnClick} /> 
+        <WeightIconButton value={6} size={size} showDark={showDark} selected={value === 6} onClick={(e) => onChange(e, 6)} />
+        <WeightIconButton value={7} size={size} showDark={showDark} selected={value === 7} onClick={(e) => onChange(e, 7)} />
+        <WeightIconButton value={8} size={size} showDark={showDark} selected={value === 8} onClick={(e) => onChange(e, 8)} />
+        <WeightIconButton value={9} size={size} showDark={showDark} selected={value === 9} onClick={(e) => onChange(e, 9)} /> 
         */}
       </Stack>
       {limitsTitle ?

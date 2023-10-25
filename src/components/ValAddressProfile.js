@@ -27,7 +27,7 @@ import {
 import {
   selectIsLiveMode
 } from '../features/layout/layoutSlice';
-import { stakeDisplay, stashDisplay } from '../util/display'
+import { stakeDisplay, stashDisplay, symbolDisplay } from '../util/display'
 import {
   chainAddress
 } from '../util/crypto';
@@ -82,7 +82,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
               theme={'polkadot'} />
           </Box>
           <Box>
-            <Box sx={{ maxWidth: 540, minHeight: 56, display: 'flex', justifyContent: 'space-between'}}>
+            <Box sx={{ maxWidth: 556, minHeight: 56, display: 'flex', justifyContent: 'space-between'}}>
               <Box sx={{ display: 'flex', flexDirection: 'column'}}>
                 <Typography variant="h5" color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{valProfile?.identity ? valProfile._identity : stashDisplay(chainAddress(address, chainInfo.ss58Format))}</Typography>
                 <Typography variant="caption" color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>
@@ -107,12 +107,12 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
               backgroundColor: 'transparent',
               backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
               }} />
-            <Box sx={{ display: 'flex'}}>
-              <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+            <Box sx={{ display: 'flex', width: '100%'}}>
+              <Box sx={{ mr: theme.spacing(2), display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                 {showGrade ? 
                   <GradeIcon sessionIndex={sessionIndex} maxSessions={maxSessions} address={address} size={64} /> : null}
               </Box>
-              <Box sx={{ mr: 3,  display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+              <Box sx={{ mr: theme.spacing(2),  display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                 <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom
                   color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>commission</Typography>
                 <Box>
@@ -120,15 +120,17 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
                     color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{valProfile._commission}</Typography>
                 </Box>
               </Box>
-              <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+              <Box sx={{ mr: theme.spacing(2), display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                 <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom
                   color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>bonded</Typography>
                 <Box>
                   <Typography variant="h5" component="span"
-                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.own_stake, chainInfo, 2, true, true, true)}</Typography>
+                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.own_stake, chainInfo, 4, true, false, true)}
+                    <span style={{ color: theme.palette.neutrals[200] }}>{symbolDisplay(chainInfo)}</span>
+                  </Typography>
                 </Box>
               </Box>
-              <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+              <Box sx={{ mr: theme.spacing(2), display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                 <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom
                   color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>nominators</Typography>
                 <Box>
@@ -136,12 +138,14 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
                     color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{valProfile.nominators_counter}</Typography>
                 </Box>
               </Box>
-              <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                 <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom
                   color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>nominators bonded</Typography>
                 <Box>
                   <Typography variant="h5" component="span"
-                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.nominators_raw_stake, chainInfo, 2, true, true, true)}</Typography>
+                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.nominators_raw_stake, chainInfo, 4, true, false, true)}
+                    <span style={{ color: theme.palette.neutrals[200] }}>{symbolDisplay(chainInfo)}</span>
+                  </Typography>
                 </Box>
               </Box>
               {/* {showSubset && valProfile.subset === "TVP" ? 

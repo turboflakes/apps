@@ -178,6 +178,7 @@ export default function RightDrawer({open, onClose, width, showDark}) {
         '& .MuiDrawer-paper': {
             width,
             border: 0,
+            pl: theme.spacing(1),
             backgroundColor: showDark ? theme.palette.background.secondary : theme.palette.background.primary,
         },
         }}
@@ -197,7 +198,8 @@ export default function RightDrawer({open, onClose, width, showDark}) {
                   color: showDark ? theme.palette.text.secondary : theme.palette.text.primary,
                   backgroundColor: 'transparent' 
                   }}>Nomination Criteria</ListSubheader>
-                  <Button sx={{ p: theme.spacing(1/2)}} onClick={handleOnReset} size='small' color='secondary' variant='outlined'>
+                  <Button sx={{ p: theme.spacing(1/2), mr: theme.spacing(2)}} onClick={handleOnReset} 
+                    size='small' color='secondary' variant='outlined'>
                     Reset
                   </Button>
               </Box>

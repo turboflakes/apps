@@ -109,7 +109,7 @@ export default function ValidatorDialog({ onClose, onDiscard, onNext, onBack, op
       { open ? 
         <Box sx={{ display: 'flex' }} >
           <ValAddressProfile address={address} maxSessions={maxHistorySessions} showGrade showSubset showDark />
-          <Box sx={{ height: 256, display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+          <Box sx={{ height: 288, display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
             <ValMvrHistoryBox address={address} maxSessions={maxHistorySessions} showDark={showDark} noChart={true} />
             <ValEraPointsHistoryBox address={address} maxSessions={maxHistorySessions} showDark={showDark} noChart={true} />
             <ValAuthoredBlocksHistoryBox address={address} maxSessions={maxHistorySessions} showDark={showDark} noChart={true} />

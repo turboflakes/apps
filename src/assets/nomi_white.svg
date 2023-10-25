@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="345px" height="430px" viewBox="0 0 345 430" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-103.000000, -25.000000)">
+            <g id="Group" transform="translate(105.000000, 25.000000)">
+                <g transform="translate(65.000000, 135.000000)" fill="#FFFFFF" fill-rule="nonzero" id="Path">
+                    <path d="M14.2,48.6 L40.3,48.6 C48.1,48.6 54.4,42.2 54.4,34.5 L54.4,15 C54.4,7.2 48,0.9 40.3,0.9 L14.2,0.9 C6.4,0.9 0.1,7.3 0.1,15 L0.1,34.5 C0.1,42.3 6.5,48.6 14.2,48.6 Z"></path>
+                    <path d="M155.1,48.6 L181.2,48.6 C189,48.6 195.3,42.2 195.3,34.5 L195.3,15 C195.3,7.2 188.9,0.9 181.2,0.9 L155.1,0.9 C147.3,0.9 141,7.3 141,15 L141,34.5 C141,42.3 147.4,48.6 155.1,48.6 Z"></path>
+                </g>
+                <circle id="Oval" stroke="#0F1923" stroke-width="4" fill="#FFFFFF" fill-rule="nonzero" cx="161.8" cy="247.8" r="126.3"></circle>
+                <ellipse id="Oval" fill="#FFFFFF" fill-rule="nonzero" cx="161.8" cy="388.5" rx="91.2" ry="5.4"></ellipse>
+                <path d="M160.9,121.2 C160.9,121.2 296.8,229.9 161,374" id="Path" stroke="#0F1923" stroke-width="2"></path>
+                <g transform="translate(0.000000, 61.000000)" id="Oval">
+                    <circle stroke="#0F1923" stroke-width="4" fill="#0F1923" fill-rule="nonzero" cx="161.8" cy="78.2" r="77.5"></circle>
+                    <circle stroke="#0F1923" stroke-width="3" fill="#0F1923" fill-rule="nonzero" cx="43.9" cy="192.3" r="43.7"></circle>
+                    <circle stroke="#0F1923" stroke-width="3" fill="#0F1923" fill-rule="nonzero" cx="288.6" cy="193.7" r="51.8"></circle>
+                    <circle cx="93.9" cy="282.9" r="51.8"></circle>
+                    <circle transform="translate(246.348930, 308.648310) rotate(-80.781636) translate(-246.348930, -308.648310) " cx="246.34893" cy="308.64831" r="51.8007886"></circle>
+                </g>
+                <g transform="translate(0.000000, 204.000000)" id="Oval">
+                    <circle stroke="#0F1923" stroke-width="4" fill="#FFFFFF" fill-rule="nonzero" cx="43.9" cy="44.5" r="43.7"></circle>
+                    <circle stroke="#0F1923" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" cx="43.9" cy="44.5" r="38"></circle>
+                    <circle stroke="#0F1923" stroke-width="4.523" fill="#FFFFFF" fill-rule="nonzero" cx="43.9" cy="44.5" r="29.6"></circle>
+                    <circle fill="#0F1923" fill-rule="nonzero" cx="43.9" cy="44.5" r="20.9"></circle>
+                    <circle stroke="#FFFFFF" stroke-width="0.6817" cx="43.9" cy="44.5" r="14.2"></circle>
+                </g>
+                <g transform="translate(107.000000, 39.000000)" stroke="#0F1923">
+                    <g fill="#FFFFFF" fill-rule="nonzero" id="Oval" stroke-width="4">
+                        <circle cx="19.2" cy="19.1" r="18.4"></circle>
+                        <circle cx="90.5" cy="19.1" r="18.4"></circle>
+                    </g>
+                    <path d="M18.4,0.8 C18.4,0.8 26.6,3.9 29.8,17.5" id="Path"></path>
+                    <path d="M11,2.5 C11,2.5 8.8,8.1 17.3,22.1" id="Path"></path>
+                    <path d="M99.9,3.9 C99.9,3.9 101.1,9.9 93.1,22.3" id="Path"></path>
+                    <path d="M92.9,1 C92.9,1 84.4,4.4 81.5,17.2" id="Path"></path>
+                    <path d="M105.9,10.6 C105.9,10.6 106.6,20 101.1,27.3" id="Path"></path>
+                    <path d="M6.6,6.9 C6.6,6.9 2.9,16.5 9.4,26.9" id="Path"></path>
+                </g>
+                <circle id="Oval" stroke="#0F1923" stroke-width="4" fill="#FFFFFF" fill-rule="nonzero" cx="161.8" cy="129.9" r="77.5"></circle>
+                <path d="M109.3,0.3 C109.3,0.3 245.2,109 109.4,253.1" id="Path"></path>
+                <g transform="translate(130.000000, 161.000000)" id="Path" stroke="#0F1923" stroke-width="2">
+                    <path d="M65.2,5.6 L3.3,5.6 C1.9,5.6 0.7,4.4 0.7,3 L0.7,3 C0.7,1.6 1.9,0.4 3.3,0.4 L65.2,0.4 C66.6,0.4 67.8,1.6 67.8,3 L67.8,3 C67.8,4.4 66.6,5.6 65.2,5.6 Z" fill="#0F1923" fill-rule="nonzero"></path>
+                    <path d="M65.2,16.6 L3.3,16.6 C1.9,16.6 0.7,15.4 0.7,14 L0.7,14 C0.7,12.6 1.9,11.4 3.3,11.4 L65.2,11.4 C66.6,11.4 67.8,12.6 67.8,14 L67.8,14 C67.8,15.5 66.6,16.6 65.2,16.6 Z"></path>
+                </g>
+                <g transform="translate(107.000000, 85.000000)" fill-rule="nonzero">
+                    <path d="M97.9,0.2 L11.8,0.2 C5.6,0.2 0.6,5.2 0.6,11.4 L0.6,48.3 C0.6,54.5 5.6,59.5 11.8,59.5 L97.9,59.5 C104.1,59.5 109.1,54.5 109.1,48.3 L109.1,11.4 C109.1,5.3 104.1,0.2 97.9,0.2 Z" id="Path" stroke="#0F1923" stroke-width="3" fill="#0F1923"></path>
+                    <g transform="translate(68.000000, 13.000000)" id="Oval">
+                        <circle fill="#FFFFFF" cx="17.3" cy="16.9" r="16.5"></circle>
+                        <circle fill="#0F1923" cx="17.3" cy="16.9" r="8.9"></circle>
+                        <circle fill="#FFFFFF" cx="17.3" cy="16.9" r="5.5"></circle>
+                        <circle fill="#0F1923" cx="17.3" cy="16.8" r="4.2"></circle>
+                        <circle fill="#FFFFFF" cx="17.3" cy="13.3" r="2.6"></circle>
+                    </g>
+                    <path d="M56.1,29.9 C56.1,30.3 55.7,30.7 55.3,30.7 L46.6,30.7 C46.2,30.7 45.8,30.3 45.8,29.9 C45.8,29.5 46.2,29.1 46.6,29.1 L55.3,29.1 C55.8,29.1 56.1,29.4 56.1,29.9 Z M32,16.1 C32.4,16.1 32.8,15.7 32.8,15.3 L32.8,6.6 C32.8,6.2 32.4,5.8 32,5.8 C31.6,5.8 31.2,6.2 31.2,6.6 L31.2,15.3 C31.2,15.7 31.6,16.1 32,16.1 Z M18.2,29.9 C18.2,29.5 17.8,29.1 17.4,29.1 L8.7,29.1 C8.3,29.1 7.9,29.5 7.9,29.9 C7.9,30.3 8.3,30.7 8.7,30.7 L17.4,30.7 C17.9,30.7 18.2,30.3 18.2,29.9 Z M32,26.4 C30.1,26.4 28.5,28 28.5,29.9 C28.5,31.8 30.1,33.4 32,33.4 C33.9,33.4 35.5,31.8 35.5,29.9 C35.5,27.9 34,26.4 32,26.4 L32,26.4 Z M42,29.9 C42,35.4 37.5,39.9 32,39.9 C26.5,39.9 22,35.4 22,29.9 C22,24.4 26.5,19.9 32,19.9 L32,19.9 C37.5,19.9 42,24.4 42,29.9 Z M37.2,29.9 C37.2,27.1 34.9,24.8 32.1,24.8 C29.3,24.8 27,27.1 27,29.9 C27,32.7 29.3,35 32.1,35 L32.1,35 C34.9,35 37.2,32.7 37.2,29.9 L37.2,29.9 Z M46.6,32.3 L48.3,32.3 C47.2,39.5 41.6,45.1 34.4,46.2 L34.4,44.5 C34.4,43.2 33.3,42.1 32,42.1 C30.7,42.1 29.6,43.2 29.6,44.5 L29.6,46.2 C22.4,45.1 16.8,39.5 15.7,32.3 L17.4,32.3 C18.7,32.3 19.8,31.2 19.8,29.9 C19.8,28.6 18.7,27.5 17.4,27.5 L15.7,27.5 C16.8,20.3 22.4,14.7 29.6,13.6 L29.6,15.3 C29.6,16.6 30.7,17.7 32,17.7 C33.3,17.7 34.4,16.6 34.4,15.3 L34.4,13.6 C41.6,14.7 47.2,20.3 48.3,27.5 L46.6,27.5 C45.3,27.5 44.2,28.6 44.2,29.9 C44.2,31.2 45.3,32.3 46.6,32.3 Z M43.6,29.9 C43.6,23.5 38.4,18.3 32,18.3 C25.6,18.3 20.4,23.5 20.4,29.9 C20.4,36.3 25.6,41.5 32,41.5 L32,41.5 C38.4,41.5 43.6,36.3 43.6,29.9 L43.6,29.9 Z M32,43.7 C31.6,43.7 31.2,44.1 31.2,44.5 L31.2,53.2 C31.2,53.6 31.6,54 32,54 C32.4,54 32.8,53.6 32.8,53.2 L32.8,44.5 C32.8,44 32.5,43.7 32,43.7 Z" id="Shape" fill="#FFFFFF"></path>
+                </g>
+                <g transform="translate(120.000000, 341.000000)" fill="#0F1923" fill-rule="nonzero" id="Path">
+                    <path d="M7.4,4.7 L2.5,4.7 C1.3,4.7 0.2,3.7 0.2,2.4 L0.2,2.4 C0.2,1.2 1.2,0.1 2.5,0.1 L7.4,0.1 C8.6,0.1 9.7,1.1 9.7,2.4 L9.7,2.4 C9.7,3.7 8.6,4.7 7.4,4.7 Z"></path>
+                    <path d="M15.1,4.7 L13.2,4.7 C12.3,4.7 11.5,3.9 11.5,3 L11.5,1.8 C11.5,0.9 12.3,0.1 13.2,0.1 L15.1,0.1 C16,0.1 16.8,0.9 16.8,1.8 L16.8,3 C16.8,3.9 16.1,4.7 15.1,4.7 Z"></path>
+                    <path d="M21.5,4.7 L19.6,4.7 C18.7,4.7 17.9,3.9 17.9,3 L17.9,1.8 C17.9,0.9 18.7,0.1 19.6,0.1 L21.5,0.1 C22.4,0.1 23.2,0.9 23.2,1.8 L23.2,3 C23.2,3.9 22.5,4.7 21.5,4.7 Z"></path>
+                </g>
+                <g transform="translate(242.000000, 65.000000)">
+                    <polyline id="Path" stroke="#FFFFFF" stroke-width="3" points="4.7 85.7 5.7 61 20.6 59.6 13.6 36.7 6.1 38.1 4.7 4.1"></polyline>
+                    <circle id="Oval" fill="#FFFFFF" fill-rule="nonzero" cx="5" cy="5" r="5"></circle>
+                </g>
+                <circle id="Oval" stroke="#0F1923" stroke-width="4" fill="#FFFFFF" fill-rule="nonzero" cx="288.7" cy="247.8" r="51.8"></circle>
+                <path d="M288.7,225 C272.9,225 258.4,230.3 246.8,239.3 C249.1,260.4 267,276.8 288.7,276.8 C310.4,276.8 328.3,260.4 330.6,239.3 C319,230.3 304.5,225 288.7,225 Z" id="Path" fill="#0F1923" fill-rule="nonzero"></path>
+                <path d="M282.3,288.2 L282.3,288.2 C282.3,287.7 282.7,287.3 283.2,287.3 L294.1,287.3 C294.6,287.3 295,287.7 295,288.2 L295,288.2 C295,288.7 294.6,289.1 294.1,289.1 L283.2,289.1 C282.7,289.1 282.3,288.7 282.3,288.2 Z" id="Path" stroke="#010101" fill="#FFFFFF" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>
