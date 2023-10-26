@@ -33,7 +33,7 @@ export default function FiltersDialog({ filters, onClose, open, ...other }) {
     if (filters) {
       setOptions(filters)
     }
-  }, [filters])
+  }, [filters.toString()])
 
   const handleCancel = () => {
     setOptions(filters)
@@ -55,7 +55,7 @@ export default function FiltersDialog({ filters, onClose, open, ...other }) {
   };
 
   return (
-    <StyledDialog fullWidth={true} maxWidth="xs" open={open} onClose={handleCancel}>
+    <StyledDialog fullWidth={true} maxWidth="xs" open={open} onClose={handleCancel} keepMounted>
       <Box sx={{
         m: 0,
         p: 0,

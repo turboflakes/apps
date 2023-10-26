@@ -65,13 +65,12 @@ export default function FiltersFab({right}) {
   };
 
   const handleCloseFiltersDialog = (newFilters) => {
-    setOpenFilters(false);
-
     if (newFilters) {
       searchParams.set("f", newFilters.toString())
       setSearchParams(searchParams)
       localStorage.setItem(`${selectedApp}_${selectedChain}_search`, decodeURIComponent(searchParams.toString()));
     }
+    setOpenFilters(false);
     
   };
 
