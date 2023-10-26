@@ -36,5 +36,5 @@ Main features:
   - Self Stake
   - Nominators Stake
   - Nominators counter
-- Validator indexer and history data [by ONE-T](https://github.com/turboflakes/one-t)
+- Validator indexer and history data by [ONE-T](https://github.com/turboflakes/one-t)
 - Web3 wallet extension by [polkadot.cloud](https://polkadot.cloud/extensions)
