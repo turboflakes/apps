@@ -27,6 +27,7 @@ import PolkaGateSVG from "@polkadot-cloud/assets/extensions/svg/polkagate.svg?re
 import SubwalletJSSVG from "@polkadot-cloud/assets/extensions/svg/subwalletjs.svg?react";
 import TalismanSVG from "@polkadot-cloud/assets/extensions/svg/talisman.svg?react";
 import { ReactComponent as NominationIcon } from '../../assets/polkadot_icons/nominating_dark.svg';
+import Spinner from '../Spinner';
 import {
   selectValProfileByAddress,
 } from '../../features/api/valProfilesSlice';
@@ -125,6 +126,15 @@ export default function NominationDialog({ api, open, onClose }) {
   // TODO: better handle tx status 
   const [successTx, setSuccessTx] = React.useState();
   const [failedTx, setFailedTx] = React.useState();
+  const [inProgressTx, setInProgressTx] = React.useState(false);
+
+  React.useEffect(() => {
+    if (successTx || failedTx) {
+      setTimeout(() => {
+        handleOnCancel()
+      }, 10000);
+    }
+  }, [successTx, failedTx]);
 
   React.useEffect(() => {
     // TODO: fully test the flow with all extensions
@@ -149,6 +159,7 @@ export default function NominationDialog({ api, open, onClose }) {
   const handleOnCancel = () => {
     setSuccessTx();
     setFailedTx();
+    setInProgressTx(false);
     onClose();
   };
 
@@ -160,7 +171,7 @@ export default function NominationDialog({ api, open, onClose }) {
         const extDescription = `${section}.${method}`
         ext.signAndSend(activeAccount.address, { signer: activeAccount.signer }, ({status, events = []}) => {
           console.log(`Transaction status ${status.type}`)
-          
+          setInProgressTx(true);
           if (status.isInBlock) {
             console.log(`Transaction in block (https://${selectedChain}.subscan.io/extrinsic/${ext.hash.toString()})`)
             
@@ -171,6 +182,7 @@ export default function NominationDialog({ api, open, onClose }) {
               }
               if (api.events.system.ExtrinsicSuccess.is(event)) {
                 console.log(`${extDescription} Success`, url);
+                setInProgressTx(false);
                 setSuccessTx(url);
               } else if (api.events.system.ExtrinsicFailed.is(event)) {
                 // extract the data for this event
@@ -189,6 +201,7 @@ export default function NominationDialog({ api, open, onClose }) {
                   // Other, CannotLookup, BadOrigin, no extra info
                   errorInfo = dispatchError.toString();
                 }
+                setInProgressTx(false);
                 setFailedTx(errorInfo);
                 console.error(`${extDescription} Failed: ${errorInfo}`, url);
               }
@@ -225,7 +238,7 @@ export default function NominationDialog({ api, open, onClose }) {
 
 return (
     <StyledDialog fullWidth={true} maxWidth="xs" open={open} onClose={handleOnCancel} keepMounted>
-      { !successTx && !failedTx ?
+      { !successTx && !failedTx && !inProgressTx ?
         <Box sx={{
           m: 0,
           p: 0,
@@ -242,21 +255,32 @@ return (
               variant='contained' color='secondary' >Nominate</Button>
           </DialogActions>
         </Box> : null }
-      { successTx || failedTx ? 
+      { successTx || failedTx || inProgressTx ? 
         <DialogContent sx={{ py: 0, m: theme.spacing(2) }}>
-          { successTx ?
-            <Box>
-              <Typography color='secondary'>Congrats Nomination Succeeded!</Typography>
-              <Typography variant='caption' color='secondary'>
-                Extrinsic {`${successTx.text}`} available <Link href={successTx.href} target="_blank" rel="noreferrer" color="inherit">here</Link>.
-              </Typography>
+          { inProgressTx ? 
+            <Box sx={{
+              width: "100%",
+              // height: 320,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              <Spinner size={32}/>
             </Box> : 
-            <Box>
-              <Typography color='secondary'>Nomination Failed!</Typography>
-              <Typography variant='caption' color='red'>
-                {failedTx}
-              </Typography>
-            </Box> 
+            (successTx ?
+              <Box>
+                <Typography color='secondary'>Congrats Nomination Succeeded!</Typography>
+                <Typography variant='caption' color='secondary'>
+                  Extrinsic {`${successTx.text}`} available <Link href={successTx.href} target="_blank" rel="noreferrer" color="inherit">here</Link>.
+                </Typography>
+              </Box> : 
+              <Box>
+                <Typography color='secondary'>Nomination Failed!</Typography>
+                <Typography variant='caption' color='red'>
+                  {failedTx}
+                </Typography>
+              </Box> )
           }
         </DialogContent> : 
         <DialogContent sx={{ py: 0, mb: theme.spacing(2) }}>          

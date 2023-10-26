@@ -286,7 +286,7 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
       <Divider />
 
       <ListSubheader sx={{ m: 0, p: 0, pl: theme.spacing(3/2), color: theme.palette.neutrals[300] }}>
-        { `Pages`}
+        { openLeftDrawer ? `Pages` : `Page`}
       </ListSubheader>
 
       <ListItemButton selected={selectedPage === 'dashboard'} disableRipple
