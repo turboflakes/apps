@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.c634fb0f.js",
+    "main.js": "/static/js/main.9193137a.js",
     "static/js/27.22257555.chunk.js": "/static/js/27.22257555.chunk.js",
     "static/media/manta.png": "/static/media/manta.3172e8ea9964232fe94c.png",
     "static/media/litmus.png": "/static/media/litmus.5ae2bc7c8b3c6b6f5c5a.png",
@@ -120,6 +120,7 @@
     "static/media/basilisk.png": "/static/media/basilisk.45355927eaa43b5d298d.png",
     "static/media/nomi.svg": "/static/media/nomi.37caf6a1dc1dc232d42a0e25a135f206.svg",
     "static/media/rocfinity.svg": "/static/media/rocfinity.02e9a6464d1077400261fc42e955d5fe.svg",
+    "static/media/nomi_white.svg": "/static/media/nomi_white.8a797f6c9a1840978476f88d9c11e74f.svg",
     "static/media/grade_b.webp": "/static/media/grade_b.e539f859a013d807658a.webp",
     "static/media/grade_a.webp": "/static/media/grade_a.97a1f04c0380d1d0a34a.webp",
     "static/media/grade_a_plus.webp": "/static/media/grade_a_plus.b1921babdf22c11a71f1.webp",
@@ -238,6 +239,6 @@
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.c634fb0f.js"
+    "static/js/main.9193137a.js"
   ]
 }
