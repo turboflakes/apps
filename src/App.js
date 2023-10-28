@@ -111,8 +111,9 @@ const App = () => {
   return (
       <Router>
         <Routes>
-          {/* <Route path="/" element={<UnderMaintenancePage />} /> */}
-          {/* <Route path="*" element={<Navigate to="/" />} />  */}
+        {selectedChain === "kusama" ?
+          <Route path="/" element={<UnderMaintenancePage />} />
+          :
           <Route path="/" element={<LayoutPage api={api} />}>
             {selectedApp === "onet" ?
               <React.Fragment>
@@ -134,7 +135,7 @@ const App = () => {
             {/* <Route path="stake" >
               <Route path=":name" element={<StakePage />} />
             </Route> */}
-          </Route>
+          </Route> }
         <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
