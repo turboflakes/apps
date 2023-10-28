@@ -24,6 +24,10 @@ import PoolsOverviewPage from './components/PoolsOverviewPage'
 import NomiDashboardPage from './components/nomi/DashboardPage'
 // TODO: (StakePage)
 // import StakePage from './components/stake/StakePage'
+import {
+  selectBestBlock,
+  selectFinalizedBlock,
+} from './features/api/blocksSlice';
 
 import withTheme from './theme/withTheme'
 import {
@@ -74,6 +78,8 @@ const ValidateChain = () => {
 const App = () => {
   const selectedApp = useSelector(selectApp);
   const selectedChain = useSelector(selectChain);
+  const best_block = useSelector(selectBestBlock);
+  const finalized_block = useSelector(selectFinalizedBlock);
   const [api] = useWeb3Api(selectedChain);
 
   const matches = useMediaQuery(selectedApp === "onet" ? '(max-width: 1440px)' : '(max-width: 1024px)');
@@ -105,6 +111,18 @@ const App = () => {
           </React.Fragment> : null }
         </Box>
       </Box>
+    )
+  }
+
+  // Show under maintenance if indexer is syncing
+  if (best_block?.block_number - finalized_block?.block_number > 100) {
+    return (
+      <Router>
+        <Routes>
+          <Route path="/" element={<UnderMaintenancePage />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Router>
     )
   }
   
