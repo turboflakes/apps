@@ -273,7 +273,7 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
         </ListItemButton> : null}
 
       {selectedChain === "polkadot" ? 
-        <ListItemButton onClick={() => onChainChanged('kusama')} disabled disableRipple>
+        <ListItemButton onClick={() => onChainChanged('kusama')} disableRipple>
           <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(2) }}>
             <img src={getNetworkIcon("kusama")} style={{ 
                 width: 28,
@@ -375,7 +375,7 @@ function NomiOptions({openLeftDrawer, onChainChanged, onAppChanged, onToolClicke
         </ListItemButton> : null}
 
       {selectedChain === "polkadot" ? 
-        <ListItemButton onClick={() => onChainChanged('kusama')} disabled disableRipple>
+        <ListItemButton onClick={() => onChainChanged('kusama')} disableRipple>
           <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(2) }}>
             <img src={getNetworkIcon("kusama")} style={{ 
                 width: 28,
