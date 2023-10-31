@@ -336,7 +336,8 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
       <Box sx={{
         overflowY: 'auto',
         overflowX: 'hidden',
-        maxHeight: 320,
+        height: `calc(${window.innerHeight}px - ${224 + 80 + 45*8}px)`,
+        
       }}>
         
         <AppsOptions openLeftDrawer={openLeftDrawer} onAppChanged={onAppChanged} onToolClicked={onToolClicked} />
@@ -344,6 +345,7 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
         <Divider />
 
         <ValidatorOptions openLeftDrawer={openLeftDrawer} onValidatorClicked={onValidatorClicked} />
+
       </Box>
 
     </Box>
@@ -421,7 +423,7 @@ function FooterLeftDrawer({openLeftDrawer}) {
   }
 	
   return (
-    <Box component="span" sx={{
+    <React.Fragment sx={{
       height: '100%',
       display: 'flex',
       alignItems: 'flex-end',
@@ -454,7 +456,7 @@ function FooterLeftDrawer({openLeftDrawer}) {
           }} />
       </ListItem> 
 
-    </Box>
+    </React.Fragment>
     
   )
 }
