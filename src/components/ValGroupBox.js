@@ -77,7 +77,7 @@ export default function ValGroupBox({address, sessionIndex}) {
       >
         <Box sx={{ p: 2 }}>
           <Typography variant="h4" >Val. Group {groupId}</Typography>
-          <Typography variant="subtitle" color="secondary">At session {sessionIndex.format()}</Typography>
+          <Typography variant="subtitle" sx={{ color: theme.palette.neutrals[300] }}>At session {sessionIndex.format()}</Typography>
         </Box>
         <Grid container spacing={2}>
           <Grid item xs={2}>
