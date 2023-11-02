@@ -31,9 +31,13 @@ export const convertToIU = (value, decimals) => {
     : Math.abs(Number(value)).toFixed(decimals) + " ";
 }
 
-export const stakeDisplay = (stake, networkDetails, decimals = 2, format = false, symbol = true, iu = false, small) => {
+export const stakeDisplay = (stake, networkDetails, decimals = 2, format = false, symbol = true, iu = false, style = false) => {
     if (!!networkDetails.tokenDecimals[0] && !!networkDetails.tokenSymbol[0]) {
         const networkDecimals = Math.pow(10, parseInt(networkDetails.tokenDecimals[0], 10))
+        if (format && symbol && iu && style) {
+            const t = convertToIU(stake/networkDecimals, decimals).split(" ");
+            return (<span>{t[0]} <span style={{...style}}>{`${t[1]}${networkDetails.tokenSymbol[0]}`}</span></span>)
+        }
         return `${format ? ( iu ? convertToIU(stake/networkDecimals, decimals) : parseFloat((stake/networkDecimals).toFixed(decimals)).format()) : parseFloat((stake/networkDecimals).toFixed(decimals))}${symbol ? networkDetails.tokenSymbol[0] : ''}`
     }
     return stake

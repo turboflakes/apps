@@ -125,8 +125,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
                   color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>bonded</Typography>
                 <Box>
                   <Typography variant="h5" component="span"
-                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.own_stake, chainInfo, 4, true, false, true)}
-                    <span style={{ ...theme.typography.h6, color: theme.palette.neutrals[200] }}>{symbolDisplay(chainInfo)}</span>
+                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.own_stake, chainInfo, 4, true, true, true, {...theme.typography.h6})}
                   </Typography>
                 </Box>
               </Box>
@@ -143,8 +142,8 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
                   color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>nominators bonded</Typography>
                 <Box>
                   <Typography variant="h5" component="span"
-                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.nominators_raw_stake, chainInfo, 4, true, false, true)}
-                    <span style={{ ...theme.typography.h6, color: theme.palette.neutrals[200] }}>{symbolDisplay(chainInfo)}</span>
+                    color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>
+                      {stakeDisplay(valProfile.nominators_raw_stake, chainInfo, 4, true, true, true, {...theme.typography.h6})}
                   </Typography>
                 </Box>
               </Box>
