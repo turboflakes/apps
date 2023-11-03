@@ -66,7 +66,7 @@ export default function PoolsStakedBox({sessionIndex, dark}) {
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}
           color={dark ? theme.palette.text.secondary : 'default'}>total bonded</Typography>
         <Typography variant="h5" color={dark ? theme.palette.text.secondary : 'default'}>
-          {stakeDisplay(currentValue, selectedChainInfo, 2, true, true, true, {...theme.typography.h6})}
+          {stakeDisplay(currentValue, selectedChainInfo, 4, true, true, true, {...theme.typography.h6})}
         </Typography>
         {diff !== 0 ? 
           <Tooltip title={`${stakeDisplay(Math.abs(diff), selectedChainInfo, 4, false)} ${Math.sign(diff) > 0 ? 'more' : 'less'} staked than ${nSessionsTarget} sessions ago.`} arrow>
