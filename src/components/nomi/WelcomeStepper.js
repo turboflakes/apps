@@ -22,37 +22,37 @@ import {
 import { getCriteriasHash } from '../../util/crypto'
 import nomiSVG from '../../assets/nomi_white.svg';
 
-const steps = ['Intro', 'Commission', 'Performance', 'Self Stake', 'Nominators Stake', 'Nominators Counter'];
+const steps = ['Intro', 'Commission', 'Performance', 'Self Stake', 'Nominators Stake', 'Nominators Counter', 'End'];
 const weightTexts = [
   {
     title: "Commission fee",
     titleDescription: "The commission fee is the cut charged by the Validator for their services.",
     question: "How much you prioritize a validator with lower commission than one with higher commission?",
-    questionCaption: "In a scale of 0 to 5 - where 0 means that lower commission is not important and 5 the most important, please tick your weight."
+    questionCaption: "In a scale of 0 to 5 - where 0 means that lower commission is not important and 5 the most important, please select a weight to continue:"
   },
   {
     title: "Validator performance",
     titleDescription: "The performance is assessed by calculating the ratio of missed points to the total points that could have been obtained.",
     question: "How much you prioritize a validator with higher performance compared to one with lower performance?",
-    questionCaption: "In a scale of 0 to 5 - where 0 means that higher performance is not important and 5 the most important, please tick your weight."
+    questionCaption: "In a scale of 0 to 5 - where 0 means that higher performance is not important and 5 the most important, please select a weight to continue:"
   },
   {
     title: "Self stake",
     titleDescription: "The validator self stake is the amount of funds the validator has bonded to their stash account. These funds are put at stake for the security of the network and are subject to potential slashing.",
     question: "How much you prioritize a validator with higher self stake compared to one with lower self stake?",
-    questionCaption: "In a scale of 0 to 5 - where 0 means that higher self stake is not important and 5 the most important, please tick your weight."
+    questionCaption: "In a scale of 0 to 5 - where 0 means that higher self stake is not important and 5 the most important, please select a weight to continue:"
   },
   {
     title: "Nominators stake",
     titleDescription: "The nominators stake is the total stake from ALL the nominators who nominate the validator. Similar to Validators self stake, these funds are put at stake for the security of the network and are subject to potential slashing.",
     question: "How much you prioritize a validator with higher nominators stake amount compared to one with lower nominators stake?",
-    questionCaption: "In a scale of 0 to 5 - where 0 means that higher nominators stake is not important and 5 the most important, please tick your weight."
+    questionCaption: "In a scale of 0 to 5 - where 0 means that higher nominators stake is not important and 5 the most important, please select a weight to continue:"
   },
   {
     title: "Nominators counter",
     titleDescription: "The nominators counter is the number of nominators backing a validator.",
     question: "How much you prioritize a validator with lower number of nominators compared to one with a higher number of nominators?",
-    questionCaption: "In a scale of 0 to 5 - where 0 means that a low number of nominators is not important and 5 the most important, please tick your weight."
+    questionCaption: "In a scale of 0 to 5 - where 0 means that a low number of nominators is not important and 5 the most important, please select a weight to continue:"
   }
 ];
 
@@ -87,7 +87,7 @@ function StepWelcome() {
         <b>NOMI</b> takes into account five validator-specific traits and their weights, which are determined by your personal preferences. It's user-friendly and aims to help you focus on what truly matters and makes sense to you.
         </Typography>
         <Typography sx={{ color: theme.palette.neutrals[200] }} gutterBottom>
-        So, let's get started :)
+        As a brief tutorial on how this tool works, you will be prompted in each upcoming step to choose a weight that aligns with your highest priority. So, let's get started :)
         </Typography>
       </Box>
     </Box>
@@ -104,7 +104,7 @@ function StepWeight({title, titleDescription, question, questionCaption, value, 
   }
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column'}}>
       <Box sx={{ mt: theme.spacing(2), minHeight: theme.spacing(20) }}>
         <Typography color='secondary' variant='h3'>{title}</Typography>
         <Typography color='secondary' variant='subtitle'>
@@ -115,10 +115,10 @@ function StepWeight({title, titleDescription, question, questionCaption, value, 
         <Typography color='secondary' variant='h5' paragraph>
         {question}
         </Typography>
-        {/* <Typography color='secondary' gutterBottom>
+        <Typography color='secondary' gutterBottom>
         {questionCaption}
-        </Typography> */}
-        <Box sx={{ mt: theme.spacing(5), mb: theme.spacing(3), display: 'flex'}} align="center">
+        </Typography>
+        <Box sx={{ mt: theme.spacing(5), mb: theme.spacing(3), display: 'flex', justifyContent: 'center' }} align="center">
           <WeightButtonGroup
             showDark={showDark}
             size="lg"
@@ -126,9 +126,9 @@ function StepWeight({title, titleDescription, question, questionCaption, value, 
             value={weight}
           />
         </Box>
-        <Typography sx={{ color: theme.palette.neutrals[200] }} color='secondary' variant='caption' gutterBottom>
+        {/* <Typography sx={{ color: theme.palette.neutrals[200] }} color='secondary' variant='caption' gutterBottom>
         {questionCaption}
-        </Typography>
+        </Typography> */}
       </Box>
     </Box>
   )
@@ -188,11 +188,11 @@ function StepFinish({onClose, onReset}) {
         You can always star the repository in <Link href="https://github.com/turboflakes/apps" target="_blank" rel="noreferrer" color="inherit">Github</Link> and help us share it with the Polkadot community and beyond.
         </Typography> */}
       </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
+      <Box sx={{ display: 'flex', position: 'absolute', bottom: theme.spacing(3), right: theme.spacing(3) }}>
         <Button sx={{ mr: 1 }} color='secondary' variant='outlined' onClick={onReset} >
           Reset
         </Button>
-        <Button color='secondary' variant='contained' onClick={onClose} sx={{ mr: 1 }} >
+        <Button color='secondary' variant='contained' onClick={onClose} >
           Close
         </Button>
       </Box>
@@ -214,11 +214,12 @@ export default function WelcomeStepper({onClose, showDark}) {
     let temp = weights.split(",")
     temp[index] = value
     setWeights(temp.toString())
+    handleNext()
   }
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    if (activeStep === steps.length - 1) {
+    if (activeStep === steps.length - 2) {
       searchParams.set("w", weights)
       setSearchParams(searchParams)
     }
@@ -235,19 +236,8 @@ export default function WelcomeStepper({onClose, showDark}) {
 
   return (
     <Box sx={{ height: '100%', display: 'flex', justifyContent: 'space-between' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
-        <Stepper sx={{ minWidth: theme.spacing(10)}} activeStep={activeStep} orientation="vertical">
-          {steps.map((label, index) => {
-            return (
-              <Step key={index}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            );
-          })}
-        </Stepper>
-      </Box>
       <Box sx={{display: 'flex', justifyContent: 'space-between', flexDirection: 'column', width: '80%', height: '100%'}}>
-      {activeStep === steps.length ? (
+      {activeStep === steps.length - 1 ? (
         <StepFinish onClose={onClose} onReset={handleReset} />
       ) : (
         <React.Fragment>
@@ -292,7 +282,7 @@ export default function WelcomeStepper({onClose, showDark}) {
             questionCaption={weightTexts[4].questionCaption } 
             value={getWeight(weights, 3)}
             onChange={(e, v) => handleOnChange(e, v, 3)} /> : null }
-          <Box sx={{display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
+          <Box sx={{display: 'flex', position: 'absolute', bottom: theme.spacing(3), right: theme.spacing(3) }}>
             {activeStep > 0 ?
               <Button
                   color='secondary' variant='outlined'
@@ -302,7 +292,6 @@ export default function WelcomeStepper({onClose, showDark}) {
                 >
                   Back
                 </Button> : null}
-            {/* <Box sx={{ flex: '1 1 auto' }} /> */}
             <Button color='secondary' variant='contained' 
               disabled={
                 (getWeight(weights, 0) === -1 && activeStep === 1) || 
@@ -321,6 +310,17 @@ export default function WelcomeStepper({onClose, showDark}) {
           color='secondary' variant='caption' gutterBottom>
             Disclaimer: NOMI is a complementary tool, always DYOR: Do Your Own Research.
         </Typography>
+      </Box>
+      <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column'}}>
+        <Stepper sx={{ minWidth: theme.spacing(10)}} activeStep={activeStep} orientation="vertical">
+          {steps.map((label, index) => {
+            return (
+              <Step key={index}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            );
+          })}
+        </Stepper>
       </Box>
     </Box>
   );
