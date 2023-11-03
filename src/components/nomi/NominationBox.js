@@ -34,7 +34,7 @@ function CandidateChip({stash, onClick}) {
     <Chip sx={{ 
       '&:hover': { bgcolor: theme.palette.neutrals[100], opacity: 1 }, 
       bgcolor: theme.palette.neutrals[200], opacity: 0.8, 
-      mb: theme.spacing(1), width: 128, justifyContent: 'flex-start'}} 
+      mb: theme.spacing(1), width: 144, justifyContent: 'flex-start'}} 
       onClick={() => onClick(stash)}
       label={nameDisplay(valProfile?.identity ? valProfile._identity : stashDisplay(chainAddress(stash, chainInfo.ss58Format), 4), 12)} 
       icon={<Identicon value={stash} size={24} theme={'polkadot'} />} 
@@ -107,7 +107,7 @@ export default function NominationBox({api, left, onClick, onAddAllClick }) {
             overflowY: 'auto',
             overflowX: 'hidden',
             borderBottom: `2px solid ${theme.palette.primary.main}`,
-            width: 144
+            // width: 144
           }}>
           {candidates.map((value, index) => (<CandidateChip key={index} stash={value} onClick={onClick} />))}
           </Box>
