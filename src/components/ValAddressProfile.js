@@ -122,7 +122,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
               </Box>
               <Box sx={{ mr: theme.spacing(2), display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                 <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom
-                  color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>bonded</Typography>
+                  color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>self stake</Typography>
                 <Box>
                   <Typography variant="h5" component="span"
                     color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{stakeDisplay(valProfile.own_stake, chainInfo, 4, true, true, true, {...theme.typography.h6})}
@@ -139,11 +139,11 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
                 <Typography variant="caption" sx={{whiteSpace: 'nowrap'}} gutterBottom
-                  color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>nominators bonded</Typography>
+                  color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>nominators stake</Typography>
                 <Box>
                   <Typography variant="h5" component="span"
                     color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>
-                      {stakeDisplay(valProfile.nominators_raw_stake, chainInfo, 4, true, true, true, {...theme.typography.h6})}
+                      {stakeDisplay(valProfile.nominators_stake, chainInfo, 4, true, true, true, {...theme.typography.h6})}
                   </Typography>
                 </Box>
               </Box>
