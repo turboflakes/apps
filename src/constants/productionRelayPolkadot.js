@@ -397,9 +397,9 @@ export const prodParasPolkadot = [
     text: 'Frequency',
   },
   {
-    info: 'statemint',
+    info: 'assethub',
     paraId: 1000,
-    text: 'Statemint',
+    text: 'Polkadot Asset Hub',
     teleport: [-1],
     providers: {
       Parity: 'wss://statemint-rpc.polkadot.io',
@@ -424,7 +424,140 @@ export const prodParasPolkadot = [
     providers: {
       Parity: 'wss://polkadot-bridge-hub-rpc.polkadot.io'
     },
-    text: 'BridgeHub',
-  }
+    text: 'Polkadot Bridge Hub',
+  },
+  {
+    homepage: 'https://zeitgeist.pm',
+    info: 'zeitgeist',
+    paraId: 2092,
+    providers: {
+      Dwellir: 'wss://zeitgeist-rpc.dwellir.com',
+      OnFinality: 'wss://zeitgeist.api.onfinality.io/public-ws',
+      ZeitgeistPM: 'wss://main.rpc.zeitgeist.pm/ws'
+    },
+    text: 'Zeitgeist',
+    ui: {
+      color: 'linear-gradient(180deg, rgba(32,90,172,1) 0%, rgba(26,72,138,1) 50%, rgba(13,36,69,1) 100%)',
+      // logo: nodesZeitgeistPNG
+    }
+  },
+  {
+    homepage: 'https://subsocial.network/',
+    info: 'subsocial',
+    paraId: 2101,
+    providers: {
+      Dappforce: 'wss://para.subsocial.network'
+      // OnFinality: 'wss://subsocial-polkadot.api.onfinality.io/public-ws' // https://github.com/polkadot-js/apps/issues/9977
+    },
+    text: 'Subsocial',
+    ui: {
+      color: '#b9018c',
+      // logo: nodesSubsocialSVG
+    }
+  },
+  {
+    homepage: 'https://hashed.network/',
+    info: 'hashed',
+    paraId: 2093,
+    providers: {
+      'Hashed Systems 1': 'wss://c1.hashed.live',
+      'Hashed Systems 2': 'wss://c2.hashed.network',
+      'Hashed Systems 3': 'wss://c3.hashed.live'
+    },
+    text: 'Hashed Network',
+    ui: {
+      color: '#9199A9',
+      // logo: nodesHashedPNG
+    }
+  },
+  {
+    homepage: 'https://pendulumchain.org/',
+    info: 'pendulum',
+    paraId: 2094,
+    providers: {
+      Dwellir: 'wss://pendulum-rpc.dwellir.com',
+      PendulumChain: 'wss://rpc-pendulum.prd.pendulumchain.tech'
+    },
+    text: 'Pendulum',
+    ui: {
+      color: '#49E2FD',
+      // logo: chainsPendulumSVG
+    }
+  },
+  {
+    homepage: 'https://manta.network',
+    info: 'manta',
+    paraId: 2104,
+    providers: {
+      'Manta Network': 'wss://ws.manta.systems'
+      // OnFinality: 'wss://manta.api.onfinality.io/public-ws' // https://github.com/polkadot-js/apps/issues/9977
+    },
+    text: 'Manta',
+    ui: {
+      color: '#2070a6',
+      // logo: nodesMantaPNG
+    }
+  },
+  {
+    homepage: 'https://www.t3rn.io/',
+    info: 't3rn',
+    paraId: 3333,
+    providers: {
+      t3rn: 'wss://ws.t3rn.io'
+    },
+    text: 't3rn',
+    ui: {
+      color: '#6f3bb2',
+      // logo: nodesT3rnPNG
+    }
+  },
+  {
+    homepage: 'https://moonsama.com',
+    info: 'moonsama',
+    paraId: 3334,
+    providers: {
+      Moonsama: 'wss://rpc.moonsama.com/ws'
+    },
+    text: 'Moonsama',
+    ui: {
+      color: '#1a202c',
+      // logo: nodesMoonsamaSVG
+    }
+  },
+  {
+    homepage: 'https://peaq.network/',
+    info: 'peaq',
+    paraId: 3338,
+    providers: {},
+    text: 'peaq',
+    ui: {
+      // logo: chainsPeaqPNG
+    }
+  },
+  {
+    homepage: 'https://invarch.network/',
+    info: 'invarch',
+    paraId: 3340,
+    providers: {
+      Dwellir: 'wss://invarch-rpc.dwellir.com'
+    },
+    text: 'InvArch',
+    ui: {
+      color: 'linear-gradient(278deg, #f7d365 5.74%, #ff408a 99.41%)',
+      // logo: chainsInvarchJPEG
+    }
+  },
+  {
+    homepage: 'https://crowdloan.energywebx.com/',
+    info: 'ewx',
+    paraId: 3345,
+    providers: {
+    },
+    text: 'Energy Web X',
+    ui: {
+      color: '#452E66',
+      // logo: nodesEwxSVG
+    }
+  },
 ];
 

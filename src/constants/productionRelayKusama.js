@@ -553,9 +553,9 @@ export const prodParasKusama = [
     }
   },
   {
-    info: 'statemine',
+    info: 'chainAssetHub',
     paraId: 1000,
-    text: 'Statemine',
+    text: 'Kusama Asset Hub',
     providers: {
       Parity: 'wss://statemine-rpc.polkadot.io',
       OnFinality: 'wss://statemine.api.onfinality.io/public-ws',
@@ -582,5 +582,68 @@ export const prodParasKusama = [
       Parity: 'wss://kusama-bridge-hub-rpc.polkadot.io'
     },
     text: 'BridgeHub'
+  },
+  {
+    homepage: 'https://acurast.com',
+    info: 'acurast',
+    paraId: 2239,
+    providers: {
+      Acurast: 'wss://acurast-canarynet-ws.prod.gke.papers.tech'
+    },
+    text: 'Acurast Canary',
+    ui: {
+      color: '#000000',
+      // logo: chainsAcurastPNG
+    }
+  },
+  {
+    homepage: 'https://krest.peaq.network/',
+    info: 'krest',
+    paraId: 2241,
+    providers: {
+      Krest: 'wss://wss-krest.peaq.network/'
+    },
+    text: 'Krest',
+    ui: {
+      // logo: nodesKrestPNG
+    }
+  },
+  {
+    info: 'qpn',
+    paraId: 2274,
+    providers: {
+      FerrumNetwork: 'wss://qpn.svcs.ferrumnetwork.io/'
+    },
+    text: 'Quantum Portal Network',
+    ui: {
+      color: '#b37700',
+      // logo: chainsQpnPNG
+    }
+  },
+  {
+    homepage: 'https://virto.network/',
+    info: 'kreivo',
+    paraId: 2281,
+    providers: {
+      Virto: 'wss://kreivo.io/'
+    },
+    text: 'Kreivo - By Virto',
+    ui: {
+      color: '#294940',
+      // logo: chainsKreivoSVG
+    }
+  },
+  {
+    homepage: 'https://www.t3rn.io/',
+    info: 't1rn',
+    paraId: 3334,
+    providers: {
+      t3rn: 'wss://rpc.t1rn.io'
+    },
+    text: 't1rn',
+    ui: {
+      color: '#131532',
+      // logo: nodesT1rnPNG
+    }
   },
 ];
