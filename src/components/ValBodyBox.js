@@ -23,11 +23,13 @@ export default function ValBodyBox({address, sessionIndex}) {
         `The validator is AUTHORITY at session ${validator.session}.`  : 
           `The validator is NOT AUTHORITY at session ${validator.session}.`);
 
-  if (validator.is_auth && validator.is_para) {
+  if (validator.is_auth && validator.is_para && !isUndefined(validator.para_summary)) {
     return (<ValGroupBox address={address} sessionIndex={sessionIndex} />)
   }
 
-  if ((validator.is_auth && !validator.is_para) || !validator.is_auth) {
+  if ((validator.is_auth && !validator.is_para) || 
+      (validator.is_auth && validator.is_para && isUndefined(validator.para_summary)) || 
+      !validator.is_auth) {
     return (
       <Box sx={{display: "flex", justifyContent:"center", 
                 alignItems: "center", height: "50vh", }}>

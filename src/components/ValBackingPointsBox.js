@@ -79,6 +79,30 @@ export default function ValBackingPointsBox({address}) {
     return null
   }
 
+  // NOTE: this could happen if validator is p/v but has still not been assigned to a parachain
+  if (isUndefined(validator.para_summary)) {
+    return (
+      <Paper sx={{
+          p: 2,
+          display: 'flex',
+          // flexDirection: 'column',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+          height: 96,
+          borderRadius: 3,
+          boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
+        }}>
+        <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+          <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>backing points</Typography>
+          <Typography variant="h5">
+            -
+          </Typography>
+          </Box>
+      </Paper>
+    )
+  }
+
   const backingPoints = (validator.auth.ep - validator.auth.sp) - (validator.auth.ab.length * 20) > 0 ? (validator.auth.ep - validator.auth.sp) - (validator.auth.ab.length * 20) : 0;
   const avg = !!allBackingPoints.length ? Math.round(allBackingPoints.reduce((a, b) => a + b, 0) / (allBackingPoints.length)) : 0;
   const diff = !!avg ? Math.round(((backingPoints * 100 / avg) - 100) * 10) / 10 : 0;

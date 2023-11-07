@@ -80,7 +80,30 @@ export default function ValMvrBox({address}) {
     return null
   }
 
-  const mvr = Math.round(calculateMvr(validator.para_summary.ev, validator.para_summary.iv, validator.para_summary.mv) * 10000) / 10000;
+  // NOTE: this could happen if validator is p/v but has still not been assigned to a parachain
+  if (isUndefined(validator.para_summary)) {
+    return (
+      <Paper sx={{
+          p: 2,
+          display: 'flex',
+          // flexDirection: 'column',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+          height: 96,
+          borderRadius: 3,
+          boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
+        }}>
+        <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+          <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>missed vote ratio</Typography>
+          <Typography variant="h5">
+            -
+          </Typography>
+          </Box>
+      </Paper>
+    )
+  }
+  const mvr = Math.round(calculateMvr(validator.para_summary?.ev, validator.para_summary?.iv, validator.para_summary?.mv) * 10000) / 10000;
   const avg = Math.round((!!allMvrs.length ? allMvrs.reduce((a, b) => a + b, 0) / allMvrs.length : 0) * 10000) / 10000;
   const diff = !!avg && !!mvr ? Math.round(((mvr * 100 / avg) - 100) * 10) / 10 : 0;
   
