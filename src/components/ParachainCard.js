@@ -35,7 +35,7 @@ export default function ParachainCard({sessionIndex, paraId}) {
   }
 
   // NOTE: parachain cOre_assignments is given in cents (100 = 1)
-  const coreAssignments = parachain.stats.ca / 100;
+  const coreAssignments = parseInt(parachain.stats.ca / 100);
   const validityVotes = parachain.stats.ev + parachain.stats.iv + parachain.stats.mv;
   const pieChartsData = createBackingPieData(parachain.stats.ev, parachain.stats.iv, parachain.stats.mv, paraId);
   const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
