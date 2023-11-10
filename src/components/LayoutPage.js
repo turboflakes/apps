@@ -19,6 +19,7 @@ import HubIcon from '@mui/icons-material/Hub';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import EmailIcon from '@mui/icons-material/EmailRounded';
+import AppsIcon from '@mui/icons-material/Apps';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink, faWaterLadder, faServer } from '@fortawesome/free-solid-svg-icons'
 import Footer from './Footer'
@@ -320,6 +321,15 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
           <HubIcon sx={{ color: theme.palette.text.primary }} />
         </ListItemIcon>
         <ListItemText primary="Validator Groups" 
+          sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+      </ListItemButton>
+
+      <ListItemButton selected={selectedPage === 'cores'} disableRipple
+        onClick={() => onOptionChanged('cores')}>
+        <ListItemIcon>
+          <AppsIcon sx={{ color: theme.palette.text.primary }} />
+        </ListItemIcon>
+        <ListItemText primary="Cores" 
           sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
       </ListItemButton>
 

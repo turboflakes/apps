@@ -218,7 +218,8 @@ const sessionsSlice = createSlice({
 
       forEach(groupedBySession, (validators, session) => {
         const filtered = validators.filter(v => v.is_auth && v.is_para && !isUndefined(v.para_summary));
-        const _group_ids = uniq(filtered.map(v => toNumber(v.para.group))).sort((a, b) => a - b)
+        const _group_ids = uniq(filtered.filter(v => !isNaN(parseInt(v.para?.group))).map(v => toNumber(v.para?.group))).sort((a, b) => a - b)
+        const _core_ids = uniq(filtered.filter(v => !isNaN(parseInt(v.para?.core))).map(v => toNumber(v.para?.core))).sort((a, b) => a - b)
         const _mvrs = filtered.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
         const _validity_votes = filtered.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv);
         const _backing_points = filtered.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0);
@@ -229,6 +230,7 @@ const sessionsSlice = createSlice({
         
         adapter.upsertOne(state, { six: parseInt(session, 10), 
           [setKey(action, "_group_ids")]: _group_ids, 
+          [setKey(action, "_core_ids")]: _core_ids, 
           [setKey(action, "_mvrs")]: _mvrs, 
           [setKey(action, "_validity_votes")]: _validity_votes, 
           [setKey(action, "_backing_points")]: _backing_points, 
@@ -350,6 +352,10 @@ export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy, order
     }
   }
 };
+
+export const selectCoreIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
+  (isArray(selectSessionByIndex(state, session)._core_ids) ? 
+    selectSessionByIndex(state, session)._core_ids : []) : [];
 
 export const selectPoolIdsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
     (isArray(selectSessionByIndex(state, session)._pool_ids) ? 

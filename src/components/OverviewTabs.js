@@ -7,6 +7,7 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import InsightsGrid from './InsightsGrid';
 import ValGroupsGrid from './ValGroupsGrid';
+import CoresGrid from './CoresGrid';
 import ParachainsGrid from './ParachainsGrid';
 import ModeSwitch from './ModeSwitch';
 import SessionHistoryTimelineChart from './SessionHistoryTimelineChart';
@@ -27,7 +28,7 @@ function a11yProps(index) {
   };
 }
 
-const tabPages = ["insights", "parachains", "val-groups"];
+const tabPages = ["insights", "parachains", "val-groups", "cores"];
 
 export default function OverviewTabs({sessionIndex, tab}) {
 	// const theme = useTheme();
@@ -60,9 +61,10 @@ export default function OverviewTabs({sessionIndex, tab}) {
           }}} value={tab} onChange={handleChange} aria-label="Overview" >
           <Tab sx={{ my:1, mr: 2,  borderRadius: 3 }} label="Insights" {...a11yProps(0)} disableRipple disableFocusRipple />
           <Tab sx={{ my:1, mr: 2,  borderRadius: 3 }} label="Parachains" {...a11yProps(1)} disableRipple disableFocusRipple />
-          <Tab sx={{ my:1,  borderRadius: 3 }} label="Val. Groups" {...a11yProps(2)} disableRipple disableFocusRipple />
+          <Tab sx={{ my:1,  mr: 2, borderRadius: 3 }} label="Val. Groups" {...a11yProps(2)} disableRipple disableFocusRipple />
+          <Tab sx={{ my:1,  borderRadius: 3 }} label="Cores" {...a11yProps(3)} disableRipple disableFocusRipple />
         </Tabs>
-        <ModeSwitch mode={selectedMode} />
+        { tab !== 3 ? <ModeSwitch mode={selectedMode} /> : null }
       </Box>
       
       {/* <Divider sx={{ 
@@ -79,8 +81,10 @@ export default function OverviewTabs({sessionIndex, tab}) {
           <SessionHistoryTimelineChart maxSessions={maxHistorySessions} />
         </Box> : null}
       {tab === 0 ? (<InsightsGrid />) : (
-        tab === 1 ? (<ParachainsGrid sessionIndex={sessionIndex} />) : 
-        (<ValGroupsGrid sessionIndex={sessionIndex} />))
+        tab === 1 ? (<ParachainsGrid sessionIndex={sessionIndex} />) : (
+          tab === 2 ? (<ValGroupsGrid sessionIndex={sessionIndex} />) :
+          (<CoresGrid sessionIndex={sessionIndex} />)
+          ))
       }
 		</Box>
   );
