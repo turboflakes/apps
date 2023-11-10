@@ -71,7 +71,7 @@ export default function ValMvrHistoryBox({address, maxSessions, showDark, noChar
     return null
   }
 
-  const filtered = validators.filter(v => v.is_auth && v.is_para);
+  const filtered = validators.filter(v => v.is_auth && v.is_para && !isUndefined(v.para_summary));
 
   if (!filtered.length) {
     return null
