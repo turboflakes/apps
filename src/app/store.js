@@ -11,12 +11,14 @@ import sessionsSlice from '../features/api/sessionsSlice';
 import validatorsSlice from '../features/api/validatorsSlice';
 import authoritiesSlice from '../features/api/authoritiesSlice';
 import valGroupsSlice from '../features/api/valGroupsSlice';
+import coresSlice from '../features/api/coresSlice';
 import parachainsSlice from '../features/api/parachainsSlice';
 import valProfilesSlice from '../features/api/valProfilesSlice';
 import poolsSlice from '../features/api/poolsSlice';
 import poolsMetadataSlice from '../features/api/poolsMetadataSlice';
 import boardsSlice from '../features/api/boardsSlice';
 import boardsLimitsSlice from '../features/api/boardsLimitsSlice';
+
 
 export const store = configureStore({
   reducer: {
@@ -30,6 +32,7 @@ export const store = configureStore({
     validators: validatorsSlice.reducer,
     val_profiles: valProfilesSlice.reducer,
     val_groups: valGroupsSlice.reducer,
+    cores: coresSlice.reducer,
     parachains: parachainsSlice.reducer,
     pools: poolsSlice.reducer,
     pools_metadata: poolsMetadataSlice.reducer,

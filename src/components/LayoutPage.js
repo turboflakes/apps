@@ -153,7 +153,7 @@ function AppsOptions({openLeftDrawer, onToolClicked, onAppChanged}) {
     <React.Fragment>
 
       <ListSubheader sx={{ m: 0, p: 0, pl: theme.spacing(3/2), color: theme.palette.neutrals[300] }}>
-        { openLeftDrawer ? `Apps & Tools` : `Apps`}
+        { openLeftDrawer ? `Other Apps & Tools` : `Apps`}
       </ListSubheader>
 
       { selectedApp !== 'nomi' ?
