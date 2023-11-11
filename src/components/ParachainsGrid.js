@@ -21,9 +21,9 @@ import {
   selectIsLiveMode,
 } from '../features/layout/layoutSlice';
 import { 
-  selectTotalParachainIdsBySession,
+  // selectTotalParachainIdsBySession,
   selectParachainIdsBySessionSortedBy,
-  selectScheduledParachainsBySession
+  // selectScheduledParachainsBySession
 } from '../features/api/sessionsSlice';
 
 const PAGE_SIZE = 16;
@@ -36,15 +36,15 @@ export default function ParachainsGrid({sessionIndex}) {
   const [identityFilter, setIdentityFilter] = React.useState('');
   const {isSuccess} = useGetParachainsQuery({session: sessionIndex}, {refetchOnMountOrArgChange: true});
   const paraIds = useSelector(state => selectParachainIdsBySessionSortedBy(state, sessionIndex, sortBy, orderBy, identityFilter));
-  const nScheduled = useSelector(state => selectScheduledParachainsBySession(state, sessionIndex));
-  const totalParaIds = useSelector(state => selectTotalParachainIdsBySession(state, sessionIndex));
+  // const nScheduled = useSelector(state => selectScheduledParachainsBySession(state, sessionIndex));
+  // const totalParaIds = useSelector(state => selectTotalParachainIdsBySession(state, sessionIndex));
   const isLiveMode = useSelector(selectIsLiveMode);
   
   if (!isSuccess) {
     return null
   }
 
-  const pScheduled = Math.round(nScheduled * 100 / totalParaIds);
+  // const pScheduled = Math.round(nScheduled * 100 / totalParaIds);
 
   const handleSort = (event, newSortBy) => {
     if (isNull(newSortBy)) {
@@ -151,9 +151,9 @@ export default function ParachainsGrid({sessionIndex}) {
           </Grid>
         ))}
       </Grid>
-      <Box sx={{ my: 2, display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
+      {/* <Box sx={{ m: 2, display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
         <Typography variant="caption">Parachains scheduled: {nScheduled} ({pScheduled}%)</Typography>
-      </Box>
+      </Box> */}
 		</Box>
   );
 }
