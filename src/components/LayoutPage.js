@@ -52,6 +52,13 @@ import {
   addressChanged,
   selectChain,
 } from '../features/chain/chainSlice';
+import {
+  modeChanged
+} from '../features/layout/layoutSlice';
+import { 
+  selectSessionCurrent,
+  sessionHistoryChanged,
+ } from '../features/api/sessionsSlice';
 import { 
   getNetworkIcon, 
   getNetworkLogo, 
@@ -520,6 +527,22 @@ function SocialIcons() {
   )
 }
 
+function useInitSearchParams() {
+  const currentSession = useSelector(selectSessionCurrent);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    if (searchParams.get("mode") === 'live') {
+      dispatch(modeChanged('Live'))
+    } else if (searchParams.get("mode") === 'history' && !isNaN(currentSession)) {
+      dispatch(modeChanged('History'))
+      dispatch(sessionHistoryChanged(currentSession - 1))
+    }
+  }, [currentSession]);
+
+  return [];
+}
+
 export default function LayoutPage({api}) {
   const ref = React.useRef();
   const theme = useTheme();
@@ -533,8 +556,8 @@ export default function LayoutPage({api}) {
   const [loading, setLoading] = React.useState(true);
   let [searchParams, setSearchParams] = useSearchParams();
   useWeb3ChainInfo(api, setLoading);
-
   useScrollTop(ref, selectedPage);
+  useInitSearchParams();
 
   const toggleDrawer = () => {
 		setOpenLeftDrawer(!openLeftDrawer);

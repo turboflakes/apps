@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { styled, useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined';
@@ -84,13 +85,14 @@ export default function ModeSwitch({mode}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const [checked, setChecked] = React.useState(mode === 'Live');
+  const [searchParams, setSearchParams] = useSearchParams();
   const block = useSelector(selectBlock);
   const isLiveMode = useSelector(selectIsLiveMode);
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex));
-  
+
   if (isUndefined(block) || isUndefined(session)) {
     return null
   }
@@ -98,10 +100,15 @@ export default function ModeSwitch({mode}) {
   const handleChange = (event) => {
     setChecked(event.target.checked);
     setTimeout(() => {
-      dispatch(modeChanged(event.target.checked ? 'Live' : 'History'));
-      if (!event.target.checked) {
+      if (event.target.checked) {
+        dispatch(modeChanged('Live'));
+        searchParams.set("mode", "live")
+      } else {
+        dispatch(modeChanged('History'));
         dispatch(sessionHistoryChanged(currentSession - 1))
+        searchParams.set("mode", "history")
       }
+      setSearchParams(searchParams)
     }, 100);
   };
 
