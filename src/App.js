@@ -28,7 +28,6 @@ import {
   selectBestBlock,
   selectFinalizedBlock,
 } from './features/api/blocksSlice';
-
 import withTheme from './theme/withTheme'
 import {
   selectApp,

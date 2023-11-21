@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";
+import { isUndefined } from 'lodash';
 import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -36,7 +37,6 @@ import {
   useGetValidatorProfileByAddressQuery,
 } from '../features/api/valProfilesSlice';
 import Spinner from './Spinner';
-import { isUndefined } from 'lodash';
 
 export default function ValidatorPage() {
 	const theme = useTheme();
@@ -54,7 +54,7 @@ export default function ValidatorPage() {
   const {isSuccess, isError} = useGetValidatorByAddressQuery({address: stash, session: sessionIndex, show_summary: true, show_stats: true});
   const {isError: isProfileError} = useGetValidatorProfileByAddressQuery(stash)
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, addressSS58(stash)))
-  
+
   React.useEffect(() => {
     if (isValidAddress(stash) && addressSS58(stash) !== selectedAddress) {
       dispatch(addressChanged(addressSS58(stash)));
