@@ -31,6 +31,7 @@ const networkSettings = {
     coreAssignmentsTarget: 240,
     blocksPerSessionTarget: 2400,
     sessionsPerDayTarget: 6,
+    cores: 59,
     poolIds: [process.env.REACT_APP_POLKADOT_POOL_ID_1],
     chains: prodParasPolkadot,
     validators: [
@@ -51,6 +52,7 @@ const networkSettings = {
     coreAssignmentsTarget: 60,
     blocksPerSessionTarget: 600, 
     sessionsPerDayTarget: 24,
+    cores: 100,
     poolIds: [process.env.REACT_APP_KUSAMA_POOL_ID_1, process.env.REACT_APP_KUSAMA_POOL_ID_2],
     chains: prodParasKusama,
     validators: [
@@ -84,6 +86,7 @@ export const getNetworkExternalWSS = (network) => networkSettings[network].exter
 export const getNetworkIcon = (network) => networkSettings[network].icon
 export const getNetworkLogo = (network) => networkSettings[network].logo
 export const getNetworkURL = (network) => networkSettings[network].url
+export const getTotalCores = (network) => networkSettings[network].cores
 export const getNetworkSS58Format = (network) => networkSettings[network].ss58Format
 export const getMaxValidators = (network) => networkSettings[network].maxValidators
 export const getMaxHistoryEras = (network) => networkSettings[network].maxHistoryEras

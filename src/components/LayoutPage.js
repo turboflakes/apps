@@ -19,6 +19,7 @@ import HubIcon from '@mui/icons-material/Hub';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import EmailIcon from '@mui/icons-material/EmailRounded';
+import AppsIcon from '@mui/icons-material/Apps';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink, faWaterLadder, faServer } from '@fortawesome/free-solid-svg-icons'
 import Footer from './Footer'
@@ -26,6 +27,7 @@ import SearchSmall from './SearchSmall'
 import SessionPerformancePieChartHeader from './SessionPerformancePieChartHeader';
 import SessionPieChartHeader from './SessionPieChartHeader';
 import SessionBoxHeader from './SessionBoxHeader';
+import CoreUsageHeader from './CoreUsageHeader';
 import RightDrawer from './nomi/RightDrawer';
 import onetSVG from '../assets/onet.svg';
 import nomiSVG from '../assets/nomi.svg';
@@ -159,7 +161,7 @@ function AppsOptions({openLeftDrawer, onToolClicked, onAppChanged}) {
     <React.Fragment>
 
       <ListSubheader sx={{ m: 0, p: 0, pl: theme.spacing(3/2), color: theme.palette.neutrals[300] }}>
-        { openLeftDrawer ? `Apps & Tools` : `Apps`}
+        { openLeftDrawer ? `Other Apps & Tools` : `Apps`}
       </ListSubheader>
 
       { selectedApp !== 'nomi' ?
@@ -329,6 +331,16 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
         <ListItemText primary="Validator Groups" 
           sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
       </ListItemButton>
+
+      {/* TODO: link to core usage page
+      <ListItemButton selected={selectedPage === 'cores'} disableRipple
+        onClick={() => onOptionChanged('cores')}>
+        <ListItemIcon>
+          <AppsIcon sx={{ color: theme.palette.text.primary }} />
+        </ListItemIcon>
+        <ListItemText primary="Cores" 
+          sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+      </ListItemButton> */}
 
       <ListItemButton  selected={selectedPage === 'pools'} disableRipple
         onClick={() => onOptionChanged('pools')}>
@@ -691,13 +703,13 @@ export default function LayoutPage({api}) {
             </Box>
 
             {/* search validator */}
-            
             {selectedApp === "onet" ? 
               <Box sx={{ ml: 4, flexGrow: 1, display: 'flex'}}>
-                <SearchSmall width={openLeftDrawer ? 384 : 512} />
+                <SearchSmall width={openLeftDrawer ? 384 : 320} />
               </Box> : null }
-            <Box sx={{ ml: 2, flexGrow: 1, display: 'flex'}}></Box>
+            <Box sx={{ ml: 1, flexGrow: 1, display: 'flex'}}></Box>
             <Box sx={{ display: 'flex', alignItems: 'center'}}>
+            {!openLeftDrawer ? <CoreUsageHeader /> : null }
              <SessionPerformancePieChartHeader />
              <SessionPieChartHeader />
              <SessionBoxHeader />

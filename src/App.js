@@ -136,6 +136,9 @@ const App = () => {
                 <Route path="insights" element={<OverviewPage tab={0} />} />
                 <Route path="parachains" element={<OverviewPage tab={1} />} />
                 <Route path="val-groups" element={<OverviewPage tab={2} />} />
+                {/* TODO: cores usage page
+                  <Route path="cores" element={<OverviewPage tab={3} />} /> 
+                */}
                 <Route path="pools" element={<PoolsOverviewPage />} />
                 <Route path="validator" element={<ValidatorPage />} >
                   <Route path=":stash" element={<ValidatorPage />} />
