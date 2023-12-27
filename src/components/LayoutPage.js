@@ -27,6 +27,7 @@ import SearchSmall from './SearchSmall'
 import SessionPerformancePieChartHeader from './SessionPerformancePieChartHeader';
 import SessionPieChartHeader from './SessionPieChartHeader';
 import SessionBoxHeader from './SessionBoxHeader';
+import CoreUsageHeader from './CoreUsageHeader';
 import RightDrawer from './nomi/RightDrawer';
 import onetSVG from '../assets/onet.svg';
 import nomiSVG from '../assets/nomi.svg';
@@ -331,6 +332,7 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
           sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
       </ListItemButton>
 
+      {/* TODO: link to core usage page
       <ListItemButton selected={selectedPage === 'cores'} disableRipple
         onClick={() => onOptionChanged('cores')}>
         <ListItemIcon>
@@ -338,7 +340,7 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
         </ListItemIcon>
         <ListItemText primary="Cores" 
           sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-      </ListItemButton>
+      </ListItemButton> */}
 
       <ListItemButton  selected={selectedPage === 'pools'} disableRipple
         onClick={() => onOptionChanged('pools')}>
@@ -701,13 +703,13 @@ export default function LayoutPage({api}) {
             </Box>
 
             {/* search validator */}
-            
             {selectedApp === "onet" ? 
               <Box sx={{ ml: 4, flexGrow: 1, display: 'flex'}}>
-                <SearchSmall width={openLeftDrawer ? 384 : 512} />
+                <SearchSmall width={openLeftDrawer ? 384 : 320} />
               </Box> : null }
-            <Box sx={{ ml: 2, flexGrow: 1, display: 'flex'}}></Box>
+            <Box sx={{ ml: 1, flexGrow: 1, display: 'flex'}}></Box>
             <Box sx={{ display: 'flex', alignItems: 'center'}}>
+            {!openLeftDrawer ? <CoreUsageHeader /> : null }
              <SessionPerformancePieChartHeader />
              <SessionPieChartHeader />
              <SessionBoxHeader />

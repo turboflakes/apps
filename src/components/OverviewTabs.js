@@ -28,7 +28,7 @@ function a11yProps(index) {
   };
 }
 
-const tabPages = ["insights", "parachains", "val-groups", "cores"];
+const tabPages = ["insights", "parachains", "val-groups"];
 
 export default function OverviewTabs({sessionIndex, tab}) {
 	// const theme = useTheme();
@@ -62,7 +62,7 @@ export default function OverviewTabs({sessionIndex, tab}) {
           <Tab sx={{ my:1, mr: 2,  borderRadius: 3 }} label="Insights" {...a11yProps(0)} disableRipple disableFocusRipple />
           <Tab sx={{ my:1, mr: 2,  borderRadius: 3 }} label="Parachains" {...a11yProps(1)} disableRipple disableFocusRipple />
           <Tab sx={{ my:1,  mr: 2, borderRadius: 3 }} label="Val. Groups" {...a11yProps(2)} disableRipple disableFocusRipple />
-          <Tab sx={{ my:1,  borderRadius: 3 }} label="Cores" {...a11yProps(3)} disableRipple disableFocusRipple />
+          {/* <Tab sx={{ my:1,  borderRadius: 3 }} label="Cores" {...a11yProps(3)} disableRipple disableFocusRipple /> */}
         </Tabs>
         { tab !== 3 ? <ModeSwitch mode={selectedMode} /> : null }
       </Box>
