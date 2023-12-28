@@ -13,6 +13,7 @@ import max from 'lodash/max'
 import min from 'lodash/min'
 import apiSlice from './apiSlice'
 import { calculateMvr } from '../../util/mvr'
+import { isValidAddress, addressSS58 } from '../../util/crypto'
 import { socketActions } from './socketSlice'
 import { 
   selectSessionByIndex } from './sessionsSlice'
@@ -23,9 +24,13 @@ import {
   selectValGroupMvrBySessionAndGroupId
 } from './valGroupsSlice'
 import {
+  selectChainInfo
+} from '../chain/chainSlice';
+import {
   selectValProfileByAddress
 } from './valProfilesSlice'
 import { grade } from '../../util/grade';
+import { chainAddress } from '../../util/crypto';
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Validators'],
@@ -317,6 +322,7 @@ export const SUBSET = {
 }
 
 export const selectValidatorsInsightsBySessions = (state, sessions = [], isHistory = false, identityFilter = "", subsetFilter = "", isFetching) => {
+  const chainInfo = selectChainInfo(state);
   const validators = selectValidatorsBySessions(state, sessions, isHistory ? "_insights" : "");
   const rows = validators.map((x, i) => {
     const f1 = x.filter(y => y.is_auth);
@@ -383,7 +389,8 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
     }
   }).filter(v => (!isUndefined(v.identity) && !isUndefined(v.address)) ? 
     v.identity?.toLowerCase().includes(identityFilter?.toLowerCase()) || 
-    v.address?.toLowerCase().includes(identityFilter?.toLowerCase()) : false)
+    v.address?.toLowerCase().includes(identityFilter?.toLowerCase()) ||
+    chainAddress(v.address, chainInfo.ss58Format).toLowerCase().includes(identityFilter?.toLowerCase()) : false)
   
   if (subsetFilter !== '') {
     return filteredRows.filter(v => (!isUndefined(v.subset) ? v.subset === subsetFilter : false))

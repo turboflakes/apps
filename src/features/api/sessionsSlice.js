@@ -43,7 +43,8 @@ import {
   selectValidatorBySessionAndAuthId
 } from './authoritiesSlice';
 import {
-  selectChain
+  selectChain,
+  selectChainInfo
 } from '../chain/chainSlice';
 import {
   matchBoardsReceived
@@ -51,6 +52,7 @@ import {
 import { getChainName, isChainSupported } from '../../constants'
 import { calculateMvr } from '../../util/mvr'
 import { grade } from '../../util/grade';
+import { chainAddress } from '../../util/crypto';
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Sessions'],
@@ -304,6 +306,7 @@ export const selectValGroupIdsBySession = (state, session) => !!selectSessionByI
     selectSessionByIndex(state, session)._group_ids : []) : [];
 
 export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy, orderBy, identityFilter = "") => {
+  const chainInfo = selectChainInfo(state);
   switch (sortBy) {
     case 'backing_points': {
       const group_ids = selectValGroupIdsBySession(state, session)
@@ -311,7 +314,7 @@ export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy, order
         .filter(f => `val group ${f._group_id.toString()}` === identityFilter.toLowerCase().trim() || 
           `group ${f._group_id.toString()}` === identityFilter.toLowerCase().trim() || 
           (!isUndefined(f._validatorIds) ? 
-            join(f._validatorIds.map(m => !isUndefined(selectValProfileByAddress(state, selectValidatorById(state, m).address)) ? selectValProfileByAddress(state, selectValidatorById(state, m).address)._identity : ""), ',')
+            join(f._validatorIds.map(m => !isUndefined(selectValProfileByAddress(state, selectValidatorById(state, m).address)) ? `${selectValProfileByAddress(state, selectValidatorById(state, m).address)._identity},${chainAddress(selectValidatorById(state, m).address, chainInfo.ss58Format)}` : ""), ',')
             .toLowerCase().includes(identityFilter.toLowerCase()) : 
             false)
         )
@@ -325,7 +328,7 @@ export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy, order
         .filter(f => `val group ${f._group_id.toString()}` === identityFilter.toLowerCase().trim() || 
           `group ${f._group_id.toString()}` === identityFilter.toLowerCase().trim() || 
           (!isUndefined(f._validatorIds) ? 
-            join(f._validatorIds.map(m => !isUndefined(selectValProfileByAddress(state, selectValidatorById(state, m).address)) ? selectValProfileByAddress(state, selectValidatorById(state, m).address)._identity : ""), ',')
+            join(f._validatorIds.map(m => !isUndefined(selectValProfileByAddress(state, selectValidatorById(state, m).address)) ? `${selectValProfileByAddress(state, selectValidatorById(state, m).address)._identity},${chainAddress(selectValidatorById(state, m).address, chainInfo.ss58Format)}` : ""), ',')
             .toLowerCase().includes(identityFilter.toLowerCase()) : 
             false)
         )
@@ -339,7 +342,7 @@ export const selectValGroupIdsBySessionSortedBy = (state, session, sortBy, order
         .filter(f => `val group ${f._group_id.toString()}` === identityFilter.toLowerCase().trim() || 
           `group ${f._group_id.toString()}` === identityFilter.toLowerCase().trim() || 
           (!isUndefined(f._validatorIds) ? 
-            join(f._validatorIds.map(m => !isUndefined(selectValProfileByAddress(state, selectValidatorById(state, m).address)) ? selectValProfileByAddress(state, selectValidatorById(state, m).address)._identity : ""), ',')
+            join(f._validatorIds.map(m => !isUndefined(selectValProfileByAddress(state, selectValidatorById(state, m).address)) ? `${selectValProfileByAddress(state, selectValidatorById(state, m).address)._identity},${chainAddress(selectValidatorById(state, m).address, chainInfo.ss58Format)}` : ""), ',')
             .toLowerCase().includes(identityFilter.toLowerCase()) : 
             false)
         )
@@ -429,6 +432,7 @@ export const selectParachainIdsBySession = (state, session) => !!selectSessionBy
     selectSessionByIndex(state, session)._parachain_ids : []) : [];
 
 export const selectParachainIdsBySessionSortedBy = (state, session, sortBy, orderBy, identityFilter = "") => {
+  const chainInfo = selectChainInfo(state);
   switch (sortBy) {
     case 'backing_points': {
       const para_ids = selectParachainIdsBySession(state, session)
@@ -436,7 +440,7 @@ export const selectParachainIdsBySessionSortedBy = (state, session, sortBy, orde
         .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()) ||
             (isChainSupported(selectChain(state), f.pid) ? getChainName(selectChain(state), f.pid) : f.pid.toString()).toLowerCase().includes(identityFilter.toLowerCase()) ||
             join(f.auths.map(m => !isUndefined(selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)) ? 
-              selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)._identity : ""), ',').toLowerCase().includes(identityFilter.toLowerCase())        
+            `${selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)._identity},${chainAddress(selectValidatorBySessionAndAuthId(state, session, m).address, chainInfo.ss58Format)}` : ""), ',').toLowerCase().includes(identityFilter.toLowerCase())
         )
         .sort((a, b) => orderBy ? b._backing_points - a._backing_points : a._backing_points - b._backing_points)
         .map(o => o.pid);
@@ -448,7 +452,7 @@ export const selectParachainIdsBySessionSortedBy = (state, session, sortBy, orde
         .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()) ||
             (isChainSupported(selectChain(state), f.pid) ? getChainName(selectChain(state), f.pid) : f.pid.toString()).toLowerCase().includes(identityFilter.toLowerCase()) ||
             join(f.auths.map(m => !isUndefined(selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)) ? 
-              selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)._identity : ""), ',').toLowerCase().includes(identityFilter.toLowerCase())        
+            `${selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)._identity},${chainAddress(selectValidatorBySessionAndAuthId(state, session, m).address, chainInfo.ss58Format)}` : ""), ',').toLowerCase().includes(identityFilter.toLowerCase())
         )
         .sort((a, b) => orderBy ? b._mvr - a._mvr : a._mvr - b._mvr)
         .map(o => o.pid);
@@ -460,7 +464,7 @@ export const selectParachainIdsBySessionSortedBy = (state, session, sortBy, orde
       .filter(f => f.pid.toString().includes(identityFilter.toLowerCase().trim()) ||
             (isChainSupported(selectChain(state), f.pid) ? getChainName(selectChain(state), f.pid) : f.pid.toString()).toLowerCase().includes(identityFilter.toLowerCase()) ||
             join(f.auths.map(m => !isUndefined(selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)) ? 
-              selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)._identity : ""), ',').toLowerCase().includes(identityFilter.toLowerCase())        
+              `${selectValProfileByAddress(state, selectValidatorBySessionAndAuthId(state, session, m).address)._identity},${chainAddress(selectValidatorBySessionAndAuthId(state, session, m).address, chainInfo.ss58Format)}` : ""), ',').toLowerCase().includes(identityFilter.toLowerCase())
         )
       .sort((a, b) => orderBy ? b.pid - a.pid : a.pid - b.pid)
       .map(o => o.pid);
