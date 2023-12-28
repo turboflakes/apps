@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.b61738ec.js",
+    "main.js": "/static/js/main.3c07b465.js",
     "static/js/27.5757e9a4.chunk.js": "/static/js/27.5757e9a4.chunk.js",
     "static/media/onet.svg": "/static/media/onet.939204028101409068e0d9f94ad911d2.svg",
     "static/media/moonriver.svg": "/static/media/moonriver.0d6c0ca22e4f0531f208781460392c87.svg",
@@ -178,7 +178,7 @@
     "static/media/polkadot_icon.svg": "/static/media/polkadot_icon.307bb3eeb029c40621190e34664a5419.svg",
     "static/media/bridgehub.svg": "/static/media/bridgehub.92f312b2affe1462e255ab05c14993bd.svg",
     "static/media/subsocialX.svg": "/static/media/subsocialX.86d61c0ce34b513a4dcd6d30ad78b3b5.svg",
-    "static/media/bridgeHubBlack.svg": "/static/media/bridgeHubBlack.e96e06cfb9b460db558f030745c57079.svg",
+    "static/media/BridgeHubBlack.svg": "/static/media/BridgeHubBlack.e96e06cfb9b460db558f030745c57079.svg",
     "static/media/crust-maxwell.svg": "/static/media/crust-maxwell.253d6e1a1ad713d58d29abb0af891a9f.svg",
     "static/media/dolphin.svg": "/static/media/dolphin.6d991137f51361d61f325e85f258ffc8.svg",
     "static/media/gamepower.svg": "/static/media/gamepower.f1ecf75eaa1ddbe4296fbb09fa0f2866.svg",
@@ -236,6 +236,6 @@
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.b61738ec.js"
+    "static/js/main.3c07b465.js"
   ]
 }
