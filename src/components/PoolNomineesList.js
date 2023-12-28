@@ -11,7 +11,8 @@ import ListItemText from '@mui/material/ListItemText';
 import Skeleton from '@mui/material/Skeleton';
 import Identicon from '@polkadot/react-identicon';
 import {
-  addressChanged
+  addressChanged,
+  selectChainInfo
 } from '../features/chain/chainSlice';
 import {
   pageChanged
@@ -20,6 +21,9 @@ import {
   selectNomineesBySessionAndPoolId
 } from '../features/api/poolsSlice';
 import { stashDisplay, nameDisplay } from '../util/display'
+import {
+  chainAddress
+} from '../util/crypto';
 
 const COLORS = (theme) => ({
   "NONVAL": theme.palette.semantics.red,
@@ -34,6 +38,7 @@ function ItemButtom({validator}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const chainInfo = useSelector(selectChainInfo)
 
   const handleAddressSelected = (address) => {
     dispatch(addressChanged(address));
@@ -53,7 +58,7 @@ function ItemButtom({validator}) {
       title={nameDisplay(!!validator.profile ? validator.profile._identity : stashDisplay(validator.address, 4), 64)}>
       <ListItemIcon sx={{minWidth: 0, mr: 1, display: 'flex', alignItems: 'center'}}>
         <Identicon
-          value={validator.address}
+          value={chainAddress(validator.address, chainInfo.ss58Format)}
           size={24}
           theme={'polkadot'} />
       </ListItemIcon>

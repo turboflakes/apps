@@ -16,11 +16,15 @@ import {
   selectValidatorsBySessionAndGroupId
 } from '../features/api/valGroupsSlice'
 import {
-  selectAddress
+  selectAddress,
+  selectChainInfo
 } from '../features/chain/chainSlice';
 import { stashDisplay, nameDisplay } from '../util/display'
+import {
+  chainAddress
+} from '../util/crypto';
 
-const defineColumns = (theme) => {
+const defineColumns = (theme, chainInfo) => {
   return [
   // { 
   //   field: 'id', 
@@ -42,7 +46,7 @@ const defineColumns = (theme) => {
       if (params.row.address) {
         return (
             <Identicon
-              value={params.row.address}
+              value={chainAddress(params.row.address, chainInfo.ss58Format)}
               size={24}
               theme={'polkadot'} />
           )
@@ -53,7 +57,7 @@ const defineColumns = (theme) => {
   {
     field: 'identity',
     headerName: 'Identity',
-    width: 256,
+    width: 240,
     disableColumnMenu: true,
     sortable: false,
     renderCell: (params) => {
@@ -155,7 +159,7 @@ const defineColumns = (theme) => {
   {
     field: 'options',
     headerName: '', 
-    width: 80,
+    width: 64,
     align: 'center',
     sortable: false,
     disableColumnMenu: true,
@@ -178,6 +182,7 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
   const theme = useTheme();
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex,  groupId));
   const selectedAddress = useSelector(selectAddress);
+  const chainInfo = useSelector(selectChainInfo)
   if (!validators.length || validators.length !== validators.filter(v => !!v.para_stats).length) {
     return null
   }
@@ -201,7 +206,7 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
       return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0, 0)
     }
   })
-  const columns = defineColumns(theme);
+  const columns = defineColumns(theme, chainInfo);
 
   return (
     <Paper
@@ -211,7 +216,7 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: 400,
+        height: 128 + (rows.length * 52),
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}
@@ -224,8 +229,8 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
           sx={{ bgcolor: '#FFF', width: '100%', borderRadius: 0, border: 0 }}
           rows={rows}
           columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
+          pageSize={6}
+          rowsPerPageOptions={[6]}
           hideFooter
           disableSelectionOnClick
           disableRowSelectionOnClick

@@ -10,18 +10,17 @@ import Tooltip from '@mui/material/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWallet } from '@fortawesome/free-solid-svg-icons'
 import { stashDisplay, nameDisplay } from '../util/display'
-import {
-  selectValProfileByAddress, 
-  useGetValidatorProfileByAddressQuery,
-} from '../features/api/valProfilesSlice';
 import { 
   selectValidatorBySessionAndAddress,
  } from '../features/api/validatorsSlice'
- import {
+import {
   selectChainInfo
 } from '../features/chain/chainSlice';
 import { grade } from '../util/grade'
 import { calculateMvr } from '../util/mvr'
+import {
+  chainAddress
+} from '../util/crypto';
 
 export default function ValAddress({sessionIndex, address, showGrade}) {
   const theme = useTheme();
@@ -52,7 +51,7 @@ export default function ValAddress({sessionIndex, address, showGrade}) {
       <Box sx={{ display: "flex", height: '100%', justifyContent: 'space-between'}}>
         <Box sx={{ display: "flex", alignItems: 'center'}}>
           <Identicon style={{marginRight: '16px'}}
-            value={address}
+            value={chainAddress(address, chainInfo.ss58Format)}
             size={64}
             theme={'polkadot'} />
           <Box>

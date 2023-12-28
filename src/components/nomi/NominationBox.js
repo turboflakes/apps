@@ -27,7 +27,7 @@ import { getMaxValidators } from '../../constants';
 function CandidateChip({stash, onClick}) {
   const theme = useTheme();
   useGetValidatorProfileByAddressQuery(stash);
-  const chainInfo = useSelector(selectChainInfo)
+  const chainInfo = useSelector(selectChainInfo);
   const valProfile = useSelector(state => selectValProfileByAddress(state, stash));
 
   return (
@@ -37,7 +37,7 @@ function CandidateChip({stash, onClick}) {
       mb: theme.spacing(1), width: 144, justifyContent: 'flex-start'}} 
       onClick={() => onClick(stash)}
       label={nameDisplay(valProfile?.identity ? valProfile._identity : stashDisplay(chainAddress(stash, chainInfo.ss58Format), 4), 12)} 
-      icon={<Identicon value={stash} size={24} theme={'polkadot'} />} 
+      icon={<Identicon value={chainAddress(stash, chainInfo.ss58Format)} size={24} theme={'polkadot'} />} 
     />
   )
 }

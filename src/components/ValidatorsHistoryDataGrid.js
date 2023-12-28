@@ -25,9 +25,15 @@ import {
   selectIdentityFilter,
   selectSubsetFilter,
 } from '../features/layout/layoutSlice';
+import {
+  selectChainInfo
+} from '../features/chain/chainSlice';
 import { scoreDisplay } from '../util/display';
+import {
+  chainAddress
+} from '../util/crypto';
 
-const defineColumns = (theme) => {
+const defineColumns = (theme, chainInfo) => {
   return [
   { 
     field: 'id', 
@@ -39,7 +45,7 @@ const defineColumns = (theme) => {
       if (params.row.address) {
         return (
             <Identicon
-              value={params.row.address}
+              value={chainAddress(params.row.address, chainInfo.ss58Format)}
               size={24}
               theme={'polkadot'} />
           )
@@ -225,6 +231,7 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
   const [showAllGrades, setShowAllGrades] = React.useState(false);
   const [onlyDisputes, setOnlyDisputes] = React.useState(false);
   const [onlyLowGrades, setOnlyLowGrades] = React.useState(false);
+  const chainInfo = useSelector(selectChainInfo);
 
   if (isUndefined(rows)) {
     return null
@@ -237,7 +244,7 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
   const gradeFsCounter = rowsFiltered1.filter((v) => !isNull(v.mvr) ? grade(1-v.mvr) === 'F' : false).length;
   const disputesCounter = rows.filter(v => v.disputes > 0).length;
 
-  const columns = disputesCounter > 0 ? defineColumns(theme) : defineColumns(theme).filter(c => c.field !== 'disputes');
+  const columns = disputesCounter > 0 ? defineColumns(theme, chainInfo) : defineColumns(theme, chainInfo).filter(c => c.field !== 'disputes');
 
   const handleOnlyPVChange = (event) => {
     setShowOnlyPV(event.target.checked);

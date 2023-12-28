@@ -11,7 +11,8 @@ import ListItemText from '@mui/material/ListItemText';
 import Identicon from '@polkadot/react-identicon';
 import {
   addressChanged,
-  selectChain
+  selectChain,
+  selectChainInfo
 } from '../features/chain/chainSlice';
 import {
   pageChanged
@@ -25,7 +26,6 @@ import { grade } from '../util/grade';
 import { chainAddress } from '../util/crypto';
 import { getNetworkSS58Format } from '../constants'
 
-
 const gradeValue = (v) => grade(1-calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
 
 export default function ValGroupList({sessionIndex, groupId}) {
@@ -35,6 +35,7 @@ export default function ValGroupList({sessionIndex, groupId}) {
   const selectedChain = useSelector(selectChain);
   const validators = useSelector(state => selectValidatorsBySessionAndGroupId(state, sessionIndex, groupId));  
   const validatorsOrderedByPoints = orderBy(validators, o => o.auth.ep - o.auth.sp, "desc");  
+  const chainInfo = useSelector(selectChainInfo)
 
   const handleAddressSelected = (address) => {
     dispatch(addressChanged(address));
@@ -54,7 +55,7 @@ export default function ValGroupList({sessionIndex, groupId}) {
                   backgroundColor: theme.palette.grade[gradeValue(v)], 
                   display: "inline-block" }}></span>
                 <Identicon
-                  value={v.address}
+                  value={chainAddress(v.address, chainInfo.ss58Format)}
                   size={24}
                   theme={'polkadot'} />
               </ListItemIcon>

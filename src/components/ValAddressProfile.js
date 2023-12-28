@@ -77,7 +77,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
         <Box sx={{ display: "flex" }}>
           <Box sx={{ mt: theme.spacing(1/2) }}>
             <Identicon style={{marginRight: theme.spacing(1)}}
-              value={address}
+              value={chainAddress(address, chainInfo.ss58Format)}
               size={24}
               theme={'polkadot'} />
           </Box>

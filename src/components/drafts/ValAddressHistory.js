@@ -17,6 +17,9 @@ import {
 } from '../../features/chain/chainSlice';
 import { grade } from '../../util/grade'
 import { calculateMvr } from '../../util/mvr'
+import {
+  chainAddress
+} from '../util/crypto';
 
 export default function ValAddress({sessionIndex, address, showGrade}) {
   const theme = useTheme();
@@ -49,7 +52,7 @@ export default function ValAddress({sessionIndex, address, showGrade}) {
       <Box sx={{ display: "flex", height: '100%', justifyContent: 'space-between'}}>
         <Box sx={{ display: "flex", alignItems: 'center'}}>
           <Identicon style={{marginRight: '16px'}}
-            value={address}
+            value={chainAddress(address, chainInfo.ss58Format)}
             size={64}
             theme={'polkadot'} />
           <Box>

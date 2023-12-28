@@ -23,7 +23,8 @@ import {
   selectValidatorGradeBySessionAndAddress,
 } from '../features/api/validatorsSlice'
 import {
-  addressChanged
+  addressChanged,
+  selectChainInfo
 } from '../features/chain/chainSlice';
 import {
   pageChanged
@@ -31,11 +32,13 @@ import {
 import {
   selectValProfileByAddress, 
 } from '../features/api/valProfilesSlice';
-
 import { 
   stashDisplay, 
   nameDisplay } from '../util/display'
 import { isNull } from 'lodash';
+import {
+  chainAddress
+} from '../util/crypto';
 
 const trendSign = (trend) => Math.sign(trend) > 0 ? '↑' : ( Math.sign(trend) < 0 ? '↓' : '');
 
@@ -45,7 +48,8 @@ function ItemButtom({address, sessionIndex, rank, diff}) {
   const navigate = useNavigate();
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
   const grade = useSelector(state => selectValidatorGradeBySessionAndAddress(state, sessionIndex, address));
-  
+  const chainInfo = useSelector(selectChainInfo)
+
   if (isUndefined(valProfile) || isUndefined(valProfile._performance_ranking)) {
     return (<Skeleton variant="text" sx={{ minWidth: 128, fontSize: '0.825rem' }} />)
   }
@@ -94,7 +98,7 @@ function ItemButtom({address, sessionIndex, rank, diff}) {
             backgroundColor: theme.palette.grade[grade], 
             display: "inline-block" }}></span>
           <Identicon
-            value={address}
+            value={chainAddress(address, chainInfo.ss58Format)}
             size={24}
             theme={'polkadot'} />
         </ListItemIcon>

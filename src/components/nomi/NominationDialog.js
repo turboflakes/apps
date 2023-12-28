@@ -19,6 +19,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Link from '@mui/material/Link';
 import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
+import Typography from '@mui/material/Typography';
 import EnkryptSVG from "@polkadot-cloud/assets/extensions/svg/enkrypt.svg?react";
 import FearlessWalletSVG from "@polkadot-cloud/assets/extensions/svg/fearlesswallet.svg?react";
 import NovaWalletSVG from "@polkadot-cloud/assets/extensions/svg/novawallet.svg?react";
@@ -36,9 +37,10 @@ import {
 } from '../../features/api/boardsSlice';
 import {
   selectChain,
+  selectChainInfo
 } from '../../features/chain/chainSlice';
 import { stashDisplay, nameDisplay, hashDisplay } from '../../util/display'
-import { Typography } from '@mui/material';
+import { chainAddress } from '../../util/crypto';
 
 const StyledDialog = styled(Dialog)(({ theme, maxWidth }) => ({
   '& .MuiDialog-paper': {
@@ -103,12 +105,13 @@ function AccountChip({account, onClick}) {
 function CandidateChip({stash}) {
   const theme = useTheme();
   const valProfile = useSelector(state => selectValProfileByAddress(state, stash));
+  const chainInfo = useSelector(selectChainInfo);
 
   return (
     <Chip sx={{ minWidth: 160, justifyContent: 'flex-start'}}
-      label={nameDisplay(!!valProfile ? valProfile._identity : stashDisplay(stash, 4), 12)} 
+      label={nameDisplay(!!valProfile ? valProfile._identity : stashDisplay(chainAddress(stash, chainInfo.ss58Format), 4), 12)} 
       variant="outlined" color="secondary"
-      icon={<Identicon value={stash} size={24} theme={'polkadot'} />} 
+      icon={<Identicon value={chainAddress(stash, chainInfo.ss58Format)} size={24} theme={'polkadot'} />} 
     />
   )
 }

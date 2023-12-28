@@ -11,7 +11,8 @@ import ListItemText from '@mui/material/ListItemText';
 import Skeleton from '@mui/material/Skeleton';
 import Identicon from '@polkadot/react-identicon';
 import {
-  addressChanged
+  addressChanged,
+  selectChainInfo
 } from '../features/chain/chainSlice';
 import {
   pageChanged
@@ -22,6 +23,9 @@ import {
 import { calculateMvr } from '../util/mvr'
 import { stashDisplay, nameDisplay } from '../util/display'
 import { grade } from '../util/grade';
+import {
+  chainAddress
+} from '../util/crypto';
 
 
 const gradeValue = (v) => !isUndefined(v.para_summary) ? grade(1-calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)) : "-";
@@ -31,6 +35,7 @@ function ItemButtom({validator}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const chainInfo = useSelector(selectChainInfo)
 
   const handleAddressSelected = (address) => {
     dispatch(addressChanged(address));
@@ -51,7 +56,7 @@ function ItemButtom({validator}) {
           backgroundColor: theme.palette.grade[gradeValue(validator)], 
           display: "inline-block" }}></span>
         <Identicon
-          value={validator.address}
+          value={chainAddress(validator.address, chainInfo.ss58Format)}
           size={24}
           theme={'polkadot'} />
       </ListItemIcon>
