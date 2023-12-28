@@ -149,7 +149,7 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
             margin={{
               top: 8,
               right: 32,
-              left: -24,
+              left: -20,
               bottom: 16,
             }}
           >
@@ -162,6 +162,7 @@ export default function NetPoolHistoryBox({sessionIndex, skip}) {
               />
 
             <YAxis type="number"
+              angle={-30}
               yAxisId="axis_id"
               dataKey={key}
               domain={['dataMin', 'dataMax']}
