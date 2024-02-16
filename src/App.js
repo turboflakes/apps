@@ -114,16 +114,17 @@ const App = () => {
   }
 
   // Show under maintenance if indexer is syncing
-  if (best_block?.block_number - finalized_block?.block_number > 100) {
-    return (
-      <Router>
-        <Routes>
-          <Route path="/" element={<UnderMaintenancePage />} />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </Router>
-    )
-  }
+  // TODO: it needs to be set as a flag from the indexer backend - disabled for now
+  // if (best_block?.block_number - finalized_block?.block_number > 100) {
+  //   return (
+  //     <Router>
+  //       <Routes>
+  //         <Route path="/" element={<UnderMaintenancePage />} />
+  //         <Route path="*" element={<Navigate to="/" />} />
+  //       </Routes>
+  //     </Router>
+  //   )
+  // }
   
   return (
       <Router>
