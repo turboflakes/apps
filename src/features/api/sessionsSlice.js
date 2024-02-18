@@ -365,9 +365,6 @@ export const selectPoolIdsBySession = (state, session) => !!selectSessionByIndex
       selectSessionByIndex(state, session)._pool_ids : []) : [];
 
 export const selectPoolIdsBySessionSortedBy = (state, session, sortBy, orderBy, identityFilter = "", stateFilter = 'Open') => {
-
-  console.log("__sortBy:", sortBy);
-
   switch (sortBy) {
     case 'apr': {
       const pool_ids = selectPoolIdsBySession(state, session)
