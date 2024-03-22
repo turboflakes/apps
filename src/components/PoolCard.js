@@ -150,7 +150,7 @@ export default function PoolCard({sessionIndex, poolId}) {
               <Typography variant="caption" align='center'>points</Typography>
               <Typography variant="h5" align='center'>{stakeDisplay(points, selectedChainInfo, 2, true, false)}</Typography>
             </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+            {/* <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
               <Typography variant="caption" align='center'>
                 <b>APR</b>
                 <span>
@@ -160,7 +160,7 @@ export default function PoolCard({sessionIndex, poolId}) {
                 </span>
               </Typography>
               <Typography variant="h5" align='center'>{`${Math.round(apr * 10000) / 100}%`}</Typography>
-            </Box>
+            </Box> */}
           </Box>
         </Box>
         }

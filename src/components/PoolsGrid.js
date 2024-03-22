@@ -79,13 +79,13 @@ export default function PoolsGrid({sessionIndex}) {
             <Box sx={{mr: 1}}>Sort by Members</Box>
             {orderBy ? <FontAwesomeIcon icon={faArrowDownWideShort} /> : <FontAwesomeIcon icon={faArrowUpWideShort} />}
           </ToggleButton>
-          <ToggleButton value="apr" aria-label="Sort by APR" 
+          {/* <ToggleButton value="apr" aria-label="Sort by APR" 
             disableRipple
             disableFocusRipple
             sx={{ px: 2, mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
             <Box sx={{mr: 1}}>Sort by APR</Box>
             {orderBy ? <FontAwesomeIcon icon={faArrowDownWideShort} /> : <FontAwesomeIcon icon={faArrowUpWideShort} />}
-          </ToggleButton>
+          </ToggleButton> */}
           <ToggleButton value="pool_id" aria-label="Sort by POOL ID" 
             disableRipple
             disableFocusRipple
