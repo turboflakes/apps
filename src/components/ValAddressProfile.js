@@ -10,7 +10,10 @@ import Identicon from '@polkadot/react-identicon';
 import Tooltip from '@mui/material/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWallet } from '@fortawesome/free-solid-svg-icons'
+import IconButton from '@mui/material/IconButton';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import GradeIcon from './GradeIcon';
+import FavouriteToggle from './FavouriteToggle';
 import tvpValid from '../assets/tvp_valid.svg';
 // import tvpInvalid from '../assets/tvp_invalid.svg';
 import {
@@ -41,6 +44,10 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
   const chainInfo = useSelector(selectChainInfo)
+
+  const handleCopyClipboard = () => {
+    navigator.clipboard.writeText(chainAddress(address, chainInfo.ss58Format));
+  };
 
   if (isFetching || isUndefined(valProfile) || isUndefined(chainInfo)) {
     return (<Skeleton variant="rounded" sx={{
@@ -75,19 +82,39 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
       >
       <Box sx={{ display: "flex", height: '100%', justifyContent: 'space-between'}}>
         <Box sx={{ display: "flex" }}>
-          <Box sx={{ mt: theme.spacing(1/2) }}>
+          {/* <Box sx={{ mt: theme.spacing(1/2) }}>
             <Identicon style={{marginRight: theme.spacing(1)}}
               value={chainAddress(address, chainInfo.ss58Format)}
               size={24}
               theme={'polkadot'} />
-          </Box>
+          </Box> */}
           <Box>
             <Box sx={{ maxWidth: 556, minHeight: 56, display: 'flex', justifyContent: 'space-between'}}>
               <Box sx={{ display: 'flex', flexDirection: 'column'}}>
-                <Typography variant="h5" color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{valProfile?.identity ? valProfile._identity : stashDisplay(chainAddress(address, chainInfo.ss58Format))}</Typography>
+                <Box sx={{ display: 'flex'}}>
+                  <Typography variant="h5" color={showDark ? theme.palette.text.secondary : theme.palette.text.primary}>{valProfile?.identity ? valProfile._identity : stashDisplay(chainAddress(address, chainInfo.ss58Format))}</Typography>
+                </Box>
+                <Box sx={{ display: 'flex'}}>
+                <FavouriteToggle />
+                  <IconButton sx={{ml: theme.spacing(1)}} aria-label="copy to clipboard" color="primary" size="small" onClick={handleCopyClipboard}>
+                    <ContentCopyIcon fontSize='inherit' />
+                  </IconButton>
                 <Typography variant="caption" color={showDark ? theme.palette.neutrals[200] : theme.palette.neutrals[300]}>
-                  <FontAwesomeIcon style={{ marginRight: 8 }} icon={faWallet} />{chainAddress(address, chainInfo.ss58Format)}
+                  {/* <FontAwesomeIcon style={{ marginRight: 8 }} icon={faWallet} /> */}
+                    {chainAddress(address, chainInfo.ss58Format)}
                 </Typography>
+                </Box>
+              </Box>
+              {/* <Box sx={{}}>
+                <IconButton sx={{ml: theme.spacing(1)}} aria-label="copy to clipboard" color="primary" size="small" onClick={handleCopyClipboard}>
+                  <ContentCopyIcon />
+                </IconButton>
+              </Box> */}
+              <Box sx={{}}>
+                <Identicon style={{marginRight: theme.spacing(1)}}
+                  value={chainAddress(address, chainInfo.ss58Format)}
+                  size={48}
+                  theme={'polkadot'} />
               </Box>
               {showSubset && valProfile.subset === "TVP" ? 
                 <Box sx={{ }}>
@@ -98,6 +125,7 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
                   </Tooltip>  
                 </Box>
               : null}
+              
             </Box>
             <Divider sx={{ my: 2,
               opacity: 0.25,
