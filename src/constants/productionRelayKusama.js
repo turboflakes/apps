@@ -553,18 +553,6 @@ export const prodParasKusama = [
     }
   },
   {
-    info: 'chainAssetHub',
-    paraId: 1000,
-    text: 'Kusama Asset Hub',
-    providers: {
-      Parity: 'wss://statemine-rpc.polkadot.io',
-      OnFinality: 'wss://statemine.api.onfinality.io/public-ws',
-      Dwellir: 'wss://statemine-rpc.dwellir.com',
-      Pinknode: 'wss://public-rpc.pinknode.io/statemine'
-    },
-    teleport: [-1]
-  },
-  {
     info: 'encointer',
     homepage: 'https://encointer.org/',
     paraId: 1001,
@@ -576,12 +564,29 @@ export const prodParasKusama = [
     teleport: [-1]
   },
   {
+    info: 'chainAssetHub',
+    paraId: 1000,
+    text: 'Kusama Asset Hub',
+    providers: {},
+    teleport: [-1]
+  },
+  {
     info: 'kusamaBridgeHub',
     paraId: 1002,
-    providers: {
-      Parity: 'wss://kusama-bridge-hub-rpc.polkadot.io'
-    },
-    text: 'BridgeHub'
+    providers: {},
+    text: 'Kusama Bridge Hub'
+  },
+  {
+    info: 'kusamaPeople',
+    paraId: 1004,
+    providers: {},
+    text: 'Kusama People'
+  },
+  {
+    info: 'kusamaCoretime',
+    paraId: 1005,
+    providers: {},
+    text: 'Kusama Coretime'
   },
   {
     homepage: 'https://acurast.com',

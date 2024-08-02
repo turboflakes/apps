@@ -427,6 +427,12 @@ export const prodParasPolkadot = [
     text: 'Polkadot Bridge Hub',
   },
   {
+    info: 'polkadotPeople',
+    paraId: 1004,
+    providers: {},
+    text: 'Polkadot People',
+  },
+  {
     homepage: 'https://zeitgeist.pm',
     info: 'zeitgeist',
     paraId: 2092,

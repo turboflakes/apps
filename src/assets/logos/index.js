@@ -15,11 +15,15 @@ import chainAleph from './chains/aleph.svg';
 import chainAltair from './chains/altair.svg';
 import chainAmplitude from './chains/amplitude.svg';
 import chainAssetHub from './chains/assethub.svg';
+import chainAssetHubKusama from './chains/assetHubKusama.svg';
 import chainBitgreen from './chains/bitgreen.png';
 import chainBrainstorm from './chains/brainstorm.png';
 import chainBridgeHub from './chains/bridgehub.svg';
+import chainBridgeHubKusama from './chains/bridgeHubKusama.svg';
+import chainBridgeHubPolkadot from './chains/bridgeHubPolkadot.svg';
 import chainComposableFinance from './chains/composableFinance.png';
 import chainCollectives from './chains/collectives.png';
+import chainCoretimeKusama from './chains/coretimeKusama.svg';
 import chainCreditcoin from './chains/creditcoin.png';
 import chainCreditcoinTest from './chains/creditcoin-test.png';
 import chainDarwiniaKoi from './chains/darwiniaKoi.svg';
@@ -51,6 +55,7 @@ import chainOriginTrail from './chains/origintrail.png';
 import chainOriginTrailTestnet from './chains/origintrail-testnet.png';
 import chainPeaq from './chains/peaq.png';
 import chainPendulum from './chains/pendulum.svg';
+import chainPeopleKusama from './chains/peopleKusama.svg';
 import chainPicasso from './chains/picasso.svg';
 import chainPop from './chains/popNetwork.svg';
 import chainQPN from './chains/qpn.png';
@@ -331,11 +336,13 @@ export const chainLogos = Object.entries({
   Kpron: nodeApron,
   'Kreivo - By Virto': chainKreivo,
   Kusama: chainKusama, // new name after CC3
-  'Kusama Asset Hub': chainAssetHub,
-  'Kusama Bridge Hub': chainBridgeHub,
+  'Kusama Asset Hub': chainAssetHubKusama,
+  'Kusama Bridge Hub': chainBridgeHubKusama,
   'Kusama CC1': chainKusama,
   'Kusama CC2': chainKusama,
   'Kusama CC3': chainKusama,
+  'Kusama Coretime': chainCoretimeKusama,
+  'Kusama People': chainPeopleKusama,
   kusari: nodeKusari,
   'Kylin Testnet': nodeKylin,
   'Laos Sigma': chainLaosSigma,
@@ -395,6 +402,7 @@ export const chainLogos = Object.entries({
   'Polkadex Mainnet': nodePolkadex,
   'Polkadex Testnet': nodePolkadex,
   'Polkadot Asset Hub': chainAssetHub,
+  'Polkadot Bridge Hub': chainBridgeHub,
   'PolkaFoundry PC1': nodePolkaFoundry,
   'Pontem Testnet': nodePontem,
   'Pop Network': chainPop,
