@@ -399,7 +399,7 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
       <Box sx={{
         overflowY: 'auto',
         overflowX: 'hidden',
-        height: `calc(${window.innerHeight}px - ${224 + 80 + 45*8}px)`,
+        height: `calc(${window.innerHeight}px - ${224 + 80 + 45*9}px)`,
         
       }}>
         
