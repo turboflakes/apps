@@ -403,14 +403,18 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
         
       }}>
         
-        <AppsOptions openLeftDrawer={openLeftDrawer} onAppChanged={onAppChanged} onToolClicked={onToolClicked} />
+        { selectedChain != "paseo" ?
+          <AppsOptions openLeftDrawer={openLeftDrawer} onAppChanged={onAppChanged} onToolClicked={onToolClicked} />
+          : null }
 
-        <Divider />
+        { selectedChain != "paseo" ?  
+            <Divider /> 
+          : null }
 
-      {selectedChain != "paseo" ? 
-        <ValidatorOptions openLeftDrawer={openLeftDrawer} onValidatorClicked={onValidatorClicked} />
-      : null }
-      
+        { selectedChain != "paseo" ? 
+          <ValidatorOptions openLeftDrawer={openLeftDrawer} onValidatorClicked={onValidatorClicked} />
+          : null }
+
       </Box>
 
     </Box>
