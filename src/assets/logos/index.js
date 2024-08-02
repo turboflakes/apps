@@ -22,30 +22,37 @@ import chainComposableFinance from './chains/composableFinance.png';
 import chainCollectives from './chains/collectives.png';
 import chainCreditcoin from './chains/creditcoin.png';
 import chainCreditcoinTest from './chains/creditcoin-test.png';
+import chainDarwiniaKoi from './chains/darwiniaKoi.svg';
 import chainDorafactory from './chains/dorafactory.png';
 import chainEquilibrium from './chains/equilibrium.svg';
 import chainEnergyWeb from './nodes/ewx.svg';
 import chainFrequency from './chains/frequency.svg';
+import chainFrequencyPaseo from './chains/frequencyPaseo.svg';
 import chainGeminis from './chains/geminis.png';
 import chainGenshiro from './chains/genshiro.svg';
 import chainGM from './chains/gm.jpeg';
 import chainHydrate from './chains/hydrate.png';
+import chainHyperbridge from './chains/hyperbridge.svg';
 import chainInvArch from './chains/invarch.jpeg';
 import chainKarura from './chains/karura.svg';
 import chainKico from './chains/kico.png';
 import chainKintsugi from './chains/kintsugi.png';
 import chainKusama from './chains/kusama.svg';
+import chainLaosSigma from './chains/laosSigma.png';
 import chainListen from './chains/listen.png';
 import chainLogion from './chains/logion.png';
 import chainMangata from './chains/mangatax.png';
 import chainMoonsama from './nodes/moonsama.svg';
+import chainMuseNetwork from './chains/museNetwork.png';
 import chainMyriad from './chains/myriad.png';
+import chainNiskala from './chains/niskala.png';
 import chainOAK from './chains/oak.png';
 import chainOriginTrail from './chains/origintrail.png';
 import chainOriginTrailTestnet from './chains/origintrail-testnet.png';
 import chainPeaq from './chains/peaq.png';
 import chainPendulum from './chains/pendulum.svg';
 import chainPicasso from './chains/picasso.svg';
+import chainPop from './chains/popNetwork.svg';
 import chainQPN from './chains/qpn.png';
 import chainRiodefi from './chains/riodefi.png';
 import chainRococo from './chains/rococo.svg';
@@ -225,6 +232,7 @@ import emptyLogo from './empty.svg';
 // NOTE: This is as retrieved via system.chain RPC
 export const chainLogos = Object.entries({
   'Acurast Canary': chainAcurast,
+  'Ajuna Network (Paseo)': nodeAjuna,
   'Ajuna Testnet': nodeAjuna,
   'Aleph Zero': chainAleph,
   'Aleph Zero Testnet': chainAleph,
@@ -237,6 +245,7 @@ export const chainLogos = Object.entries({
   'Ares PC1': nodeAres,
   Automata: nodeAutomata,
   'Automata ContextFree': nodeAutomata,
+  'Bajun Network (Paseo)': nodeBajun,
   'Bajun Testnet': nodeBajun,
   'Beast Developer': nodeBeast,
   Bifrost: nodeBifrost,
@@ -271,6 +280,7 @@ export const chainLogos = Object.entries({
   'darwinia crab': nodeCrab,
   'Darwinia Crab Parachain': nodeCrab,
   'Darwinia Crab PC2': nodeCrab,
+  'Darwinia Koi': chainDarwiniaKoi,
   'Darwinia Parachain': nodeCrab,
   'Darwinia PC2': nodeDarwinia,
   DataHighway: nodeDataHighway,
@@ -281,6 +291,7 @@ export const chainLogos = Object.entries({
   'Equilibrium parachain': chainEquilibrium,
   EquilibriumTestnet: chainEquilibrium,
   Frequency: chainFrequency,
+  'Frequency Paseo': chainFrequencyPaseo,
   'Frequency Rococo': chainFrequency,
   Galital: nodeGalital,
   'GamePower Network': nodeGamePower,
@@ -292,6 +303,7 @@ export const chainLogos = Object.entries({
   helixstreet: nodeHelixstreet,
   HydraDX: chainSnakenet,
   'HydraDX testnet': chainHydrate,
+  'Hyperbridge (Gargantua)': chainHyperbridge,
   Idavoll: nodeIdavoll,
   'Imbue Testnet': nodeImbue,
   InterBTC: nodeInterBTC,
@@ -326,6 +338,7 @@ export const chainLogos = Object.entries({
   'Kusama CC3': chainKusama,
   kusari: nodeKusari,
   'Kylin Testnet': nodeKylin,
+  'Laos Sigma': chainLaosSigma,
   'Listen Network': chainListen,
   Litentry: nodeLitentry,
   'Litentry-rococo': nodeLitentry,
@@ -354,11 +367,14 @@ export const chainLogos = Object.entries({
   Moonrock: nodeMoonrock,
   'Moonsama': chainMoonsama,
   Moonshadow: moonshadow,
+  'Muse network': chainMuseNetwork,
   'mybank.network PC1': mybank,
   Myriad: chainMyriad,
   NFTMart: nodeNFTMart,
   'NFTMart Staging': nodeNFTMart,
   'NFTMart Testnet': nodeNFTMart,
+  'Niskala': chainNiskala,
+  'Nodle': nodeNodle,
   'OAK Network': chainOAK,
   Odyssey: nodeAresOdyssey,
   'OriginTrail Parachain': chainOriginTrail,
@@ -366,6 +382,8 @@ export const chainLogos = Object.entries({
   Pangolin: nodePangolin,
   Pangoro: nodePangoro,
   'Parami PC2': nodeParami,
+  'Paseo Asset Hub': chainAssetHub,
+  'Paseo Bridge Hub': chainBridgeHub,
   Peaq: chainPeaq,
   Pendulum: chainPendulum,
   Phala: nodePhala,
@@ -377,9 +395,9 @@ export const chainLogos = Object.entries({
   'Polkadex Mainnet': nodePolkadex,
   'Polkadex Testnet': nodePolkadex,
   'Polkadot Asset Hub': chainAssetHub,
-  'Polkadot Bridge Hub': chainBridgeHub,
   'PolkaFoundry PC1': nodePolkaFoundry,
   'Pontem Testnet': nodePontem,
+  'Pop Network': chainPop,
   'Prism PC1': nodePrism,
   'Prism Testnet': nodePrism,
   'Quantum Portal Network': chainQPN,
