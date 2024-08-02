@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.44a29aea.js",
+    "main.js": "/static/js/main.275e2dcb.js",
     "static/js/27.5757e9a4.chunk.js": "/static/js/27.5757e9a4.chunk.js",
     "static/media/onet.svg": "/static/media/onet.939204028101409068e0d9f94ad911d2.svg",
     "static/media/moonriver.svg": "/static/media/moonriver.0d6c0ca22e4f0531f208781460392c87.svg",
@@ -119,6 +119,7 @@
     "static/media/grade_b.webp": "/static/media/grade_b.e539f859a013d807658a.webp",
     "static/media/grade_a.webp": "/static/media/grade_a.97a1f04c0380d1d0a34a.webp",
     "static/media/grade_a_plus.webp": "/static/media/grade_a_plus.b1921babdf22c11a71f1.webp",
+    "static/media/paseo_logo_header.svg": "/static/media/paseo_logo_header.49536c7ed91db7d9cdd36da4a8f33efe.svg",
     "static/media/grade_b_plus.webp": "/static/media/grade_b_plus.3b1df59ca563d274fe30.webp",
     "static/media/grade_d_plus.webp": "/static/media/grade_d_plus.2d0470affe5da03465b7.webp",
     "static/media/grade_d.webp": "/static/media/grade_d.a6af619ab7b9610cd812.webp",
@@ -179,6 +180,7 @@
     "static/media/bridgehub.svg": "/static/media/bridgehub.92f312b2affe1462e255ab05c14993bd.svg",
     "static/media/subsocialX.svg": "/static/media/subsocialX.86d61c0ce34b513a4dcd6d30ad78b3b5.svg",
     "static/media/BridgeHubBlack.svg": "/static/media/BridgeHubBlack.e96e06cfb9b460db558f030745c57079.svg",
+    "static/media/paseo_icon.svg": "/static/media/paseo_icon.0cf67225ef3f55336b974b64df7e2fb9.svg",
     "static/media/crust-maxwell.svg": "/static/media/crust-maxwell.253d6e1a1ad713d58d29abb0af891a9f.svg",
     "static/media/dolphin.svg": "/static/media/dolphin.6d991137f51361d61f325e85f258ffc8.svg",
     "static/media/gamepower.svg": "/static/media/gamepower.f1ecf75eaa1ddbe4296fbb09fa0f2866.svg",
@@ -236,6 +238,6 @@
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.44a29aea.js"
+    "static/js/main.275e2dcb.js"
   ]
 }
