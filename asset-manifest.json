@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.3feb5e69.js",
+    "main.js": "/static/js/main.80a2f763.js",
     "static/js/27.5757e9a4.chunk.js": "/static/js/27.5757e9a4.chunk.js",
     "static/media/onet.svg": "/static/media/onet.939204028101409068e0d9f94ad911d2.svg",
     "static/media/moonriver.svg": "/static/media/moonriver.0d6c0ca22e4f0531f208781460392c87.svg",
@@ -13,6 +13,7 @@
     "static/media/invarch.jpeg": "/static/media/invarch.dc327e2785c56e63b466.jpeg",
     "static/media/coco.svg": "/static/media/coco.817fd383fa1ac0a347b40359bb57bbfb.svg",
     "static/media/momo.svg": "/static/media/momo.e779369108a9cd20ab6b624e25559553.svg",
+    "static/media/niskala.png": "/static/media/niskala.f97b6ff25df594279a54.png",
     "static/media/Gilroy-Bold.woff": "/static/media/Gilroy-Bold.0607a1bc636f63251ed8.woff",
     "static/media/toto.svg": "/static/media/toto.d9b4ab049d2a53dcc04c3308b830d360.svg",
     "static/media/Gilroy-Heavy.woff": "/static/media/Gilroy-Heavy.406f336a83b15e582953.woff",
@@ -34,6 +35,7 @@
     "static/media/westend_colour.svg": "/static/media/westend_colour.6c9cdb56012c5151652539e07932ca45.svg",
     "static/media/westend_icon.svg": "/static/media/westend_icon.6c9cdb56012c5151652539e07932ca45.svg",
     "static/media/idavoll.png": "/static/media/idavoll.57e0fe4e80d747bbd021.png",
+    "static/media/popNetwork.svg": "/static/media/popNetwork.930663218cfbd040952f2e5b5c912e08.svg",
     "static/media/Gilroy-Bold.woff2": "/static/media/Gilroy-Bold.ef7c40ff1efeaaa4c7c6.woff2",
     "static/media/t1rn.png": "/static/media/t1rn.a42f419c98cdc0bff941.png",
     "static/media/Gilroy-Heavy.woff2": "/static/media/Gilroy-Heavy.19b3f6fe15dc6f668d28.woff2",
@@ -97,6 +99,7 @@
     "static/media/ipse.png": "/static/media/ipse.bcce40a0fb778f15f2ea.png",
     "static/media/opal-logo.png": "/static/media/opal-logo.7f2c8c257c49c689c126.png",
     "static/media/bajun.png": "/static/media/bajun.2ec5f5f55d6842b9e16a.png",
+    "static/media/museNetwork.png": "/static/media/museNetwork.382e9b08e8f4e03c0a6c.png",
     "static/media/hashed.png": "/static/media/hashed.eea07f7ec8b8979cca28.png",
     "static/media/ajuna.png": "/static/media/ajuna.e671108736c77c9fdd71.png",
     "static/media/realis.png": "/static/media/realis.9481e66f19c092926d31.png",
@@ -150,6 +153,7 @@
     "static/media/nodle.svg": "/static/media/nodle.754ec8d5732bd34fae7ab12787f5a184.svg",
     "static/media/vara.svg": "/static/media/vara.ce9aed30979fca30dda0ea5df2a82da6.svg",
     "static/media/integritee.svg": "/static/media/integritee.8f0c633cc4095d19c264a9bb812347ce.svg",
+    "static/media/darwiniaKoi.svg": "/static/media/darwiniaKoi.ac50d760595feec3f5b3af75c2ec89db.svg",
     "static/media/ares-gladios.svg": "/static/media/ares-gladios.6bb2aaf5703199c95febc9800f61ef95.svg",
     "static/media/snakenet.svg": "/static/media/snakenet.5af57a5e2c0c72ac71ebe6cf3223d6e2.svg",
     "static/media/ternoa.svg": "/static/media/ternoa.5c2c9766c9ff06b7bb972f70b56749fd.svg",
@@ -232,12 +236,14 @@
     "static/media/sora-substrate.svg": "/static/media/sora-substrate.e2a4b3308a531eeacc58de6640dd6862.svg",
     "static/media/web3games.svg": "/static/media/web3games.08a6f047df9a8d6fd2b7ed852ec0f06a.svg",
     "static/media/polkasmith.svg": "/static/media/polkasmith.55c4589c9e0c064526451c11690ee026.svg",
+    "static/media/hyperbridge.svg": "/static/media/hyperbridge.bbc5a54140daf390f67076b4c78d6524.svg",
     "static/media/frequency.svg": "/static/media/frequency.af6f3e027d5730babbb35e5c977dfc3b.svg",
     "static/media/subwalletjs.svg?react": "/static/media/subwalletjs.6328deaa17d4fb0d3c09259a0a4b4334.svg",
-    "static/media/empty.svg": "/static/media/empty.656b52673ad628cfe48fcdcc2899222d.svg"
+    "static/media/empty.svg": "/static/media/empty.656b52673ad628cfe48fcdcc2899222d.svg",
+    "static/media/frequencyPaseo.svg": "/static/media/frequencyPaseo.b507074efceb7b3767829ae99e54a30c.svg"
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.3feb5e69.js"
+    "static/js/main.80a2f763.js"
   ]
 }
