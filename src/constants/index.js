@@ -5,8 +5,11 @@ import iconKusamaSVG from '../assets/kusama_icon.svg';
 import logoKusamaSVG from '../assets/KUSAMA_6.svg';
 import iconWestendSVG from '../assets/westend_icon.svg';
 import logoWestendSVG from '../assets/westend_icon.svg'; 
+import iconPaseoSVG from '../assets/paseo_icon.svg';
+import logoPaseoSVG from '../assets/paseo_logo_header.svg';
 import {prodParasKusama} from './productionRelayKusama';
 import {prodParasPolkadot} from './productionRelayPolkadot';
+import {prodParasPaseo} from './productionRelayPaseo';
 import {chainColors, nodeColors} from './colors';
 import {chainLogos, nodeLogos, namedLogos} from '../assets/logos';
 import {sanitize} from '../util/sanitize';
@@ -61,6 +64,25 @@ const networkSettings = {
       { stash: "GwJweN3Q8VjBMkd2wWLQsgMXrwmFLD6ihfS146GkmiYg5gw", name: "TOTO", svg: totoSVG },
       { stash: "FUu6iSzpfStHnbtbzFy2gsnBLttwNgNSULSCQCgMjPfkYwF", name: "DODO", svg: dodoSVG }
     ]
+  },
+  paseo: {
+    name: "Paseo",
+    endpoint: process.env.REACT_APP_PASEO_API_ENDPOINT,
+    externalWSS: "wss://rpc.ibp.network/paseo",
+    icon: iconPaseoSVG,
+    logo: logoPaseoSVG,
+    url: "https://github.com/paseo-network",
+    ss58Format: 42,
+    maxValidators: 24,
+    // maxHistoryEras: 16,
+    maxHistoryEras: 32,
+    coreAssignmentsTarget: 60,
+    blocksPerSessionTarget: 600, 
+    sessionsPerDayTarget: 24,
+    cores: 23,
+    poolIds: [],
+    chains: prodParasPaseo,
+    validators: []
   },
   westend: {
     name: "Westend",

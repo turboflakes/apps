@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import isNull from 'lodash/isNull'
 
-const SUPPORTED_CHAINS = ['kusama', 'polkadot'];
+const SUPPORTED_CHAINS = ['kusama', 'polkadot', 'paseo'];
 
 export const validateChain = () => {
   //example: "?chain=polkadot" || "?chain=kusama"

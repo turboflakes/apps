@@ -214,7 +214,7 @@ function ValidatorOptions({openLeftDrawer, onValidatorClicked}) {
     <React.Fragment>
 
       <ListSubheader sx={{ m: 0, p: 0, pl: theme.spacing(3/2), color: theme.palette.neutrals[300] }}>
-        { openLeftDrawer ? `TurboFlakes Validators` : `Vals`}
+        { openLeftDrawer ? `Turboflakes Validators` : `Vals`}
       </ListSubheader>
 
       {getTurboValidators(selectedChain).map((v, i) => (
@@ -272,24 +272,65 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
       <Divider />
 
       {selectedChain === "kusama" ? 
-        <ListItemButton sx={{  }} onClick={() => onChainChanged('polkadot')} disableRipple>
-          <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(2) }}>
-            <img src={getNetworkIcon("polkadot")} style={{ 
-                width: 28,
-                height: 28 }} alt={"polkadot"}/>
-          </ListItemIcon>
-          <ListItemText primary="POLKADOT" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-        </ListItemButton> : null}
+        <React.Fragment>
+          <ListItemButton onClick={() => onChainChanged('polkadot')} disableRipple>
+            <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+              <img src={getNetworkIcon("polkadot")} style={{ 
+                  width: 28,
+                  height: 28 }} alt={"polkadot"}/>
+            </ListItemIcon>
+            <ListItemText primary="POLKADOT" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+          </ListItemButton>
+          <ListItemButton onClick={() => onChainChanged('paseo')} disableRipple>
+            <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+              <img src={getNetworkIcon("paseo")} style={{ 
+                  width: 28,
+                  height: 28 }} alt={"paseo"}/>
+            </ListItemIcon>
+            <ListItemText primary="PASEO" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+          </ListItemButton>
+        </React.Fragment> : null}
 
       {selectedChain === "polkadot" ? 
-        <ListItemButton onClick={() => onChainChanged('kusama')} disableRipple>
-          <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(2) }}>
-            <img src={getNetworkIcon("kusama")} style={{ 
-                width: 28,
-                height: 28 }} alt={"kusama"}/>
-          </ListItemIcon>
-          <ListItemText primary="KUSAMA" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
-        </ListItemButton>
+        <React.Fragment>
+          <ListItemButton onClick={() => onChainChanged('kusama')} disableRipple>
+            <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+              <img src={getNetworkIcon("kusama")} style={{ 
+                  width: 28,
+                  height: 28 }} alt={"kusama"}/>
+            </ListItemIcon>
+            <ListItemText primary="KUSAMA" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+          </ListItemButton>
+          <ListItemButton onClick={() => onChainChanged('paseo')} disableRipple>
+            <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+              <img src={getNetworkIcon("paseo")} style={{ 
+                  width: 28,
+                  height: 28 }} alt={"paseo"}/>
+            </ListItemIcon>
+            <ListItemText primary="PASEO" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+          </ListItemButton>
+        </React.Fragment>
+          : null}
+
+      {selectedChain === "paseo" ? 
+        <React.Fragment>
+          <ListItemButton onClick={() => onChainChanged('polkadot')} disableRipple>
+            <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+              <img src={getNetworkIcon("polkadot")} style={{ 
+                  width: 28,
+                  height: 28 }} alt={"polkadot"}/>
+            </ListItemIcon>
+            <ListItemText primary="POLKADOT" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+          </ListItemButton>
+          <ListItemButton onClick={() => onChainChanged('kusama')} disableRipple>
+            <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1) }}>
+              <img src={getNetworkIcon("kusama")} style={{ 
+                  width: 28,
+                  height: 28 }} alt={"kusama"}/>
+            </ListItemIcon>
+            <ListItemText primary="KUSAMA" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+          </ListItemButton>
+        </React.Fragment>
           : null}
 
       <Divider />
@@ -342,13 +383,16 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
           sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
       </ListItemButton> */}
 
-      <ListItemButton  selected={selectedPage === 'pools'} disableRipple
-        onClick={() => onOptionChanged('pools')}>
-        <ListItemIcon >
-          <Box><FontAwesomeIcon icon={faWaterLadder} style={{ color: theme.palette.text.primary }} /></Box>
-        </ListItemIcon>
-        <ListItemText primary="Nomination Pools" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
-      </ListItemButton>
+      
+      {selectedChain != "paseo" ? 
+        <ListItemButton  selected={selectedPage === 'pools'} disableRipple
+          onClick={() => onOptionChanged('pools')}>
+          <ListItemIcon >
+            <Box><FontAwesomeIcon icon={faWaterLadder} style={{ color: theme.palette.text.primary }} /></Box>
+          </ListItemIcon>
+          <ListItemText primary="Nomination Pools" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
+        </ListItemButton> 
+        : null }
 
       <Divider />
 
@@ -363,8 +407,10 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
 
         <Divider />
 
+      {selectedChain != "paseo" ? 
         <ValidatorOptions openLeftDrawer={openLeftDrawer} onValidatorClicked={onValidatorClicked} />
-
+      : null }
+      
       </Box>
 
     </Box>
