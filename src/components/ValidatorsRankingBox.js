@@ -24,7 +24,8 @@ import {
 } from '../features/api/validatorsSlice'
 import {
   addressChanged,
-  selectChainInfo
+  selectChainInfo,
+  selectChain
 } from '../features/chain/chainSlice';
 import {
   pageChanged
@@ -118,7 +119,8 @@ const PAGE_SIZE = 16;
 
 export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) {
   const theme = useTheme();
-  const [subset, setSubset] = React.useState("TVP");
+  const selectedChain = useSelector(selectChain);
+  const [subset, setSubset] = React.useState(selectedChain != "paseo" ? "TVP" : "All");
   const [page, setPage] = React.useState(0);
   const params = {from: sessionIndex - maxSessions, to: sessionIndex - 1, ranking: "performance", size: RANK_SIZE}
   const {data, isSuccess, isFetching} = useGetValidatorsQuery(subset === "TVP" ? {...params, subset} : params, {skip});
@@ -203,6 +205,7 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
         </Box>
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+      {selectedChain != "paseo" ?
         <ToggleButtonGroup
           size="small"
           sx={{mx: 2}}
@@ -218,20 +221,21 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
               fontSize: "0.625rem",
               '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
               '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
-            All
+            <b>All</b>
           </ToggleButton>
-          <ToggleButton value="TVP" aria-label="centered" 
-            disableRipple
-            disableFocusRipple
-            sx={{ minWidth: 48, border: 0, 
-              fontSize: "0.625rem",
-              '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
-              '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
-            <b>TVP</b>
-          </ToggleButton>
-        </ToggleButtonGroup>
+          
+            <ToggleButton value="TVP" aria-label="centered" 
+              disableRipple
+              disableFocusRipple
+              sx={{ minWidth: 48, border: 0, 
+                fontSize: "0.625rem",
+                '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
+                '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
+              <b>TVP</b>
+            </ToggleButton> 
+        </ToggleButtonGroup> : null }
       </Box>
-      <Box sx={{ height: 592, display: 'flex', flexDirection: 'column'}}>
+      <Box sx={{ height: selectedChain != "paseo" ? 592 : 625, display: 'flex', flexDirection: 'column'}}>
         {isFetching || isPreviousFetching?
           <Box sx={{ height: "100%", display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <Spinner size={32}/>
