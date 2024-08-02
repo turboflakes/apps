@@ -79,9 +79,12 @@ export default function NetTotalValidatorsBox({sessionIndex, maxSessions}) {
   const timelineData = data.map((s, i) => ({
     session: s.six,
     total: !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m.vals_total).reduce((a, b) => a + b, 0) : 0,
-    c100: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "C100")[0].vals_total : 0,
-    tvp: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "TVP")[0].vals_total : 0,
-    others: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "NONTVP")[0].vals_total : 0,
+    c100: !isUndefined(s.netstats) ? 
+      (s.netstats.subsets.filter(f => f.subset === "C100").length > 0 ? s.netstats.subsets.filter(f => f.subset === "C100")[0].vals_total : 0) : 0,
+    tvp: !isUndefined(s.netstats) ? 
+      (s.netstats.subsets.filter(f => f.subset === "TVP").length > 0 ? s.netstats.subsets.filter(f => f.subset === "TVP")[0].vals_total : 0) : 0,
+    others: !isUndefined(s.netstats) ? 
+      (s.netstats.subsets.filter(f => f.subset === "NONTVP").length > 0 ? s.netstats.subsets.filter(f => f.subset === "NONTVP")[0].vals_total : 0) : 0,
   }))
 
   return (

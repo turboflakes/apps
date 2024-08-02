@@ -85,9 +85,12 @@ export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
     session: s.six,
     sessionIndex: s.esix,
     total: !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m[key]).reduce((a, b) => a + b, 0) : 0,
-    c100: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "C100")[0][key] : 0,
-    tvp: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "TVP")[0][key] : 0,
-    others: !isUndefined(s.netstats) ? s.netstats.subsets.filter(f => f.subset === "NONTVP")[0][key] : 0,
+    c100: !isUndefined(s.netstats) ? 
+      (s.netstats.subsets.filter(f => f.subset === "C100").length > 0 ? s.netstats.subsets.filter(f => f.subset === "C100")[0][key] : 0) : 0,
+    tvp: !isUndefined(s.netstats) ? 
+      (s.netstats.subsets.filter(f => f.subset === "TVP").length > 0 ? s.netstats.subsets.filter(f => f.subset === "TVP")[0][key] : 0) : 0,
+    others: !isUndefined(s.netstats) ? 
+      (s.netstats.subsets.filter(f => f.subset === "NONTVP").length > 0 ? s.netstats.subsets.filter(f => f.subset === "NONTVP")[0][key] : 0) : 0,
   }))
 
   const handleStatChanged = (newValue) => {
