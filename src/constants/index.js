@@ -34,7 +34,7 @@ const networkSettings = {
     coreAssignmentsTarget: 240,
     blocksPerSessionTarget: 2400,
     sessionsPerDayTarget: 6,
-    cores: 59,
+    cores: 80,
     poolIds: [process.env.REACT_APP_POLKADOT_POOL_ID_1],
     chains: prodParasPolkadot,
     validators: [
@@ -79,7 +79,7 @@ const networkSettings = {
     coreAssignmentsTarget: 60,
     blocksPerSessionTarget: 600, 
     sessionsPerDayTarget: 24,
-    cores: 23,
+    cores: 40,
     poolIds: [],
     chains: prodParasPaseo,
     validators: []
