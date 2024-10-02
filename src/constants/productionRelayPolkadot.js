@@ -433,6 +433,12 @@ export const prodParasPolkadot = [
     text: 'Polkadot People',
   },
   {
+    info: 'polkadotCoretime',
+    paraId: 1005,
+    providers: {},
+    text: 'Polkadot Coretime',
+  },
+  {
     homepage: 'https://zeitgeist.pm',
     info: 'zeitgeist',
     paraId: 2092,

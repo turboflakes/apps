@@ -14,6 +14,7 @@ import chainAcurast from './chains/acurast.png';
 import chainAleph from './chains/aleph.svg';
 import chainAltair from './chains/altair.svg';
 import chainAmplitude from './chains/amplitude.svg';
+import chainAmplitudeTestnet from './chains/amplituteTestnet.svg';
 import chainAssetHub from './chains/assethub.svg';
 import chainAssetHubKusama from './chains/assetHubKusama.svg';
 import chainBitgreen from './chains/bitgreen.png';
@@ -24,19 +25,25 @@ import chainBridgeHubPolkadot from './chains/bridgeHubPolkadot.svg';
 import chainComposableFinance from './chains/composableFinance.png';
 import chainCollectives from './chains/collectives.png';
 import chainCoretimeKusama from './chains/coretimeKusama.svg';
+import chainCoretimePaseo from './chains/coretimePaseo.svg';
+import chainCoretimePolkadot from './chains/coretimePolkadot.svg';
 import chainCreditcoin from './chains/creditcoin.png';
 import chainCreditcoinTest from './chains/creditcoin-test.png';
 import chainDarwiniaKoi from './chains/darwiniaKoi.svg';
 import chainDorafactory from './chains/dorafactory.png';
 import chainEquilibrium from './chains/equilibrium.svg';
 import chainEnergyWeb from './nodes/ewx.svg';
+import chainEnergyWebPaseo from './nodes/pex.svg';
 import chainFrequency from './chains/frequency.svg';
 import chainFrequencyPaseo from './chains/frequencyPaseo.svg';
 import chainGeminis from './chains/geminis.png';
 import chainGenshiro from './chains/genshiro.svg';
 import chainGM from './chains/gm.jpeg';
 import chainHydrate from './chains/hydrate.png';
+import chainHydrationPaseo from './chains/hydrationPaseo.svg';
 import chainHyperbridge from './chains/hyperbridge.svg';
+import chainHyperbridgeGargantua from './chains/hyperbridgeGargantua.png';
+import chainIdealNetwork from './chains/ideal_network.svg';
 import chainInvArch from './chains/invarch.jpeg';
 import chainKarura from './chains/karura.svg';
 import chainKico from './chains/kico.png';
@@ -49,13 +56,16 @@ import chainMangata from './chains/mangatax.png';
 import chainMoonsama from './nodes/moonsama.svg';
 import chainMuseNetwork from './chains/museNetwork.png';
 import chainMyriad from './chains/myriad.png';
+import chainMyriadSocial from './chains/myriadSocial.svg';
 import chainNiskala from './chains/niskala.png';
 import chainOAK from './chains/oak.png';
 import chainOriginTrail from './chains/origintrail.png';
 import chainOriginTrailTestnet from './chains/origintrail-testnet.png';
 import chainPeaq from './chains/peaq.png';
 import chainPendulum from './chains/pendulum.svg';
+import chainPeoplePolkadot from './chains/peoplePolkadot.svg';
 import chainPeopleKusama from './chains/peopleKusama.svg';
+import chainPeoplePaseo from './chains/peoplePaseo.svg';
 import chainPicasso from './chains/picasso.svg';
 import chainPop from './chains/popNetwork.svg';
 import chainQPN from './chains/qpn.png';
@@ -81,6 +91,7 @@ import chainTuring from './chains/turing.png';
 import chainUnorthodox from './chains/unorthodox.png';
 import chainVara from './chains/vara.svg';
 import chainVirto from './chains/virto.png';
+import chainXcavate from './chains/xcavate.png';
 import chainWatr from './chains/watr.png';
 import extensionPolkadotJs from './extensions/polkadot-js.svg';
 import externalCommonwealth from './external/commonwealth.png';
@@ -243,6 +254,7 @@ export const chainLogos = Object.entries({
   'Aleph Zero Testnet': chainAleph,
   Altair: chainAltair,
   Amplitude: chainAmplitude,
+  'Amplitude testnet' : chainAmplitudeTestnet,
   'Apron PC1': nodeApron,
   Arctic: nodeArctic,
   'Ares Gladios': nodeAresGladios,
@@ -308,8 +320,10 @@ export const chainLogos = Object.entries({
   helixstreet: nodeHelixstreet,
   HydraDX: chainSnakenet,
   'HydraDX testnet': chainHydrate,
-  'Hyperbridge (Gargantua)': chainHyperbridge,
+  'Hydration (Paseo)': chainHydrationPaseo,
+  'Hyperbridge (Gargantua)': chainHyperbridgeGargantua,
   Idavoll: nodeIdavoll,
+  'Ideal Network': chainIdealNetwork,
   'Imbue Testnet': nodeImbue,
   InterBTC: nodeInterBTC,
   'InterBTC Staging': nodeInterBTC,
@@ -377,6 +391,7 @@ export const chainLogos = Object.entries({
   'Muse network': chainMuseNetwork,
   'mybank.network PC1': mybank,
   Myriad: chainMyriad,
+  'Myriad Social Testnet': chainMyriadSocial,
   NFTMart: nodeNFTMart,
   'NFTMart Staging': nodeNFTMart,
   'NFTMart Testnet': nodeNFTMart,
@@ -391,8 +406,11 @@ export const chainLogos = Object.entries({
   'Parami PC2': nodeParami,
   'Paseo Asset Hub': chainAssetHub,
   'Paseo Bridge Hub': chainBridgeHub,
+  'Paseo Coretime': chainCoretimePaseo,
+  'Paseo People': chainPeoplePaseo,
   Peaq: chainPeaq,
   Pendulum: chainPendulum,
+  'PEX': chainEnergyWebPaseo,
   Phala: nodePhala,
   'PHOENIX PC1': nodePhoenix,
   Picasso: chainPicasso,
@@ -403,6 +421,8 @@ export const chainLogos = Object.entries({
   'Polkadex Testnet': nodePolkadex,
   'Polkadot Asset Hub': chainAssetHub,
   'Polkadot Bridge Hub': chainBridgeHub,
+  'Polkadot Coretime': chainCoretimePolkadot,
+  'Polkadot People': chainPeoplePolkadot,
   'PolkaFoundry PC1': nodePolkaFoundry,
   'Pontem Testnet': nodePontem,
   'Pop Network': chainPop,
@@ -471,6 +491,7 @@ export const chainLogos = Object.entries({
   Westmint: nodeStatemine,
   'Westmint Test': nodeStatemine,
   WILT: nodeKilt,
+  'Xcavate': chainXcavate,
   'zcloak poc1': nodeZCloak
 }).reduce((logos, [chain, logo]) => ({
   ...logos,
