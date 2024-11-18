@@ -36,7 +36,7 @@ import {
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>TVP: <b>{data.tvp}</b> ({Math.round((data.tvp * 100 ) / data.total)}%)
+            <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>DN: <b>{data.tvp}</b> ({Math.round((data.tvp * 100 ) / data.total)}%)
           </Typography>
           <Typography component="div" variant="caption">
             <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>100% Com.: <b>{data.c100}</b> ({Math.round((data.c100 * 100 ) / data.total)}%)

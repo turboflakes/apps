@@ -11,7 +11,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWallet } from '@fortawesome/free-solid-svg-icons'
 import GradeIcon from './GradeIcon';
-import tvpValid from '../assets/tvp_valid.svg';
+import tvpValid from '../assets/dn_valid.svg';
 // import tvpInvalid from '../assets/tvp_invalid.svg';
 import {
   selectSessionCurrent,
@@ -91,10 +91,10 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
               </Box>
               {showSubset && valProfile.subset === "TVP" ? 
                 <Box sx={{ }}>
-                  <Tooltip title={`TVP Member`} arrow>
+                  <Tooltip title={`Decentralized Node (Cohort 1)`} arrow>
                     <img src={tvpValid} style={{ 
                         width: 48,
-                        height: "auto" }} alt="TVP Member" />
+                        height: "auto" }} alt="Decentralized Node (Cohort 1)" />
                   </Tooltip>  
                 </Box>
               : null}

@@ -41,7 +41,7 @@ import { stakeDisplay } from '../util/display';
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>TVP: <b>{stakeDisplay(data.tvp, chainInfo, 4, true, true, true)}</b> ({Math.round((data.tvp * 100 ) / data.total)}%)
+            <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>DN: <b>{stakeDisplay(data.tvp, chainInfo, 4, true, true, true)}</b> ({Math.round((data.tvp * 100 ) / data.total)}%)
           </Typography>
           <Typography component="div" variant="caption">
             <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>100% Com.: <b>{stakeDisplay(data.c100, chainInfo, 4, true, true, true)}</b> ({Math.round((data.c100 * 100 ) / data.total)}%)

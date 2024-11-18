@@ -31,7 +31,8 @@ const COLORS = (theme) => ({
   "C100": theme.palette.grey[900],
   "NONTVP": theme.palette.grey[200],
   "Others": theme.palette.grey[200],
-  "TVP": theme.palette.semantics.blue
+  "TVP": theme.palette.semantics.blue,
+  "DN": theme.palette.semantics.blue
 })
 
 function ItemButtom({validator}) {

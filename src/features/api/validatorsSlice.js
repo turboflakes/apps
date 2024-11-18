@@ -315,7 +315,7 @@ const GLYPHS = {
 }
 
 export const SUBSET = { 
-  "TVP": "TVP",
+  "TVP": "DN",
   "NONTVP": "Others",
   "C100": "C100",
   "NONVAL": "Non-validator"

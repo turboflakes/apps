@@ -205,6 +205,7 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
         </Box>
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+      
       {selectedChain != "paseo" ?
         <ToggleButtonGroup
           size="small"
@@ -231,11 +232,12 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
                 fontSize: "0.625rem",
                 '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
                 '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
-              <b>TVP</b>
-            </ToggleButton> 
+              <b>DN</b>
+            </ToggleButton>
         </ToggleButtonGroup> : null }
+        
       </Box>
-      <Box sx={{ height: selectedChain != "paseo" ? 592 : 625, display: 'flex', flexDirection: 'column'}}>
+      <Box sx={{ height: 625, display: 'flex', flexDirection: 'column'}}>
         {isFetching || isPreviousFetching?
           <Box sx={{ height: "100%", display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <Spinner size={32}/>
