@@ -206,6 +206,9 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
       
+      {/* 
+      NOTE: Disable toogle temporarly until the old cached 1kv tags are removed
+
       {selectedChain != "paseo" ?
         <ToggleButtonGroup
           size="small"
@@ -234,7 +237,7 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
                 '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
               <b>DN</b>
             </ToggleButton>
-        </ToggleButtonGroup> : null }
+        </ToggleButtonGroup> : null } */}
         
       </Box>
       <Box sx={{ height: 625, display: 'flex', flexDirection: 'column'}}>

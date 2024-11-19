@@ -89,7 +89,10 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
                   <FontAwesomeIcon style={{ marginRight: 8 }} icon={faWallet} />{chainAddress(address, chainInfo.ss58Format)}
                 </Typography>
               </Box>
-              {showSubset && valProfile.subset === "TVP" ? 
+
+              {/* NOTE: Disable badge temporarly until the old cached 1kv tags are removed  */}
+
+              {/* {showSubset && valProfile.subset === "TVP" ? 
                 <Box sx={{ }}>
                   <Tooltip title={`Decentralized Node (Cohort 1)`} arrow>
                     <img src={tvpValid} style={{ 
@@ -97,7 +100,8 @@ export default function ValAddressProfile({address, maxSessions, showGrade, show
                         height: "auto" }} alt="Decentralized Node (Cohort 1)" />
                   </Tooltip>  
                 </Box>
-              : null}
+              : null} */}
+              
             </Box>
             <Divider sx={{ my: 2,
               opacity: 0.25,
