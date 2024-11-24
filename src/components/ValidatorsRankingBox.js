@@ -237,7 +237,7 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
         </ToggleButtonGroup> : null }
         
       </Box>
-      <Box sx={{ height: 625, display: 'flex', flexDirection: 'column'}}>
+      <Box sx={{ height: 594, display: 'flex', flexDirection: 'column'}}>
         {isFetching || isPreviousFetching?
           <Box sx={{ height: "100%", display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <Spinner size={32}/>
