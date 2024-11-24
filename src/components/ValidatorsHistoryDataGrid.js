@@ -56,7 +56,7 @@ const defineColumns = (theme, chainInfo) => {
   {
     field: 'identity',
     headerName: 'Identity',
-    width: 256,
+    width: 288,
     disableColumnMenu: true,
     sortable: false,
     renderCell: (params) => {
@@ -94,7 +94,7 @@ const defineColumns = (theme, chainInfo) => {
   {
     field: 'subset',
     headerName: 'Subset',
-    width: 96,
+    width: 80,
     headerAlign: 'left',
     align: 'left',
     sortable: false,
