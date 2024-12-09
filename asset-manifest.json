@@ -1,10 +1,12 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.bb1cad96.js",
+    "main.js": "/static/js/main.46e876c2.js",
     "static/js/27.5757e9a4.chunk.js": "/static/js/27.5757e9a4.chunk.js",
     "static/media/onet.svg": "/static/media/onet.939204028101409068e0d9f94ad911d2.svg",
     "static/media/moonriver.svg": "/static/media/moonriver.0d6c0ca22e4f0531f208781460392c87.svg",
+    "static/media/gogo.svg": "/static/media/gogo.309682da0a00b77f353cd181c1f731d5.svg",
+    "static/media/jojo.svg": "/static/media/jojo.70b8eb1b9277d104dfe64ff64bf596ae.svg",
     "static/media/dodo.svg": "/static/media/dodo.56c6ebcdc184d34545b7e0686396ae54.svg",
     "static/media/Gilroy-Bold.ttf": "/static/media/Gilroy-Bold.901a60fc2835c74fba67.ttf",
     "static/media/Gilroy-Heavy.ttf": "/static/media/Gilroy-Heavy.bf729a99bcad6fccc3f4.ttf",
@@ -49,6 +51,7 @@
     "static/media/fantour.png": "/static/media/fantour.2281ca59d65a1b5643aa.png",
     "static/media/subdao.png": "/static/media/subdao.fd9707e14a25f7c1d821.png",
     "static/media/calamari.png": "/static/media/calamari.1c4f7468dcb87347e1e7.png",
+    "static/media/gokun.svg": "/static/media/gokun.345887ba4529164967884160f31f26b8.svg",
     "static/media/raiden.svg": "/static/media/raiden.d273e24be9f7221aa2d585e118177050.svg",
     "static/media/coinversation.png": "/static/media/coinversation.0b49adeb66d6b711df37.png",
     "static/media/unitnetwork.png": "/static/media/unitnetwork.ccefb7b819f72959b070.png",
@@ -145,6 +148,8 @@
     "static/media/totem.svg": "/static/media/totem.f523100035e490b163ffe0d56ea0a850.svg",
     "static/media/logo_1_inverted_subtract_turboflakes_.svg": "/static/media/logo_1_inverted_subtract_turboflakes_.a857a4938a7a8314993088abd566df27.svg",
     "static/media/zCloak.svg": "/static/media/zCloak.81f2780785909f4c1dd68371ad3c6da0.svg",
+    "static/media/corematch_logo_border.svg": "/static/media/corematch_logo_border.ab0c5a3e9122c3e36d8bfcf2bb941d91.svg",
+    "static/media/claimit_logo.svg": "/static/media/claimit_logo.32f264b48d1f307f02f807cfa97b5c50.svg",
     "static/media/confti.svg": "/static/media/confti.3646f9e60a855c9128d17a232fca5208.svg",
     "static/media/kusari.svg": "/static/media/kusari.8f98d3ebad57f8d9794e3c78729335a0.svg",
     "static/media/acala.svg": "/static/media/acala.db93212dddd12142d2bb0dc1fe999419.svg",
@@ -259,6 +264,6 @@
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.bb1cad96.js"
+    "static/js/main.46e876c2.js"
   ]
 }
