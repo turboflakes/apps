@@ -33,6 +33,8 @@ import onetSVG from '../assets/onet.svg';
 import nomiSVG from '../assets/nomi.svg';
 import crunchSVG from '../assets/crunchbot.svg';
 import scoutySVG from '../assets/scouty.svg';
+import claimitSVG from '../assets/claimit_logo.svg';
+import corematchSVG from '../assets/corematch_logo_border.svg';
 import polkadotSVG from '../assets/polkadot_icon.svg';
 import kusamaSVG from '../assets/kusama_icon.svg';
 import turboflakesSVG from '../assets/logo/logo_mark_black_subtract_turboflakes_.svg';
@@ -104,6 +106,7 @@ function useScrollTop(ref, selectedPage) {
 const leftDrawerWidth = 210;
 const leftDrawerWidthClosed = 56;
 const rightDrawerWidth = 296;
+const leftDrawerHeaderHeight = 176;
 
 const AppBar = styled(MuiAppBar, {
 	shouldForwardProp: (prop) => prop !== 'open',
@@ -156,6 +159,7 @@ const LeftDrawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'op
 function AppsOptions({openLeftDrawer, onToolClicked, onAppChanged}) {
   const theme = useTheme();
   const selectedApp = useSelector(selectApp);
+  const selectedChain = useSelector(selectChain);
 
   return (
     <React.Fragment>
@@ -163,6 +167,24 @@ function AppsOptions({openLeftDrawer, onToolClicked, onAppChanged}) {
       <ListSubheader sx={{ m: 0, p: 0, pl: theme.spacing(3/2), color: theme.palette.neutrals[300] }}>
         { openLeftDrawer ? `Other Apps & Tools` : `Apps`}
       </ListSubheader>
+
+      <ListItemButton onClick={() => onToolClicked('claimit', selectedChain)} disableRipple>
+        <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1/2) }}>
+          <img src={claimitSVG} style={{ 
+            width: 32,
+            height: 32 }} alt={"claimit"}/>
+        </ListItemIcon>
+        <ListItemText primary="CLAIMIT" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+      </ListItemButton>
+
+      <ListItemButton onClick={() => onToolClicked('corematch', selectedChain)} disableRipple>
+        <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: theme.spacing(1/2) }}>
+          <img src={corematchSVG} style={{ 
+            width: 32,
+            height: 32 }} alt={"corematch"}/>
+        </ListItemIcon>
+        <ListItemText primary="COREMATCH" sx={{ '> .MuiTypography-root': {fontSize: '0.875rem', fontWeight: 600 } }} />
+      </ListItemButton>
 
       { selectedApp !== 'nomi' ?
         <ListItemButton onClick={() => onAppChanged('nomi')} disableRipple>
@@ -399,8 +421,7 @@ function OnetOptions({openLeftDrawer, onOptionChanged, onChainChanged, onAppChan
       <Box sx={{
         overflowY: 'auto',
         overflowX: 'hidden',
-        height: `calc(${window.innerHeight}px - ${224 + 80 + 45*9}px)`,
-        
+        height: `calc(${window.innerHeight}px - ${leftDrawerHeaderHeight + 80 + 45*9}px)`,        
       }}>
         
         { selectedChain != "paseo" ?
@@ -501,28 +522,35 @@ function FooterLeftDrawer({openLeftDrawer}) {
       <Divider />
         
       <ListItem disableRipple>
-        <ListItemIcon sx={{ ml: theme.spacing(-1/2), py: 0, 
+        <ListItemIcon sx={{ py: 0, 
         '&:hover': {
           cursor: 'pointer'
         }}} onClick={handleOnClick} >
           <img src={turboflakesSVG}  
             style={{ 
-              width: 28,
-              height: 28 }} alt={"turboflakes"}/>
+              width: 24,
+              height: 24 }} alt={"turboflakes"}/>
         </ListItemIcon>
-        <ListItemText primary="TurboFlakes © 2023" secondary="Supported by Kusama Treasury"
+        <ListItemText primary="© 2024 turboflakes.io" secondary={
+          <span style={{ "line-height": 16 }}>
+            <a style={{ "margin-right": 8, "text-decoration": "none" }} href='https://www.turboflakes.io/#/terms' target='_blank'>{"terms"}</a>
+            <a style={{ "text-decoration": "none" }} href='https://www.turboflakes.io/#/privacy' target='_blank'>privacy</a>
+          </span>
+        }
           variant="caption" 
           sx={{ 
             ml: theme.spacing(-2), 
             visibility: openLeftDrawer ? 'visible' : 'hidden',
             '> .MuiTypography-root': {
               ...theme.typography.caption,
+              fontSize: "0.625rem",
               },
             '> .MuiListItemText-secondary': {
               ...theme.typography.caption,
               fontSize: "0.625rem",
             }
           }} />
+          
       </ListItem> 
 
     </React.Fragment>
@@ -671,13 +699,19 @@ export default function LayoutPage({api}) {
     navigate(`/${page}`);
   }
 
-  const handleToolClicked = (tool) => {
+  const handleToolClicked = (tool, chain) => {
     switch (tool) {
       case 'crunch':
         window.open('https://github.com/turboflakes/crunch', '_blank')
         break;
       case 'scouty':
         window.open('https://github.com/turboflakes/scouty', '_blank')
+        break;
+      case 'claimit':
+        window.open(`https://www.goclaimit.app/?chain=${chain}&lc=false`, '_blank')
+        break;
+      case 'corematch':
+        window.open(`https://www.corematch.io/?chain=${chain}`, '_blank')
         break;
     }
   }
@@ -797,7 +831,7 @@ export default function LayoutPage({api}) {
           { openLeftDrawer ? 
             <Box sx={{ 
               width: "100%",
-              height: 224,
+              height: leftDrawerHeaderHeight,
               display: 'flex', flexDirection: 'column', justifyContent: 'center', 
               alignItems: 'center', cursor: 'pointer'
             }}
@@ -815,13 +849,13 @@ export default function LayoutPage({api}) {
               {selectedApp === "nomi" ? `NOMI` : ''}
               </Typography>
 
-              <Chip sx={{ mb: theme.spacing(2), p: theme.spacing(1)}} label="beta version" color='primary'/>
+              {/* <Chip sx={{ mb: theme.spacing(2), p: theme.spacing(1)}} label="beta version" color='primary'/> */}
 
               <SocialIcons />
             </Box> : 
             <Box sx={{ 
               width: "100%",
-              height: 224,
+              height: leftDrawerHeaderHeight,
               display: 'flex', flexDirection: 'column', justifyContent: 'center', 
               alignItems: 'center', cursor: 'pointer'}}
               onClick={toggleDrawer} >

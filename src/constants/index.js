@@ -14,10 +14,13 @@ import {chainColors, nodeColors} from './colors';
 import {chainLogos, nodeLogos, namedLogos} from '../assets/logos';
 import {sanitize} from '../util/sanitize';
 import raidenSVG from '../assets/raiden.svg';
+import gokunSVG from '../assets/gokun.svg';
 import cocoSVG from '../assets/coco.svg';
 import momoSVG from '../assets/momo.svg';
 import totoSVG from '../assets/toto.svg';
 import dodoSVG from '../assets/dodo.svg';
+import gogoSVG from '../assets/gogo.svg';
+import jojoSVG from '../assets/jojo.svg';
 
 // Define Network settings
 const networkSettings = {
@@ -38,7 +41,8 @@ const networkSettings = {
     poolIds: [process.env.REACT_APP_POLKADOT_POOL_ID_1],
     chains: prodParasPolkadot,
     validators: [
-      { stash: "12gPFmRqnsDhc9C5DuXyXBFA23io5fSGtKTSAimQtAWgueD2", name: "RAIDEN", svg: raidenSVG }
+      { stash: "12gPFmRqnsDhc9C5DuXyXBFA23io5fSGtKTSAimQtAWgueD2", name: "RAIDEN", svg: raidenSVG },
+      { stash: "16BEvxYpyRWPaFbtwCPzSCtHVKr1soViaobKojNWBH12U5dk", name: "GOKUN", svg: gokunSVG }
     ]
   },
   kusama: {
@@ -59,6 +63,8 @@ const networkSettings = {
     poolIds: [process.env.REACT_APP_KUSAMA_POOL_ID_1, process.env.REACT_APP_KUSAMA_POOL_ID_2],
     chains: prodParasKusama,
     validators: [
+      { stash: "Fm9FrPpsUZQvRRWgQMQHqdHvGPxq3qfwEyCMi8GqNH6tbEJ", name: "GOGO", svg: gogoSVG },
+      { stash: "HS4wfui3HrAG3K7UUFsUK4PVd1GXtqRQUdT5vH18gyTe88D", name: "JOJO", svg: jojoSVG },
       { stash: "FZsMKYHoQG1dAVhXBMyC7aYFYpASoBrrMYsAn1gJJUAueZX", name: "COCO", svg: cocoSVG },
       { stash: "GA7j1FHWXpEU4kavowEte6LWR3NgZ8bkv4spWa9joiQF5R2", name: "MOMO", svg: momoSVG },
       { stash: "GwJweN3Q8VjBMkd2wWLQsgMXrwmFLD6ihfS146GkmiYg5gw", name: "TOTO", svg: totoSVG },
