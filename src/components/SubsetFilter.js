@@ -48,7 +48,8 @@ export default function SubsetFilter() {
         <ToggleButton value="Others" aria-label="right aligned" 
           sx={{ minWidth: 128, mr: 1, border: 0, 
             '&.Mui-selected' : {borderRadius: 16, pr: 2}, 
-            '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
+            '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16},
+            '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
           Others
         </ToggleButton>
         {selectedChain !== 'paseo' ? 
