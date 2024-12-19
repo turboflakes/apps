@@ -74,3 +74,9 @@ export const zeroPad = (num, places = 2) => {
     var zero = places - num.toString().length + 1;
     return Array(+(zero > 0 && zero)).join("0") + num;
 }
+
+export function versionDisplay(input) {
+    const regex = /v(\d+\.\d+\.\d+)/;
+    const match = input.match(regex);
+    return match ? match[1] : null;
+}

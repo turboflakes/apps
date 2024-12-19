@@ -36,9 +36,9 @@ export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Validators'],
   endpoints: (builder) => ({
     getValidators: builder.query({
-      query: ({address, session, role, number_last_sessions, from, to, ranking, size, subset, nominees_only, show_summary, show_stats, show_profile, fetch_peers}) => ({
+      query: ({address, session, role, number_last_sessions, from, to, ranking, size, subset, nominees_only, show_summary, show_stats, show_profile, show_discovery, fetch_peers}) => ({
         url: `/validators`,
-        params: { address, session, role, number_last_sessions, from, to, ranking, size, subset, nominees_only, show_summary, show_stats, show_profile, fetch_peers }
+        params: { address, session, role, number_last_sessions, from, to, ranking, size, subset, nominees_only, show_summary, show_stats, show_profile, show_discovery, fetch_peers }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
       async onQueryStarted(params, { getState, extra, dispatch, queryFulfilled }) {
@@ -73,9 +73,9 @@ export const extendedApi = apiSlice.injectEndpoints({
       },
     }),
     getValidatorByAddress: builder.query({
-      query: ({address, session, show_summary, show_stats}) => ({
+      query: ({address, session, show_summary, show_stats, show_discovery}) => ({
         url: `/validators/${address}`,
-        params: { session, show_summary, show_stats }
+        params: { session, show_summary, show_stats, show_discovery }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
       async onQueryStarted({address, session, show_summary, show_stats}, { getState, dispatch, queryFulfilled }) {
@@ -252,10 +252,10 @@ const selectValidatorsBySessions = (state, sessions = [], suffix = "") => {
   return Object.values(validators)
 }
 
-function createRows(id, identity, address, subset, 
+function createRows(id, identity, address, node_version, subset,
   active_sessions, para_sessions, authored_blocks, core_assignments, 
   explicit_votes, implicit_votes, missed_votes, disputes, avg_pts, commission, paraId, timeline) {
-  return {id, identity, address, subset, 
+  return {id, identity, address, node_version, subset,
     active_sessions, para_sessions, authored_blocks, 
     core_assignments, explicit_votes, implicit_votes, missed_votes, disputes,
     avg_pts, commission, paraId, timeline };
@@ -355,10 +355,14 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
       }
     });
 
+    // from discovery get node version
+    const node_version = x[0].discovery ? x[0].discovery.nv : "";
+  
     return createRows(
       i+1, 
       !isUndefined(profile) ? profile._identity : null,
       x[0].address,
+      node_version,
       !isUndefined(profile) ? SUBSET[profile.subset] : null, 
       f1.length,
       f2.length,

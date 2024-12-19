@@ -27,7 +27,7 @@ import {
   selectIdentityFilter,
   selectSubsetFilter,
 } from '../features/layout/layoutSlice';
-import { scoreDisplay } from '../util/display';
+import { scoreDisplay, versionDisplay } from '../util/display';
 import { isChainSupported, getChainName } from '../constants'
 import {
   chainAddress
@@ -87,6 +87,22 @@ const defineColumns = (theme, chain, chainInfo) => {
             </Box>
             <Box sx={{ml: 1,  display: "inline-block"}}>{gradeValue}</Box>
           </Box>)
+      } 
+      return ('-')
+    }
+  },
+  {
+    field: 'node_version',
+    headerName: 'Version',
+    width: 72,
+    headerAlign: 'left',
+    align: 'left',
+    sortable: true,
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      if (!isNull(params.row.node_version)) {
+        const version = versionDisplay(params.row.node_version);
+        return (<Box title={params.row.node_version}>{version}</Box>)
       } 
       return ('-')
     }
@@ -205,10 +221,10 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
   const selectedChain = useSelector(selectChain);
   const identityFilter = useSelector(selectIdentityFilter);
   const subsetFilter = useSelector(selectSubsetFilter);
-  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "authority", show_summary: true, show_profile: true}, {refetchOnMountOrArgChange: true, skip});
+  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "authority", show_summary: true, show_profile: true, show_discovery: true}, {refetchOnMountOrArgChange: true, skip});
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, [sessionIndex], false, identityFilter, subsetFilter));
   const [showOnlyPV, setShowOnlyPV] = React.useState(true);
-  const [showAllGrades, setShowAllGrades] = React.useState(false);
+  // const [showAllGrades, setShowAllGrades] = React.useState(false);
   const [onlyDisputes, setOnlyDisputes] = React.useState(false);
   const [onlyLowGrades, setOnlyLowGrades] = React.useState(false);
   const chainInfo = useSelector(selectChainInfo)
@@ -218,8 +234,8 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
   }
 
   const rowsFiltered1 = showOnlyPV ? rows.filter(v => !isNull(v.mvr)) : rows;
-  const rowsFiltered2 = showAllGrades ? rowsFiltered1 : rowsFiltered1.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
-  const rowsFiltered3 = onlyDisputes ? rows.filter(v => v.disputes > 0) : rowsFiltered2;
+  // const rowsFiltered2 = showAllGrades ? rowsFiltered1 : rowsFiltered1.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
+  const rowsFiltered3 = onlyDisputes ? rows.filter(v => v.disputes > 0) : rowsFiltered1;
   const rowsFiltered4 = onlyLowGrades ? rows.filter(v => !isNull(v.mvr) ? grade(1-v.mvr) === 'F' : false) : rowsFiltered3;
   const gradeFsCounter = rowsFiltered1.filter(v => !isNull(v.mvr) ? grade(1-v.mvr) === 'F' : false).length;
   const disputesCounter = rows.filter(v => v.disputes > 0).length;
@@ -231,9 +247,9 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
     setShowOnlyPV(event.target.checked);
   };
 
-  const handleViewAllGradesChange = (event) => {
-    setShowAllGrades(event.target.checked);
-  };
+  // const handleViewAllGradesChange = (event) => {
+  //   setShowAllGrades(event.target.checked);
+  // };
 
   const handleOnlyDisputesChange = (event) => {
     setOnlyDisputes(event.target.checked);
@@ -242,6 +258,9 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
   const handleOnlyLowGradesChange = (event) => {
     setOnlyLowGrades(event.target.checked);
   };
+
+  console.log("__rowsFiltered4", rowsFiltered4);
+  
 
   return (
     <Box
@@ -289,7 +308,7 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
                 ...theme.typography.caption
               }
             }}/>
-            <FormControlLabel control={
+            {/* <FormControlLabel control={
               <Switch size="small" disabled={gradeFsCounter === 0 || onlyDisputes || onlyLowGrades} checked={showAllGrades || onlyDisputes || onlyLowGrades} 
                 onChange={handleViewAllGradesChange} />
             } 
@@ -298,7 +317,7 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
               '& .MuiFormControlLabel-label' : {
                 ...theme.typography.caption
               }
-            }}/>
+            }}/> */}
           </FormGroup>
           <Box sx={{ position: 'absolute', top: 0, right: 0}}>
             <InsightsInfoLegend />

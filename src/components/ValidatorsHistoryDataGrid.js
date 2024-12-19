@@ -28,7 +28,7 @@ import {
 import {
   selectChainInfo
 } from '../features/chain/chainSlice';
-import { scoreDisplay } from '../util/display';
+import { scoreDisplay, versionDisplay } from '../util/display';
 import {
   chainAddress
 } from '../util/crypto';
@@ -91,6 +91,22 @@ const defineColumns = (theme, chainInfo) => {
       return ('-')
     }
   },
+  // {
+  //   field: 'node_version',
+  //   headerName: 'Version',
+  //   width: 72,
+  //   headerAlign: 'left',
+  //   align: 'left',
+  //   sortable: true,
+  //   disableColumnMenu: true,
+  //   renderCell: (params) => {
+  //     if (!isNull(params.row.node_version)) {
+  //       const version = versionDisplay(params.row.node_version);
+  //       return (<Box title={params.row.node_version}>{version}</Box>)
+  //     } 
+  //     return ('-')
+  //   }
+  // },
   {
     field: 'subset',
     headerName: 'Subset',
@@ -228,7 +244,7 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, historySessionRangeIds, true, identityFilter, subsetFilter, isFetching));
   const [showOnlyPV, setShowOnlyPV] = React.useState(true);
-  const [showAllGrades, setShowAllGrades] = React.useState(false);
+  // const [showAllGrades, setShowAllGrades] = React.useState(false);
   const [onlyDisputes, setOnlyDisputes] = React.useState(false);
   const [onlyLowGrades, setOnlyLowGrades] = React.useState(false);
   const chainInfo = useSelector(selectChainInfo);
@@ -238,8 +254,8 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
   }
 
   const rowsFiltered1 = showOnlyPV ? rows.filter(v => !isNull(v.mvr)) : rows;
-  const rowsFiltered2 = showAllGrades ? rowsFiltered1 : rowsFiltered1.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
-  const rowsFiltered3 = onlyDisputes ? rows.filter(v => v.disputes > 0) : rowsFiltered2;
+  // const rowsFiltered2 = showAllGrades ? rowsFiltered1 : rowsFiltered1.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
+  const rowsFiltered3 = onlyDisputes ? rows.filter(v => v.disputes > 0) : rowsFiltered1;
   const rowsFiltered4 = onlyLowGrades ? rows.filter(v => !isNull(v.mvr) ? grade(1-v.mvr) === 'F' : false) : rowsFiltered3;
   const gradeFsCounter = rowsFiltered1.filter((v) => !isNull(v.mvr) ? grade(1-v.mvr) === 'F' : false).length;
   const disputesCounter = rows.filter(v => v.disputes > 0).length;
@@ -250,9 +266,9 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
     setShowOnlyPV(event.target.checked);
   };
 
-  const handleViewAllGradesChange = (event) => {
-    setShowAllGrades(event.target.checked);
-  };
+  // const handleViewAllGradesChange = (event) => {
+  //   setShowAllGrades(event.target.checked);
+  // };
 
   const handleOnlyDisputesChange = (event) => {
     setOnlyDisputes(event.target.checked);
@@ -307,7 +323,7 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
                 ...theme.typography.caption
               }
             }}/>
-            <FormControlLabel control={
+            {/* <FormControlLabel control={
               <Switch size="small" disabled={gradeFsCounter === 0 || onlyDisputes || onlyLowGrades} checked={showAllGrades || onlyDisputes || onlyLowGrades} 
                 onChange={handleViewAllGradesChange} />
             } 
@@ -316,7 +332,7 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
               '& .MuiFormControlLabel-label' : {
                 ...theme.typography.caption
               }
-            }}/>
+            }}/> */}
           </FormGroup>
           <Box sx={{ position: 'absolute', top: 0, right: 0}}>
             <InsightsInfoLegend />
