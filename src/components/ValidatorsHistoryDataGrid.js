@@ -190,6 +190,19 @@ const defineColumns = (theme, chainInfo) => {
     valueGetter: (params) => (scoreDisplay(params.row.score)),
   },
   {
+    field: 'node_version',
+    headerName: 'Version',
+    width: 80,
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      if (!isNull(params.row.node_version)) {
+        const version = versionDisplay(params.row.node_version);
+        return (<Box title={params.row.node_version}>{version}</Box>)
+      } 
+      return ('-')
+    }
+  },
+  {
     field: 'options',
     headerName: '', 
     width: 80,
@@ -204,19 +217,6 @@ const defineColumns = (theme, chainInfo) => {
       return (
         <DetailsIcon address={params.row.address} />
       )
-    }
-  },
-  {
-    field: 'node_version',
-    headerName: 'Version',
-    width: 80,
-    disableColumnMenu: true,
-    renderCell: (params) => {
-      if (!isNull(params.row.node_version)) {
-        const version = versionDisplay(params.row.node_version);
-        return (<Box title={params.row.node_version}>{version}</Box>)
-      } 
-      return ('-')
     }
   },
   {
