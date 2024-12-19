@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import ValidatorsInsights from './ValidatorsInsights';
 import ValidatorsHistoryInsights from './ValidatorsHistoryInsights';
 import SubsetBox from './SubsetBox';
+import NodeVersionBox from './NodeVersionBox';
 import SubsetFilter from './SubsetFilter';
 import GradesWithFilterBox from './GradesWithFilterBox';
 import ValidatorsHistorySlideAndLoadBox from './ValidatorsHistorySlideAndLoadBox';
@@ -78,6 +79,9 @@ export default function InsightsGrid() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <GradesWithFilterBox sessionIndex={sessionIndex} isHistoryMode={isHistoryMode}/>
+              </Grid>
+              <Grid item xs={12}>
+                <NodeVersionBox sessionIndex={sessionIndex} isHistoryMode={isHistoryMode}/>
               </Grid>
               <Grid item xs={12}>
                 <SubsetBox sessionIndex={sessionIndex} isHistoryMode={isHistoryMode}/>

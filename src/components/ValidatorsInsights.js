@@ -11,7 +11,7 @@ export default function ValidatorsInsights({sessionIndex, skip}) {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: '1040px',
+        height: '1104px',
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}

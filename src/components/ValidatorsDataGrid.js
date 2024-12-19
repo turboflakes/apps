@@ -92,22 +92,6 @@ const defineColumns = (theme, chain, chainInfo) => {
     }
   },
   {
-    field: 'node_version',
-    headerName: 'Version',
-    width: 72,
-    headerAlign: 'left',
-    align: 'left',
-    sortable: true,
-    disableColumnMenu: true,
-    renderCell: (params) => {
-      if (!isNull(params.row.node_version)) {
-        const version = versionDisplay(params.row.node_version);
-        return (<Box title={params.row.node_version}>{version}</Box>)
-      } 
-      return ('-')
-    }
-  },
-  {
     field: 'subset',
     headerName: 'Subset',
     width: 80,
@@ -199,6 +183,19 @@ const defineColumns = (theme, chain, chainInfo) => {
     valueGetter: (params) => (scoreDisplay(params.row.score)),
   },
   {
+    field: 'node_version',
+    headerName: 'Version',
+    width: 80,
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      if (!isNull(params.row.node_version)) {
+        const version = versionDisplay(params.row.node_version);
+        return (<Box title={params.row.node_version}>{version}</Box>)
+      } 
+      return ('-')
+    }
+  },
+  {
     field: 'options',
     headerName: '', 
     width: 72,
@@ -258,9 +255,6 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
   const handleOnlyLowGradesChange = (event) => {
     setOnlyLowGrades(event.target.checked);
   };
-
-  console.log("__rowsFiltered4", rowsFiltered4);
-  
 
   return (
     <Box
@@ -334,7 +328,7 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
          }}
           initialState={{
             pagination: {
-              pageSize: 16,
+              pageSize: 17,
             },
             sorting: {
               sortModel: [{ field: 'score', sort: 'desc' }],
@@ -343,7 +337,7 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
           // onRowClick={handleOnRowClick}
           rows={rowsFiltered4}
           columns={columns}
-          rowsPerPageOptions={[16]}
+          rowsPerPageOptions={[17]}
           pagination
           disableSelectionOnClick
         />
