@@ -62,7 +62,7 @@ export default function NodeVersionBox({sessionIndex, isHistoryMode}) {
             title={
               <Box sx={{ p: 1}}>
                 <Typography el variant="caption" paragraph>{"The node version is collected from the Kademlia Distributed Hash Table (DHT) subsystem in libp2p."}</Typography>
-                <Typography variant="caption" paragraph>{"The task to crawl and discover peer nodes in the network is executed every session."}</Typography>
+                <Typography variant="caption" paragraph>{"The task to crawl and discover peer nodes in the network is executed every new session."}</Typography>
                 <Typography variant="caption" >{"Nodes that are not reached within the discovery process have their node version set to 'N/D'."}</Typography>
               </Box>
             }

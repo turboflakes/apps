@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import isUndefined from 'lodash/isUndefined'
+import isUndefined from 'lodash/isUndefined';
+import isNull from 'lodash/isNull';
 import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
@@ -19,7 +20,7 @@ import {
   selectAddress,
   selectChainInfo
 } from '../features/chain/chainSlice';
-import { stashDisplay, nameDisplay } from '../util/display'
+import { stashDisplay, nameDisplay, versionDisplay } from '../util/display'
 import {
   chainAddress
 } from '../util/crypto';
@@ -157,6 +158,19 @@ const defineColumns = (theme, chainInfo) => {
     sortingOrder: ['asc', 'desc']
   },
   {
+    field: 'nv',
+    headerName: 'Version',
+    width: 80,
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      if (!isNull(params.row.nv)) {
+        const version = versionDisplay(params.row.nv);
+        return (<Box title={params.row.nv}>{version}</Box>)
+      } 
+      return ('-')
+    }
+  },
+  {
     field: 'options',
     headerName: '', 
     width: 64,
@@ -174,8 +188,8 @@ const defineColumns = (theme, chainInfo) => {
   },
 ]};
 
-function createDataGridRows(id, identity, address, b, i, e, m, d, p) {
-  return {id, identity, address, b, i, e, m, d, p };
+function createDataGridRows(id, identity, address, b, i, e, m, d, p, nv) {
+  return {id, identity, address, b, i, e, m, d, p, nv};
 }
 
 export default function ValGroupDataGrid({sessionIndex, groupId}) {
@@ -193,6 +207,8 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
     if (v.is_auth && v.is_para) {
       const authored_blocks = v.auth.ab.length;
       const total_points = v.auth.ep - v.auth.sp;
+      const node_version = v.discovery ? v.discovery.nv : "";
+      
       return createDataGridRows(i+1, 
         nameDisplay(!!v.profile ? v.profile._identity : stashDisplay(v.address, 6), 36, selectedAddress === v.address ? '★ ' : ''), 
         v.address, 
@@ -201,9 +217,10 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
         v.para_summary.ev, 
         v.para_summary.mv, 
         !isUndefined(v.para.disputes) ? v.para.disputes.length : 0,
-        total_points)
+        total_points,
+        node_version)
     } else {
-      return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0, 0)
+      return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0, 0, '-');
     }
   })
   const columns = defineColumns(theme, chainInfo);

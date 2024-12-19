@@ -51,7 +51,7 @@ export default function ValidatorPage() {
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
-  const {isSuccess, isError} = useGetValidatorByAddressQuery({address: stash, session: sessionIndex, show_summary: true, show_stats: true});
+  const {isSuccess, isError} = useGetValidatorByAddressQuery({address: stash, session: sessionIndex, show_summary: true, show_stats: true, show_discovery: true});
   const {isError: isProfileError} = useGetValidatorProfileByAddressQuery(stash)
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, addressSS58(stash)))
 

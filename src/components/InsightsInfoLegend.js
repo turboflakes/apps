@@ -36,8 +36,11 @@ const InsightsInfoLegend = ({showDisputes}) => {
             <Typography variant="caption" paragraph>
               MVR = (✗) / (✓i + ✓e + ✗)
             </Typography>
-            <Typography variant="caption" gutterBottom>
+            <Typography variant="caption" paragraph>
               SCORE = (1 - mvr) * 0.75 + ((avg_pv_pts - min_avg_pv_pts) / (max_avg_pv_pts - min_avg_pv_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
+            </Typography>
+            <Typography variant="caption" gutterBottom>
+              VERSION: The node version is collected from the Kademlia Distributed Hash Table (DHT). Nodes that are not reached within the discovery process (background task that runs every new session) have their node version set to ''.
             </Typography>
           </Box>
         </Box>
