@@ -14,7 +14,7 @@ import {
 export default function ValidatorsHistoryInsights({skip}) {
   // const theme = useTheme();
   const historySessionIds = useSelector(selectSessionHistoryIds);
-  const {isFetching: isFetchingValidators} = useGetValidatorsQuery({role: "authority", from: historySessionIds[0], to: historySessionIds[5], show_summary: true, show_profile: true}, {skip});
+  const {isFetching: isFetchingValidators} = useGetValidatorsQuery({role: "authority", from: historySessionIds[0], to: historySessionIds[5], show_summary: true, show_profile: true, show_discovery: true}, {skip});
   const {isFetching: isFetchingSessions } = useGetSessionsQuery({from: historySessionIds[0], to: historySessionIds[5], show_stats: true}, {skip});
 
   const isFetching = isFetchingValidators || isFetchingSessions;
@@ -27,7 +27,7 @@ export default function ValidatorsHistoryInsights({skip}) {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: '1072px',
+        height: '1104px',
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}

@@ -91,22 +91,6 @@ const defineColumns = (theme, chainInfo) => {
       return ('-')
     }
   },
-  // {
-  //   field: 'node_version',
-  //   headerName: 'Version',
-  //   width: 72,
-  //   headerAlign: 'left',
-  //   align: 'left',
-  //   sortable: true,
-  //   disableColumnMenu: true,
-  //   renderCell: (params) => {
-  //     if (!isNull(params.row.node_version)) {
-  //       const version = versionDisplay(params.row.node_version);
-  //       return (<Box title={params.row.node_version}>{version}</Box>)
-  //     } 
-  //     return ('-')
-  //   }
-  // },
   {
     field: 'subset',
     headerName: 'Subset',
@@ -223,6 +207,19 @@ const defineColumns = (theme, chainInfo) => {
     }
   },
   {
+    field: 'node_version',
+    headerName: 'Version',
+    width: 80,
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      if (!isNull(params.row.node_version)) {
+        const version = versionDisplay(params.row.node_version);
+        return (<Box title={params.row.node_version}>{version}</Box>)
+      } 
+      return ('-')
+    }
+  },
+  {
     field: 'timeline',
     headerName: 'Timeline',
     width: 320,
@@ -281,7 +278,7 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
   return (
     <Box
       sx={{
-        p: 2,
+        // p: 2,
         // m: 2,
         display: 'flex',
         flexDirection: 'column',
@@ -349,7 +346,7 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
           }}
           initialState={{
             pagination: {
-              pageSize: 16,
+              pageSize: 17,
             },
             sorting: {
               sortModel: [{ field: 'score', sort: 'desc' }],
@@ -358,7 +355,7 @@ export default function ValidatorsHistoryDataGrid({isFetching}) {
           // onRowClick={handleOnRowClick}
           rows={rowsFiltered4}
           columns={columns}
-          rowsPerPageOptions={[16]}
+          rowsPerPageOptions={[17]}
           pagination
           disableSelectionOnClick
         />

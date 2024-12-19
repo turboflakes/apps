@@ -336,9 +336,8 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
     const missed_votes = f2.length > 0 ? f2.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0) : null;
     const disputes = f2.length > 0 ? f2.map(v => !isUndefined(v.para.disputes) ? v.para.disputes.length : 0).reduce((a, b) => a + b, 0) : null;
     const avg_bck_pts = f2.length > 0 ? para_points / f2.length : null;
-    const profile = selectValProfileByAddress(state, x[0].address);
     const paraId = f2.length > 0 ? f2.map(v => v.para.pid) : null;
-
+    
     const timeline = sessions.map(s => {
       const y = x.find(e => e.session === s);
       if (!isUndefined(y)) {
@@ -355,13 +354,16 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
       }
     });
 
-    // from discovery get node version
-    const node_version = x[0].discovery ? x[0].discovery.nv : "";
-  
+    // NOTE: the most recent session is given by the last element
+    let session = x.length - 1;
+    const profile = selectValProfileByAddress(state, x[session].address);
+    const address = x[session].address;
+    const node_version = x[session].discovery ? x[session].discovery.nv : "";
+
     return createRows(
       i+1, 
       !isUndefined(profile) ? profile._identity : null,
-      x[0].address,
+      address,
       node_version,
       !isUndefined(profile) ? SUBSET[profile.subset] : null, 
       f1.length,
