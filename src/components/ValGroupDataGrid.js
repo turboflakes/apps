@@ -161,6 +161,8 @@ const defineColumns = (theme, chainInfo) => {
     field: 'nv',
     headerName: 'Version',
     width: 80,
+    headerAlign: 'right',
+    align: 'right',
     disableColumnMenu: true,
     renderCell: (params) => {
       if (!isNull(params.row.nv)) {
