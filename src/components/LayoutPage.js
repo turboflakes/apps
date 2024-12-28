@@ -711,7 +711,7 @@ export default function LayoutPage({api}) {
         window.open(`https://www.goclaimit.app/?chain=${chain}&lc=false`, '_blank')
         break;
       case 'corematch':
-        window.open(`https://www.corematch.io/?chain=${chain}`, '_blank')
+        window.open(`https://www.corematch.xyz/?chain=${chain}`, '_blank')
         break;
     }
   }
