@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.9faaecdf.js",
+    "main.js": "/static/js/main.270623f0.js",
     "static/js/27.5757e9a4.chunk.js": "/static/js/27.5757e9a4.chunk.js",
     "static/media/onet.svg": "/static/media/onet.939204028101409068e0d9f94ad911d2.svg",
     "static/media/moonriver.svg": "/static/media/moonriver.0d6c0ca22e4f0531f208781460392c87.svg",
@@ -148,7 +148,6 @@
     "static/media/totem.svg": "/static/media/totem.f523100035e490b163ffe0d56ea0a850.svg",
     "static/media/logo_1_inverted_subtract_turboflakes_.svg": "/static/media/logo_1_inverted_subtract_turboflakes_.a857a4938a7a8314993088abd566df27.svg",
     "static/media/zCloak.svg": "/static/media/zCloak.81f2780785909f4c1dd68371ad3c6da0.svg",
-    "static/media/corematch_logo_border.svg": "/static/media/corematch_logo_border.ab0c5a3e9122c3e36d8bfcf2bb941d91.svg",
     "static/media/claimit_logo.svg": "/static/media/claimit_logo.32f264b48d1f307f02f807cfa97b5c50.svg",
     "static/media/confti.svg": "/static/media/confti.3646f9e60a855c9128d17a232fca5208.svg",
     "static/media/kusari.svg": "/static/media/kusari.8f98d3ebad57f8d9794e3c78729335a0.svg",
@@ -159,6 +158,7 @@
     "static/media/shadow.svg": "/static/media/shadow.29024166ed4956d6ccff930f1d948f8d.svg",
     "static/media/ewx.svg": "/static/media/ewx.8041ba7548aacb886ff28fdbdc9bf567.svg",
     "static/media/pex.svg": "/static/media/pex.9a391966c20b7deba138f019d372f50c.svg",
+    "static/media/corematch_logo_border.svg": "/static/media/corematch_logo_border.29832da27e371fe1d82d2d34e6371157.svg",
     "static/media/kulupu.svg": "/static/media/kulupu.e958de3e8caabad30ecbda8bd2aac31f.svg",
     "static/media/fearlesswallet.svg?react": "/static/media/fearlesswallet.26f205ca87623cb0ba27508676434e08.svg",
     "static/media/talisman.svg?react": "/static/media/talisman.37e5c8e8d52eda04e7968c0cf8ed460b.svg",
@@ -264,6 +264,6 @@
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.9faaecdf.js"
+    "static/js/main.270623f0.js"
   ]
 }

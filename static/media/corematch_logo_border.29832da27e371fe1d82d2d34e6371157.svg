@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="160px" height="160px" viewBox="0 0 160 160" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-870.000000, -850.000000)" fill="#000000" fill-rule="nonzero">
+            <g transform="translate(870.000000, 850.000000)">
+                <polygon points="9 34.9295775 9 10.1539754 151.306616 10.1539754 151.306616 160 160 160 160 0 0 0 0 34.9295775 0 69.8591549 0 104.788732 0 160 151.306616 160 151.306616 149.771516 9 149.771516 9 104.788732"></polygon>
+                <g transform="translate(19.000000, 86.000000)">
+                    <polygon points="9 18.05 9 8.8 0 8.8 0 18.05 0 27.3 0 36.55 0 45.8 9 45.8 9 36.55"></polygon>
+                    <polygon points="27 9 36 9 45 9 45 0 36 0 27 0 18 0 9 0 9 9 18 9"></polygon>
+                    <polygon points="27 45.8 18 45.8 9 45.8 9 54.8 18 54.8 27 54.8 36 54.8 45 54.8 45 45.8 36 45.8"></polygon>
+                    <polygon points="45 8.8 45 18.05 27 18.05 27 36.55 45 36.55 45 45.8 54 45.8 54 36.55 54 27.3 54 18.05 54 8.8"></polygon>
+                </g>
+                <g transform="translate(19.000000, 19.000000)">
+                    <polygon points="9 18.05 9 8.8 0 8.8 0 18.05 0 27.3 0 36.55 0 45.8 9 45.8 9 36.55"></polygon>
+                    <polygon points="27 9 36 9 45 9 45 0 36 0 27 0 18 0 9 0 9 9 18 9"></polygon>
+                    <polygon points="27 45.8 18 45.8 9 45.8 9 54.8 18 54.8 27 54.8 36 54.8 45 54.8 45 45.8 36 45.8"></polygon>
+                    <polygon points="45 8.8 45 18.05 27 18.05 27 36.55 45 36.55 45 45.8 54 45.8 54 36.55 54 27.3 54 18.05 54 8.8"></polygon>
+                </g>
+                <g transform="translate(87.000000, 19.000000)">
+                    <polygon points="9 18.05 9 8.8 0 8.8 0 18.05 0 27.3 0 36.55 0 45.8 9 45.8 9 36.55"></polygon>
+                    <polygon points="27 9 36 9 45 9 45 0 36 0 27 0 18 0 9 0 9 9 18 9"></polygon>
+                    <polygon points="27 45.8 18 45.8 9 45.8 9 54.8 18 54.8 27 54.8 36 54.8 45 54.8 45 45.8 36 45.8"></polygon>
+                    <polygon points="45 8.8 45 18.05 27 18.05 27 36.55 45 36.55 45 45.8 54 45.8 54 36.55 54 27.3 54 18.05 54 8.8"></polygon>
+                </g>
+                <g transform="translate(87.000000, 86.000000)">
+                    <polygon points="9 18.05 9 8.8 0 8.8 0 18.05 0 27.3 0 36.55 0 45.8 9 45.8 9 36.55"></polygon>
+                    <polygon points="27 9 36 9 45 9 45 0 36 0 27 0 18 0 9 0 9 9 18 9"></polygon>
+                    <polygon points="27 45.8 18 45.8 9 45.8 9 54.8 18 54.8 27 54.8 36 54.8 45 54.8 45 45.8 36 45.8"></polygon>
+                    <polygon points="45 8.8 45 18.05 27 18.05 27 36.55 45 36.55 45 45.8 54 45.8 54 36.55 54 27.3 54 18.05 54 8.8"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
