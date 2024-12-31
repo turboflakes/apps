@@ -19,6 +19,7 @@ import {
 import { 
   selectSessionHistoryRangeIds,
 } from '../features/api/sessionsSlice'
+import { versionDisplay } from '../util/display'
 
 
 export default function NodeVersionBox({sessionIndex, isHistoryMode}) {
@@ -33,7 +34,7 @@ export default function NodeVersionBox({sessionIndex, isHistoryMode}) {
     return null
   }
 
-  const groupedByVersion = groupBy(rows, v => v.node_version);
+  const groupedByVersion = groupBy(rows, v => versionDisplay(v.node_version));
   const data = orderBy(Object.keys(groupedByVersion).map(subset => ({ subset, value: groupedByVersion[subset].length })), 'subset');
   
   return (

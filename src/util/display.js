@@ -78,5 +78,5 @@ export const zeroPad = (num, places = 2) => {
 export function versionDisplay(input) {
     const regex = /v(\d+\.\d+\.\d+)/;
     const match = input.match(regex);
-    return match ? match[1] : null;
+    return match ? match[1] : '';
 }

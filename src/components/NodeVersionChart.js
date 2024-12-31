@@ -21,7 +21,7 @@ const renderTooltip = (props) => {
          }}
       >
         <Typography component="div" variant="caption" color="inherit" paragraph>
-          <b>{data.payload.name === "" ? "N/D" : data.payload.name}</b>
+          <b>{data.payload.name === "" ? "N/D" : `v${data.payload.name}`}</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
         <span style={{ marginRight: '8px', color: data.fill }}>●</span>{data.payload.value} validators ({`${Math.round((data.payload.value / data.payload.total)*100)}%`})
