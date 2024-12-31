@@ -5,7 +5,13 @@ import orderBy from 'lodash/orderBy';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import IconButton from '@mui/material/IconButton';
+import PieChartIcon from '@mui/icons-material/PieChart';
+import ListIcon from '@mui/icons-material/List';
 import { styled, useTheme } from '@mui/material/styles';
 import NodeVersionChart from './NodeVersionChart';
 import Tooltip from './Tooltip';
@@ -19,7 +25,7 @@ import {
 import { 
   selectSessionHistoryRangeIds,
 } from '../features/api/sessionsSlice'
-import { versionDisplay } from '../util/display'
+import { versionDisplay, versionToNumber } from '../util/display'
 
 
 export default function NodeVersionBox({sessionIndex, isHistoryMode}) {
@@ -30,12 +36,17 @@ export default function NodeVersionBox({sessionIndex, isHistoryMode}) {
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, isHistoryMode ? historySessionRangeIds : [sessionIndex], isHistoryMode, identityFilter, subsetFilter));
   
+  const handleView = () => {
+    setShowPie(!showPie);
+  }
+  
   if (!rows.length) {
     return null
   }
 
   const groupedByVersion = groupBy(rows, v => versionDisplay(v.node_version));
-  const data = orderBy(Object.keys(groupedByVersion).map(subset => ({ subset, value: groupedByVersion[subset].length })), 'subset');
+  const data = orderBy(Object.keys(groupedByVersion).map(subset => ({ subset, value: groupedByVersion[subset].length, n: versionToNumber(subset)  })), 'n');
+  const total = data.map(d => d.value).reduce((a, b) => a + b, 0);
   
   return (
     <Paper sx={{ 
@@ -74,8 +85,34 @@ export default function NodeVersionBox({sessionIndex, isHistoryMode}) {
         <Typography variant="subtitle2" sx={{ height: 16, overflow: "hidden", textOverflow: "ellipsis" }}>
           {subsetFilter !== '' ? <span>Only for subset {subsetFilter}</span> : 'All active validators'}
         </Typography>
+
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+          <IconButton aria-label="grade-details" onClick={handleView}>
+            { !showPie ? <PieChartIcon fontSize="small" /> : <ListIcon fontSize="small" /> }
+          </IconButton>
+        </Box>
+
         <Box sx={{ display: 'flex', justifyContent: 'center'}}>
-          <NodeVersionChart data={data} size="md" showLegend showLabel />
+          { showPie ? 
+            <NodeVersionChart data={data} size="md" showLegend showLabel /> : 
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: '256px', 
+              height: 234, overflowY: 'auto'}}>
+              <List dense >
+                {data.reverse().map((g, i) => (
+                  <ListItem key={i} sx={{ 
+                      borderBottom: `1px solid ${theme.palette.divider}`, 
+                      '+ :last-child': { borderBottom: 'none'} 
+                    }}
+                      secondaryAction={
+                        <Typography variant="caption">{`${(Math.round((g.value / total)*10000)/100)}%`}</Typography>
+                      }
+                    >
+                    <ListItemText sx={{ m: 0 }} primary={g.subset === '' ? 'N/D' : `v${g.subset}`} />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+          }
         </Box>
       </Box>
     </Paper>

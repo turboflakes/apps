@@ -80,3 +80,16 @@ export function versionDisplay(input) {
     const match = input.match(regex);
     return match ? match[1] : '';
 }
+
+export function isSemanticVersion(value) {
+    const regex = /^v?\d+\.\d+\.\d+$/;
+    return regex.test(value);
+}
+
+export function versionToNumber(version) {
+    if (isSemanticVersion(version)) {
+        const parts = version.split('.').map(Number);
+        return parts[0] * 10000 + parts[1] * 100 + parts[2];
+    }
+    return 0
+}
