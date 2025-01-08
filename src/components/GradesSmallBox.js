@@ -8,9 +8,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import GradesPieChart from './GradesPieChart';
 import { 
-  selectMVRsBySession
+  selectGradesBySession
  } from '../features/api/sessionsSlice'
-import { grade } from '../util/grade'
 
 const grades = ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "F"]
 
@@ -33,21 +32,21 @@ const emptyBox = ({theme, dark}) => {
 
 export default function GradesSmallBox({sessionIndex, dark}) {
   const theme = useTheme();
-  const rawMvrs = useSelector(state => selectMVRsBySession(state, sessionIndex));
+  const rawGrades = useSelector(state => selectGradesBySession(state, sessionIndex));
   
-  if (!rawMvrs.length) {
+  if (!rawGrades.length) {
     return emptyBox({theme, dark})
   }
 
-  const mvrs = rawMvrs.filter(mvr => !isUndefined(mvr) && !isNull(mvr))
+  const currentGrades = rawGrades.filter(g => !isUndefined(g) && !isNull(g))
 
-  if (!mvrs.length) {
+  if (!currentGrades.length) {
     return emptyBox({theme, dark})
   }
 
   const gradesData = grades.map(g => {
-    const quantity = mvrs.filter(mvr => grade(1 - mvr) === g).length;
-    const percentage = Math.round(quantity * 100 / mvrs.length);
+    const quantity = currentGrades.filter(cg => cg === g).length;
+    const percentage = Math.round(quantity * 100 / currentGrades.length);
     return {
       name: g,
       value: percentage,

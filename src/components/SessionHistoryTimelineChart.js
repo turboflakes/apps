@@ -100,7 +100,7 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
   
   const data = historySessionIds.map((sessionId, i) => ({
     session: sessionId,
-    gradeValue: grade(1 - allMvrs[i]),
+    gradeValue: grade(1-allMvrs[i]),
     pvPoints: allBackingPoints[i],
     abPoints: allAuthoredBlocks[i] * 20,
     disputes: allDisputes[i],
@@ -131,7 +131,7 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
           <Box>
             <Typography variant="h6">History Timeline</Typography>
-            <Typography variant="subtitle2">Session {historySessionSelected.six.format()} at Era {historySessionSelected.eix.format()} selected</Typography>
+            <Typography variant="subtitle2">Session {historySessionSelected.six?.format()} at Era {historySessionSelected.eix?.format()} selected</Typography>
           </Box>
           <HistoryErasMenu />
         </Box>

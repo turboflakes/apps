@@ -17,7 +17,7 @@ import {
   selectChainInfo
 } from '../features/chain/chainSlice';
 import { grade } from '../util/grade'
-import { calculateMvr } from '../util/mvr'
+import { calculateMVR } from '../util/mvr'
 import {
   chainAddress
 } from '../util/crypto';
@@ -33,7 +33,7 @@ export default function ValAddress({sessionIndex, address, showGrade}) {
   }
 
   const name = nameDisplay(!!validator.identity ? validator.identity : stashDisplay(address), 24);
-  const gradeValue = !isUndefined(validator.para_summary) ? grade(1 - calculateMvr(validator.para_summary.ev, validator.para_summary.iv, validator.para_summary.mv)) : undefined;
+  const gradeValue = !isUndefined(validator.para_summary) ? grade(1 - calculateMVR(validator.para_summary.ev, validator.para_summary.iv, validator.para_summary.mv)) : undefined;
 
   return (
     <Paper

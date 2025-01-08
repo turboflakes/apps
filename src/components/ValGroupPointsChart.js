@@ -13,11 +13,11 @@ import {
 import {
   selectValidatorsBySessionAndGroupId
 } from '../features/api/valGroupsSlice'
-import { grade } from '../util/grade'
-import { calculateMvr } from '../util/mvr'
+import { gradeByRatios } from '../util/grade'
 import { stashDisplay, nameDisplay } from '../util/display'
 import { chainAddress } from '../util/crypto';
 import { getNetworkSS58Format } from '../constants';
+import { calculateMVR, calculateBUR } from '../util/math';
 
 const renderTooltip = (props, theme) => {
   const { active, payload } = props;
@@ -76,7 +76,7 @@ export default function ValGroupPointsChart({sessionIndex, groupId}) {
   const data = sorted.map(v => ({
     pvPoints: (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20),
     abPoints: v.auth.ab.length * 20,
-    gradeValue: grade(1 - calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)),
+    gradeValue: gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields.ba, v.para.bitfields.bu)),
     name: nameDisplay(v.profile?.identity ? v.profile._identity : stashDisplay(chainAddress(v.address, getNetworkSS58Format(selectedChain)), 4), 12, selectedAddress === v.address ? '★ ' : '')
   }))
   

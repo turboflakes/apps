@@ -148,3 +148,19 @@ export const parsePercentageArrayToDecimalsInversed = (interval = [0,0]) => {
         return [0, 0]
     }
 }
+
+export const calculateMVR = (e, i, m) => {
+    const total = e + i + m;
+    if (total === 0) {
+        return undefined
+    } 
+    return m / total
+}
+
+export const calculateBUR = (a, u) => {
+    const total = a + u;
+    if (total === 0) {
+      return undefined
+    } 
+    return u / total
+}

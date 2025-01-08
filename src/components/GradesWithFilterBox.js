@@ -27,7 +27,7 @@ import {
 import { 
   selectSessionHistoryRangeIds,
 } from '../features/api/sessionsSlice'
-import { grade } from '../util/grade'
+import { gradeByRatios } from '../util/grade'
 
 const grades = ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "F"]
 
@@ -43,15 +43,15 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
     return null
   }
 
-  const mvrs = rows.map(v => v.mvr).filter(mvr => !isUndefined(mvr) && !isNull(mvr))
+  const currentGrades = rows.filter(v => !isNull(v.mvr) && !isNull(v.bur)).map(v => gradeByRatios(v.mvr, v.bur))  
   
-  if (!mvrs.length) {
+  if (!currentGrades.length) {
     return null
   }
 
   const gradesData = grades.map(g => {
-    const quantity = mvrs.filter(mvr => grade(1 - mvr) === g).length;
-    const percentage = quantity * 100 / mvrs.length;
+    const quantity = currentGrades.filter(cg => cg === g).length;
+    const percentage = quantity * 100 / currentGrades.length;
     return {
       name: g,
       value: percentage,
@@ -84,19 +84,25 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
             placement="top"
             title={
               <Box sx={{ p: 1}}>
-                <Typography variant="caption" >A grade reflects the backing votes ratio (BVR) of one or a set of validators:</Typography>
-                <ul>
-                  <li>{"A+ = BVR > 99%"}</li>
-                  <li>{"A = BVR > 95%"}</li>
-                  <li>{"B+ = BVR > 90%"}</li>
-                  <li>{"B = BVR > 80%"}</li>
-                  <li>{"C+ = BVR > 70%"}</li>
-                  <li>{"C = BVR > 60%"}</li>
-                  <li>{"D+ = BVR > 50%"}</li>
-                  <li>{"D = BVR > 40%"}</li>
-                  <li>{"F = BVR <= 40%"}</li>
-                </ul>
-                <i>Note: BVR = 1 - MVR</i>
+                <Typography variant="caption" >A grade is calculated as 80% of the Backing Votes Ratio (BVR) combined with 20% of the Bitfields Availability Ratio (BAR) for one or more validators:</Typography>
+                  <ul>
+                    <li>{"A+ = RATIO > 99%"}</li>
+                    <li>{"A = RATIO > 95%"}</li>
+                    <li>{"B+ = RATIO > 90%"}</li>
+                    <li>{"B = RATIO > 80%"}</li>
+                    <li>{"C+ = RATIO > 70%"}</li>
+                    <li>{"C = RATIO > 60%"}</li>
+                    <li>{"D+ = RATIO > 50%"}</li>
+                    <li>{"D = RATIO > 40%"}</li>
+                    <li>{"F = RATIO <= 40%"}</li>
+                  </ul>
+                  <i>RATIO = 0.8*BVR + 0.2*BAR</i><br/>
+                  <i>BVR = 1 - MVR</i><br/>
+                  <i>BAR = 1 - BUR</i><br/>
+                  <i>Backing Votes Ratio (BVR)</i><br/>
+                  <i>Missed Votes Ratio (MVR)</i><br/>
+                  <i>Bitfields Availability Ratio (BAR)</i><br/>
+                  <i>Bitfields Unavailability Ratio (BUR)</i>
               </Box>
             }
             >

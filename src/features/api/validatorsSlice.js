@@ -12,7 +12,7 @@ import isArray from 'lodash/isArray'
 import max from 'lodash/max'
 import min from 'lodash/min'
 import apiSlice from './apiSlice'
-import { calculateMvr } from '../../util/mvr'
+import { calculateMVR, calculateBUR } from '../../util/math'
 import { isValidAddress, addressSS58 } from '../../util/crypto'
 import { socketActions } from './socketSlice'
 import { 
@@ -29,7 +29,7 @@ import {
 import {
   selectValProfileByAddress
 } from './valProfilesSlice'
-import { grade } from '../../util/grade';
+import { grade, gradeByRatios } from '../../util/grade';
 import { chainAddress } from '../../util/crypto';
 
 export const extendedApi = apiSlice.injectEndpoints({
@@ -212,8 +212,8 @@ export const selectValidatorsByAddressAndSessions = (state, address, sessions = 
 
 export const selectValidatorGradeBySessionAndAddress = (state, session, address) => {
   const v = selectValidatorBySessionAndAddress(state, session, address);
-  if (!isUndefined(v) && !isUndefined(v.para_summary)) {
-    return grade(1-calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv))
+  if (!isUndefined(v) && !isUndefined(v.para_summary) && !isUndefined(v.para)) {
+    return gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields.ba, v.para.bitfields.bu))
   }
   return "-"
 }
@@ -254,24 +254,25 @@ const selectValidatorsBySessions = (state, sessions = [], suffix = "") => {
 
 function createRows(id, identity, address, node_version, subset,
   active_sessions, para_sessions, authored_blocks, core_assignments, 
-  explicit_votes, implicit_votes, missed_votes, disputes, avg_pts, commission, paraId, timeline) {
+  explicit_votes, implicit_votes, missed_votes, disputes, avg_pts, commission, paraId, 
+  availability, unavailability, timeline) {
   return {id, identity, address, node_version, subset,
     active_sessions, para_sessions, authored_blocks, 
     core_assignments, explicit_votes, implicit_votes, missed_votes, disputes,
-    avg_pts, commission, paraId, timeline };
+    avg_pts, commission, paraId, availability, unavailability, timeline };
 }
 
 // SCORES
 // https://github.com/turboflakes/one-t/blob/main/SCORES.md
 // 
 // Performance Score
-// performance_score = (1 - mvr) * 0.75 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
+// performance_score = (1 - mvr) * 0.50 + (1 - mbr) * 0.25 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
 
 // Commission Score
 // commission_score = performance_score * 0.25 + (1 - commission) * 0.75
 
-const performance_score = (mvr, avg_pts, min_avg_pts, max_avg_pts, para_sessions, total_sessions) => {
-  return (1 - mvr) * 0.75 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (para_sessions / total_sessions) * 0.07
+const performance_score = (mvr, mbr, avg_pts, min_avg_pts, max_avg_pts, para_sessions, total_sessions) => {
+  return (1 - mvr) * 0.50 + (1 - mbr) * 0.25 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (para_sessions / total_sessions) * 0.07
 }
 
 // Timeline 
@@ -292,7 +293,7 @@ const performance_score = (mvr, avg_pts, min_avg_pts, max_avg_pts, para_sessions
 // }
 // They should be in sync to whatever is defined there.
 // 
-const MVR_LEVELS = [9000, 6000, 4000, 2000, -1];
+const RATIO_LEVELS = [9000, 6000, 4000, 2000, -1];
 
 const GLYPHS = {
   "waiting": "_",
@@ -304,12 +305,12 @@ const GLYPHS = {
   "activePVL4": "¿",
   "activeIdle": "?",
   "NA": ".",
-  fromMVR: function (mvr) {
-    if (isUndefined(mvr)) {
+  fromRatios: function (mvr, bur) {
+    if (isUndefined(mvr) || isUndefined(bur)) {
       return this.activeIdle
     }
-    const rounded = Math.round((1 - mvr) * 10000);
-    const index = MVR_LEVELS.findIndex(l => rounded > l);
+    const rounded = Math.round((1-(mvr * 0.80 + bur * 0.20)) * 10000);
+    const index = RATIO_LEVELS.findIndex(l => rounded > l);
     return this[`activePVL${index}`]
   }
 }
@@ -341,9 +342,10 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
     const timeline = sessions.map(s => {
       const y = x.find(e => e.session === s);
       if (!isUndefined(y)) {
-        if (y.is_auth && y.is_para && !isUndefined(y.para_summary)) {
-          const mvr = calculateMvr(y.para_summary.ev, y.para_summary.iv, y.para_summary.mv);
-          return GLYPHS.fromMVR(mvr)
+        if (y.is_auth && y.is_para && !isUndefined(y.para_summary) && !isUndefined(y.para)) {
+          const mvr = calculateMVR(y.para_summary.ev, y.para_summary.iv, y.para_summary.mv);
+          const bur = calculateBUR(y.para.bitfields?.ba, y.para.bitfields?.bu);
+          return GLYPHS.fromRatios(mvr, bur)
         } else if (y.is_auth) {
           return GLYPHS.active
         } else {
@@ -359,6 +361,10 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
     const profile = selectValProfileByAddress(state, x[session].address);
     const address = x[session].address;
     const node_version = x[session].discovery ? x[session].discovery.nv : "";
+
+    // Bitfields availability
+    const availability = f2.length > 0 ? f2.map(v => v.para.bitfields?.ba).reduce((a, b) => a + b, 0) : null;
+    const unavailability = f2.length > 0 ? f2.map(v => v.para.bitfields?.bu).reduce((a, b) => a + b, 0) : null;
 
     return createRows(
       i+1, 
@@ -377,6 +383,8 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
       avg_bck_pts,
       !isUndefined(profile) ? profile.commission : null,
       paraId,
+      availability,
+      unavailability,
       timeline.join("")
     )
   })
@@ -385,11 +393,13 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
   const max_avg_pts = max(rows.filter(v => !isNull(v.avg_pts)).map(v => v.avg_pts));
 
   const filteredRows = rows.map(v => {
-    const mvr = v.para_sessions > 0 ? calculateMvr(v.explicit_votes, v.implicit_votes, v.missed_votes) : null;
-    const score = v.para_sessions > 0 ? performance_score(mvr, v.avg_pts, min_avg_pts, max_avg_pts, v.para_sessions, sessions.length) : null;
+    const mvr = v.para_sessions > 0 ? calculateMVR(v.explicit_votes, v.implicit_votes, v.missed_votes) : null;
+    const bur = v.para_sessions > 0 ? calculateBUR(v.availability, v.unavailability) : null;
+    const score = v.para_sessions > 0 ? performance_score(mvr, bur, v.avg_pts, min_avg_pts, max_avg_pts, v.para_sessions, sessions.length) : null;
     return {
       ...v,
       mvr,
+      bur,
       score,
       isFetching
     }

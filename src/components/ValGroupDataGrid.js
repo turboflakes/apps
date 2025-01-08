@@ -11,16 +11,16 @@ import Identicon from '@polkadot/react-identicon';
 import DetailsIcon from './DetailsIcon';
 import GridIdentityLink from './GridIdentityLink';
 import InsightsInfoLegend from './InsightsInfoLegend';
-import { grade } from '../util/grade'
-import { calculateMvr } from '../util/mvr'
+import { gradeByRatios } from '../util/grade';
+import { calculateMVR, calculateBUR } from '../util/math';
 import {
   selectValidatorsBySessionAndGroupId
-} from '../features/api/valGroupsSlice'
+} from '../features/api/valGroupsSlice';
 import {
   selectAddress,
   selectChainInfo
 } from '../features/chain/chainSlice';
-import { stashDisplay, nameDisplay, versionDisplay } from '../util/display'
+import { stashDisplay, nameDisplay, versionDisplay } from '../util/display';
 import {
   chainAddress
 } from '../util/crypto';
@@ -79,8 +79,9 @@ const defineColumns = (theme, chainInfo) => {
     sortable: false,
     disableColumnMenu: true,
     renderCell: (params) => {
-      const mvr = calculateMvr(params.row.e, params.row.i, params.row.m)
-      const gradeValue = grade(1-mvr);
+      const mvr = calculateMVR(params.row.e, params.row.i, params.row.m)
+      const bur = calculateBUR(params.row.ba, params.row.bu)
+      const gradeValue = gradeByRatios(mvr, bur);
       return (
         <Box>
           <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 
@@ -121,7 +122,7 @@ const defineColumns = (theme, chainInfo) => {
   },
   {
     field: 'm',
-    headerName: '✗',
+    headerName: '✗v',
     type: 'number',
     width: 64,
     disableColumnMenu: true,
@@ -133,7 +134,31 @@ const defineColumns = (theme, chainInfo) => {
     width: 96,
     disableColumnMenu: true,
     valueGetter: (params) => {
-      return calculateMvr(params.row.e, params.row.i, params.row.m)
+      return calculateMVR(params.row.e, params.row.i, params.row.m)
+    },
+  },
+  {
+    field: 'ba',
+    headerName: '✓ba',
+    type: 'number',
+    width: 64,
+    disableColumnMenu: true,
+  },
+  {
+    field: 'bu',
+    headerName: '✗bu',
+    type: 'number',
+    width: 64,
+    disableColumnMenu: true,
+  },
+  {
+    field: 'bur',
+    headerName: 'BUR',
+    type: 'number',
+    width: 96,
+    disableColumnMenu: true,
+    valueGetter: (params) => {
+      return calculateBUR(params.row.ba, params.row.bu)
     },
   },
   {
@@ -190,8 +215,8 @@ const defineColumns = (theme, chainInfo) => {
   },
 ]};
 
-function createDataGridRows(id, identity, address, b, i, e, m, d, p, nv) {
-  return {id, identity, address, b, i, e, m, d, p, nv};
+function createDataGridRows(id, identity, address, b, d, i, e, m, ba, bu, p, nv) {
+  return {id, identity, address, b, d, i, e, m, ba, bu, p, nv};
 }
 
 export default function ValGroupDataGrid({sessionIndex, groupId}) {
@@ -215,14 +240,16 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
         nameDisplay(!!v.profile ? v.profile._identity : stashDisplay(v.address, 6), 36, selectedAddress === v.address ? '★ ' : ''), 
         v.address, 
         authored_blocks, 
+        !isUndefined(v.para.disputes) ? v.para.disputes.length : 0,
         v.para_summary.iv, 
         v.para_summary.ev, 
         v.para_summary.mv, 
-        !isUndefined(v.para.disputes) ? v.para.disputes.length : 0,
+        v.para.bitfields.ba, 
+        v.para.bitfields.bu, 
         total_points,
         node_version)
     } else {
-      return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0, 0, '-');
+      return createDataGridRows(i+1, '-', '', 0, 0, 0, 0, 0, 0, 0, 0, '-');
     }
   })
   const columns = defineColumns(theme, chainInfo);

@@ -10,7 +10,7 @@ import findLast from 'lodash/findLast'
 import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
 import { selectSessionByIndex } from './sessionsSlice'
-import { calculateMvr } from '../../util/mvr'
+import { calculateMVR } from '../../util/mvr'
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Blocks'],
@@ -86,13 +86,13 @@ const _calculateBlockMvr = (current, previous) => {
     return -1
   }
   if (isUndefined(previous) || isUndefined(previous.stats) || current.block_number - 1 !== previous.block_number) {
-    const mvr = calculateMvr(current.stats.ev, current.stats.iv, current.stats.mv);
+    const mvr = calculateMVR(current.stats.ev, current.stats.iv, current.stats.mv);
     if (isUndefined(mvr)) {
       return -1
     }
     return mvr
   }
-  return calculateMvr(
+  return calculateMVR(
     current.stats.ev - previous.stats.ev, 
     current.stats.iv - previous.stats.iv, 
     current.stats.mv - previous.stats.mv);

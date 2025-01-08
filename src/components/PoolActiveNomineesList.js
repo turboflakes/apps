@@ -20,15 +20,15 @@ import {
 import {
   selectActiveNomineesBySessionAndPoolId
 } from '../features/api/poolsSlice';
-import { calculateMvr } from '../util/mvr'
+import { calculateMVR, calculateBUR } from '../util/math'
 import { stashDisplay, nameDisplay } from '../util/display'
-import { grade } from '../util/grade';
+import { gradeByRatios } from '../util/grade';
 import {
   chainAddress
 } from '../util/crypto';
 
 
-const gradeValue = (v) => !isUndefined(v.para_summary) ? grade(1-calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)) : "-";
+const gradeValue = (v) => !isUndefined(v.para_summary) && !isUndefined(v.para) ? gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields.ba, v.para.bitfields.bu)) : "-";
 
 
 function ItemButtom({validator}) {

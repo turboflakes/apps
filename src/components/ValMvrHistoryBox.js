@@ -20,7 +20,7 @@ import {
 import {
   selectValProfileByAddress,
 } from '../features/api/valProfilesSlice';
-import { calculateMvr } from '../util/mvr'
+import { calculateMVR } from '../util/mvr'
 import { nameDisplay } from '../util/display'
 
 const renderTooltip = (props, theme) => {
@@ -77,7 +77,7 @@ export default function ValMvrHistoryBox({address, maxSessions, showDark, noChar
     return null
   }
   
-  const mvr = Math.round(calculateMvr(
+  const mvr = Math.round(calculateMVR(
     filtered.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0),
     filtered.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0),
     filtered.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0)

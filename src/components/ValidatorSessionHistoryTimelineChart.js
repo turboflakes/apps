@@ -32,7 +32,7 @@ import {
   selectValProfileByAddress,
 } from '../features/api/valProfilesSlice';
 import { grade } from '../util/grade'
-import { calculateMvr } from '../util/mvr'
+import { calculateMVR } from '../util/mvr'
 import { nameDisplay } from '../util/display'
 
 const renderTooltip = (props, identiy, theme) => {
@@ -216,8 +216,8 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
     isPara: v.is_para ? 1 : 0,
     abPoints: v.is_auth ? v.auth.ab.length * 20 : 0,
     pvPoints: v.is_para && (v.auth.ep - v.auth.sp) >= (v.auth.ab.length * 20) ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0,
-    gradeValue: v.is_para && !isUndefined(v.para_summary) ? grade(1 - calculateMvr(v.para_summary?.ev, v.para_summary?.iv, v.para_summary?.mv)) : '',
-    valMvr: v.is_para && !isUndefined(v.para_summary) ? calculateMvr(v.para_summary?.ev, v.para_summary?.iv, v.para_summary?.mv) : 0,
+    gradeValue: v.is_para && !isUndefined(v.para_summary) ? grade(1 - calculateMVR(v.para_summary?.ev, v.para_summary?.iv, v.para_summary?.mv)) : '',
+    valMvr: v.is_para && !isUndefined(v.para_summary) ? calculateMVR(v.para_summary?.ev, v.para_summary?.iv, v.para_summary?.mv) : 0,
     valGroupMvr: v.is_para ? v._val_group_mvr : 0,  
     disputes: v.is_para && !isUndefined(v.para) && !isUndefined(v.para.disputes) ? v.para.disputes.length : 0,
     group: v.is_para ? v.para.group : '',

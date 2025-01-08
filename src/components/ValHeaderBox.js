@@ -9,6 +9,7 @@ import Divider from '@mui/material/Divider';
 import ValAddressProfile from './ValAddressProfile';
 import ValMvrBox from './ValMvrBox';
 import ValMvrHistoryBox from './ValMvrHistoryBox';
+import ValMbrBox from './ValMbrBox';
 import ValBackingPointsBox from './ValBackingPointsBox';
 import ValBackingPointsHistoryBox from './ValBackingPointsHistoryBox';
 import ValAuthoredBlocksBox from './ValAuthoredBlocksBox';
@@ -44,6 +45,7 @@ export default function ValHeaderBox({address, sessionIndex}) {
   const isLiveMode = useSelector(selectIsLiveMode);
   const session = useSelector(state => selectSessionByIndex(state, currentSession))
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, address));
+  const disputesTotal = validator.para?.disputes?.length;
 
   if (isNaN(sessionIndex) || isUndefined(session) || isUndefined(validator)) {
     return (<Box sx={{
@@ -116,23 +118,30 @@ export default function ValHeaderBox({address, sessionIndex}) {
               {/* second row */}
               <Grid item xs={12} md={3}>
                 {isLiveMode ? 
-                  <ValMvrBox address={address} /> : 
-                  <ValMvrHistoryBox address={address} maxSessions={maxHistorySessions} /> }
+                      <ValMbrBox address={address} /> : 
+                      null
+                      }
               </Grid>
               <Grid item xs={12} md={3}>
                 {isLiveMode ? 
-                  <ValBackingPointsBox address={address} /> : 
-                  <ValBackingPointsHistoryBox address={address} maxSessions={maxHistorySessions} /> }
-              </Grid>
-              <Grid item xs={12} md={3}>
-                {!isLiveMode ? 
-                  <ValParaInclusionBox address={address} maxSessions={maxHistorySessions} /> :
-                  null }
+                    <ValMvrBox address={address} /> : 
+                    <ValMvrHistoryBox address={address} maxSessions={maxHistorySessions} /> }
               </Grid>
               <Grid item xs={12} md={3}>
                 {isLiveMode ? 
-                  <ValDisputesBox address={address} />  :
-                  <ValDisputesHistoryBox address={address} maxSessions={maxHistorySessions}/> }
+                    <ValBackingPointsBox address={address} /> : 
+                    <ValBackingPointsHistoryBox address={address} maxSessions={maxHistorySessions} /> }
+              </Grid>
+              <Grid item xs={12} md={3}>
+                { disputesTotal > 0 ? (
+                    isLiveMode ? 
+                      <ValDisputesBox address={address} />  :
+                      <ValDisputesHistoryBox address={address} maxSessions={maxHistorySessions}/>
+                  ) : (
+                    !isLiveMode ? 
+                      <ValParaInclusionBox address={address} maxSessions={maxHistorySessions} /> :
+                      null
+                  ) }
               </Grid>
             </Grid>
           </Box>

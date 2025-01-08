@@ -188,7 +188,7 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
                   ONE-T performance ranking is based on the following criteria:
                 </Typography>
                 <Typography component="div" variant="caption" gutterBottom>
-                  <b>score:</b> Backing votes ratio (1-MVR) make up 75% of the score, average p/v points make up 18% and number of sessions as p/v the remaining 7%
+                  <b>score:</b> Backing Votes Ratio (1-MVR) make up 60% of the score,  Bitfields Availability Ratio (1-BUR) make up 15%, average p/v points make up 18% and number of sessions as p/v the remaining 7%
                 </Typography>
                 <Typography component="div" variant="caption" gutterBottom>
                   <b>sorting:</b> Validators are sorted by Score in descending order
@@ -196,7 +196,7 @@ export default function ValidatorsRankingBox({sessionIndex, maxSessions, skip}) 
                 <Typography component="div" variant="caption" paragraph>
                   <b>inclusion:</b> To be considered for the ranking, validators must have been p/v for at least 5 times in the last {maxSessions} sessions.
                 </Typography>
-                <i>performance_score = (1 - mvr) * 0.75 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07</i>
+                <i>performance_score = (1 - mvr) * 0.60 + (1 - mbr) * 0.15 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07</i>
               </Box>
             }
             >

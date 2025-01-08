@@ -10,7 +10,7 @@ import {
 import {
   selectValidatorBySessionAndAddress,
 } from '../features/api/validatorsSlice';
-import { calculateMvr } from '../util/mvr'
+import { calculateMVR } from '../util/mvr'
 
 import { grade } from '../util/grade';
 
@@ -23,7 +23,7 @@ export default function ValAttentionBox({address}) {
     return null
   }
 
-  const mvr = Math.round(calculateMvr(validator.para_summary.ev, validator.para_summary.iv, validator.para_summary.mv) * 10000) / 10000;
+  const mvr = Math.round(calculateMVR(validator.para_summary.ev, validator.para_summary.iv, validator.para_summary.mv) * 10000) / 10000;
 
   if (isNaN(mvr)) {
     return null

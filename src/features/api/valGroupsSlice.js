@@ -6,7 +6,7 @@ import {
 import forEach from 'lodash/forEach'
 import groupBy from 'lodash/groupBy'
 import isUndefined from 'lodash/isUndefined'
-import { calculateMvr } from '../../util/mvr'
+import { calculateMVR } from '../../util/math'
 import { 
   matchValidatorReceived,
   matchValidatorsReceived,
@@ -70,7 +70,7 @@ const valGroupsSlice = createSlice({
           _para_id: group[0].para.pid,
           _validatorIds: group.map(v => `${session}_${v.address}`),
           _core_assignments: !isUndefined(group[0].para_summary) ? group[0].para_summary.ca : 0,
-          _mvr: group.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)).reduce((a, b) => a + b, 0) / group.length,
+          _mvr: group.map(v => calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)).reduce((a, b) => a + b, 0) / group.length,
           _validity_ev: group.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0),
           _validity_iv: group.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0),
           _validity_mv: group.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0),

@@ -17,19 +17,18 @@ import {
   useGetValidatorsQuery,
  } from '../features/api/validatorsSlice';
 import { 
-  selectMVRsBySession
+  selectGradesBySession,
  } from '../features/api/sessionsSlice'
-import { grade } from '../util/grade'
 
 const grades = ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "F"]
 
 export default function GradesBox({sessionIndex, size}) {
   const theme = useTheme();
   const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
-  const rawMvrs = useSelector(state => selectMVRsBySession(state, sessionIndex));
-  const mvrs = rawMvrs.filter(mvr => !isUndefined(mvr) && !isNull(mvr))
+  const rawGrades = useSelector(state => selectGradesBySession(state, sessionIndex));
+  const currentGrades = rawGrades.filter(g => !isUndefined(g) && !isNull(g))
 
-  if (isFetching || !rawMvrs.length || !mvrs.length) {
+  if (isFetching || !rawGrades.length || !currentGrades.length) {
     return (<Box sx={{
         width: "100%",
         height: 320,
@@ -44,8 +43,8 @@ export default function GradesBox({sessionIndex, size}) {
   }
 
   const gradesData = grades.map(g => {
-    const quantity = mvrs.filter(mvr => grade(1 - mvr) === g).length;
-    const percentage = quantity * 100 / mvrs.length;
+    const quantity = currentGrades.filter(cg => cg === g).length;
+    const percentage = quantity * 100 / currentGrades.length;
     return {
       name: g,
       value: percentage,
@@ -76,20 +75,23 @@ export default function GradesBox({sessionIndex, size}) {
               placement="bottom-end"
               title={
                 <Box sx={{ p: 1}}>
-                  <Typography variant="caption">A grade reflects the backing votes ratio (BVR) of one or a set of validators. Higher grade means a better performance:
-                    <ul>
-                      <li>{"A+ = BVR > 99%"}</li>
-                      <li>{"A = BVR > 95%"}</li>
-                      <li>{"B+ = BVR > 90%"}</li>
-                      <li>{"B = BVR > 80%"}</li>
-                      <li>{"C+ = BVR > 70%"}</li>
-                      <li>{"C = BVR > 60%"}</li>
-                      <li>{"D+ = BVR > 50%"}</li>
-                      <li>{"D = BVR > 40%"}</li>
-                      <li>{"F = BVR <= 40%"}</li>
-                    </ul>
-                    <i>Note: BVR = 1 - MVR</i>
-                  </Typography>
+                  <Typography variant="caption" >A grade is calculated as 80% of the Backing Votes Ratio (BVR) combined with 20% of the Bitfields Availability Ratio (BAR) for one or more validators:</Typography>
+                  <ul>
+                    <li>{"A+ = RATIO > 99%"}</li>
+                    <li>{"A = RATIO > 95%"}</li>
+                    <li>{"B+ = RATIO > 90%"}</li>
+                    <li>{"B = RATIO > 80%"}</li>
+                    <li>{"C+ = RATIO > 70%"}</li>
+                    <li>{"C = RATIO > 60%"}</li>
+                    <li>{"D+ = RATIO > 50%"}</li>
+                    <li>{"D = RATIO > 40%"}</li>
+                    <li>{"F = RATIO <= 40%"}</li>
+                  </ul>
+                  <i>RATIO = 0.8*BVR + 0.2*BAR</i><br/>
+                  <i>BVR = 1 - MVR</i><br/>
+                  <i>BAR = 1 - BUR</i><br/>
+                  <i>MVR (Missed Votes Ratio)</i><br/>
+                  <i>BUR (Bitfields Unavailability Ratio)</i>
                 </Box>
               }
               >
