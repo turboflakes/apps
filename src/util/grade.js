@@ -4,7 +4,7 @@ import isUndefined from 'lodash/isUndefined'
 export const grade = (ratio) => { return  gradeByRatio(ratio) }
 
 export const gradeByRatios = (mvr, bur) => {
-  return gradeByRatio(1-(mvr * 0.60 + bur * 0.40))
+  return gradeByRatio(1-(mvr * 0.75 + bur * 0.25))
 }
 
 const gradeByRatio = (ratio) => {

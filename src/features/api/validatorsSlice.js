@@ -266,13 +266,13 @@ function createRows(id, identity, address, node_version, subset,
 // https://github.com/turboflakes/one-t/blob/main/SCORES.md
 // 
 // Performance Score
-// performance_score = (1 - mvr) * 0.50 + (1 - mbr) * 0.25 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
+// performance_score = (1 - mvr) * 0.5625 + (1 - bur) * 0.1875 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
 
 // Commission Score
 // commission_score = performance_score * 0.25 + (1 - commission) * 0.75
 
-const performance_score = (mvr, mbr, avg_pts, min_avg_pts, max_avg_pts, para_sessions, total_sessions) => {
-  return (1 - mvr) * 0.50 + (1 - mbr) * 0.25 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (para_sessions / total_sessions) * 0.07
+const performance_score = (mvr, bur, avg_pts, min_avg_pts, max_avg_pts, para_sessions, total_sessions) => {
+  return (1 - mvr) * 0.5 + (1 - bur) * 0.25 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (para_sessions / total_sessions) * 0.07
 }
 
 // Timeline 
