@@ -6,7 +6,7 @@ import {
 import forEach from 'lodash/forEach'
 import groupBy from 'lodash/groupBy'
 import isUndefined from 'lodash/isUndefined'
-import { calculateMVR } from '../../util/math'
+import { calculateMVR, calculateBUR } from '../../util/math'
 import { 
   matchValidatorReceived,
   matchValidatorsReceived,
@@ -71,6 +71,7 @@ const valGroupsSlice = createSlice({
           _validatorIds: group.map(v => `${session}_${v.address}`),
           _core_assignments: !isUndefined(group[0].para_summary) ? group[0].para_summary.ca : 0,
           _mvr: group.map(v => calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)).reduce((a, b) => a + b, 0) / group.length,
+          _bur: group.map(v => calculateBUR(v.para.bitfields.ba, v.para.bitfields.bu)).reduce((a, b) => a + b, 0) / group.length,
           _validity_ev: group.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0),
           _validity_iv: group.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0),
           _validity_mv: group.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0),
@@ -100,6 +101,9 @@ export const selectValGroupParaIdBySessionAndGroupId = (state, session, groupId)
 
 export const selectValGroupMvrBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
 (!isUndefined(selectById(state, `${session}_${groupId}`)._mvr) ? selectById(state, `${session}_${groupId}`)._mvr : undefined) : undefined;
+
+export const selectValGroupBurBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+(!isUndefined(selectById(state, `${session}_${groupId}`)._bur) ? selectById(state, `${session}_${groupId}`)._bur : undefined) : undefined;
 
 export const selectValGroupValidityExplicitVotesBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
   (!isUndefined(selectById(state, `${session}_${groupId}`)._validity_ev) ? selectById(state, `${session}_${groupId}`)._validity_ev : 0) : 0;

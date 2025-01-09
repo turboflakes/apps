@@ -189,6 +189,7 @@ const sessionsSlice = createSlice({
       const sessions = action.payload.map(session => ({
         ...session,
         _mvr: !isUndefined(session.stats) ? calculateMVR(session.stats.ev, session.stats.iv, session.stats.mv) : undefined,
+        _bur: !isUndefined(session.stats) ? calculateBUR(session.stats.ba, session.stats.bu) : undefined,
         _ts: + new Date()
       }))
       adapter.upsertMany(state, sessions)
@@ -223,7 +224,7 @@ const sessionsSlice = createSlice({
         const _group_ids = uniq(filtered.filter(v => !isNaN(parseInt(v.para?.group))).map(v => toNumber(v.para?.group))).sort((a, b) => a - b)
         const _core_ids = uniq(filtered.filter(v => !isNaN(parseInt(v.para?.core))).map(v => toNumber(v.para?.core))).sort((a, b) => a - b)
         const _mvrs = filtered.map(v => calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
-        const _mbrs = filtered.map(v => calculateBUR(v.para.bitfields.ba, v.para.bitfields.bu));
+        const _burs = filtered.map(v => calculateBUR(v.para.bitfields.ba, v.para.bitfields.bu));
         const _grades = filtered.map(v => gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields.ba, v.para.bitfields.bu)));
         const _validity_votes = filtered.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv);
         const _backing_points = filtered.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0);
@@ -236,7 +237,7 @@ const sessionsSlice = createSlice({
           [setKey(action, "_group_ids")]: _group_ids, 
           [setKey(action, "_core_ids")]: _core_ids, 
           [setKey(action, "_mvrs")]: _mvrs,
-          [setKey(action, "_mbrs")]: _mbrs,
+          [setKey(action, "_burs")]: _burs,
           [setKey(action, "_grades")]: _grades,
           [setKey(action, "_validity_votes")]: _validity_votes, 
           [setKey(action, "_backing_points")]: _backing_points, 
@@ -505,8 +506,8 @@ export const selectGradesBySession = (state, session) => !!selectSessionByIndex(
     selectSessionByIndex(state, session)._grades : []) : [];
 
 export const selectMBRsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
-  (isArray(selectSessionByIndex(state, session)._mbrs) ? 
-    selectSessionByIndex(state, session)._mbrs : []) : [];
+  (isArray(selectSessionByIndex(state, session)._burs) ? 
+    selectSessionByIndex(state, session)._burs : []) : [];
 
 export const selectMVRsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
   (isArray(selectSessionByIndex(state, session)._mvrs) ? 

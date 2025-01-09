@@ -84,7 +84,7 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
             placement="top"
             title={
               <Box sx={{ p: 1}}>
-                <Typography variant="caption" >A grade is calculated as 80% of the Backing Votes Ratio (BVR) combined with 20% of the Bitfields Availability Ratio (BAR) for one or more validators:</Typography>
+                <Typography variant="caption" >A grade is calculated as 75% of the Backing Votes Ratio (BVR) combined with 25% of the Bitfields Availability Ratio (BAR) for one or more validators:</Typography>
                   <ul>
                     <li>{"A+ = RATIO > 99%"}</li>
                     <li>{"A = RATIO > 95%"}</li>
@@ -96,7 +96,7 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
                     <li>{"D = RATIO > 40%"}</li>
                     <li>{"F = RATIO <= 40%"}</li>
                   </ul>
-                  <i>RATIO = 0.8*BVR + 0.2*BAR</i><br/>
+                  <i>RATIO = 0.75*BVR + 0.25*BAR</i><br/>
                   <i>BVR = 1 - MVR</i><br/>
                   <i>BAR = 1 - BUR</i><br/>
                   <i>Backing Votes Ratio (BVR)</i><br/>
