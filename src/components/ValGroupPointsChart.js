@@ -76,7 +76,7 @@ export default function ValGroupPointsChart({sessionIndex, groupId}) {
   const data = sorted.map(v => ({
     pvPoints: (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20),
     abPoints: v.auth.ab.length * 20,
-    gradeValue: gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields.ba, v.para.bitfields.bu)),
+    gradeValue: gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu)),
     name: nameDisplay(v.profile?.identity ? v.profile._identity : stashDisplay(chainAddress(v.address, getNetworkSS58Format(selectedChain)), 4), 12, selectedAddress === v.address ? '★ ' : '')
   }))
   

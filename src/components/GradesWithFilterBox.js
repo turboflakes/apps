@@ -98,11 +98,9 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
                   </ul>
                   <i>RATIO = 0.75*BVR + 0.25*BAR</i><br/>
                   <i>BVR = 1 - MVR</i><br/>
-                  <i>BAR = 1 - BUR</i><br/>
                   <i>Backing Votes Ratio (BVR)</i><br/>
                   <i>Missed Votes Ratio (MVR)</i><br/>
                   <i>Bitfields Availability Ratio (BAR)</i><br/>
-                  <i>Bitfields Unavailability Ratio (BUR)</i>
               </Box>
             }
             >

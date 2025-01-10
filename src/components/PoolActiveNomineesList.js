@@ -28,7 +28,7 @@ import {
 } from '../util/crypto';
 
 
-const gradeValue = (v) => !isUndefined(v.para_summary) && !isUndefined(v.para) ? gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields.ba, v.para.bitfields.bu)) : "-";
+const gradeValue = (v) => !isUndefined(v.para_summary) && !isUndefined(v.para) ? gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu)) : "-";
 
 
 function ItemButtom({validator}) {

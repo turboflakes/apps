@@ -33,12 +33,12 @@ const emptyBox = ({theme, dark}) => {
 export default function GradesSmallBox({sessionIndex, dark}) {
   const theme = useTheme();
   const rawGrades = useSelector(state => selectGradesBySession(state, sessionIndex));
-  
+
   if (!rawGrades.length) {
     return emptyBox({theme, dark})
   }
 
-  const currentGrades = rawGrades.filter(g => !isUndefined(g) && !isNull(g))
+  const currentGrades = rawGrades.filter(g => !isUndefined(g) && !isNull(g) && g !== '-')
 
   if (!currentGrades.length) {
     return emptyBox({theme, dark})

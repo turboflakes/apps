@@ -187,12 +187,12 @@ const defineColumns = (theme, chainInfo) => {
     disableColumnMenu: true,
   },
   {
-    field: 'mbr',
-    headerName: 'BUR',
+    field: 'bar',
+    headerName: 'BAR',
     type: 'number',
     width: 96,
     disableColumnMenu: true,
-    valueGetter: (params) => (!isNull(params.row.mvr) ? Math.round(params.row.bur * 10000) / 10000 : null),
+    valueGetter: (params) => (!isNull(params.row.bar) ? params.row.bar !== 0 ? params.row.bar.toFixed(4): 0 : null),
   },
   {
     field: 'avg_pts',

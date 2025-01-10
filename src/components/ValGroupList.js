@@ -26,7 +26,7 @@ import { gradeByRatios } from '../util/grade';
 import { chainAddress } from '../util/crypto';
 import { getNetworkSS58Format } from '../constants'
 
-const gradeValue = (v) => gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields.ba, v.para.bitfields.bu));
+const gradeValue = (v) => gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu));
 
 export default function ValGroupList({sessionIndex, groupId}) {
   const theme = useTheme();

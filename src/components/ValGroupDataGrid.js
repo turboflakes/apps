@@ -12,7 +12,7 @@ import DetailsIcon from './DetailsIcon';
 import GridIdentityLink from './GridIdentityLink';
 import InsightsInfoLegend from './InsightsInfoLegend';
 import { gradeByRatios } from '../util/grade';
-import { calculateMVR, calculateBUR } from '../util/math';
+import { calculateMVR, calculateBAR, calculateBUR } from '../util/math';
 import {
   selectValidatorsBySessionAndGroupId
 } from '../features/api/valGroupsSlice';
@@ -152,13 +152,13 @@ const defineColumns = (theme, chainInfo) => {
     disableColumnMenu: true,
   },
   {
-    field: 'bur',
-    headerName: 'BUR',
+    field: 'bar',
+    headerName: 'BAR',
     type: 'number',
     width: 96,
     disableColumnMenu: true,
     valueGetter: (params) => {
-      return calculateBUR(params.row.ba, params.row.bu)
+      return calculateBAR(params.row.ba, params.row.bu)
     },
   },
   {
@@ -244,8 +244,8 @@ export default function ValGroupDataGrid({sessionIndex, groupId}) {
         v.para_summary.iv, 
         v.para_summary.ev, 
         v.para_summary.mv, 
-        v.para.bitfields.ba, 
-        v.para.bitfields.bu, 
+        v.para.bitfields?.ba, 
+        v.para.bitfields?.bu, 
         total_points,
         node_version)
     } else {

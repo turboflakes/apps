@@ -12,7 +12,7 @@ import HistoryErasMenu from './HistoryErasMenu';
 import {
   selectSessionCurrent,
   selectSessionHistory,
-  selectMvrBySessions,
+  selectMVRBySessions,
   selectBackingPointsBySessions,
   selectAuthoredBlocksBySessions,
   selectDisputesBySessions,
@@ -94,7 +94,7 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1 , maxSessions);
   const allBackingPoints = useSelector(state => selectBackingPointsBySessions(state, historySessionIds));
   const allAuthoredBlocks = useSelector(state => selectAuthoredBlocksBySessions(state, historySessionIds));
-  const allMvrs = useSelector(state => selectMvrBySessions(state, historySessionIds));
+  const allMvrs = useSelector(state => selectMVRBySessions(state, historySessionIds));
   const allDisputes = useSelector(state => selectDisputesBySessions(state, historySessionIds));
   const historySessionSelected = useSelector(state => selectSessionByIndex(state, historySession));
   

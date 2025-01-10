@@ -164,3 +164,11 @@ export const calculateBUR = (a, u) => {
     } 
     return u / total
 }
+
+export const calculateBAR = (a, u) => {
+    const total = a + u;
+    if (total === 0) {
+      return undefined
+    } 
+    return a / total
+}

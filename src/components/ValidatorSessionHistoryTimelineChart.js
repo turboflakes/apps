@@ -22,7 +22,8 @@ import {
 import {
   selectSessionCurrent,
   selectSessionHistory,
-  selectMvrBySessions,
+  selectMVRBySessions,
+  selectBARBySessions,
   selectSessionByIndex,
   sessionHistoryChanged,
   useGetSessionByIndexQuery,
@@ -184,7 +185,11 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
   const {isFetching} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1 , maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds));
-  const allMvrs = useSelector(state => selectMvrBySessions(state, historySessionIds));
+  const allMVRs = useSelector(state => selectMVRBySessions(state, historySessionIds));
+
+  // TODO: add bitfields availability to the chart
+  // const allBARs = useSelector(state => selectBARBySessions(state, historySessionIds));
+  
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
   const paraSessions = useSelector(state => selectParaAuthoritySessionsByAddressAndSessions(state, address, historySessionIds));
   // const [sessionIndex, setSessionIndex] = useSessionIndex(historySession);
@@ -206,7 +211,7 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
     setTimeout(() => (dispatch(sessionHistoryChanged(paraSessions[paraSessions.length - 1])), 100));
   }
 
-  if (validators.filter(v => !isUndefined(v)).length !== maxSessions || allMvrs.length !== maxSessions) {
+  if (validators.filter(v => !isUndefined(v)).length !== maxSessions || allMVRs.length !== maxSessions) {
     return null
   }
 
@@ -221,7 +226,7 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
     valGroupMvr: v.is_para ? v._val_group_mvr : 0,  
     disputes: v.is_para && !isUndefined(v.para) && !isUndefined(v.para.disputes) ? v.para.disputes.length : 0,
     group: v.is_para ? v.para.group : '',
-    sessionMvr: allMvrs[i]
+    sessionMvr: allMVRs[i]
   }));
 
   const totalDisputes = validators

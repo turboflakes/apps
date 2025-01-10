@@ -12,7 +12,7 @@ import isArray from 'lodash/isArray'
 import max from 'lodash/max'
 import min from 'lodash/min'
 import apiSlice from './apiSlice'
-import { calculateMVR, calculateBUR } from '../../util/math'
+import { calculateMVR, calculateBAR, calculateBUR } from '../../util/math'
 import { isValidAddress, addressSS58 } from '../../util/crypto'
 import { socketActions } from './socketSlice'
 import { 
@@ -29,7 +29,7 @@ import {
 import {
   selectValProfileByAddress
 } from './valProfilesSlice'
-import { grade, gradeByRatios } from '../../util/grade';
+import { gradeByRatios } from '../../util/grade';
 import { chainAddress } from '../../util/crypto';
 
 export const extendedApi = apiSlice.injectEndpoints({
@@ -213,7 +213,7 @@ export const selectValidatorsByAddressAndSessions = (state, address, sessions = 
 export const selectValidatorGradeBySessionAndAddress = (state, session, address) => {
   const v = selectValidatorBySessionAndAddress(state, session, address);
   if (!isUndefined(v) && !isUndefined(v.para_summary) && !isUndefined(v.para)) {
-    return gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields.ba, v.para.bitfields.bu))
+    return gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu))
   }
   return "-"
 }
@@ -266,13 +266,13 @@ function createRows(id, identity, address, node_version, subset,
 // https://github.com/turboflakes/one-t/blob/main/SCORES.md
 // 
 // Performance Score
-// performance_score = (1 - mvr) * 0.5 + (1 - bur) * 0.25 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
+// performance_score = (1 - mvr) * 0.5 + bar * 0.25 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
 
 // Commission Score
 // commission_score = performance_score * 0.25 + (1 - commission) * 0.75
 
-const performance_score = (mvr, bur, avg_pts, min_avg_pts, max_avg_pts, para_sessions, total_sessions) => {
-  return (1 - mvr) * 0.5 + (1 - bur) * 0.25 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (para_sessions / total_sessions) * 0.07
+const performance_score = (mvr, bar, avg_pts, min_avg_pts, max_avg_pts, para_sessions, total_sessions) => {
+  return (1 - mvr) * 0.5 + bar * 0.25 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (para_sessions / total_sessions) * 0.07
 }
 
 // Timeline 
@@ -394,11 +394,14 @@ export const selectValidatorsInsightsBySessions = (state, sessions = [], isHisto
 
   const filteredRows = rows.map(v => {
     const mvr = v.para_sessions > 0 ? calculateMVR(v.explicit_votes, v.implicit_votes, v.missed_votes) : null;
+    const bar = v.para_sessions > 0 ? calculateBAR(v.availability, v.unavailability) : null;
+    
     const bur = v.para_sessions > 0 ? calculateBUR(v.availability, v.unavailability) : null;
-    const score = v.para_sessions > 0 ? performance_score(mvr, bur, v.avg_pts, min_avg_pts, max_avg_pts, v.para_sessions, sessions.length) : null;
+    const score = v.para_sessions > 0 ? performance_score(mvr, bar, v.avg_pts, min_avg_pts, max_avg_pts, v.para_sessions, sessions.length) : null;
     return {
       ...v,
       mvr,
+      bar,
       bur,
       score,
       isFetching

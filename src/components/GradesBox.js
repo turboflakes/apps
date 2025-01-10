@@ -89,9 +89,9 @@ export default function GradesBox({sessionIndex, size}) {
                   </ul>
                   <i>RATIO = 0.75*BVR + 0.25*BAR</i><br/>
                   <i>BVR = 1 - MVR</i><br/>
-                  <i>BAR = 1 - BUR</i><br/>
-                  <i>MVR (Missed Votes Ratio)</i><br/>
-                  <i>BUR (Bitfields Unavailability Ratio)</i>
+                  <i>Backing Votes Ratio (BVR)</i><br/>
+                  <i>Missed Votes Ratio (MVR)</i><br/>
+                  <i>Bitfields Availability Ratio (BAR)</i><br/>
                 </Box>
               }
               >

@@ -40,7 +40,7 @@ const renderTooltip = (props, theme) => {
          }}
       >
         <Typography component="div" variant="caption" color="inherit">
-          <b>Missed Vote Ratio</b>
+          <b>Missed Vote Ratio (MVR)</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit" paragraph>
           <i>Session {data.session.format()}</i>

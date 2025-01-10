@@ -71,7 +71,7 @@ const valGroupsSlice = createSlice({
           _validatorIds: group.map(v => `${session}_${v.address}`),
           _core_assignments: !isUndefined(group[0].para_summary) ? group[0].para_summary.ca : 0,
           _mvr: group.map(v => calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)).reduce((a, b) => a + b, 0) / group.length,
-          _bur: group.map(v => calculateBUR(v.para.bitfields.ba, v.para.bitfields.bu)).reduce((a, b) => a + b, 0) / group.length,
+          _bur: group.map(v => calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu)).reduce((a, b) => a + b, 0) / group.length,
           _validity_ev: group.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0),
           _validity_iv: group.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0),
           _validity_mv: group.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0),

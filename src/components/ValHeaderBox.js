@@ -9,7 +9,8 @@ import Divider from '@mui/material/Divider';
 import ValAddressProfile from './ValAddressProfile';
 import ValMvrBox from './ValMvrBox';
 import ValMvrHistoryBox from './ValMvrHistoryBox';
-import ValMbrBox from './ValMbrBox';
+import ValBarBox from './ValBarBox';
+import ValBarHistoryBox from './ValBarHistoryBox';
 import ValBackingPointsBox from './ValBackingPointsBox';
 import ValBackingPointsHistoryBox from './ValBackingPointsHistoryBox';
 import ValAuthoredBlocksBox from './ValAuthoredBlocksBox';
@@ -118,8 +119,8 @@ export default function ValHeaderBox({address, sessionIndex}) {
               {/* second row */}
               <Grid item xs={12} md={3}>
                 {isLiveMode ? 
-                      <ValMbrBox address={address} /> : 
-                      null
+                      <ValBarBox address={address} /> : 
+                      <ValBarHistoryBox address={address} maxSessions={maxHistorySessions} />
                       }
               </Grid>
               <Grid item xs={12} md={3}>

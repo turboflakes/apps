@@ -40,20 +40,20 @@ const InsightsInfoLegend = ({showDisputes}) => {
               <span style={{ marginRight: '8px' }}>✗v</span>Total number of missed votes
             </Typography>
             <Typography variant="caption" gutterBottom>
-              Bitfields Unavailability Ratio (BUR)
+              Bitfields Availability Ratio (BAR)
             </Typography>
             <Typography variant="caption" gutterBottom>
-              BUR = (✗bu) / (✓ba + ✗bu)
+              BAR = (✗ba) / (✓ba + ✗bu)
             </Typography>
             <Typography variant="caption" gutterBottom>
-              <span style={{ marginRight: '8px'}}>✓ba</span>Total number of blocks with available bitfields
+              <span style={{ marginRight: '8px'}}>✓ba</span>Total number of blocks with bitfields available
             </Typography>
             <Typography variant="caption" paragraph>
-              <span style={{ marginRight: '8px' }}>✗bu</span>Total number of blocks with unavailable bitfields
+              <span style={{ marginRight: '8px' }}>✗bu</span>Total number of blocks without bitfields or empty bitfields
             </Typography>
             
             <Typography variant="caption" paragraph>
-              SCORE = (1 - mvr) * 0.60 + (1 - bur) * 0.15 + ((avg_pv_pts - min_avg_pv_pts) / (max_avg_pv_pts - min_avg_pv_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
+              SCORE = (1 - mvr) * 0.50 + bar * 0.25 + ((avg_pv_pts - min_avg_pv_pts) / (max_avg_pv_pts - min_avg_pv_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
             </Typography>
             <Typography variant="caption" gutterBottom>
               VERSION: The node version is collected from the Kademlia Distributed Hash Table (DHT). Nodes that are not reached within the discovery process (background task that runs every new session) have their node version set to ''.
