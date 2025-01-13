@@ -101,6 +101,21 @@ const defineColumns = (theme, chain, chainInfo) => {
     disableColumnMenu: true,
   },
   {
+    field: 'node_version',
+    headerName: 'Version',
+    width: 80,
+    headerAlign: 'right',
+    align: 'right',
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      if (!isNull(params.row.node_version)) {
+        const version = versionDisplay(params.row.node_version);
+        return (<Box title={params.row.node_version}>{version}</Box>)
+      } 
+      return ('-')
+    }
+  },
+  {
     field: 'authored_blocks',
     headerName: '❒',
     type: 'number',
@@ -203,21 +218,6 @@ const defineColumns = (theme, chain, chainInfo) => {
     disableColumnMenu: true,
     // sortingOrder: ['asc', 'desc'],
     valueGetter: (params) => (scoreDisplay(params.row.score)),
-  },
-  {
-    field: 'node_version',
-    headerName: 'Version',
-    width: 80,
-    headerAlign: 'right',
-    align: 'right',
-    disableColumnMenu: true,
-    renderCell: (params) => {
-      if (!isNull(params.row.node_version)) {
-        const version = versionDisplay(params.row.node_version);
-        return (<Box title={params.row.node_version}>{version}</Box>)
-      } 
-      return ('-')
-    }
   },
   {
     field: 'options',
