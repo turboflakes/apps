@@ -10,15 +10,21 @@ import {
   selectMaxHistoryEras,
   maxHistoryErasChanged
 } from '../features/layout/layoutSlice';
+import {
+  selectChain,
+} from '../features/chain/chainSlice';
 
-const OPTIONS = [
+const OPTIONS = (selectedChain) => ([
   // {value: 1, description: "1 era"},
   // {value: 2, description: "2 eras"},
   {value: 4, description: "4 eras"},
   {value: 8, description: "8 eras"},
   {value: 16, description: "16 eras"},
-  {value: 32, description: "32 eras"}
-]
+  // NOTE: remove 24 eras for polkadot in a future release
+  selectedChain === "polkadot" ?
+    {value: 24, description: "24 eras"} :
+    {value: 32, description: "32 eras"}
+])
 
 const CustomMenu = styled((props) => (
   <Menu
@@ -66,6 +72,7 @@ export default function HistoryErasMenu() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const selectedChain = useSelector(selectChain);
   const maxHistoryEras = useSelector(selectMaxHistoryEras);
   const open = Boolean(anchorEl);
   
@@ -102,7 +109,7 @@ export default function HistoryErasMenu() {
         onClick={handleClick}
         endIcon={<ArrowDropDownIcon sx={{ ml: 1}} />}
       >
-        {`${OPTIONS.filter(o => o.value === maxHistoryEras)[0].description}`}
+        {`${OPTIONS(selectedChain).filter(o => o.value === maxHistoryEras)[0].description}`}
       </Button>
       <CustomMenu
         id="history-menu"
@@ -113,7 +120,7 @@ export default function HistoryErasMenu() {
         open={open}
         onClose={handleClose}
       >
-        {OPTIONS.map((o, i) => (
+        {OPTIONS(selectedChain).map((o, i) => (
           <MenuItem key={i} value={o.value} onClick={handleClose} 
             sx={{width: 128}}
             disableRipple dense>

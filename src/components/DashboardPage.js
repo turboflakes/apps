@@ -151,10 +151,10 @@ export default function DashboardPage() {
             <Grid item xs={8}>
               <Grid container spacing={2}>
                 <Grid item xs={6}>
-                <NetTotalStakedBox sessionIndex={currentSession} maxSessions={maxHistorySessions} />
+                  <NetTotalStakedBox sessionIndex={currentSession} maxSessions={maxHistorySessions} />
                 </Grid>
                 <Grid item xs={6}>
-                <NetLastRewardBox sessionIndex={currentSession} maxSessions={maxHistorySessions} />
+                  <NetLastRewardBox sessionIndex={currentSession} maxSessions={maxHistorySessions} />
                 </Grid>
                 <Grid item xs={12}>
                   <NetVerticalTabs sessionIndex={currentSession} maxSessions={maxHistorySessions} />
