@@ -163,7 +163,7 @@ let theme = createTheme({
       }
     },
     caption: {
-      fontSize: "0.825rem",
+      fontSize: "0.8rem",
       fontFamily: "'Roboto', sans-serif",
       color: '#4D4D4D',
       lineHeight: 1
