@@ -13,6 +13,7 @@ import {
   selectSessionCurrent,
   selectSessionHistory,
   selectMVRBySessions,
+  selectBARBySessions,
   selectBackingPointsBySessions,
   selectAuthoredBlocksBySessions,
   selectDisputesBySessions,
@@ -20,7 +21,7 @@ import {
   sessionHistoryChanged,
   buildSessionIdsArrayHelper
 } from '../features/api/sessionsSlice';
-import { grade } from '../util/grade'
+import { gradeByRatios } from '../util/grade'
 
 const renderTooltip = (props, theme) => {
   const { active, payload } = props;
@@ -54,6 +55,9 @@ const renderTooltip = (props, theme) => {
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
                 <span style={{ marginRight: '8px', color: theme.palette.semantics.amber, fontWeight: 600 }}>●</span>MVR (All Para-Authorities): <b>{Math.round(data.mvr * 10000) / 10000}</b>
+              </Typography>
+              <Typography component="div" variant="caption" color="inherit">
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.blue, fontWeight: 600 }}>●</span>BAR (All Para-Authorities): <b>{Math.round(data.bar * 10000) / 10000}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
                 <span style={{ marginRight: '8px', color: theme.palette.semantics.red, fontWeight: 600 }}>❚</span>Disputes: <b>{!isUndefined(data.disputes) ? data.disputes.format() : ''}</b>
@@ -95,16 +99,18 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
   const allBackingPoints = useSelector(state => selectBackingPointsBySessions(state, historySessionIds));
   const allAuthoredBlocks = useSelector(state => selectAuthoredBlocksBySessions(state, historySessionIds));
   const allMvrs = useSelector(state => selectMVRBySessions(state, historySessionIds));
+  const allBars = useSelector(state => selectBARBySessions(state, historySessionIds));
   const allDisputes = useSelector(state => selectDisputesBySessions(state, historySessionIds));
   const historySessionSelected = useSelector(state => selectSessionByIndex(state, historySession));
   
   const data = historySessionIds.map((sessionId, i) => ({
     session: sessionId,
-    gradeValue: grade(1-allMvrs[i]),
+    gradeValue: gradeByRatios(allMvrs[i], 1-allBars[i]),
     pvPoints: allBackingPoints[i],
     abPoints: allAuthoredBlocks[i] * 20,
     disputes: allDisputes[i],
-    mvr: allMvrs[i]
+    mvr: allMvrs[i],
+    bar: allBars[i]
   }));
 
   const handleClick = (data) => {
@@ -182,12 +188,21 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
           <YAxis yAxisId="rightMVR" orientation="right"
             width={64}
             style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}
-            axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}} 
+            axisLine={{stroke: theme.palette.semantics.amber, strokeWidth: 1, width: 100}} 
             />
           {/* <Line yAxisId="rightMVR" type="monotone" dataKey="valMvr" dot={false} stroke={theme.palette.primary.main} />
           <Line yAxisId="rightMVR" type="monotone" dataKey="valGroupMvr" dot={false} stroke={theme.palette.semantics.purple} /> */}
           <Line yAxisId="rightMVR" type="monotone" dataKey="mvr" dot={false} 
             stroke={theme.palette.semantics.amber} strokeWidth={2} />
+
+          {/* BAR */}
+          <YAxis yAxisId="rightBAR" orientation="right"
+            width={64}
+            style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}
+            axisLine={{stroke: theme.palette.semantics.blue, strokeWidth: 1, width: 100}} 
+            />
+          <Line yAxisId="rightBAR" type="monotone" dataKey="bar" dot={false} 
+            stroke={theme.palette.semantics.blue} strokeWidth={2} />
           
           {/* disputes */}
           <YAxis type="number" yAxisId="rightDisputes"
