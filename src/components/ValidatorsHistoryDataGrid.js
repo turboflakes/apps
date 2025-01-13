@@ -174,14 +174,14 @@ const defineColumns = (theme, chainInfo) => {
   },
   {
     field: 'availability',
-    headerName: '✓ba',
+    headerName: '✓b',
     type: 'number',
     width: 64,
     disableColumnMenu: true,
   },
   {
     field: 'unavailability',
-    headerName: '✗bu',
+    headerName: '✗b',
     type: 'number',
     width: 64,
     disableColumnMenu: true,

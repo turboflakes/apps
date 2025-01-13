@@ -43,13 +43,13 @@ const InsightsInfoLegend = ({showDisputes}) => {
               Bitfields Availability Ratio (BAR)
             </Typography>
             <Typography variant="caption" gutterBottom>
-              BAR = (✗ba) / (✓ba + ✗bu)
+              BAR = (✓b) / (✓b + ✗b)
             </Typography>
             <Typography variant="caption" gutterBottom>
-              <span style={{ marginRight: '8px'}}>✓ba</span>Total number of blocks with bitfields available
+              <span style={{ marginRight: '8px'}}>✓b</span>Total number of blocks with bitfields available
             </Typography>
             <Typography variant="caption" paragraph>
-              <span style={{ marginRight: '8px' }}>✗bu</span>Total number of blocks without bitfields or empty bitfields
+              <span style={{ marginRight: '8px' }}>✗b</span>Total number of blocks without bitfields or empty bitfields
             </Typography>
             
             <Typography variant="caption" paragraph>
