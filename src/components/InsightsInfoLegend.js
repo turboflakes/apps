@@ -21,8 +21,14 @@ const InsightsInfoLegend = ({showDisputes}) => {
             <Typography variant="caption" gutterBottom>
               <span style={{ marginRight: '8px' }}>↔</span>Total number of disputes initiated
             </Typography>
-            <Typography variant="caption" gutterBottom>
+            <Typography variant="caption" paragraph>
               <span style={{ marginRight: '8px' }}>↻</span>Total number of core assignments
+            </Typography>
+            <Typography variant="caption" gutterBottom>
+              Missed Votes Ratio (MVR)
+            </Typography>
+            <Typography variant="caption" gutterBottom>
+              MVR = (✗v) / (✓i + ✓e + ✗)
             </Typography>
             <Typography variant="caption" gutterBottom>
               <span style={{ marginRight: '8px' }}>✓i</span>Total number of implicit votes
@@ -31,13 +37,23 @@ const InsightsInfoLegend = ({showDisputes}) => {
               <span style={{ marginRight: '8px'}}>✓e</span>Total number of explicit votes
             </Typography>
             <Typography variant="caption" paragraph>
-              <span style={{ marginRight: '8px' }}>✗</span>Total number of missed Votes
+              <span style={{ marginRight: '8px' }}>✗v</span>Total number of missed votes
+            </Typography>
+            <Typography variant="caption" gutterBottom>
+              Bitfields Availability Ratio (BAR)
+            </Typography>
+            <Typography variant="caption" gutterBottom>
+              BAR = (✓b) / (✓b + ✗b)
+            </Typography>
+            <Typography variant="caption" gutterBottom>
+              <span style={{ marginRight: '8px'}}>✓b</span>Total number of blocks with bitfields available
             </Typography>
             <Typography variant="caption" paragraph>
-              MVR = (✗) / (✓i + ✓e + ✗)
+              <span style={{ marginRight: '8px' }}>✗b</span>Total number of blocks without bitfields or empty bitfields
             </Typography>
+            
             <Typography variant="caption" paragraph>
-              SCORE = (1 - mvr) * 0.75 + ((avg_pv_pts - min_avg_pv_pts) / (max_avg_pv_pts - min_avg_pv_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
+              SCORE = (1 - mvr) * 0.50 + bar * 0.25 + ((avg_pv_pts - min_avg_pv_pts) / (max_avg_pv_pts - min_avg_pv_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
             </Typography>
             <Typography variant="caption" gutterBottom>
               VERSION: The node version is collected from the Kademlia Distributed Hash Table (DHT). Nodes that are not reached within the discovery process (background task that runs every new session) have their node version set to ''.

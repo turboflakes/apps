@@ -8,7 +8,7 @@ import apiSlice from './apiSlice'
 import { socketActions } from './socketSlice'
 import { 
   selectSessionByIndex } from './sessionsSlice'
-import { calculateMvr } from '../../util/mvr'
+import { calculateMVR } from '../../util/mvr'
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ['Parachains'],
@@ -79,7 +79,7 @@ const parachainsSlice = createSlice({
         ...parachain,
         session: action.payload.session,
         _backing_points: !!parachain.stats ? parachain.stats.pt - (parachain.stats.ab * 20) : 0,
-        _mvr: !!parachain.stats ? calculateMvr(parachain.stats.ev, parachain.stats.iv, parachain.stats.mv) : undefined,
+        _mvr: !!parachain.stats ? calculateMVR(parachain.stats.ev, parachain.stats.iv, parachain.stats.mv) : undefined,
         _ts: + new Date()
       }))
       adapter.upsertMany(state, parachains)

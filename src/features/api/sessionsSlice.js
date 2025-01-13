@@ -50,8 +50,8 @@ import {
   matchBoardsReceived
 } from './boardsSlice';
 import { getChainName, isChainSupported } from '../../constants'
-import { calculateMvr } from '../../util/mvr'
-import { grade } from '../../util/grade';
+import { calculateMVR, calculateBAR, calculateBUR } from '../../util/math'
+import { gradeByRatios } from '../../util/grade';
 import { chainAddress } from '../../util/crypto';
 
 export const extendedApi = apiSlice.injectEndpoints({
@@ -188,7 +188,8 @@ const sessionsSlice = createSlice({
     .addMatcher(matchSessionsReceived, (state, action) => {
       const sessions = action.payload.map(session => ({
         ...session,
-        _mvr: !isUndefined(session.stats) ? calculateMvr(session.stats.ev, session.stats.iv, session.stats.mv) : undefined,
+        _mvr: !isUndefined(session.stats) ? calculateMVR(session.stats.ev, session.stats.iv, session.stats.mv) : undefined,
+        _bar: !isUndefined(session.stats) ? calculateBAR(session.stats.ba, session.stats.bu) : undefined,
         _ts: + new Date()
       }))
       adapter.upsertMany(state, sessions)
@@ -219,21 +220,25 @@ const sessionsSlice = createSlice({
       let currentState = current(state);
 
       forEach(groupedBySession, (validators, session) => {
-        const filtered = validators.filter(v => v.is_auth && v.is_para && !isUndefined(v.para_summary));
+        const filtered = validators.filter(v => v.is_auth && v.is_para && !isUndefined(v.para_summary) && !isUndefined(v.para));
         const _group_ids = uniq(filtered.filter(v => !isNaN(parseInt(v.para?.group))).map(v => toNumber(v.para?.group))).sort((a, b) => a - b)
         const _core_ids = uniq(filtered.filter(v => !isNaN(parseInt(v.para?.core))).map(v => toNumber(v.para?.core))).sort((a, b) => a - b)
-        const _mvrs = filtered.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
+        const _mvrs = filtered.map(v => calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv));
+        const _bars = filtered.map(v => calculateBAR(v.para.bitfields?.ba, v.para.bitfields?.bu));
+        const _grades = filtered.map(v => gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu)));
         const _validity_votes = filtered.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv);
         const _backing_points = filtered.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0);
         const _current_stashes = !isUndefined(currentState.entities[session]) ? (!isUndefined(currentState.entities[session]._stashes) ? currentState.entities[session]._stashes : []) : [];
         const _stashes  = union(_current_stashes, validators.map(v => v.address));
         const _dispute_stashes = filtered.filter(v => !isUndefined(v.para.disputes)).map(v => v.address);
-        const _f_grade_stashes = filtered.filter(v => grade(1 - calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)) === "F").map(v => v.address);
+        const _f_grade_stashes = filtered.filter(v => gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu)) === "F").map(v => v.address);
         
         adapter.upsertOne(state, { six: parseInt(session, 10), 
           [setKey(action, "_group_ids")]: _group_ids, 
           [setKey(action, "_core_ids")]: _core_ids, 
-          [setKey(action, "_mvrs")]: _mvrs, 
+          [setKey(action, "_mvrs")]: _mvrs,
+          [setKey(action, "_bars")]: _bars,
+          [setKey(action, "_grades")]: _grades,
           [setKey(action, "_validity_votes")]: _validity_votes, 
           [setKey(action, "_backing_points")]: _backing_points, 
           [setKey(action, "_stashes")]: _stashes, 
@@ -496,6 +501,14 @@ export const selectScheduledParachainsBySession = (state, session) => {
         .length
 }
 
+export const selectGradesBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
+  (isArray(selectSessionByIndex(state, session)._grades) ? 
+    selectSessionByIndex(state, session)._grades : []) : [];
+
+export const selectBARsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
+  (isArray(selectSessionByIndex(state, session)._bars) ? 
+    selectSessionByIndex(state, session)._bars : []) : [];
+
 export const selectMVRsBySession = (state, session) => !!selectSessionByIndex(state, session) ? 
   (isArray(selectSessionByIndex(state, session)._mvrs) ? 
     selectSessionByIndex(state, session)._mvrs : []) : [];
@@ -522,10 +535,24 @@ export const selectParaValidatorIdsBySessionGrouped = (state, session) => !!sele
 export const selectParaValidatorsBySessionGrouped = (state, session) => !!selectSessionByIndex(state, session) ? 
   selectSessionByIndex(state, session)._group_ids.map(groupId => selectValidatorsBySessionAndGroupId(state, session, groupId)) : [];
 
-export const selectMvrBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+export const selectMVRBySessions = (state, sessionIds = []) => sessionIds.map(id => {
   const session = selectSessionByIndex(state, id);
   if (!isUndefined(session)) {
     return session._mvr
+  }
+})
+
+export const selectBARBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    return session._bar
+  }
+})
+
+export const selectBurBySessions = (state, sessionIds = []) => sessionIds.map(id => {
+  const session = selectSessionByIndex(state, id);
+  if (!isUndefined(session)) {
+    return session._bur
   }
 })
 

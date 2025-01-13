@@ -15,13 +15,13 @@ import {
   selectValidatorBySessionAndAddress,
 } from '../features/api/validatorsSlice';
 import {
-  selectMVRsBySession,
+  selectBARsBySession,
   selectSessionCurrent,
 } from '../features/api/sessionsSlice';
 import {
   selectValProfileByAddress,
 } from '../features/api/valProfilesSlice';
-import { calculateMVR } from '../util/mvr'
+import { calculateBAR } from '../util/math'
 import { nameDisplay } from '../util/display'
 
 const renderTooltip = (props, theme) => {
@@ -40,7 +40,7 @@ const renderTooltip = (props, theme) => {
          }}
       >
         <Typography component="div" variant="caption" color="inherit">
-          <b>Missed Vote Ratio (MVR)</b>
+          <b>Bitfields Availability Ratio (BAR)</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit" paragraph>
           <i>Session {data.session.format()}</i>
@@ -58,12 +58,12 @@ const renderTooltip = (props, theme) => {
   return null;
 };
 
-export default function ValMvrBox({address}) {
+export default function ValBarBox({address}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
   const {isFetching} = useGetValidatorsQuery({session: currentSession, role: "para_authority", show_summary: true});
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
-  const allMvrs = useSelector(state => selectMVRsBySession(state, currentSession));
+  const allBars = useSelector(state => selectBARsBySession(state, currentSession));
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
   
   if (isFetching || isUndefined(validator) || isUndefined(valProfile)) {
@@ -81,7 +81,7 @@ export default function ValMvrBox({address}) {
   }
 
   // NOTE: this could happen if validator is p/v but has still not been assigned to a parachain
-  if (isUndefined(validator.para_summary)) {
+  if (isUndefined(validator.para)) {
     return (
       <Paper sx={{
           p: 2,
@@ -95,7 +95,7 @@ export default function ValMvrBox({address}) {
           boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
         }}>
         <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-          <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>missed vote ratio</Typography>
+          <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>bitfields availability ratio</Typography>
           <Typography variant="h5">
             -
           </Typography>
@@ -103,12 +103,12 @@ export default function ValMvrBox({address}) {
       </Paper>
     )
   }
-  const mvr = Math.round(calculateMVR(validator.para_summary?.ev, validator.para_summary?.iv, validator.para_summary?.mv) * 10000) / 10000;
-  const avg = Math.round((!!allMvrs.length ? allMvrs.reduce((a, b) => a + b, 0) / allMvrs.length : 0) * 10000) / 10000;
-  const diff = !!avg && !!mvr ? Math.round(((mvr * 100 / avg) - 100) * 10) / 10 : 0;
+  const bar = Math.round(calculateBAR(validator.para?.bitfields?.ba, validator.para?.bitfields?.bu) * 10000) / 10000;
+  const avg = Math.round((!!allBars.length ? allBars.reduce((a, b) => a + b, 0) / allBars.length : 0) * 10000) / 10000;
+  const diff = !!avg && !!bar ? Math.round(((bar * 100 / avg) - 100) * 10) / 10 : 0;
   
   const data = [
-    {name: nameDisplay(valProfile._identity, 12), value: mvr, avg, session: currentSession},
+    {name: nameDisplay(valProfile._identity, 12), value: bar, avg, session: currentSession},
   ];
   
   return (
@@ -124,14 +124,14 @@ export default function ValMvrBox({address}) {
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
       <Box sx={{ pl: 1, pr: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>missed vote ratio</Typography>
+        <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>bitfields availability</Typography>
         <Typography variant="h5">
-          {!isUndefined(mvr) ? Math.round(mvr * 10000) / 10000 : '-'}
+          {!isUndefined(bar) ? Math.round(bar * 10000) / 10000 : '-'}
         </Typography>
-        <Tooltip title={diff === 0 ? 'Exceptional run. The validator participate in all votes.'  : `${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of MVR of all Para-Authorities in the current session.`} arrow>
+        <Tooltip title={diff === 0 ? '100% Bitfields availability!'  : `${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} bitfields availability than the average in all Para-Authorities in the current session.`} arrow>
           <Typography variant="subtitle2" sx={{
             lineHeight: 0.875,
-            whiteSpace: 'nowrap', color: Math.sign(diff) > 0 ? theme.palette.semantics.red : theme.palette.semantics.green
+            whiteSpace: 'nowrap', color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red
             }}>
             <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${diff}%` : `-${Math.abs(diff)}%`) : ' '}</b>
           </Typography>

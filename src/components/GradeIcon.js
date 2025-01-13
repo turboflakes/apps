@@ -7,7 +7,7 @@ import {
   useGetValidatorGradeByAddressQuery,
  } from '../features/api/validatorsSlice'
 // import { grade } from '../util/grade'
-// import { calculateMvr } from '../util/mvr'
+// import { calculateMVR } from '../util/mvr'
 import gradeAplus from '../assets/grades/grade_a_plus.webp';
 import gradeA from '../assets/grades/grade_a.webp';
 import gradeBplus from '../assets/grades/grade_b_plus.webp';
@@ -49,7 +49,7 @@ export default function GradeIcon({sessionIndex, address, size = 96, maxSessions
   }
   
   // const gradeValue = !isUndefined(validator.para_summary) ? 
-  //   grade(1 - calculateMvr(validator.para_summary.ev, validator.para_summary.iv, validator.para_summary.mv)) : "-";
+  //   grade(1 - calculateMVR(validator.para_summary.ev, validator.para_summary.iv, validator.para_summary.mv)) : "-";
 
   return (
     <Tooltip title={`Validator grade for the last ${maxSessions} sessions.`} arrow>

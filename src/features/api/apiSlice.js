@@ -20,7 +20,7 @@ const dynamicBaseQuery = async (args, api, extraOptions) => {
   }
 
   // construct a dynamically generated portion of the url
-  const protocol = getNetworkHost(chainName).includes("localhost") ? 'http:' : 'https:';
+  const protocol = getNetworkHost(chainName).includes("188.93.234.134") ? 'http:' : 'https:';
   const adjustedUrl = `${protocol}//${getNetworkHost(chainName)}/api/v1`
 
   const adjustedArgs =

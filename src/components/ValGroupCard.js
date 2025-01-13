@@ -6,7 +6,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import BackingPieChart from './BackingPieChart';
+import DoublePieChart from './DoublePieChart';
 import ValGroupList from './ValGroupList';
 import {
   selectChain,
@@ -14,6 +14,9 @@ import {
 import {
   selectValGroupParaIdBySessionAndGroupId,
   selectValGroupMvrBySessionAndGroupId,
+  selectValGroupBarBySessionAndGroupId,
+  selectValGroupAvailabilityBySessionAndGroupId,
+  selectValGroupUnavailabilityBySessionAndGroupId,
   selectValGroupValidityVotesBySessionAndGroupId,
   selectValGroupValidityExplicitVotesBySessionAndGroupId,
   selectValGroupValidityImplicitVotesBySessionAndGroupId,
@@ -23,8 +26,12 @@ import {
 } from '../features/api/valGroupsSlice';
 import { isChainSupported, getChainName } from '../constants'
 
-function createBackingPieData(e, i, m, n) {
-  return { e, i, m, n };
+function createPieDataA(e, i, m) {
+  return { e, i, m };
+}
+
+function createPieDataB(a, u) {
+  return { a, u };
 }
 
 export default function ValGroupCard({sessionIndex, groupId}) {
@@ -38,8 +45,12 @@ export default function ValGroupCard({sessionIndex, groupId}) {
   const validityVotes = useSelector(state => selectValGroupValidityVotesBySessionAndGroupId(state, sessionIndex, groupId));
   const backingPoints = useSelector(state => selectValGroupBackingPointsBySessionAndGroupId(state, sessionIndex, groupId));
   const coreAssignments = useSelector(state => selectValGroupCoreAssignmentsBySessionAndGroupId(state, sessionIndex, groupId));
+  const bar = useSelector(state => selectValGroupBarBySessionAndGroupId(state, sessionIndex, groupId));
+  const ba = useSelector(state => selectValGroupAvailabilityBySessionAndGroupId(state, sessionIndex, groupId));
+  const bu = useSelector(state => selectValGroupUnavailabilityBySessionAndGroupId(state, sessionIndex, groupId));
 
-  const pieChartsData = createBackingPieData(ev, iv, mv, paraId);
+  const pieDataA = createPieDataA(ev, iv, mv);
+  const pieDataB = createPieDataB(ba, bu);  
   const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
 
   return (
@@ -76,7 +87,7 @@ export default function ValGroupCard({sessionIndex, groupId}) {
             <Typography variant="caption" align='center'>Validity Statements</Typography>  
             <Typography variant="h5" align='center'>{validityVotes.format()}</Typography>
           </Box>
-          <BackingPieChart data={pieChartsData} size="md" />
+          <DoublePieChart dataA={pieDataA} dataB={pieDataB} size="md" />
         </Box>
       </Box>
       <Divider sx={{ 
@@ -88,12 +99,16 @@ export default function ValGroupCard({sessionIndex, groupId}) {
         backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
         }} />
       <Box sx={{ py: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+        {/* <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
           <Typography variant="caption" align='center'>Core Assignments</Typography>
           <Typography variant="h5" align='center'>{coreAssignments}</Typography>
+        </Box> */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+          <Typography variant="caption" align='center'>BAR</Typography>
+          <Typography variant="h5" align='center'>{!isUndefined(bar) ? Math.round(bar * 10000) / 10000 : '-'}</Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-          <Typography variant="caption" align='center'>Missed Vote Ratio</Typography>
+          <Typography variant="caption" align='center'>MVR</Typography>
           <Typography variant="h5" align='center'>{!isUndefined(mvr) ? Math.round(mvr * 10000) / 10000 : '-'}</Typography>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>

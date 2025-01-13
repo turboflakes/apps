@@ -49,7 +49,7 @@ const initWebsocket = (store) => {
   
   const chainName = selectChain(store.getState())
   // const protocol = document.location.protocol === 'http:' ? 'ws:' : 'wss:'
-  const protocol = getNetworkHost(chainName).includes("localhost") ? 'ws:' : 'wss:';
+  const protocol = getNetworkHost(chainName).includes("188.93.234.134") ? 'ws:' : 'wss:';
   const adjustedUrl = `${protocol}//${getNetworkHost(chainName)}/api/v1/ws`
   const socket = new WebSocket(adjustedUrl);
   

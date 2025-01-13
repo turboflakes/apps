@@ -14,7 +14,7 @@ import DetailsIcon from './DetailsIcon';
 import GridIdentityLink from './GridIdentityLink';
 import IdentityFilter from './IdentityFilter';
 import InsightsInfoLegend from './InsightsInfoLegend';
-import { grade } from '../util/grade'
+import { gradeByRatios } from '../util/grade'
 import {
   useGetValidatorsQuery,
   selectValidatorsInsightsBySessions,
@@ -77,8 +77,8 @@ const defineColumns = (theme, chain, chainInfo) => {
     sortable: false,
     disableColumnMenu: true,
     renderCell: (params) => {
-      if (!isNull(params.row.mvr)) {
-        const gradeValue = grade(1-params.row.mvr);
+      if (!isNull(params.row.mvr) && !isNull(params.row.bur)) {
+        const gradeValue = gradeByRatios(params.row.mvr, params.row.bur);
         return (
           <Box>
             <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 
@@ -99,6 +99,21 @@ const defineColumns = (theme, chain, chainInfo) => {
     align: 'left',
     sortable: false,
     disableColumnMenu: true,
+  },
+  {
+    field: 'node_version',
+    headerName: 'Version',
+    width: 80,
+    headerAlign: 'right',
+    align: 'right',
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      if (!isNull(params.row.node_version)) {
+        const version = versionDisplay(params.row.node_version);
+        return (<Box title={params.row.node_version}>{version}</Box>)
+      } 
+      return ('-')
+    }
   },
   {
     field: 'authored_blocks',
@@ -152,7 +167,7 @@ const defineColumns = (theme, chain, chainInfo) => {
   },
   {
     field: 'missed_votes',
-    headerName: '✗',
+    headerName: '✗v',
     type: 'number',
     width: 64,
     disableColumnMenu: true,
@@ -164,6 +179,28 @@ const defineColumns = (theme, chain, chainInfo) => {
     width: 96,
     disableColumnMenu: true,
     valueGetter: (params) => (!isNull(params.row.mvr) ? Math.round(params.row.mvr * 10000) / 10000 : null),
+  },
+  {
+    field: 'availability',
+    headerName: '✓b',
+    type: 'number',
+    width: 64,
+    disableColumnMenu: true,
+  },
+  {
+    field: 'unavailability',
+    headerName: '✗b',
+    type: 'number',
+    width: 64,
+    disableColumnMenu: true,
+  },
+  {
+    field: 'bar',
+    headerName: 'BAR',
+    type: 'number',
+    width: 96,
+    disableColumnMenu: true,
+    valueGetter: (params) => (!isNull(params.row.bar) ? params.row.bar !== 0 ? params.row.bar.toFixed(4): 0 : null),
   },
   {
     field: 'avg_pts',
@@ -181,21 +218,6 @@ const defineColumns = (theme, chain, chainInfo) => {
     disableColumnMenu: true,
     // sortingOrder: ['asc', 'desc'],
     valueGetter: (params) => (scoreDisplay(params.row.score)),
-  },
-  {
-    field: 'node_version',
-    headerName: 'Version',
-    width: 80,
-    headerAlign: 'right',
-    align: 'right',
-    disableColumnMenu: true,
-    renderCell: (params) => {
-      if (!isNull(params.row.node_version)) {
-        const version = versionDisplay(params.row.node_version);
-        return (<Box title={params.row.node_version}>{version}</Box>)
-      } 
-      return ('-')
-    }
   },
   {
     field: 'options',
@@ -235,8 +257,8 @@ export default function ValidatorsDataGrid({sessionIndex, skip}) {
   const rowsFiltered1 = showOnlyPV ? rows.filter(v => !isNull(v.mvr)) : rows;
   // const rowsFiltered2 = showAllGrades ? rowsFiltered1 : rowsFiltered1.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
   const rowsFiltered3 = onlyDisputes ? rows.filter(v => v.disputes > 0) : rowsFiltered1;
-  const rowsFiltered4 = onlyLowGrades ? rows.filter(v => !isNull(v.mvr) ? grade(1-v.mvr) === 'F' : false) : rowsFiltered3;
-  const gradeFsCounter = rowsFiltered1.filter(v => !isNull(v.mvr) ? grade(1-v.mvr) === 'F' : false).length;
+  const rowsFiltered4 = onlyLowGrades ? rows.filter(v => !isNull(v.mvr) && !isNull(v.bur) ? gradeByRatios(v.mvr, v.bur) === 'F' : false) : rowsFiltered3;
+  const gradeFsCounter = rowsFiltered1.filter(v => !isNull(v.mvr) && !isNull(v.bur) ? gradeByRatios(v.mvr, v.bur) === 'F' : false).length;
   const disputesCounter = rows.filter(v => v.disputes > 0).length;
 
   const columns = disputesCounter > 0 ? 

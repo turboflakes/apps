@@ -6,7 +6,7 @@ import {
 import forEach from 'lodash/forEach'
 import groupBy from 'lodash/groupBy'
 import isUndefined from 'lodash/isUndefined'
-import { calculateMvr } from '../../util/mvr'
+import { calculateMVR, calculateBAR } from '../../util/math'
 import { 
   matchValidatorReceived,
   matchValidatorsReceived,
@@ -70,12 +70,15 @@ const valGroupsSlice = createSlice({
           _para_id: group[0].para.pid,
           _validatorIds: group.map(v => `${session}_${v.address}`),
           _core_assignments: !isUndefined(group[0].para_summary) ? group[0].para_summary.ca : 0,
-          _mvr: group.map(v => calculateMvr(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)).reduce((a, b) => a + b, 0) / group.length,
+          _mvr: group.map(v => calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)).reduce((a, b) => a + b, 0) / group.length,
+          _bar: group.map(v => calculateBAR(v.para.bitfields?.ba, v.para.bitfields?.bu)).reduce((a, b) => a + b, 0) / group.length,
           _validity_ev: group.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0),
           _validity_iv: group.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0),
           _validity_mv: group.map(v => v.para_summary.mv).reduce((a, b) => a + b, 0),
           _validity_votes: group.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv).reduce((a, b) => a + b, 0),
-          _backing_points: parseInt(group.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0).reduce((a, b) => a + b, 0)  / group.length)
+          _backing_points: parseInt(group.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0).reduce((a, b) => a + b, 0)  / group.length),
+          _availability: group.map(v => v.para.bitfields.ba).reduce((a, b) => a + b, 0),
+          _unavailability: group.map(v => v.para.bitfields.bu).reduce((a, b) => a + b, 0)
         }))
         adapter.upsertMany(state, groups)
       })
@@ -100,6 +103,15 @@ export const selectValGroupParaIdBySessionAndGroupId = (state, session, groupId)
 
 export const selectValGroupMvrBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
 (!isUndefined(selectById(state, `${session}_${groupId}`)._mvr) ? selectById(state, `${session}_${groupId}`)._mvr : undefined) : undefined;
+
+export const selectValGroupBarBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+(!isUndefined(selectById(state, `${session}_${groupId}`)._bar) ? selectById(state, `${session}_${groupId}`)._bar : undefined) : undefined;
+
+export const selectValGroupAvailabilityBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+  (!isUndefined(selectById(state, `${session}_${groupId}`)._availability) ? selectById(state, `${session}_${groupId}`)._availability : 0) : 0;
+
+export const selectValGroupUnavailabilityBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+  (!isUndefined(selectById(state, `${session}_${groupId}`)._unavailability) ? selectById(state, `${session}_${groupId}`)._unavailability : 0) : 0;
 
 export const selectValGroupValidityExplicitVotesBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
   (!isUndefined(selectById(state, `${session}_${groupId}`)._validity_ev) ? selectById(state, `${session}_${groupId}`)._validity_ev : 0) : 0;

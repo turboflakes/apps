@@ -1,5 +1,13 @@
 import isUndefined from 'lodash/isUndefined'
-export const grade = (ratio) => {
+
+// Note: Deprecated
+export const grade = (ratio) => { return  gradeByRatio(ratio) }
+
+export const gradeByRatios = (mvr, bur) => {
+  return gradeByRatio(1-(mvr * 0.75 + bur * 0.25))
+}
+
+const gradeByRatio = (ratio) => {
   if (isUndefined(ratio) || isNaN(ratio)) {
     return "-"
   }
