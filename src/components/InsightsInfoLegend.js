@@ -51,7 +51,9 @@ const InsightsInfoLegend = ({showDisputes}) => {
             <Typography variant="caption" paragraph>
               <span style={{ marginRight: '8px' }}>✗b</span>Total number of blocks without bitfields or empty bitfields
             </Typography>
-            
+            <Typography variant="caption" paragraph>
+              GRADE RATIO = (1 - MVR) * 0.75 + BAR * 0.25
+            </Typography>
             <Typography variant="caption" paragraph>
               SCORE = (1 - mvr) * 0.50 + bar * 0.25 + ((avg_pv_pts - min_avg_pv_pts) / (max_avg_pv_pts - min_avg_pv_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
             </Typography>
