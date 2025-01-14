@@ -78,7 +78,7 @@ export const extendedApi = apiSlice.injectEndpoints({
         params: { session, show_summary, show_stats, show_discovery }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
-      async onQueryStarted({address, session, show_summary, show_stats}, { getState, dispatch, queryFulfilled }) {
+      async onQueryStarted({address, session, show_summary, show_stats, show_discovery}, { getState, dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
           // `onSuccess` subscribe for updates
@@ -89,7 +89,7 @@ export const extendedApi = apiSlice.injectEndpoints({
           }
           if (data.is_para) {
             data.para.peers.forEach((peer) => {
-              dispatch(extendedApi.endpoints.getValidatorPeerByAuthority.initiate({address, peer, session, show_summary, show_stats }, {forceRefetch: true}))
+              dispatch(extendedApi.endpoints.getValidatorPeerByAuthority.initiate({address, peer, session, show_summary, show_stats, show_discovery }, {forceRefetch: true}))
             })
           }
         } catch (err) {
@@ -99,9 +99,9 @@ export const extendedApi = apiSlice.injectEndpoints({
       },
     }),
     getValidatorPeerByAuthority: builder.query({
-      query: ({address, peer, session, show_summary, show_stats}) => ({
+      query: ({address, peer, session, show_summary, show_stats, show_discovery}) => ({
         url: `/validators/${address}/peers/${peer}`,
-        params: { session, show_summary, show_stats }
+        params: { session, show_summary, show_stats, show_discovery }
       }),
       providesTags: (result, error, arg) => [{ type: 'Validators', id: arg }],
       async onQueryStarted(_, { getState, dispatch, queryFulfilled }) {
