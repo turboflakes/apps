@@ -93,6 +93,21 @@ const defineColumns = (theme, chainInfo) => {
     }
   },
   {
+    field: 'nv',
+    headerName: 'Version',
+    width: 80,
+    headerAlign: 'right',
+    align: 'right',
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      if (!isNull(params.row.nv)) {
+        const version = versionDisplay(params.row.nv);
+        return (<Box title={params.row.nv}>{version}</Box>)
+      } 
+      return ('-')
+    }
+  },
+  {
     field: 'b',
     headerName: '❒',
     type: 'number',
@@ -181,21 +196,6 @@ const defineColumns = (theme, chainInfo) => {
     width: 128,
     disableColumnMenu: true,
     sortingOrder: ['asc', 'desc']
-  },
-  {
-    field: 'nv',
-    headerName: 'Version',
-    width: 80,
-    headerAlign: 'right',
-    align: 'right',
-    disableColumnMenu: true,
-    renderCell: (params) => {
-      if (!isNull(params.row.nv)) {
-        const version = versionDisplay(params.row.nv);
-        return (<Box title={params.row.nv}>{version}</Box>)
-      } 
-      return ('-')
-    }
   },
   {
     field: 'options',

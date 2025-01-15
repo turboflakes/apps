@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
+import orderBy from 'lodash/orderBy';
 import Box from '@mui/material/Box';
 import { PieChart, Pie, Tooltip, Cell, Legend, ResponsiveContainer } from 'recharts';
 import { Typography } from '@mui/material';
+import { versionToNumber, versionNumberToHex } from '../util/display';
 
-const COLORS_A = (theme) => ([theme.palette.grey[300], theme.palette.grey[200],'#FF3D3D'])
-const COLORS_B = (theme) => ([theme.palette.grey[400], '#F26522'])
+const COLORS_A = (theme) => ([theme.palette.grey[400], '#F26522'])
+const COLORS_B = (theme) => ([theme.palette.grey[300], theme.palette.grey[200],'#FF3D3D'])
 
 const renderTooltip = (props) => {
   const { active, payload, color } = props;
@@ -27,7 +29,7 @@ const renderTooltip = (props) => {
         <b>{data.payload.name}</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          <span style={{ marginRight: '8px', color: data.fill }}>●</span>{data.payload.value} {data.payload.label} ({Math.round(p*100)}%)
+          <span style={{ marginRight: '8px', color: data.fill }}>●</span>{data.payload.label} ({Math.round(p*100)}%)
         </Typography>
       </Box>
     );
@@ -64,18 +66,22 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-export default function BackingPieChart({dataA, dataB, showLegend, showIdentity, size}) {
+export default function LevelsPieChart({dataA, dataB, dataC, dataD, showLegend, showIdentity, dark, size}) {
   const theme = useTheme();
   const pieDataA = [
-    { name: 'Explicit Votes', value: dataA.e, total: dataA.e + dataA.i + dataA.m, icon: '✓e', label: 'votes' },
-    { name: 'Implicit Votes', value: dataA.i, total: dataA.e + dataA.i + dataA.m, icon: '✓i', label: 'votes' },
-    { name: 'Missed Votes', value: dataA.m, total: dataA.e + dataA.i + dataA.m, icon: '✗v', label: 'votes' },
+    { name: 'Bitfields Available', value: dataA.a, total: dataA.a + dataA.u, icon: '✓b', label: `${dataA.a} blocks` },
+    { name: 'Bitfields Unavailable', value: dataA.u, total: dataA.a + dataA.u, icon: '✗b', label: `${dataA.b} blocks` },
   ];
   const pieDataB = [
-    { name: 'Bitfields Available', value: dataB.a, total: dataB.a + dataB.u, icon: '✓b', label: 'blocks' },
-    { name: 'Bitfields Unavailable', value: dataB.u, total: dataB.a + dataB.u, icon: '✗b', label: 'blocks' },
+    { name: 'Explicit Votes', value: dataB.e, total: dataB.e + dataB.i + dataB.m, icon: '✓e', label: `${dataB.e} votes` },
+    { name: 'Implicit Votes', value: dataB.i, total: dataB.e + dataB.i + dataB.m, icon: '✓i', label: `${dataB.i} votes` },
+    { name: 'Missed Votes', value: dataB.m, total: dataB.e + dataB.i + dataB.m, icon: '✗v', label: `${dataB.m} votes` },
   ];
-
+  const totalC = Object.values(dataC).reduce((acc, value) => acc + value, 0);
+  const pieDataC = orderBy(Object.keys(dataC).map(k => ({ name: k !== '' ? `Version ${k}` : `N/D`, value: dataC[k], total: totalC, label: `${dataC[k]} validators`, n: versionToNumber(k)  })), 'n');
+  const totalD = Object.values(dataD).reduce((acc, value) => acc + value, 0);
+  const pieDataD = Object.keys(dataD).map(k => ({ name: k !== '-' ? `Grade ${k}` : `N/D`, value: dataD[k], total: totalD, label: `${dataD[k]} validators`, n: k  }));
+  
   return (
     <Box
         sx={{
@@ -92,17 +98,17 @@ export default function BackingPieChart({dataA, dataB, showLegend, showIdentity,
         >
           <ResponsiveContainer width='100%' height={size === "md" ? 180 : 100} >
             <PieChart>
-            <Pie
+              <Pie
                 isAnimationActive={false}
                 dataKey="value"
                 data={pieDataA}
                 cx="50%"
                 cy="50%"
-                outerRadius={size === "md" ? 56 : 32}
-                innerRadius={2}
+                outerRadius={size === "md" ? 28 : 22}
+                innerRadius={size === "md" ? 12 : 8}
                 startAngle={90}
                 endAngle={-360}
-                label={renderCustomizedLabel}
+                // label={renderCustomizedLabel}
                 labelLine={false}
               >
                 {pieDataA.map((entry, index) => (
@@ -115,16 +121,49 @@ export default function BackingPieChart({dataA, dataB, showLegend, showIdentity,
                 data={pieDataB}
                 cx="50%"
                 cy="50%"
-                outerRadius={32}
-                innerRadius={2}
+                outerRadius={size === "md" ? 48 : 32}
+                innerRadius={size === "md" ? 32 : 16}
                 startAngle={90}
                 endAngle={-360}
-                label={renderCustomizedLabel}
+                // label={renderCustomizedLabel}
                 labelLine={false}
               >
                 {pieDataB.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS_B(theme)[index]} />
                 ))}
+              </Pie>
+              <Pie
+                isAnimationActive={false}
+                dataKey="value"
+                data={pieDataC}
+                cx="50%"
+                cy="50%"
+                outerRadius={size === "md" ? 68 : 52}
+                innerRadius={size === "md" ? 52 : 36}
+                startAngle={90}
+                endAngle={-360}
+                // label={renderCustomizedLabel}
+                labelLine={false}
+              >
+                {pieDataC.map((entry, index) => (<Cell key={`cell-${index}`} fill={versionNumberToHex(entry.n)} />))}
+              </Pie>
+              <Pie
+                isAnimationActive={false}
+                dataKey="value"
+                data={pieDataD}
+                cx="50%"
+                cy="50%"
+                outerRadius={size === "md" ? 88 : 72}
+                innerRadius={size === "md" ? 72 : 56}
+                startAngle={90}
+                endAngle={-360}
+                // label={renderCustomizedLabel}
+                labelLine={false}
+              >
+                {pieDataD.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={theme.palette.grade[entry.n]} borderRadius 
+                    stroke={dark ? theme.palette.background.secondary : theme.palette.background.paper} strokeWidth={1} />
+                  ))}
               </Pie>
               <Tooltip 
                 cursor={{fill: 'transparent'}}

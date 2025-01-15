@@ -37,7 +37,7 @@ export default function OverviewTabs({sessionIndex, tab}) {
   const selectedMode = useSelector(selectMode);
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
-  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true, show_profile: true}, {refetchOnMountOrArgChange: true});
+  const {isSuccess} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true, show_profile: true, show_discovery: true}, {refetchOnMountOrArgChange: true});
   
   const handleChange = (event, newValue) => {
     dispatch(pageChanged(tabPages[newValue]));

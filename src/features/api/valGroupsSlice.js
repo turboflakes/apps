@@ -6,7 +6,9 @@ import {
 import forEach from 'lodash/forEach'
 import groupBy from 'lodash/groupBy'
 import isUndefined from 'lodash/isUndefined'
-import { calculateMVR, calculateBAR } from '../../util/math'
+import { calculateMVR, calculateBAR, calculateBUR } from '../../util/math'
+import { versionDisplay } from '../../util/display'
+import { gradeByRatios } from '../../util/grade'
 import { 
   matchValidatorReceived,
   matchValidatorsReceived,
@@ -64,7 +66,8 @@ const valGroupsSlice = createSlice({
         // Group validators by groupID
         const groupedByValGroupId = groupBy(validators, v => v.para.group);
         
-        const groups = Object.values(groupedByValGroupId).map(group => ({
+        const groups = Object.values(groupedByValGroupId).map(group =>  {
+          return {
           id: `${session}_${group[0].para.group}`,
           _group_id: group[0].para.group,
           _para_id: group[0].para.pid,
@@ -78,8 +81,10 @@ const valGroupsSlice = createSlice({
           _validity_votes: group.map(v => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv).reduce((a, b) => a + b, 0),
           _backing_points: parseInt(group.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0).reduce((a, b) => a + b, 0)  / group.length),
           _availability: group.map(v => v.para.bitfields.ba).reduce((a, b) => a + b, 0),
-          _unavailability: group.map(v => v.para.bitfields.bu).reduce((a, b) => a + b, 0)
-        }))
+          _unavailability: group.map(v => v.para.bitfields.bu).reduce((a, b) => a + b, 0),
+          _versions: group.map(v => versionDisplay(v.discovery?.nv)),
+          _grades: group.map(v => gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu))),
+        }})
         adapter.upsertMany(state, groups)
       })
     })
@@ -131,6 +136,11 @@ export const selectValGroupBackingPointsBySessionAndGroupId = (state, session, g
 export const selectValGroupCoreAssignmentsBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
   (!isUndefined(selectById(state, `${session}_${groupId}`)._core_assignments) ? selectById(state, `${session}_${groupId}`)._core_assignments : 0) : 0;
 
+export const selectValGroupVersionsBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+  (!isUndefined(selectById(state, `${session}_${groupId}`)._versions) ? selectById(state, `${session}_${groupId}`)._versions : 0) : 0;
+
+export const selectValGroupGradesBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+  (!isUndefined(selectById(state, `${session}_${groupId}`)._grades) ? selectById(state, `${session}_${groupId}`)._grades : 0) : 0;
 
 export const selectValidatorsBySessionAndGroupId = (state, session, groupId) => 
   selectValidatorIdsBySessionAndGroupId(state, session, groupId).map(id => { 

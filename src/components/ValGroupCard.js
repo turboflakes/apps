@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import groupBy from 'lodash/groupBy';
 // import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import DoublePieChart from './DoublePieChart';
+import LevelsPieChart from './LevelsPieChart';
 import ValGroupList from './ValGroupList';
 import {
   selectChain,
@@ -17,21 +18,24 @@ import {
   selectValGroupBarBySessionAndGroupId,
   selectValGroupAvailabilityBySessionAndGroupId,
   selectValGroupUnavailabilityBySessionAndGroupId,
-  selectValGroupValidityVotesBySessionAndGroupId,
+  selectValGroupVersionsBySessionAndGroupId,
+  // selectValGroupValidityVotesBySessionAndGroupId,
   selectValGroupValidityExplicitVotesBySessionAndGroupId,
   selectValGroupValidityImplicitVotesBySessionAndGroupId,
   selectValGroupValidityMissedVotesBySessionAndGroupId,
   selectValGroupBackingPointsBySessionAndGroupId,
-  selectValGroupCoreAssignmentsBySessionAndGroupId
+  selectValGroupGradesBySessionAndGroupId,
+  // selectValGroupCoreAssignmentsBySessionAndGroupId
 } from '../features/api/valGroupsSlice';
 import { isChainSupported, getChainName } from '../constants'
+import { versionToNumber } from '../util/display'
 
-function createPieDataA(e, i, m) {
-  return { e, i, m };
+function createPieDataA(a, u) {
+  return { a, u };
 }
 
-function createPieDataB(a, u) {
-  return { a, u };
+function createPieDataB(e, i, m) {
+  return { e, i, m };
 }
 
 export default function ValGroupCard({sessionIndex, groupId}) {
@@ -42,15 +46,32 @@ export default function ValGroupCard({sessionIndex, groupId}) {
   const ev = useSelector(state => selectValGroupValidityExplicitVotesBySessionAndGroupId(state, sessionIndex, groupId));
   const iv = useSelector(state => selectValGroupValidityImplicitVotesBySessionAndGroupId(state, sessionIndex, groupId));
   const mv = useSelector(state => selectValGroupValidityMissedVotesBySessionAndGroupId(state, sessionIndex, groupId));
-  const validityVotes = useSelector(state => selectValGroupValidityVotesBySessionAndGroupId(state, sessionIndex, groupId));
   const backingPoints = useSelector(state => selectValGroupBackingPointsBySessionAndGroupId(state, sessionIndex, groupId));
-  const coreAssignments = useSelector(state => selectValGroupCoreAssignmentsBySessionAndGroupId(state, sessionIndex, groupId));
+  // const validityVotes = useSelector(state => selectValGroupValidityVotesBySessionAndGroupId(state, sessionIndex, groupId));
+  // const coreAssignments = useSelector(state => selectValGroupCoreAssignmentsBySessionAndGroupId(state, sessionIndex, groupId));
   const bar = useSelector(state => selectValGroupBarBySessionAndGroupId(state, sessionIndex, groupId));
   const ba = useSelector(state => selectValGroupAvailabilityBySessionAndGroupId(state, sessionIndex, groupId));
   const bu = useSelector(state => selectValGroupUnavailabilityBySessionAndGroupId(state, sessionIndex, groupId));
-
-  const pieDataA = createPieDataA(ev, iv, mv);
-  const pieDataB = createPieDataB(ba, bu);  
+  const versions = useSelector(state => selectValGroupVersionsBySessionAndGroupId(state, sessionIndex, groupId));
+  const grades = useSelector(state => selectValGroupGradesBySessionAndGroupId(state, sessionIndex, groupId));
+  
+  // bitfields availability
+  const dataA = createPieDataA(ba, bu);  
+  // backing votes
+  const dataB = createPieDataB(ev, iv, mv);
+  // versions
+  const groupedByVersion = groupBy(versions, v => v);
+  const dataC = Object.keys(groupedByVersion).reduce((acc, key) => {
+    acc[key] = groupedByVersion[key].length;
+    return acc;
+  }, {});
+  // grades
+  const groupedByGrade = groupBy(grades, v => v);
+  const dataD = Object.keys(groupedByGrade).reduce((acc, key) => {
+    acc[key] = groupedByGrade[key].length;
+    return acc;
+  }, {});
+  
   const chainName = paraId ? (isChainSupported(selectedChain, paraId) ? getChainName(selectedChain, paraId) : paraId) : '';
 
   return (
@@ -78,16 +99,16 @@ export default function ValGroupCard({sessionIndex, groupId}) {
         backgroundColor: 'transparent',
         backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
         }} />
-      <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-around'}}>
+      <Box sx={{ p: 2, display: 'inline-flex', justifyContent: 'space-around', height: '100%' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
           <ValGroupList sessionIndex={sessionIndex} groupId={groupId} />
         </Box>
-        <Box>
-          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+          {/* <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
             <Typography variant="caption" align='center'>Validity Statements</Typography>  
             <Typography variant="h5" align='center'>{validityVotes.format()}</Typography>
-          </Box>
-          <DoublePieChart dataA={pieDataA} dataB={pieDataB} size="md" />
+          </Box> */}
+          <LevelsPieChart dataA={dataA} dataB={dataB} dataC={dataC} dataD={dataD} size="md" />
         </Box>
       </Box>
       <Divider sx={{ 

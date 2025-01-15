@@ -1,3 +1,5 @@
+import { min } from "lodash"
+import { hslToHex } from "../util/gradients"
 
 export const stashDisplay = (stash, max = 6) => {
     return !!stash ? `${stash.slice(0, max)}...${stash.slice(stash.length-max, stash.length)}` : `-`
@@ -75,21 +77,31 @@ export const zeroPad = (num, places = 2) => {
     return Array(+(zero > 0 && zero)).join("0") + num;
 }
 
-export function versionDisplay(input) {
+export const versionDisplay = (input) => {
     const regex = /v(\d+\.\d+\.\d+)/;
     const match = input.match(regex);
     return match ? match[1] : '';
 }
 
-export function isSemanticVersion(value) {
+export const isSemanticVersion = (value) => {
     const regex = /^v?\d+\.\d+\.\d+$/;
     return regex.test(value);
 }
 
-export function versionToNumber(version) {
+export const versionToNumber = (version) => {
     if (isSemanticVersion(version)) {
         const parts = version.split('.').map(Number);
         return parts[0] * 10000 + parts[1] * 100 + parts[2];
     }
     return 0
+}
+
+const interval = [10500, 12000]
+const convertToPercentage = (value, intervalIn) => {
+    const [minIn, maxIn] = intervalIn;
+    return ((value - minIn) * 100) / (maxIn - minIn);
+};
+
+export const versionNumberToHex = (n) => {
+    return hslToHex(210, 40, convertToPercentage(n, interval))
 }
