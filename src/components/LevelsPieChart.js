@@ -75,10 +75,10 @@ export default function LevelsPieChart({dataL1, dataL2, dataL3, dataL4, showLege
   ];
   const pieL3 = [
     { name: 'Bitfields Available', value: dataL3.a, total: dataL3.a + dataL3.u, icon: '✓b', label: `${dataL3.a} blocks` },
-    { name: 'Bitfields Unavailable', value: dataL3.u, total: dataL3.a + dataL3.u, icon: '✗b', label: `${dataL3.b} blocks` },
+    { name: 'Bitfields Unavailable', value: dataL3.u, total: dataL3.a + dataL3.u, icon: '✗b', label: `${dataL3.u} blocks` },
   ];
   const totalL2 = Object.values(dataL2).reduce((acc, value) => acc + value, 0);
-  const pieL2 = orderBy(Object.keys(dataL2).map(k => ({ name: k !== '' ? `Version ${k}` : `Version Unavailable`, value: dataL2[k], total: totalL2, label: `${dataL2[k]} validators`, n: versionToNumber(k)  })), 'n');
+  const pieL2 = orderBy(Object.keys(dataL2).map(k => ({ name: k !== '' ? `Version ${k}` : `Version Not Discovered`, value: dataL2[k], total: totalL2, label: `${dataL2[k]} validators`, n: versionToNumber(k)  })), 'n');
 
   const totalL1 = Object.values(dataL1).reduce((acc, value) => acc + value, 0);
   const pieL1 = Object.keys(dataL1).map(k => ({ name: k !== '-' ? `Grade ${k}` : `N/D`, value: dataL1[k], total: totalL1, label: `${dataL1[k]} validators`, n: k  }));
