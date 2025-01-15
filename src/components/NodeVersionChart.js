@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import { PieChart, Pie, Tooltip, Cell, Legend, ResponsiveContainer } from 'recharts';
 import { Typography } from '@mui/material';
-import {hslToHex} from '../util/gradients';
+import { versionToHex } from '../util/display';
 
 const renderTooltip = (props) => {
   const { active, payload } = props;
@@ -59,7 +59,7 @@ export default function NodeVersionChart({data, size, showLegend, showLabel}) {
       total,
     }
   });
-
+  
   return (
     <Box
         sx={{
@@ -90,7 +90,7 @@ export default function NodeVersionChart({data, size, showLegend, showLabel}) {
                 labelLine={false}
               >
                 {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={hslToHex(210, 40, (100 / pieData.length)*index)} />
+                  <Cell key={`cell-${index}`} fill={versionToHex(entry.name)} />
                 ))}
               </Pie>
               <Tooltip 
