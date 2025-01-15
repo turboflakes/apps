@@ -6,8 +6,8 @@ import { PieChart, Pie, Tooltip, Cell, Legend, ResponsiveContainer } from 'recha
 import { Typography } from '@mui/material';
 import { versionToNumber, versionNumberToHex } from '../util/display';
 
-const COLORS_A = (theme) => ([theme.palette.grey[400], '#F26522'])
-const COLORS_B = (theme) => ([theme.palette.grey[300], theme.palette.grey[200],'#FF3D3D'])
+const COLORS_B = (theme) => ([theme.palette.grey[400], '#F26522'])
+const COLORS_A = (theme) => ([theme.palette.grey[300], theme.palette.grey[200],'#FF3D3D'])
 
 const renderTooltip = (props) => {
   const { active, payload, color } = props;
@@ -66,21 +66,22 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-export default function LevelsPieChart({dataA, dataB, dataC, dataD, showLegend, showIdentity, dark, size}) {
+export default function LevelsPieChart({dataL1, dataL2, dataL3, dataL4, showLegend, showIdentity, dark, size}) {
   const theme = useTheme();
-  const pieDataA = [
-    { name: 'Bitfields Available', value: dataA.a, total: dataA.a + dataA.u, icon: '✓b', label: `${dataA.a} blocks` },
-    { name: 'Bitfields Unavailable', value: dataA.u, total: dataA.a + dataA.u, icon: '✗b', label: `${dataA.b} blocks` },
+  const pieL4 = [
+    { name: 'Explicit Votes', value: dataL4.e, total: dataL4.e + dataL4.i + dataL4.m, icon: '✓e', label: `${dataL4.e} votes` },
+    { name: 'Implicit Votes', value: dataL4.i, total: dataL4.e + dataL4.i + dataL4.m, icon: '✓i', label: `${dataL4.i} votes` },
+    { name: 'Missed Votes', value: dataL4.m, total: dataL4.e + dataL4.i + dataL4.m, icon: '✗v', label: `${dataL4.m} votes` },
   ];
-  const pieDataB = [
-    { name: 'Explicit Votes', value: dataB.e, total: dataB.e + dataB.i + dataB.m, icon: '✓e', label: `${dataB.e} votes` },
-    { name: 'Implicit Votes', value: dataB.i, total: dataB.e + dataB.i + dataB.m, icon: '✓i', label: `${dataB.i} votes` },
-    { name: 'Missed Votes', value: dataB.m, total: dataB.e + dataB.i + dataB.m, icon: '✗v', label: `${dataB.m} votes` },
+  const pieL3 = [
+    { name: 'Bitfields Available', value: dataL3.a, total: dataL3.a + dataL3.u, icon: '✓b', label: `${dataL3.a} blocks` },
+    { name: 'Bitfields Unavailable', value: dataL3.u, total: dataL3.a + dataL3.u, icon: '✗b', label: `${dataL3.b} blocks` },
   ];
-  const totalC = Object.values(dataC).reduce((acc, value) => acc + value, 0);
-  const pieDataC = orderBy(Object.keys(dataC).map(k => ({ name: k !== '' ? `Version ${k}` : `N/D`, value: dataC[k], total: totalC, label: `${dataC[k]} validators`, n: versionToNumber(k)  })), 'n');
-  const totalD = Object.values(dataD).reduce((acc, value) => acc + value, 0);
-  const pieDataD = Object.keys(dataD).map(k => ({ name: k !== '-' ? `Grade ${k}` : `N/D`, value: dataD[k], total: totalD, label: `${dataD[k]} validators`, n: k  }));
+  const totalL2 = Object.values(dataL2).reduce((acc, value) => acc + value, 0);
+  const pieL2 = orderBy(Object.keys(dataL2).map(k => ({ name: k !== '' ? `Version ${k}` : `Version Unavailable`, value: dataL2[k], total: totalL2, label: `${dataL2[k]} validators`, n: versionToNumber(k)  })), 'n');
+
+  const totalL1 = Object.values(dataL1).reduce((acc, value) => acc + value, 0);
+  const pieL1 = Object.keys(dataL1).map(k => ({ name: k !== '-' ? `Grade ${k}` : `N/D`, value: dataL1[k], total: totalL1, label: `${dataL1[k]} validators`, n: k  }));
   
   return (
     <Box
@@ -101,7 +102,7 @@ export default function LevelsPieChart({dataA, dataB, dataC, dataD, showLegend, 
               <Pie
                 isAnimationActive={false}
                 dataKey="value"
-                data={pieDataA}
+                data={pieL1}
                 cx="50%"
                 cy="50%"
                 outerRadius={size === "md" ? 28 : 22}
@@ -111,14 +112,15 @@ export default function LevelsPieChart({dataA, dataB, dataC, dataD, showLegend, 
                 // label={renderCustomizedLabel}
                 labelLine={false}
               >
-                {pieDataA.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS_A(theme)[index]} />
-                ))}
+                 {pieL1.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={theme.palette.grade[entry.n]} borderRadius 
+                    stroke={dark ? theme.palette.background.secondary : theme.palette.background.paper} strokeWidth={1} />
+                  ))}
               </Pie>
               <Pie
                 isAnimationActive={false}
                 dataKey="value"
-                data={pieDataB}
+                data={pieL2}
                 cx="50%"
                 cy="50%"
                 outerRadius={size === "md" ? 48 : 32}
@@ -128,14 +130,12 @@ export default function LevelsPieChart({dataA, dataB, dataC, dataD, showLegend, 
                 // label={renderCustomizedLabel}
                 labelLine={false}
               >
-                {pieDataB.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS_B(theme)[index]} />
-                ))}
+                {pieL2.map((entry, index) => (<Cell key={`cell-${index}`} fill={versionNumberToHex(entry.n)} />))}
               </Pie>
               <Pie
                 isAnimationActive={false}
                 dataKey="value"
-                data={pieDataC}
+                data={pieL3}
                 cx="50%"
                 cy="50%"
                 outerRadius={size === "md" ? 68 : 52}
@@ -145,12 +145,14 @@ export default function LevelsPieChart({dataA, dataB, dataC, dataD, showLegend, 
                 // label={renderCustomizedLabel}
                 labelLine={false}
               >
-                {pieDataC.map((entry, index) => (<Cell key={`cell-${index}`} fill={versionNumberToHex(entry.n)} />))}
+                {pieL3.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS_B(theme)[index]} />
+                ))}
               </Pie>
               <Pie
                 isAnimationActive={false}
                 dataKey="value"
-                data={pieDataD}
+                data={pieL4}
                 cx="50%"
                 cy="50%"
                 outerRadius={size === "md" ? 88 : 72}
@@ -160,10 +162,9 @@ export default function LevelsPieChart({dataA, dataB, dataC, dataD, showLegend, 
                 // label={renderCustomizedLabel}
                 labelLine={false}
               >
-                {pieDataD.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={theme.palette.grade[entry.n]} borderRadius 
-                    stroke={dark ? theme.palette.background.secondary : theme.palette.background.paper} strokeWidth={1} />
-                  ))}
+                {pieL4.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS_A(theme)[index]} />
+                ))}
               </Pie>
               <Tooltip 
                 cursor={{fill: 'transparent'}}

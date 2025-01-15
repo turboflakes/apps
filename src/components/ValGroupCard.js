@@ -19,7 +19,7 @@ import {
   selectValGroupAvailabilityBySessionAndGroupId,
   selectValGroupUnavailabilityBySessionAndGroupId,
   selectValGroupVersionsBySessionAndGroupId,
-  // selectValGroupValidityVotesBySessionAndGroupId,
+  selectValGroupValidityVotesBySessionAndGroupId,
   selectValGroupValidityExplicitVotesBySessionAndGroupId,
   selectValGroupValidityImplicitVotesBySessionAndGroupId,
   selectValGroupValidityMissedVotesBySessionAndGroupId,
@@ -47,7 +47,7 @@ export default function ValGroupCard({sessionIndex, groupId}) {
   const iv = useSelector(state => selectValGroupValidityImplicitVotesBySessionAndGroupId(state, sessionIndex, groupId));
   const mv = useSelector(state => selectValGroupValidityMissedVotesBySessionAndGroupId(state, sessionIndex, groupId));
   const backingPoints = useSelector(state => selectValGroupBackingPointsBySessionAndGroupId(state, sessionIndex, groupId));
-  // const validityVotes = useSelector(state => selectValGroupValidityVotesBySessionAndGroupId(state, sessionIndex, groupId));
+  const validityVotes = useSelector(state => selectValGroupValidityVotesBySessionAndGroupId(state, sessionIndex, groupId));
   // const coreAssignments = useSelector(state => selectValGroupCoreAssignmentsBySessionAndGroupId(state, sessionIndex, groupId));
   const bar = useSelector(state => selectValGroupBarBySessionAndGroupId(state, sessionIndex, groupId));
   const ba = useSelector(state => selectValGroupAvailabilityBySessionAndGroupId(state, sessionIndex, groupId));
@@ -55,19 +55,19 @@ export default function ValGroupCard({sessionIndex, groupId}) {
   const versions = useSelector(state => selectValGroupVersionsBySessionAndGroupId(state, sessionIndex, groupId));
   const grades = useSelector(state => selectValGroupGradesBySessionAndGroupId(state, sessionIndex, groupId));
   
-  // bitfields availability
-  const dataA = createPieDataA(ba, bu);  
   // backing votes
-  const dataB = createPieDataB(ev, iv, mv);
+  const dataL4 = createPieDataB(ev, iv, mv);
+  // bitfields availability
+  const dataL3 = createPieDataA(ba, bu);
   // versions
   const groupedByVersion = groupBy(versions, v => v);
-  const dataC = Object.keys(groupedByVersion).reduce((acc, key) => {
+  const dataL2 = Object.keys(groupedByVersion).reduce((acc, key) => {
     acc[key] = groupedByVersion[key].length;
     return acc;
   }, {});
   // grades
   const groupedByGrade = groupBy(grades, v => v);
-  const dataD = Object.keys(groupedByGrade).reduce((acc, key) => {
+  const dataL1 = Object.keys(groupedByGrade).reduce((acc, key) => {
     acc[key] = groupedByGrade[key].length;
     return acc;
   }, {});
@@ -104,11 +104,11 @@ export default function ValGroupCard({sessionIndex, groupId}) {
           <ValGroupList sessionIndex={sessionIndex} groupId={groupId} />
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-          {/* <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
             <Typography variant="caption" align='center'>Validity Statements</Typography>  
             <Typography variant="h5" align='center'>{validityVotes.format()}</Typography>
-          </Box> */}
-          <LevelsPieChart dataA={dataA} dataB={dataB} dataC={dataC} dataD={dataD} size="md" />
+          </Box>
+          <LevelsPieChart dataL1={dataL1} dataL2={dataL2} dataL3={dataL3} dataL4={dataL4} size="md" />
         </Box>
       </Box>
       <Divider sx={{ 
