@@ -48,16 +48,16 @@ const renderTooltip = (props, theme) => {
           <Box sx={{ minWidth: '192px'}}>
             <Box>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.secondary.main}}>●</span>Backing Points: <b>{!isUndefined(data.pvPoints) ? data.pvPoints.format() : ''}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.grey}}>●</span>Backing Points: <b>{!isUndefined(data.pvPoints) ? data.pvPoints.format() : ''}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
                 <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>●</span>Authored Block Points: <b>{!isUndefined(data.abPoints) ? data.abPoints.format() : ''}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber, fontWeight: 600 }}>●</span>MVR (All Para-Authorities): <b>{Math.round(data.mvr * 10000) / 10000}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>●</span>MVR (All Para-Authorities): <b>{Math.round(data.mvr * 10000) / 10000}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
-                <span style={{ marginRight: '8px', color: theme.palette.semantics.blue, fontWeight: 600 }}>●</span>BAR (All Para-Authorities): <b>{Math.round(data.bar * 10000) / 10000}</b>
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.blue}}>●</span>BAR (All Para-Authorities): <b>{Math.round(data.bar * 10000) / 10000}</b>
               </Typography>
               <Typography component="div" variant="caption" color="inherit">
                 <span style={{ marginRight: '8px', color: theme.palette.semantics.red, fontWeight: 600 }}>❚</span>Disputes: <b>{!isUndefined(data.disputes) ? data.disputes.format() : ''}</b>
@@ -75,7 +75,7 @@ const renderLegend = (theme) => {
   return (
     <Box sx={{mt: -1, mr: 9, display: 'flex', justifyContent: 'flex-end'}}>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
-        <span style={{ marginRight: '8px', color: theme.palette.secondary.main}}>●</span>Backing Points
+        <span style={{ marginRight: '8px', color: theme.palette.semantics.grey}}>●</span>Backing Points
       </Typography>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
         <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>●</span>Authored Block Points
@@ -83,7 +83,10 @@ const renderLegend = (theme) => {
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
         <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>●</span>MVR (All Para-Authorities)
       </Typography>
-      <Typography component="div" variant="caption" color="inherit">
+      <Typography variant="caption" color="inherit" sx={{mr: 1}}>
+        <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>BAR (All Para-Authorities)
+      </Typography>
+      <Typography variant="caption" color="inherit">
         <span style={{ marginRight: '8px', color: theme.palette.semantics.red, fontWeight: 600 }}>❚</span>Disputes
       </Typography>
     </Box>
@@ -180,7 +183,7 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
             />
 
           <Line type="monotone" dataKey="pvPoints" dot={false} 
-            stroke={theme.palette.secondary.main} strokeWidth={2} />
+            stroke={theme.palette.semantics.grey} strokeWidth={2} />
           <Line type="monotone" dataKey="abPoints" dot={false} 
             stroke={theme.palette.semantics.purple} strokeWidth={2} />
 
@@ -198,6 +201,7 @@ export default function SessionHistoryTimelineChart({address, maxSessions}) {
           {/* BAR */}
           <YAxis yAxisId="rightBAR" orientation="right"
             width={64}
+            domain={['auto', 'auto']}
             style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}
             axisLine={{stroke: theme.palette.semantics.blue, strokeWidth: 1, width: 100}} 
             />

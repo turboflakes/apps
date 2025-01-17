@@ -1,3 +1,4 @@
+import { grey } from '@mui/material/colors';
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
 // https://material-ui.com/customization/default-theme/?expend-path=$.palette
@@ -34,7 +35,9 @@ let theme = createTheme({
       amber: "#FA6400",
       green: "#44D7B6",
       blue: "#86D3E7",
+      darkBlue: "#228EAA",
       purple: "#8B7AB8",
+      grey: "#C8C9CC",
     },
     grade: {
       "A+": "#78C143",

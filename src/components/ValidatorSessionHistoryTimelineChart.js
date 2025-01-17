@@ -35,6 +35,7 @@ import {
 import { grade } from '../util/grade'
 import { calculateMVR } from '../util/mvr'
 import { nameDisplay } from '../util/display'
+import { calculateBAR } from '../util/math';
 
 const renderTooltip = (props, identiy, theme) => {
   const { active, payload } = props;
@@ -96,6 +97,12 @@ const renderTooltip = (props, identiy, theme) => {
               <Typography component="div" variant="caption" color="inherit">
                 <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>●</span>MVR (All Para-Authorities): <b>{Math.round(data.sessionMvr * 10000) / 10000}</b>
               </Typography>
+              <Typography component="div" variant="caption" color="inherit">
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.darkBlue }}>●</span>BAR: <b>{Math.round(data.valBar * 10000) / 10000}</b>
+              </Typography>
+              <Typography component="div" variant="caption" color="inherit">
+                <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>BAR (All Para-Authorities): <b>{Math.round(data.sessionBar * 10000) / 10000}</b>
+              </Typography>
               <Divider sx={{ my: 1 }} />
               <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                 <Typography component="div" variant="subtitle2" color="inherit">
@@ -146,7 +153,7 @@ const renderLegend = (theme) => {
   return (
     <Box sx={{mt: -1, mr: 9, display: 'flex', justifyContent: 'flex-end'}}>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
-        <span style={{ marginRight: '8px', color: theme.palette.secondary.main}}>❚</span>Backing Points
+        <span style={{ marginRight: '8px', color: theme.palette.semantics.grey}}>❚</span>Backing Points
       </Typography>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
         <span style={{ marginRight: '8px', color: theme.palette.secondary.main }}>❚</span>Authored Block Points
@@ -160,8 +167,14 @@ const renderLegend = (theme) => {
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
         <span style={{ marginRight: '8px', color: theme.palette.semantics.purple }}>●</span>MVR (Val. Group)
       </Typography>
-      <Typography variant="caption" color="inherit">
+      <Typography variant="caption" color="inherit" sx={{mr: 1}}>
         <span style={{ marginRight: '8px', color: theme.palette.semantics.amber }}>●</span>MVR (All Para-Authorities)
+      </Typography>
+      <Typography variant="caption" color="inherit" sx={{mr: 1}}>
+        <span style={{ marginRight: '8px', color: theme.palette.semantics.darkBlue }}>●</span>BAR
+      </Typography>
+      <Typography variant="caption" color="inherit">
+        <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>BAR (All Para-Authorities)
       </Typography>
     </Box>
   );
@@ -186,9 +199,7 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1 , maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds));
   const allMVRs = useSelector(state => selectMVRBySessions(state, historySessionIds));
-
-  // TODO: add bitfields availability to the chart
-  // const allBARs = useSelector(state => selectBARBySessions(state, historySessionIds));
+  const allBARs = useSelector(state => selectBARBySessions(state, historySessionIds));
   
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
   const paraSessions = useSelector(state => selectParaAuthoritySessionsByAddressAndSessions(state, address, historySessionIds));
@@ -223,10 +234,12 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
     pvPoints: v.is_para && (v.auth.ep - v.auth.sp) >= (v.auth.ab.length * 20) ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0,
     gradeValue: v.is_para && !isUndefined(v.para_summary) ? grade(1 - calculateMVR(v.para_summary?.ev, v.para_summary?.iv, v.para_summary?.mv)) : '',
     valMvr: v.is_para && !isUndefined(v.para_summary) ? calculateMVR(v.para_summary?.ev, v.para_summary?.iv, v.para_summary?.mv) : 0,
+    valBar: v.is_para && !isUndefined(v.para) ? calculateBAR(v.para?.bitfields?.ba, v.para?.bitfields?.bu) : 0,
     valGroupMvr: v.is_para ? v._val_group_mvr : 0,  
     disputes: v.is_para && !isUndefined(v.para) && !isUndefined(v.para.disputes) ? v.para.disputes.length : 0,
     group: v.is_para ? v.para.group : '',
-    sessionMvr: allMVRs[i]
+    sessionMvr: allMVRs[i],
+    sessionBar: allBARs[i]
   }));
 
   const totalDisputes = validators
@@ -303,7 +316,7 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
             style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}
             axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}} 
             />
-          <Bar dataKey="abPoints" stackId="points" barSize={12} fill={theme.palette.secondary.main} />
+          <Bar dataKey="abPoints" stackId="points" barSize={12} fill={theme.palette.semantics.grey} />
           <Bar dataKey="pvPoints" stackId="points" barSize={12} shape={<Rectangle radius={[8, 8, 0, 0]} />} >
             {
               data.map((entry, index) => (
@@ -328,6 +341,18 @@ export default function ValidatorSessionHistoryTimelineChart({address, maxSessio
             stroke={theme.palette.semantics.purple} strokeWidth={2} />
           <Line yAxisId="rightMVR" type="monotone" dataKey="sessionMvr" dot={false} 
             stroke={theme.palette.semantics.amber} strokeWidth={2} />
+
+          {/* BAR */}
+          <YAxis yAxisId="rightBAR" orientation="right"
+            width={64}
+            domain={['auto', 'auto']}
+            style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }}
+            axisLine={{stroke: theme.palette.semantics.blue, strokeWidth: 1, width: 100}} 
+            />
+          <Line yAxisId="rightBAR" type="monotone" dataKey="valBar" dot={false} 
+            stroke={theme.palette.semantics.darkBlue} strokeWidth={2} />
+          <Line yAxisId="rightBAR" type="monotone" dataKey="sessionBar" dot={false} 
+            stroke={theme.palette.semantics.blue} strokeWidth={2} />
           
           {/* disputes */}
           {totalDisputes > 0 ? 
