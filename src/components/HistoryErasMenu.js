@@ -20,9 +20,9 @@ const OPTIONS = (selectedChain) => ([
   {value: 4, description: "4 eras"},
   {value: 8, description: "8 eras"},
   {value: 16, description: "16 eras"},
-  // NOTE: remove 24 eras for polkadot in a future release
+  // NOTE: set 32 eras for polkadot in a future release
   selectedChain === "polkadot" ?
-    {value: 24, description: "24 eras"} :
+    {value: 28, description: "28 eras"} :
     {value: 32, description: "32 eras"}
 ])
 
