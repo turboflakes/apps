@@ -66,7 +66,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-export default function LevelsPieChart({dataL1, dataL2, dataL3, dataL4, showLegend, showIdentity, dark, size}) {
+export default function L4PieChart({dataL1, dataL2, dataL3, dataL4, showLegend, showIdentity, dark, size}) {
   const theme = useTheme();
   const pieL4 = [
     { name: 'Explicit Votes', value: dataL4.e, total: dataL4.e + dataL4.i + dataL4.m, icon: '✓e', label: `${dataL4.e} votes` },

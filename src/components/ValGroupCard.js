@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import LevelsPieChart from './LevelsPieChart';
+import L4PieChart from './L4PieChart';
 import ValGroupList from './ValGroupList';
 import {
   selectChain,
@@ -108,7 +108,7 @@ export default function ValGroupCard({sessionIndex, groupId}) {
             <Typography variant="caption" align='center'>Validity Statements</Typography>  
             <Typography variant="h5" align='center'>{validityVotes.format()}</Typography>
           </Box>
-          <LevelsPieChart dataL1={dataL1} dataL2={dataL2} dataL3={dataL3} dataL4={dataL4} size="md" />
+          <L4PieChart dataL1={dataL1} dataL2={dataL2} dataL3={dataL3} dataL4={dataL4} size="md" />
         </Box>
       </Box>
       <Divider sx={{ 
