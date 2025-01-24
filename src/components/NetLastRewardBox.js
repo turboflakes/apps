@@ -40,7 +40,7 @@ import { stakeDisplay } from '../util/display';
         </Box>
         <Box sx={{ minWidth: '192px'}}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.green }}>●</span>Last Reward: <b>{stakeDisplay(data.last_rewarded, chainInfo, 4, true, true, true)}</b>
+            <span style={{ marginRight: '8px', color: theme.palette.semantics.green }}>●</span>Last Reward: <b>{stakeDisplay(data.last_rewarded, chainInfo, 8, true, true, true)}</b>
           </Typography>
         </Box>
       </Box>
