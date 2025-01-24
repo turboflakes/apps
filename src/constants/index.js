@@ -33,8 +33,7 @@ const networkSettings = {
     url: "https://polkadot.network",
     ss58Format: 0,
     maxValidators: 16,
-    // NOTE: set 32 eras for polkadot in a future release
-    maxHistoryEras: 28,
+    maxHistoryEras: 32,
     coreAssignmentsTarget: 240,
     blocksPerSessionTarget: 2400,
     sessionsPerDayTarget: 6,

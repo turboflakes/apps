@@ -20,10 +20,7 @@ const OPTIONS = (selectedChain) => ([
   {value: 4, description: "4 eras"},
   {value: 8, description: "8 eras"},
   {value: 16, description: "16 eras"},
-  // NOTE: set 32 eras for polkadot in a future release
-  selectedChain === "polkadot" ?
-    {value: 28, description: "28 eras"} :
-    {value: 32, description: "32 eras"}
+  {value: 32, description: "32 eras"}
 ])
 
 const CustomMenu = styled((props) => (
