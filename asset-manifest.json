@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.fb6b9335.js",
+    "main.js": "/static/js/main.028f2711.js",
     "static/js/27.5757e9a4.chunk.js": "/static/js/27.5757e9a4.chunk.js",
     "static/media/onet.svg": "/static/media/onet.939204028101409068e0d9f94ad911d2.svg",
     "static/media/moonriver.svg": "/static/media/moonriver.0d6c0ca22e4f0531f208781460392c87.svg",
     "static/media/bobo.svg": "/static/media/bobo.81afcfebc74df79fa7a21c157f588a5f.svg",
     "static/media/gogo.svg": "/static/media/gogo.309682da0a00b77f353cd181c1f731d5.svg",
-    "static/media/fofo.svg": "/static/media/fofo.258940714a0467d833de46b196f622f3.svg",
+    "static/media/fofo.svg": "/static/media/fofo.2bbb51bb6d6e5723f3efe127d50de4b0.svg",
     "static/media/jojo.svg": "/static/media/jojo.70b8eb1b9277d104dfe64ff64bf596ae.svg",
     "static/media/dodo.svg": "/static/media/dodo.56c6ebcdc184d34545b7e0686396ae54.svg",
     "static/media/Gilroy-Bold.ttf": "/static/media/Gilroy-Bold.901a60fc2835c74fba67.ttf",
@@ -26,7 +26,7 @@
     "static/media/collectives.png": "/static/media/collectives.7d7f2f3de655e723010f.png",
     "static/media/polkassembly.png": "/static/media/polkassembly.2a55e12b7195afeca23c.png",
     "static/media/logion.png": "/static/media/logion.44bf1c4115b6975b69e6.png",
-    "static/media/galen.svg": "/static/media/galen.6ff16bd9ce0a3c803702784928c1f8a6.svg",
+    "static/media/galen.svg": "/static/media/galen.6d9f575ea7990cec819c45669b9667ef.svg",
     "static/media/turing.png": "/static/media/turing.de1af3fdcd514e59f8c4.png",
     "static/media/crown-sterling.png": "/static/media/crown-sterling.e2ed8718b101e307b5af.png",
     "static/media/moonrock.png": "/static/media/moonrock.5a5734a85224e21ac8a5.png",
@@ -268,6 +268,6 @@
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.fb6b9335.js"
+    "static/js/main.028f2711.js"
   ]
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="320px" height="327px" viewBox="0 0 320 327" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g transform="translate(-5338.000000, -397.000000)">
-            <g id="Group" transform="translate(0.000000, 199.000000)">
+            <g transform="translate(0.000000, 199.000000)">
                 <g transform="translate(5340.000000, 198.000000)">
                     <g transform="translate(154.000000, 0.000000)">
                         <polyline id="Path" stroke="#0F1923" stroke-width="4" points="16.3 55.4 3 40 20.5 37.9 7.9 26 7.9 4.3"></polyline>
