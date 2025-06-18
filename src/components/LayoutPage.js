@@ -31,6 +31,7 @@ import SearchSmall from "./SearchSmall";
 import SessionPerformancePieChartHeader from "./SessionPerformancePieChartHeader";
 import SessionPieChartHeader from "./SessionPieChartHeader";
 import SessionBoxHeader from "./SessionBoxHeader";
+import ListItemButtonChain from "./ListItemButtonChain";
 import CoreUsageHeader from "./CoreUsageHeader";
 import RightDrawer from "./nomi/RightDrawer";
 import onetSVG from "../assets/onet.svg";
@@ -406,194 +407,53 @@ function OnetOptions({
     <Box component="span">
       <Divider />
 
-      {selectedChain === "kusama" ? (
+      {selectedChain === "polkadot" ? (
         <React.Fragment>
-          <ListItemButton
-            onClick={() => onChainChanged("polkadot")}
-            disableRipple
-          >
-            <ListItemIcon
-              sx={{ ml: theme.spacing(-1 / 2), py: theme.spacing(1) }}
-            >
-              <img
-                src={getNetworkIcon("polkadot")}
-                style={{
-                  width: 28,
-                  height: 28,
-                }}
-                alt={"polkadot"}
-              />
-            </ListItemIcon>
-            <ListItemText
-              primary="POLKADOT"
-              sx={{
-                "> .MuiTypography-root": {
-                  fontSize: "0.875rem",
-                  fontWeight: 600,
-                },
-              }}
-            />
-          </ListItemButton>
-          <ListItemButton onClick={() => onChainChanged("paseo")} disableRipple>
-            <ListItemIcon
-              sx={{ ml: theme.spacing(-1 / 2), py: theme.spacing(1) }}
-            >
-              <img
-                src={getNetworkIcon("paseo")}
-                style={{
-                  width: 28,
-                  height: 28,
-                }}
-                alt={"paseo"}
-              />
-            </ListItemIcon>
-            <ListItemText
-              primary="PASEO"
-              sx={{
-                "> .MuiTypography-root": {
-                  fontSize: "0.875rem",
-                  fontWeight: 600,
-                },
-              }}
-            />
-          </ListItemButton>
-          <ListItemButton
-            onClick={() => onChainChanged("westend")}
-            disableRipple
-          >
-            <ListItemIcon
-              sx={{ ml: theme.spacing(-1 / 2), py: theme.spacing(1) }}
-            >
-              <img
-                src={getNetworkIcon("westend")}
-                style={{
-                  width: 28,
-                  height: 28,
-                }}
-                alt={"paseo"}
-              />
-            </ListItemIcon>
-            <ListItemText
-              primary="WESTEND"
-              sx={{
-                "> .MuiTypography-root": {
-                  fontSize: "0.875rem",
-                  fontWeight: 600,
-                },
-              }}
-            />
-          </ListItemButton>
+          <ListItemButtonChain onChainChanged={onChainChanged} chain="kusama" />
+          <ListItemButtonChain onChainChanged={onChainChanged} chain="paseo" />
+          <ListItemButtonChain
+            onChainChanged={onChainChanged}
+            chain="westend"
+          />
         </React.Fragment>
       ) : null}
 
-      {selectedChain === "polkadot" ? (
+      {selectedChain === "kusama" ? (
         <React.Fragment>
-          <ListItemButton
-            onClick={() => onChainChanged("kusama")}
-            disableRipple
-          >
-            <ListItemIcon
-              sx={{ ml: theme.spacing(-1 / 2), py: theme.spacing(1) }}
-            >
-              <img
-                src={getNetworkIcon("kusama")}
-                style={{
-                  width: 28,
-                  height: 28,
-                }}
-                alt={"kusama"}
-              />
-            </ListItemIcon>
-            <ListItemText
-              primary="KUSAMA"
-              sx={{
-                "> .MuiTypography-root": {
-                  fontSize: "0.875rem",
-                  fontWeight: 600,
-                },
-              }}
-            />
-          </ListItemButton>
-          <ListItemButton onClick={() => onChainChanged("paseo")} disableRipple>
-            <ListItemIcon
-              sx={{ ml: theme.spacing(-1 / 2), py: theme.spacing(1) }}
-            >
-              <img
-                src={getNetworkIcon("paseo")}
-                style={{
-                  width: 28,
-                  height: 28,
-                }}
-                alt={"paseo"}
-              />
-            </ListItemIcon>
-            <ListItemText
-              primary="PASEO"
-              sx={{
-                "> .MuiTypography-root": {
-                  fontSize: "0.875rem",
-                  fontWeight: 600,
-                },
-              }}
-            />
-          </ListItemButton>
+          <ListItemButtonChain
+            onChainChanged={onChainChanged}
+            chain="polkadot"
+          />
+          <ListItemButtonChain onChainChanged={onChainChanged} chain="paseo" />
+          <ListItemButtonChain
+            onChainChanged={onChainChanged}
+            chain="westend"
+          />
         </React.Fragment>
       ) : null}
 
       {selectedChain === "paseo" ? (
         <React.Fragment>
-          <ListItemButton
-            onClick={() => onChainChanged("polkadot")}
-            disableRipple
-          >
-            <ListItemIcon
-              sx={{ ml: theme.spacing(-1 / 2), py: theme.spacing(1) }}
-            >
-              <img
-                src={getNetworkIcon("polkadot")}
-                style={{
-                  width: 28,
-                  height: 28,
-                }}
-                alt={"polkadot"}
-              />
-            </ListItemIcon>
-            <ListItemText
-              primary="POLKADOT"
-              sx={{
-                "> .MuiTypography-root": {
-                  fontSize: "0.875rem",
-                  fontWeight: 600,
-                },
-              }}
-            />
-          </ListItemButton>
-          <ListItemButton
-            onClick={() => onChainChanged("kusama")}
-            disableRipple
-          >
-            <ListItemIcon
-              sx={{ ml: theme.spacing(-1 / 2), py: theme.spacing(1) }}
-            >
-              <img
-                src={getNetworkIcon("kusama")}
-                style={{
-                  width: 28,
-                  height: 28,
-                }}
-                alt={"kusama"}
-              />
-            </ListItemIcon>
-            <ListItemText
-              primary="KUSAMA"
-              sx={{
-                "> .MuiTypography-root": {
-                  fontSize: "0.875rem",
-                  fontWeight: 600,
-                },
-              }}
-            />
-          </ListItemButton>
+          <ListItemButtonChain
+            onChainChanged={onChainChanged}
+            chain="polkadot"
+          />
+          <ListItemButtonChain onChainChanged={onChainChanged} chain="kusama" />
+          <ListItemButtonChain
+            onChainChanged={onChainChanged}
+            chain="westend"
+          />
+        </React.Fragment>
+      ) : null}
+
+      {selectedChain === "westend" ? (
+        <React.Fragment>
+          <ListItemButtonChain
+            onChainChanged={onChainChanged}
+            chain="polkadot"
+          />
+          <ListItemButtonChain onChainChanged={onChainChanged} chain="kusama" />
+          <ListItemButtonChain onChainChanged={onChainChanged} chain="paseo" />
         </React.Fragment>
       ) : null}
 
