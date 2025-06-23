@@ -30,7 +30,10 @@ import Footer from "./Footer";
 import SearchSmall from "./SearchSmall";
 import SessionPerformancePieChartHeader from "./SessionPerformancePieChartHeader";
 import SessionPieChartHeader from "./SessionPieChartHeader";
+import EraBoxHeader from "./EraBoxHeader";
 import SessionBoxHeader from "./SessionBoxHeader";
+import BestBlockBoxHeader from "./BestBlockBoxHeader";
+import FinalizedBlockBoxHeader from "./FinalizedBlockBoxHeader";
 import ListItemButtonChain from "./ListItemButtonChain";
 import CoreUsageHeader from "./CoreUsageHeader";
 import RightDrawer from "./nomi/RightDrawer";
@@ -1108,7 +1111,10 @@ export default function LayoutPage({ api }) {
               {!openLeftDrawer ? <CoreUsageHeader /> : null}
               <SessionPerformancePieChartHeader />
               <SessionPieChartHeader />
+              <EraBoxHeader />
               <SessionBoxHeader />
+              <FinalizedBlockBoxHeader />
+              <BestBlockBoxHeader />
             </Box>
             {/* mode switch live/history */}
             {/* { selectedPage !== 'dashboard' ? <ModeSwitch mode={selectedMode} /> : null } */}

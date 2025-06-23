@@ -11,17 +11,16 @@ import {
   selectSessionCurrent,
 } from "../features/api/sessionsSlice";
 
-export default function SessionBoxHeader({ dark }) {
+export default function EraBoxHeader({ dark }) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const { isSuccess, isFetching } = useGetSessionByIndexQuery({
-    index: currentSession,
-  });
+
+  const { isSuccess: isSessionSuccess, isFetching: isFetchingSession } =
+    useGetSessionByIndexQuery({ index: currentSession });
   const session = useSelector((state) =>
     selectSessionByIndex(state, currentSession),
   );
-
-  if (isFetching || isUndefined(session)) {
+  if (isFetchingSession || isUndefined(session)) {
     return (
       <Skeleton
         variant="rounded"
@@ -33,6 +32,10 @@ export default function SessionBoxHeader({ dark }) {
         }}
       />
     );
+  }
+
+  if (!isSessionSuccess) {
+    return null;
   }
 
   return (
@@ -55,7 +58,7 @@ export default function SessionBoxHeader({ dark }) {
           variant="caption1"
           color={dark ? theme.palette.text.secondary : "default"}
         >
-          session
+          era
         </Typography>
         <Typography
           variant="h6"
@@ -63,7 +66,7 @@ export default function SessionBoxHeader({ dark }) {
             dark ? theme.palette.text.secondary : theme.palette.text.primary
           }
         >
-          {isSuccess ? `${session.six.format()}` : "-"}
+          {isSessionSuccess ? `${session.eix.format()}` : "-"}
         </Typography>
       </Box>
     </Box>

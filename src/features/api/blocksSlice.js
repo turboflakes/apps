@@ -23,9 +23,9 @@ export const extendedApi = apiSlice.injectEndpoints({
       providesTags: (result, error, arg) => [{ type: "Blocks", id: arg }],
     }),
     getBlock: builder.query({
-      query: ({ blockId, show_stats }) => ({
+      query: ({ blockId, show_stats, chain_key }) => ({
         url: `/blocks/${blockId}`,
-        params: { show_stats },
+        params: { show_stats, chain_key },
       }),
       providesTags: (result, error, arg) => [{ type: "Blocks", id: arg }],
       async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
