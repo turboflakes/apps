@@ -14,14 +14,27 @@ import { selectFinalizedBlockAH } from "../features/api/blocksAHSlice";
 export default function SessionBoxHeader({ dark }) {
   const theme = useTheme();
   const { isSuccess, isFetching } = useGetBlockQuery(
-    { blockId: "finalized", show_stats: true },
+    { blockId: "finalized", chain_key: "rc", show_stats: true },
     { refetchOnMountOrArgChange: true },
+  );
+  const { isSuccess: isSuccessAH, isFetching: isFetchingAH } = useGetBlockQuery(
+    {
+      blockId: "finalized",
+      chain_key: "ah",
+    },
   );
 
   const finalized = useSelector(selectFinalizedBlock);
   const finalizedAH = useSelector(selectFinalizedBlockAH);
 
-  if (isFetching || isUndefined(finalized) || isUndefined(finalizedAH)) {
+  console.log("isFetching", isFetching, isFetchingAH, finalized, finalizedAH);
+
+  if (
+    isFetching ||
+    isFetchingAH ||
+    isUndefined(finalized) ||
+    isUndefined(finalizedAH)
+  ) {
     return (
       <Skeleton
         variant="rounded"
@@ -64,7 +77,7 @@ export default function SessionBoxHeader({ dark }) {
             dark ? theme.palette.text.secondary : theme.palette.text.primary
           }
         >
-          {isSuccess ? (
+          {isSuccessAH ? (
             <React.Fragment>
               <Typography
                 variant="caption1"
