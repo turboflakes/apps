@@ -27,8 +27,6 @@ export default function SessionBoxHeader({ dark }) {
   const finalized = useSelector(selectFinalizedBlock);
   const finalizedAH = useSelector(selectFinalizedBlockAH);
 
-  console.log("isFetching", isFetching, isFetchingAH, finalized, finalizedAH);
-
   if (
     isFetching ||
     isFetchingAH ||

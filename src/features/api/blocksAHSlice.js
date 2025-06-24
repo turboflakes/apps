@@ -72,7 +72,6 @@ export const selectBestBlockAH = (state) => {
 };
 
 export const selectFinalizedBlockAH = (state) => {
-  console.log("__state.blocks_ah", state.blocks_ah);
   if (!!state.blocks_ah.ids.length) {
     const block = findLast(
       selectAll(state),
