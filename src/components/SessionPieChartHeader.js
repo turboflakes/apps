@@ -37,7 +37,6 @@ export default function SessionPieChartHeader() {
   const session = useSelector((state) =>
     selectSessionByIndex(state, currentSession),
   );
-  // const isLiveMode = useSelector(selectIsLiveMode)
 
   if (isFetchingBlockSuccess || isFetchingSession || isUndefined(session)) {
     return (

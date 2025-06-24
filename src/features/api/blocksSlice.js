@@ -10,7 +10,7 @@ import findLast from "lodash/findLast";
 import apiSlice from "./apiSlice";
 import { socketActions } from "./socketSlice";
 import { selectSessionByIndex } from "./sessionsSlice";
-import { calculateMVR } from "../../util/mvr";
+import { calculateMVR, calculateBAR } from "../../util/math";
 
 export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ["Blocks"],
@@ -116,6 +116,38 @@ const calculateBlockMvr = (i, data, current, previous) => {
   return mvr;
 };
 
+const _calculateBlockBar = (current, previous) => {
+  if (isUndefined(current) || isUndefined(current.stats)) {
+    return -1;
+  }
+  if (
+    isUndefined(previous) ||
+    isUndefined(previous.stats) ||
+    current.block_number - 1 !== previous.block_number
+  ) {
+    const bar = calculateBAR(current.stats.ba, current.stats.bu);
+    if (isUndefined(bar)) {
+      return -1;
+    }
+    return bar;
+  }
+  return calculateBAR(
+    current.stats.ba - previous.stats.ba,
+    current.stats.bu - previous.stats.bu,
+  );
+};
+
+const calculateBlockBar = (i, data, current, previous) => {
+  const bar = _calculateBlockBar(current, previous);
+  if (bar === -1) {
+    return undefined;
+  }
+  if (isUndefined(bar)) {
+    return calculateBlockBar(i - 1, data, current, data[i - 1]);
+  }
+  return bar;
+};
+
 const blocksSlice = createSlice({
   name: "blocks",
   initialState: blocksAdapter.getInitialState(),
@@ -140,6 +172,14 @@ const blocksSlice = createSlice({
             ...action.payload,
             _mvr: !isUndefined(block.stats)
               ? calculateBlockMvr(
+                  0,
+                  [],
+                  block,
+                  currentState.entities[block.block_number - 1],
+                )
+              : undefined,
+            _bar: !isUndefined(block.stats)
+              ? calculateBlockBar(
                   0,
                   [],
                   block,
@@ -176,6 +216,14 @@ const blocksSlice = createSlice({
                   block,
                   previousBlock,
                 ),
+                _bar: !isUndefined(block.stats)
+                  ? calculateBlockBar(
+                      i,
+                      action.payload.data,
+                      block,
+                      previousBlock,
+                    )
+                  : undefined,
                 _ts: +new Date(),
               };
             }
