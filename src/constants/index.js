@@ -139,7 +139,7 @@ const networkSettings = {
     coreAssignmentsTarget: 60,
     blocksPerSessionTarget: 600,
     sessionsPerDayTarget: 24,
-    cores: 80,
+    cores: 20,
     poolIds: [process.env.REACT_APP_WESTEND_POOL_ID_1],
     chains: prodParasWestend,
     validators: [],

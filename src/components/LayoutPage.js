@@ -1108,7 +1108,9 @@ export default function LayoutPage({ api }) {
             ) : null}
             <Box sx={{ ml: 1, flexGrow: 1, display: "flex" }}></Box>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              {!openLeftDrawer ? <CoreUsageHeader /> : null}
+              {/* TODO: review CoreUsageHeader
+                {!openLeftDrawer ? <CoreUsageHeader /> : null}
+              */}
               <SessionPerformancePieChartHeader />
               <SessionPieChartHeader />
               <EraBoxHeader />
