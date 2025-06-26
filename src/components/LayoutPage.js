@@ -63,7 +63,7 @@ import {
   selectSessionCurrent,
   sessionHistoryChanged,
 } from "../features/api/sessionsSlice";
-import { getNetworkIcon, getNetworkLogo } from "../constants";
+import { getNetworkIcon, getNetworkName, isTestNetwork } from "../constants";
 import { addressSS58 } from "../util/crypto";
 
 function useWeb3ChainInfo(api, setLoading) {
@@ -549,7 +549,7 @@ function OnetOptions({
           sx={{ '> .MuiTypography-root': {fontSize: '0.875rem'} }} />
       </ListItemButton> */}
 
-      {selectedChain != "paseo" ? (
+      {selectedChain !== "paseo" ? (
         <ListItemButton
           selected={selectedPage === "pools"}
           disableRipple
@@ -576,20 +576,18 @@ function OnetOptions({
         sx={{
           overflowY: "auto",
           overflowX: "hidden",
-          height: `calc(${window.innerHeight}px - ${leftDrawerHeaderHeight + 80 + 45 * 9}px)`,
+          height: `calc(${window.innerHeight}px - ${leftDrawerHeaderHeight + 160 + 45 * 9}px)`,
         }}
       >
-        {selectedChain != "paseo" ? (
-          <AppsOptions
-            openLeftDrawer={openLeftDrawer}
-            onAppChanged={onAppChanged}
-            onToolClicked={onToolClicked}
-          />
-        ) : null}
+        <AppsOptions
+          openLeftDrawer={openLeftDrawer}
+          onAppChanged={onAppChanged}
+          onToolClicked={onToolClicked}
+        />
 
-        {selectedChain != "paseo" ? <Divider /> : null}
+        {!isTestNetwork(selectedChain) ? <Divider /> : null}
 
-        {selectedChain != "paseo" ? (
+        {!isTestNetwork(selectedChain) ? (
           <ValidatorOptions
             openLeftDrawer={openLeftDrawer}
             onValidatorClicked={onValidatorClicked}
@@ -742,20 +740,26 @@ function FooterLeftDrawer({ openLeftDrawer }) {
           />
         </ListItemIcon>
         <ListItemText
-          primary="© 2024 turboflakes.io"
+          primary="© 2025 turboflakes.io"
           secondary={
             <Box component="span">
               <a
-                style={{ marginRight: 8, textDecoration: "none" }}
+                style={{
+                  marginRight: 8,
+                  textDecoration: "none",
+                  color: "inherit",
+                }}
                 href="https://www.turboflakes.io/#/terms"
                 target="_blank"
+                rel="noreferrer"
               >
                 {"terms"}
               </a>
               <a
-                style={{ textDecoration: "none" }}
+                style={{ textDecoration: "none", color: "inherit" }}
                 href="https://www.turboflakes.io/#/privacy"
                 target="_blank"
+                rel="noreferrer"
               >
                 privacy
               </a>
@@ -776,27 +780,6 @@ function FooterLeftDrawer({ openLeftDrawer }) {
           }}
         />
       </ListItem>
-    </Box>
-  );
-}
-
-function SocialIcons1() {
-  return (
-    <Box>
-      <a
-        style={{ marginRight: 8, textDecoration: "none" }}
-        href="https://www.turboflakes.io/#/terms"
-        target="_blank"
-      >
-        {"terms"}
-      </a>
-      <a
-        style={{ textDecoration: "none" }}
-        href="https://www.turboflakes.io/#/privacy"
-        target="_blank"
-      >
-        privacy
-      </a>
     </Box>
   );
 }
@@ -1053,14 +1036,25 @@ export default function LayoutPage({ api }) {
               }}
             >
               <img
-                src={getNetworkLogo(selectedChain)}
+                src={getNetworkIcon(selectedChain)}
                 style={{ height: 24 }}
                 alt={selectedChain}
               />
+              <Typography
+                variant="caption"
+                sx={{
+                  ml: 1,
+                  color: theme.palette.text.primary,
+                  fontSize: "0.875rem",
+                  lineHeight: 0,
+                  fontWeight: 600,
+                }}
+              >
+                {getNetworkName(selectedChain)}
+              </Typography>
               <Divider
                 orientation="vertical"
                 sx={{
-                  mt: 0.5,
                   mx: 1,
                   height: 24,
                   bgcolor: theme.palette.text.primary,
@@ -1070,34 +1064,25 @@ export default function LayoutPage({ api }) {
               <Divider
                 orientation="vertical"
                 sx={{
-                  mt: 0.5,
                   mr: 1,
                   height: 24,
                   bgcolor: theme.palette.text.primary,
                   transform: "rotate(20deg)",
                 }}
               />
-              <Box
+
+              <Typography
+                variant="caption"
                 sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  color: theme.palette.text.primary,
+                  fontSize: "0.875rem",
+                  lineHeight: 0,
+                  fontWeight: 600,
                 }}
               >
-                <Typography
-                  variant="caption"
-                  sx={{
-                    mt: 0.5,
-                    color: theme.palette.text.primary,
-                    fontSize: "0.875rem",
-                    lineHeight: 0,
-                    fontWeight: 600,
-                  }}
-                >
-                  {selectedApp === "onet" ? `ONE-T` : null}
-                  {selectedApp === "nomi" ? `NOMI` : null}
-                </Typography>
-              </Box>
+                {selectedApp === "onet" ? `ONE-T` : null}
+                {selectedApp === "nomi" ? `NOMI` : null}
+              </Typography>
             </Box>
 
             {/* search validator */}
@@ -1296,7 +1281,7 @@ export default function LayoutPage({ api }) {
       >
         {/*  hidden toolbar */}
         <Toolbar sx={{ height: 72 }} />
-        {/* <Outlet
+        <Outlet
           context={{
             api,
             leftDrawerWidth,
@@ -1306,7 +1291,7 @@ export default function LayoutPage({ api }) {
             openRightDrawer,
             onRightDrawerToggle,
           }}
-        /> */}
+        />
         {/* TODO move footer to left drawer */}
         {/* <Footer small /> */}
       </Box>

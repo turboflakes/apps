@@ -62,6 +62,7 @@ const networkSettings = {
         svg: galenSVG,
       },
     ],
+    isTestNetwork: false,
   },
   kusama: {
     name: "Kusama",
@@ -130,6 +131,7 @@ const networkSettings = {
         svg: fofoSVG,
       },
     ],
+    isTestNetwork: false,
   },
   paseo: {
     name: "Paseo",
@@ -149,6 +151,7 @@ const networkSettings = {
     poolIds: [],
     chains: prodParasPaseo,
     validators: [],
+    isTestNetwork: true,
   },
   westend: {
     name: "Westend",
@@ -167,6 +170,7 @@ const networkSettings = {
     poolIds: [process.env.REACT_APP_WESTEND_POOL_ID_1],
     chains: prodParasWestend,
     validators: [],
+    isTestNetwork: true,
   },
 };
 export const getNetworks = () => Object.keys(networkSettings);
@@ -249,6 +253,9 @@ export const getChainLogo = (network, paraId) => {
   }
   return namedLogo;
 };
+
+export const isTestNetwork = (network) =>
+  networkSettings[network].isTestNetwork;
 
 // Used in all NOMI traits
 export const DECIMALS = 10000000;
