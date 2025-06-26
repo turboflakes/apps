@@ -39,15 +39,13 @@ export default function ParachainCard({ sessionIndex, paraId }) {
     return null;
   }
 
-  if (!isNull(parachain.group)) {
-    const timestampMoment = moment(parachain._ts);
-    const now = moment();
+  // if (!isNull(parachain.group)) {
+  //   const timestampMoment = moment(parachain._ts);
+  //   const now = moment();
 
-    // Calculate the difference (duration)
-    const duration = moment.duration(now.diff(timestampMoment));
-    console.log(`Group: ${parachain.group} Seconds: ${duration.seconds()}`);
-    console.log(parachain);
-  }
+  //   // Calculate the difference (duration)
+  //   const duration = moment.duration(now.diff(timestampMoment));
+  // }
 
   // NOTE: parachain cOre_assignments is given in cents (100 = 1)
   const coreAssignments = parseInt(parachain.stats.ca / 100);

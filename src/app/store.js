@@ -19,6 +19,7 @@ import poolsSlice from "../features/api/poolsSlice";
 import poolsMetadataSlice from "../features/api/poolsMetadataSlice";
 import boardsSlice from "../features/api/boardsSlice";
 import boardsLimitsSlice from "../features/api/boardsLimitsSlice";
+import pkgSlice from "../features/api/pkgSlice";
 
 export const store = configureStore({
   reducer: {
@@ -39,8 +40,9 @@ export const store = configureStore({
     pools_metadata: poolsMetadataSlice.reducer,
     boards: boardsSlice.reducer,
     boards_limits: boardsLimitsSlice.reducer,
-    [apiSlice.reducerPath]: apiSlice.reducer,
     socket: socketSlice.reducer,
+    pkg: pkgSlice.reducer,
+    [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

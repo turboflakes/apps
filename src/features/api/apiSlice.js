@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { selectChain } from "../chain/chainSlice";
 import { getNetworkHost } from "../../constants";
+import { pkgActions } from "./pkgSlice";
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: "",
@@ -38,12 +39,20 @@ const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: dynamicBaseQuery,
   endpoints: (builder) => ({
-    getApiInfo: builder.query({
+    getPkg: builder.query({
       query: () => "",
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(pkgActions.pkgReceived(data));
+        } catch (err) {
+          console.error("error fetching api package version");
+        }
+      },
     }),
   }),
 });
 
-export const { useGetApiInfoQuery } = apiSlice;
+export const { useGetPkgQuery } = apiSlice;
 
 export default apiSlice;
