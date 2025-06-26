@@ -16,12 +16,16 @@ import { chainLogos, nodeLogos, namedLogos } from "../assets/logos";
 import { sanitize } from "../util/sanitize";
 import raidenSVG from "../assets/raiden.svg";
 import gokunSVG from "../assets/gokun.svg";
+import galenSVG from "../assets/galen.svg";
 import cocoSVG from "../assets/coco.svg";
 import momoSVG from "../assets/momo.svg";
 import totoSVG from "../assets/toto.svg";
 import dodoSVG from "../assets/dodo.svg";
 import gogoSVG from "../assets/gogo.svg";
 import jojoSVG from "../assets/jojo.svg";
+import boboSVG from "../assets/bobo.svg";
+import loloSVG from "../assets/lolo.svg";
+import fofoSVG from "../assets/fofo.svg";
 
 // Define Network settings
 const networkSettings = {
@@ -51,6 +55,11 @@ const networkSettings = {
         stash: "16BEvxYpyRWPaFbtwCPzSCtHVKr1soViaobKojNWBH12U5dk",
         name: "GOKUN",
         svg: gokunSVG,
+      },
+      {
+        stash: "145QiuMq8w1vBVXfwDVFxUSchdRZ6W1tTGb1uZ45TcoUskRC",
+        name: "GALEN",
+        svg: galenSVG,
       },
     ],
   },
@@ -104,6 +113,21 @@ const networkSettings = {
         stash: "FUu6iSzpfStHnbtbzFy2gsnBLttwNgNSULSCQCgMjPfkYwF",
         name: "DODO",
         svg: dodoSVG,
+      },
+      {
+        stash: "H2DRrJ1k3L4DyTGsCfhdo4mGNCf2fmx2X1XgePB9yqXvpvc",
+        name: "BOBO",
+        svg: boboSVG,
+      },
+      {
+        stash: "G7HPomns9WnruzqbS3JH8gDfef8V1SsbrjQ7qnsckep8ct6",
+        name: "LOLO",
+        svg: loloSVG,
+      },
+      {
+        stash: "HtR5DB7uwmQwU49p9XrFNKW35b2EaH8Ac7abAamyUYZyUvX",
+        name: "FOFO",
+        svg: fofoSVG,
       },
     ],
   },
