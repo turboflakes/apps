@@ -32,6 +32,7 @@ import { selectValProfileByAddress } from "../features/api/valProfilesSlice";
 import { stashDisplay, nameDisplay } from "../util/display";
 import { isNull } from "lodash";
 import { chainAddress } from "../util/crypto";
+import { isDNAvailable } from "../constants";
 
 const trendSign = (trend) =>
   Math.sign(trend) > 0 ? "↑" : Math.sign(trend) < 0 ? "↓" : "";
@@ -158,7 +159,6 @@ function ItemButtom({ address, sessionIndex, rank, diff }) {
 
 const RANK_SIZE = 100;
 const PAGE_SIZE = 16;
-const DN_NETWORKS = ["polkadot", "kusama"];
 
 export default function ValidatorsRankingBox({
   sessionIndex,
@@ -168,7 +168,7 @@ export default function ValidatorsRankingBox({
   const theme = useTheme();
   const selectedChain = useSelector(selectChain);
   const [subset, setSubset] = React.useState(
-    DN_NETWORKS.includes(selectedChain) ? "TVP" : "ALL",
+    isDNAvailable(selectedChain) ? "TVP" : "ALL",
   );
   const [page, setPage] = React.useState(0);
   const params = {
@@ -309,7 +309,7 @@ export default function ValidatorsRankingBox({
             <b>All</b>
           </ToggleButton>
 
-          {DN_NETWORKS.includes(selectedChain) ? (
+          {isDNAvailable(selectedChain) ? (
             <ToggleButton
               value="TVP"
               aria-label="centered"

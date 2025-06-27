@@ -14,9 +14,9 @@ export const pkgActions = pkgSlice.actions;
 
 // Selectors
 export const selectVersion = (state) => state.api.pkg_version;
-export const isVersionV0 = (state) =>
+export const selectVersionV0 = (state) =>
   checkMajorVersion(state.api.pkg_version, 0);
-export const isVersionV1 = (state) =>
+export const selectVersionV1 = (state) =>
   checkMajorVersion(state.pkg.api?.pkg_version, 1);
 
 function checkMajorVersion(version, major) {

@@ -205,10 +205,21 @@ export default function SessionPerformance600Timeline({ sessionIndex, skip }) {
             />
             <YAxis
               type="number"
-              domain={["dataMin", "dataMax"]}
+              domain={["dataMin", "auto"]}
+              yAxisId="yVotes"
               tick={false}
               tickLine={false}
               axisLine={true}
+            />
+            <YAxis
+              type="number"
+              domain={["dataMin", "dataMax"]}
+              yAxisId="yBitfields"
+              orientation="right"
+              tick={false}
+              tickLine={false}
+              axisLine={true}
+              hide={true}
             />
             <Tooltip
               cursor={{ fill: theme.palette.divider }}
@@ -220,6 +231,7 @@ export default function SessionPerformance600Timeline({ sessionIndex, skip }) {
               isAnimationActive={false}
               type="monotone"
               dataKey="votes"
+              yAxisId="yVotes"
               strokeWidth={1}
               stroke="#0B1317"
               fill="#F1F1F0"
@@ -229,6 +241,7 @@ export default function SessionPerformance600Timeline({ sessionIndex, skip }) {
               isAnimationActive={false}
               type="monotone"
               dataKey="bitfields"
+              yAxisId="yBitfields"
               strokeWidth={1}
               stroke="#228EAA"
               fill="#F1F1F0"

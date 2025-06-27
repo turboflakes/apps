@@ -62,6 +62,7 @@ const networkSettings = {
         svg: galenSVG,
       },
     ],
+    isDNAvailable: true,
     isTestNetwork: false,
   },
   kusama: {
@@ -131,6 +132,7 @@ const networkSettings = {
         svg: fofoSVG,
       },
     ],
+    isDNAvailable: true,
     isTestNetwork: false,
   },
   paseo: {
@@ -151,6 +153,7 @@ const networkSettings = {
     poolIds: [],
     chains: prodParasPaseo,
     validators: [],
+    isDNAvailable: false,
     isTestNetwork: true,
   },
   westend: {
@@ -170,6 +173,7 @@ const networkSettings = {
     poolIds: [process.env.REACT_APP_WESTEND_POOL_ID_1],
     chains: prodParasWestend,
     validators: [],
+    isDNAvailable: false,
     isTestNetwork: true,
   },
 };
@@ -253,6 +257,9 @@ export const getChainLogo = (network, paraId) => {
   }
   return namedLogo;
 };
+
+export const isDNAvailable = (network) =>
+  networkSettings[network].isDNAvailable;
 
 export const isTestNetwork = (network) =>
   networkSettings[network].isTestNetwork;

@@ -161,9 +161,8 @@ const blocksSlice = createSlice({
           blocksAdapter.removeOne(state, currentState.ids[0]);
         }
         const block = action.payload;
-
         // NOTE: Only map relay-chain blocks
-        if (block.chain_key !== "rc") {
+        if (block.hasOwnProperty("chain_key") && block.chain_key === "ah") {
           return;
         }
 
@@ -197,9 +196,11 @@ const blocksSlice = createSlice({
       })
       .addMatcher(matchBlocksReceived, (state, action) => {
         let currentState = current(state);
-
         const blocks = action.payload.data
-          .filter((block) => block.chain_key === "rc")
+          .filter(
+            (block) =>
+              !block.hasOwnProperty("chain_key") || block.chain_key === "rc",
+          )
           .map((block, i) => {
             if (block.is_finalized && !isUndefined(block.stats)) {
               const previousBlock =

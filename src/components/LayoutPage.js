@@ -16,26 +16,28 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HubIcon from "@mui/icons-material/Hub";
-import Chip from "@mui/material/Chip";
+// import Chip from "@mui/material/Chip";
 import IconButton from "@mui/material/IconButton";
 import EmailIcon from "@mui/icons-material/EmailRounded";
-import AppsIcon from "@mui/icons-material/Apps";
+// import AppsIcon from "@mui/icons-material/Apps";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLink,
   faWaterLadder,
   faServer,
 } from "@fortawesome/free-solid-svg-icons";
-import Footer from "./Footer";
+// import Footer from "./Footer";
 import SearchSmall from "./SearchSmall";
 import SessionPerformancePieChartHeader from "./SessionPerformancePieChartHeader";
 import SessionPieChartHeader from "./SessionPieChartHeader";
 import EraBoxHeader from "./EraBoxHeader";
 import SessionBoxHeader from "./SessionBoxHeader";
-import BestBlockBoxHeader from "./BestBlockBoxHeader";
-import FinalizedBlockBoxHeader from "./FinalizedBlockBoxHeader";
+import BestBlockBoxHeaderV0 from "./BestBlockBoxHeaderV0";
+import BestBlockBoxHeaderV1 from "./BestBlockBoxHeaderV1";
+import FinalizedBlockBoxHeaderV0 from "./FinalizedBlockBoxHeaderV0";
+import FinalizedBlockBoxHeaderV1 from "./FinalizedBlockBoxHeaderV1";
 import ListItemButtonChain from "./ListItemButtonChain";
-import CoreUsageHeader from "./CoreUsageHeader";
+// import CoreUsageHeader from "./CoreUsageHeader";
 import RightDrawer from "./nomi/RightDrawer";
 import onetSVG from "../assets/onet.svg";
 import nomiSVG from "../assets/nomi.svg";
@@ -43,14 +45,14 @@ import crunchSVG from "../assets/crunchbot.svg";
 import scoutySVG from "../assets/scouty.svg";
 import claimitSVG from "../assets/claimit_logo.svg";
 import corematchSVG from "../assets/corematch_logo_border.svg";
-import polkadotSVG from "../assets/polkadot_icon.svg";
-import kusamaSVG from "../assets/kusama_icon.svg";
+// import polkadotSVG from "../assets/polkadot_icon.svg";
+// import kusamaSVG from "../assets/kusama_icon.svg";
 import turboflakesSVG from "../assets/logo/logo_mark_black_subtract_turboflakes_.svg";
 import twitterSVG from "../assets/twitter_black.svg";
 import githubSVG from "../assets/github_black.svg";
 import apiSlice from "../features/api/apiSlice";
 import { getTurboValidators } from "../constants/index";
-import Identicon from "@polkadot/react-identicon";
+// import Identicon from "@polkadot/react-identicon";
 import { pageChanged, selectPage } from "../features/layout/layoutSlice";
 import { selectApp } from "../features/app/appSlice";
 import {
@@ -63,6 +65,7 @@ import {
   selectSessionCurrent,
   sessionHistoryChanged,
 } from "../features/api/sessionsSlice";
+import { selectVersionV1 } from "../features/api/pkgSlice";
 import { getNetworkIcon, getNetworkName, isTestNetwork } from "../constants";
 import { addressSS58 } from "../util/crypto";
 
@@ -888,6 +891,7 @@ export default function LayoutPage({ api }) {
   const selectedApp = useSelector(selectApp);
   const selectedChain = useSelector(selectChain);
   const selectedPage = useSelector(selectPage);
+  const isVersionV1 = useSelector(selectVersionV1);
   const [loading, setLoading] = React.useState(true);
   let [searchParams, setSearchParams] = useSearchParams();
   useWeb3ChainInfo(api, setLoading);
@@ -1100,8 +1104,16 @@ export default function LayoutPage({ api }) {
               <SessionPieChartHeader />
               <EraBoxHeader />
               <SessionBoxHeader />
-              <FinalizedBlockBoxHeader />
-              <BestBlockBoxHeader />
+              {isVersionV1 ? (
+                <FinalizedBlockBoxHeaderV1 />
+              ) : (
+                <FinalizedBlockBoxHeaderV0 />
+              )}
+              {isVersionV1 ? (
+                <BestBlockBoxHeaderV1 />
+              ) : (
+                <BestBlockBoxHeaderV0 />
+              )}
             </Box>
             {/* mode switch live/history */}
             {/* { selectedPage !== 'dashboard' ? <ModeSwitch mode={selectedMode} /> : null } */}

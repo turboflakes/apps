@@ -30,7 +30,11 @@ export default function SessionPieChartHeader() {
   const {
     isSuccess: isSuccessFinalizedBlock,
     isFetching: isFetchingBlockSuccess,
-  } = useGetBlockQuery({ blockId: "finalized", show_stats: true });
+  } = useGetBlockQuery({
+    blockId: "finalized",
+    chain_key: "rc",
+    show_stats: true,
+  });
   const { isSuccess: isSuccessSession, isFetching: isFetchingSession } =
     useGetSessionByIndexQuery({ index: currentSession });
   const finalized = useSelector(selectFinalizedBlock);
@@ -51,7 +55,13 @@ export default function SessionPieChartHeader() {
     );
   }
 
-  if (!isSuccessFinalizedBlock || !isSuccessSession) {
+  if (
+    !isSuccessFinalizedBlock ||
+    !isSuccessSession ||
+    !finalized?.block_number ||
+    !session?.sbix ||
+    !session?.esix
+  ) {
     return null;
   }
 
