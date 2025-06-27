@@ -13,9 +13,9 @@ const pkgSlice = createSlice({
 export const pkgActions = pkgSlice.actions;
 
 // Selectors
-export const selectVersion = (state) => state.api.pkg_version;
+export const selectVersion = (state) => state.pkg.api?.pkg_version;
 export const selectVersionV0 = (state) =>
-  checkMajorVersion(state.api.pkg_version, 0);
+  checkMajorVersion(state.pkg.api?.pkg_version, 0);
 export const selectVersionV1 = (state) =>
   checkMajorVersion(state.pkg.api?.pkg_version, 1);
 

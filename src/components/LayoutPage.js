@@ -16,10 +16,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HubIcon from "@mui/icons-material/Hub";
-// import Chip from "@mui/material/Chip";
-import IconButton from "@mui/material/IconButton";
-import EmailIcon from "@mui/icons-material/EmailRounded";
-// import AppsIcon from "@mui/icons-material/Apps";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLink,
@@ -39,6 +35,8 @@ import FinalizedBlockBoxHeaderV1 from "./FinalizedBlockBoxHeaderV1";
 import ListItemButtonChain from "./ListItemButtonChain";
 // import CoreUsageHeader from "./CoreUsageHeader";
 import RightDrawer from "./nomi/RightDrawer";
+import SocialIcons from "./SocialIcons";
+import VersionsBox from "./VersionsBox";
 import onetSVG from "../assets/onet.svg";
 import nomiSVG from "../assets/nomi.svg";
 import crunchSVG from "../assets/crunchbot.svg";
@@ -48,8 +46,6 @@ import corematchSVG from "../assets/corematch_logo_border.svg";
 // import polkadotSVG from "../assets/polkadot_icon.svg";
 // import kusamaSVG from "../assets/kusama_icon.svg";
 import turboflakesSVG from "../assets/logo/logo_mark_black_subtract_turboflakes_.svg";
-import twitterSVG from "../assets/twitter_black.svg";
-import githubSVG from "../assets/github_black.svg";
 import apiSlice from "../features/api/apiSlice";
 import { getTurboValidators } from "../constants/index";
 // import Identicon from "@polkadot/react-identicon";
@@ -787,81 +783,6 @@ function FooterLeftDrawer({ openLeftDrawer }) {
   );
 }
 
-function SocialIcons() {
-  const theme = useTheme();
-
-  const handleTwitter = () => {
-    window.open("https://twitter.com/turboflakes", "_blank");
-  };
-
-  const handleGithub = () => {
-    window.open("https://github.com/turboflakes", "_blank");
-  };
-
-  const handleEmail = () => {
-    window.location.href = "mailto:support@turboflakes.io";
-  };
-  return (
-    <Box>
-      <IconButton
-        size="small"
-        sx={{
-          margin: "0 8px",
-          border: "1px solid #FFF",
-          width: 30,
-          height: 30,
-          color: theme.palette.text.primary,
-        }}
-        onClick={handleEmail}
-      >
-        <EmailIcon sx={{ width: 20, height: 20 }} />
-      </IconButton>
-      <IconButton
-        color="secondary"
-        size="small"
-        sx={{
-          margin: "0 8px",
-          border: "1px solid #FFF",
-          color: "text.secondary",
-          width: 30,
-          height: 30,
-        }}
-        onClick={handleTwitter}
-      >
-        <img
-          src={twitterSVG}
-          style={{
-            width: 18,
-            height: 18,
-          }}
-          alt={"github"}
-        />
-      </IconButton>
-      <IconButton
-        color="secondary"
-        size="small"
-        sx={{
-          ml: 1,
-          border: "1px solid #FFF",
-          color: "text.secondary",
-          width: 30,
-          height: 30,
-        }}
-        onClick={handleGithub}
-      >
-        <img
-          src={githubSVG}
-          style={{
-            width: 18,
-            height: 18,
-          }}
-          alt={"github"}
-        />
-      </IconButton>
-    </Box>
-  );
-}
-
 function useInitSearchParams() {
   const currentSession = useSelector(selectSessionCurrent);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -1190,9 +1111,8 @@ export default function LayoutPage({ api }) {
                 {selectedApp === "nomi" ? `NOMI` : ""}
               </Typography>
 
-              {/* <Chip sx={{ mb: theme.spacing(2), p: theme.spacing(1)}} label="beta version" color='primary'/> */}
-
               <SocialIcons />
+              <VersionsBox />
             </Box>
           ) : (
             <Box
