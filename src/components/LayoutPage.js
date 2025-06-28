@@ -23,15 +23,7 @@ import {
   faServer,
 } from "@fortawesome/free-solid-svg-icons";
 // import Footer from "./Footer";
-import SearchSmall from "./SearchSmall";
-import SessionPerformancePieChartHeader from "./SessionPerformancePieChartHeader";
-import SessionPieChartHeader from "./SessionPieChartHeader";
-import EraBoxHeader from "./EraBoxHeader";
-import SessionBoxHeader from "./SessionBoxHeader";
-import BestBlockBoxHeaderV0 from "./BestBlockBoxHeaderV0";
-import BestBlockBoxHeaderV1 from "./BestBlockBoxHeaderV1";
-import FinalizedBlockBoxHeaderV0 from "./FinalizedBlockBoxHeaderV0";
-import FinalizedBlockBoxHeaderV1 from "./FinalizedBlockBoxHeaderV1";
+import HeaderAppBar from "./HeaderAppBar";
 import ListItemButtonChain from "./ListItemButtonChain";
 // import CoreUsageHeader from "./CoreUsageHeader";
 import RightDrawer from "./nomi/RightDrawer";
@@ -62,7 +54,7 @@ import {
   sessionHistoryChanged,
 } from "../features/api/sessionsSlice";
 import { selectVersionV1 } from "../features/api/pkgSlice";
-import { getNetworkIcon, getNetworkName, isTestNetwork } from "../constants";
+import { getNetworkIcon, isTestNetwork } from "../constants";
 import { addressSS58 } from "../util/crypto";
 
 function useWeb3ChainInfo(api, setLoading) {
@@ -909,7 +901,6 @@ export default function LayoutPage({ api }) {
     const defaultSS58 = addressSS58(stash);
     dispatch(addressChanged(defaultSS58));
     if (selectedApp === "onet") {
-      console.log("___selectedApp", selectedApp);
       dispatch(addressChanged(defaultSS58));
       dispatch(pageChanged(`validator/${defaultSS58}`));
       navigate(`/validator/${stash}`);
@@ -923,135 +914,11 @@ export default function LayoutPage({ api }) {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar
-        position="absolute"
-        open={openLeftDrawer}
-        color="transparent"
-        elevation={0}
-      >
-        <Toolbar
-          sx={{
-            height: 72,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            p: 1 / 2,
-            // pr: '24px', // keep right padding when drawer closed
-            bgcolor: "rgba(255, 255, 255, 0.5)",
-            backdropFilter: "blur(16px)",
-          }}
-          id="top-toolbar"
-        >
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-
-              // height: '100%'
-            }}
-          >
-            {/* network logo */}
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <img
-                src={getNetworkIcon(selectedChain)}
-                style={{ height: 24 }}
-                alt={selectedChain}
-              />
-              <Typography
-                variant="caption"
-                sx={{
-                  ml: 1,
-                  color: theme.palette.text.primary,
-                  fontSize: "0.875rem",
-                  lineHeight: 0,
-                  fontWeight: 600,
-                }}
-              >
-                {getNetworkName(selectedChain)}
-              </Typography>
-              <Divider
-                orientation="vertical"
-                sx={{
-                  mx: 1,
-                  height: 24,
-                  bgcolor: theme.palette.text.primary,
-                  transform: "rotate(20deg)",
-                }}
-              />
-              <Divider
-                orientation="vertical"
-                sx={{
-                  mr: 1,
-                  height: 24,
-                  bgcolor: theme.palette.text.primary,
-                  transform: "rotate(20deg)",
-                }}
-              />
-
-              <Typography
-                variant="caption"
-                sx={{
-                  color: theme.palette.text.primary,
-                  fontSize: "0.875rem",
-                  lineHeight: 0,
-                  fontWeight: 600,
-                }}
-              >
-                {selectedApp === "onet" ? `ONE-T` : null}
-                {selectedApp === "nomi" ? `NOMI` : null}
-              </Typography>
-            </Box>
-
-            {/* search validator */}
-            {selectedApp === "onet" ? (
-              <Box sx={{ ml: 4, flexGrow: 1, display: "flex" }}>
-                <SearchSmall width={openLeftDrawer ? 384 : 320} />
-              </Box>
-            ) : null}
-            <Box sx={{ ml: 1, flexGrow: 1, display: "flex" }}></Box>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              {/* TODO: review CoreUsageHeader
-                {!openLeftDrawer ? <CoreUsageHeader /> : null}
-              */}
-              <SessionPerformancePieChartHeader />
-              <SessionPieChartHeader />
-              <EraBoxHeader />
-              <SessionBoxHeader />
-              {isVersionV1 ? (
-                <FinalizedBlockBoxHeaderV1 />
-              ) : (
-                <FinalizedBlockBoxHeaderV0 />
-              )}
-              {isVersionV1 ? (
-                <BestBlockBoxHeaderV1 />
-              ) : (
-                <BestBlockBoxHeaderV0 />
-              )}
-            </Box>
-            {/* mode switch live/history */}
-            {/* { selectedPage !== 'dashboard' ? <ModeSwitch mode={selectedMode} /> : null } */}
-          </Box>
-          {/* { selectedPage !== 'dashboard' && isHistoryMode ?
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100%',
-              }}>
-              {selectedPage !== 'validators/insights' ?
-                <SessionSlider maxSessions={maxHistorySessions} /> : <SessionSliderRange />}
-            </Box> : null} */}
-        </Toolbar>
-      </AppBar>
+      <HeaderAppBar
+        openLeftDrawer={openLeftDrawer}
+        leftDrawerWidth={leftDrawerWidth}
+        leftDrawerWidthClosed={leftDrawerWidthClosed}
+      />
       <LeftDrawer
         variant="permanent"
         open={openLeftDrawer}
