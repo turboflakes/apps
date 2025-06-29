@@ -6,22 +6,20 @@ import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
 import { Typography } from "@mui/material";
 import {
-  useGetSessionByIndexQuery,
-  selectSessionByIndex,
-  selectSessionCurrent,
-} from "../features/api/sessionsSlice";
+  useGetBlockQuery,
+  selectFinalizedBlock,
+} from "../features/api/blocksSlice";
 
-export default function SessionBoxHeader({ dark }) {
+export default function FinalizedBlockBoxHeaderV0({ dark }) {
   const theme = useTheme();
-  const currentSession = useSelector(selectSessionCurrent);
-  const { isSuccess, isFetching } = useGetSessionByIndexQuery({
-    index: currentSession,
-  });
-  const session = useSelector((state) =>
-    selectSessionByIndex(state, currentSession),
+  const { isSuccess, isFetching } = useGetBlockQuery(
+    { blockId: "finalized", show_stats: true },
+    { refetchOnMountOrArgChange: true },
   );
 
-  if (isFetching || isUndefined(session)) {
+  const finalized = useSelector(selectFinalizedBlock);
+
+  if (isFetching || isUndefined(finalized)) {
     return (
       <Skeleton
         variant="rounded"
@@ -45,7 +43,8 @@ export default function SessionBoxHeader({ dark }) {
     >
       <Box
         sx={{
-          mx: 2,
+          ml: 4,
+          // mr: 2,
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
@@ -55,7 +54,7 @@ export default function SessionBoxHeader({ dark }) {
           variant="caption1"
           color={dark ? theme.palette.text.secondary : "default"}
         >
-          session
+          finalized block
         </Typography>
         <Typography
           variant="h6"
@@ -63,7 +62,13 @@ export default function SessionBoxHeader({ dark }) {
             dark ? theme.palette.text.secondary : theme.palette.text.primary
           }
         >
-          {isSuccess ? `${session.six.format()}` : "-"}
+          {isSuccess ? (
+            <React.Fragment>
+              {`${finalized.block_number.format()}`}
+            </React.Fragment>
+          ) : (
+            "-"
+          )}
         </Typography>
       </Box>
     </Box>

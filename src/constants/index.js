@@ -10,6 +10,7 @@ import logoPaseoSVG from "../assets/paseo_logo_header.svg";
 import { prodParasKusama } from "./productionRelayKusama";
 import { prodParasPolkadot } from "./productionRelayPolkadot";
 import { prodParasPaseo } from "./productionRelayPaseo";
+import { prodParasWestend } from "./productionRelayWestend";
 import { chainColors, nodeColors } from "./colors";
 import { chainLogos, nodeLogos, namedLogos } from "../assets/logos";
 import { sanitize } from "../util/sanitize";
@@ -61,6 +62,8 @@ const networkSettings = {
         svg: galenSVG,
       },
     ],
+    isDNAvailable: true,
+    isTestNetwork: false,
   },
   kusama: {
     name: "Kusama",
@@ -129,6 +132,8 @@ const networkSettings = {
         svg: fofoSVG,
       },
     ],
+    isDNAvailable: true,
+    isTestNetwork: false,
   },
   paseo: {
     name: "Paseo",
@@ -148,6 +153,8 @@ const networkSettings = {
     poolIds: [],
     chains: prodParasPaseo,
     validators: [],
+    isDNAvailable: false,
+    isTestNetwork: true,
   },
   westend: {
     name: "Westend",
@@ -158,14 +165,16 @@ const networkSettings = {
     url: "https://polkadot.network",
     ss58Format: 42,
     maxValidators: 16,
-    maxHistoryEras: 4,
+    maxHistoryEras: 32,
     coreAssignmentsTarget: 60,
     blocksPerSessionTarget: 600,
     sessionsPerDayTarget: 24,
-    poolIds: [
-      process.env.REACT_APP_WESTEND_POOL_ID_1,
-      process.env.REACT_APP_WESTEND_POOL_ID_2,
-    ],
+    cores: 20,
+    poolIds: [process.env.REACT_APP_WESTEND_POOL_ID_1],
+    chains: prodParasWestend,
+    validators: [],
+    isDNAvailable: false,
+    isTestNetwork: true,
   },
 };
 export const getNetworks = () => Object.keys(networkSettings);
@@ -248,6 +257,12 @@ export const getChainLogo = (network, paraId) => {
   }
   return namedLogo;
 };
+
+export const isDNAvailable = (network) =>
+  networkSettings[network].isDNAvailable;
+
+export const isTestNetwork = (network) =>
+  networkSettings[network].isTestNetwork;
 
 // Used in all NOMI traits
 export const DECIMALS = 10000000;

@@ -5,23 +5,17 @@ import isUndefined from "lodash/isUndefined";
 import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
 import { Typography } from "@mui/material";
-import {
-  useGetSessionByIndexQuery,
-  selectSessionByIndex,
-  selectSessionCurrent,
-} from "../features/api/sessionsSlice";
+import { useGetBlockQuery, selectBestBlock } from "../features/api/blocksSlice";
 
-export default function SessionBoxHeader({ dark }) {
+export default function BestBlockBoxHeaderV0({ dark }) {
   const theme = useTheme();
-  const currentSession = useSelector(selectSessionCurrent);
-  const { isSuccess, isFetching } = useGetSessionByIndexQuery({
-    index: currentSession,
-  });
-  const session = useSelector((state) =>
-    selectSessionByIndex(state, currentSession),
+  const { isSuccess, isFetching } = useGetBlockQuery(
+    { blockId: "best" },
+    { refetchOnMountOrArgChange: true },
   );
+  const best = useSelector(selectBestBlock);
 
-  if (isFetching || isUndefined(session)) {
+  if (isFetching || isUndefined(best)) {
     return (
       <Skeleton
         variant="rounded"
@@ -55,7 +49,7 @@ export default function SessionBoxHeader({ dark }) {
           variant="caption1"
           color={dark ? theme.palette.text.secondary : "default"}
         >
-          session
+          best block
         </Typography>
         <Typography
           variant="h6"
@@ -63,7 +57,11 @@ export default function SessionBoxHeader({ dark }) {
             dark ? theme.palette.text.secondary : theme.palette.text.primary
           }
         >
-          {isSuccess ? `${session.six.format()}` : "-"}
+          {isSuccess ? (
+            <React.Fragment>{`${best.block_number.format()}`}</React.Fragment>
+          ) : (
+            "-"
+          )}
         </Typography>
       </Box>
     </Box>
