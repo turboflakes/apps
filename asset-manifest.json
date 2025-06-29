@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.028f2711.js",
+    "main.js": "/static/js/main.8646ad78.js",
     "static/js/27.5757e9a4.chunk.js": "/static/js/27.5757e9a4.chunk.js",
     "static/media/onet.svg": "/static/media/onet.939204028101409068e0d9f94ad911d2.svg",
     "static/media/moonriver.svg": "/static/media/moonriver.0d6c0ca22e4f0531f208781460392c87.svg",
@@ -98,7 +98,6 @@
     "static/media/composableFinance.png": "/static/media/composableFinance.ec97aa8ec57dc66ea5be.png",
     "static/media/genshiro.svg": "/static/media/genshiro.d36a7fdc2da765c70bfa5c1e6865bdcb.svg",
     "static/media/soonsocial.png": "/static/media/soonsocial.135486901bbcec15f38b.png",
-    "static/media/kusama_support_treasury_white.svg": "/static/media/kusama_support_treasury_white.8ceef7998fce0c773ad1f79e00f600be.svg",
     "static/media/astar.png": "/static/media/astar.b48435e09065b7d91275.png",
     "static/media/polkastats.png": "/static/media/polkastats.c9f709a0f469bfd2f538.png",
     "static/media/edgeware-white.png": "/static/media/edgeware-white.f98cf5c32f10d348e9f1.png",
@@ -150,7 +149,6 @@
     "static/media/ipci.svg": "/static/media/ipci.88e12d15f433415971cc76fa3e7fc39b.svg",
     "static/media/Polkadot_Logo_Horizontal_Pink-Black.svg": "/static/media/Polkadot_Logo_Horizontal_Pink-Black.148a18ab6114f42960d3ba98b13c521b.svg",
     "static/media/totem.svg": "/static/media/totem.f523100035e490b163ffe0d56ea0a850.svg",
-    "static/media/logo_1_inverted_subtract_turboflakes_.svg": "/static/media/logo_1_inverted_subtract_turboflakes_.a857a4938a7a8314993088abd566df27.svg",
     "static/media/zCloak.svg": "/static/media/zCloak.81f2780785909f4c1dd68371ad3c6da0.svg",
     "static/media/claimit_logo.svg": "/static/media/claimit_logo.32f264b48d1f307f02f807cfa97b5c50.svg",
     "static/media/confti.svg": "/static/media/confti.3646f9e60a855c9128d17a232fca5208.svg",
@@ -199,7 +197,6 @@
     "static/media/zero.svg": "/static/media/zero.e1e96292750df717d6295cdc962ae3bf.svg",
     "static/media/dotreasury.svg": "/static/media/dotreasury.2336b28848696ff55819dc69e2f3b71f.svg",
     "static/media/github_black.svg": "/static/media/github_black.b1fb3876d50c656cbde3e718f20d59ab.svg",
-    "static/media/github_white.svg": "/static/media/github_white.e1c319657ca95e2fdf201928e907e211.svg",
     "static/media/polkadot_icon.svg": "/static/media/polkadot_icon.307bb3eeb029c40621190e34664a5419.svg",
     "static/media/bridgeHubPolkadot.svg": "/static/media/bridgeHubPolkadot.92f312b2affe1462e255ab05c14993bd.svg",
     "static/media/bridgehub.svg": "/static/media/bridgehub.92f312b2affe1462e255ab05c14993bd.svg",
@@ -214,7 +211,6 @@
     "static/media/subsocial.svg": "/static/media/subsocial.ca26aa5a70fa9a4aaa96ac55095fec2d.svg",
     "static/media/geek.svg": "/static/media/geek.268d3145555359ee76a32754521c67d7.svg",
     "static/media/twitter_black.svg": "/static/media/twitter_black.88f2f5b727acafa25718582482e20a36.svg",
-    "static/media/twitter_white.svg": "/static/media/twitter_white.0c56778efdb0e28c9d50987fda969844.svg",
     "static/media/ares-odyssey.svg": "/static/media/ares-odyssey.403ac48666e0b112174ce712f2ab5de3.svg",
     "static/media/kabocha.svg": "/static/media/kabocha.699d0d7e5e5669687aa8f463d4a68744.svg",
     "static/media/amplitude.svg": "/static/media/amplitude.7dd877a64bd666d1ef82a843c000ca89.svg",
@@ -268,6 +264,6 @@
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.028f2711.js"
+    "static/js/main.8646ad78.js"
   ]
 }
