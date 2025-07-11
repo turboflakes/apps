@@ -159,7 +159,7 @@ const networkSettings = {
   westend: {
     name: "Westend",
     endpoint: process.env.REACT_APP_WESTEND_API_ENDPOINT,
-    externalWSS: "wss://rpc.ibp.network/westend",
+    externalWSS: "wss://rpc.turboflakes.io/westend",
     icon: iconWestendSVG,
     logo: logoWestendSVG,
     url: "https://polkadot.network",
