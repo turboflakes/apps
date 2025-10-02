@@ -202,16 +202,35 @@ const sessionsSlice = createSlice({
         adapter.upsertOne(state, { ...action.payload, _ts: +new Date() });
       })
       .addMatcher(matchSessionsReceived, (state, action) => {
-        const sessions = action.payload.map((session) => ({
-          ...session,
-          _mvr: !isUndefined(session.stats)
-            ? calculateMVR(session.stats.ev, session.stats.iv, session.stats.mv)
-            : undefined,
-          _bar: !isUndefined(session.stats)
-            ? calculateBAR(session.stats.ba, session.stats.bu)
-            : undefined,
-          _ts: +new Date(),
-        }));
+        console.log("matchSessionsReceived", action.payload);
+        const sessions = action.payload.map((session) => {
+          console.log(
+            "session",
+            session.stats,
+            !isUndefined(session.stats)
+              ? calculateMVR(
+                  session.stats.ev,
+                  session.stats.iv,
+                  session.stats.mv,
+                )
+              : undefined,
+          );
+
+          return {
+            ...session,
+            _mvr: !isUndefined(session.stats)
+              ? calculateMVR(
+                  session.stats.ev,
+                  session.stats.iv,
+                  session.stats.mv,
+                )
+              : undefined,
+            _bar: !isUndefined(session.stats)
+              ? calculateBAR(session.stats.ba, session.stats.bu)
+              : undefined,
+            _ts: +new Date(),
+          };
+        });
         adapter.upsertMany(state, sessions);
       })
       .addMatcher(matchValidatorsReceived, (state, action) => {
