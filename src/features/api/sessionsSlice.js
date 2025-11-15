@@ -915,6 +915,7 @@ export const selectMVRBySessions = (state, sessionIds = []) =>
     if (!isUndefined(session)) {
       return session._mvr;
     }
+    return undefined;
   });
 
 export const selectBARBySessions = (state, sessionIds = []) =>
@@ -923,6 +924,7 @@ export const selectBARBySessions = (state, sessionIds = []) =>
     if (!isUndefined(session)) {
       return session._bar;
     }
+    return undefined;
   });
 
 export const selectBurBySessions = (state, sessionIds = []) =>
@@ -931,55 +933,56 @@ export const selectBurBySessions = (state, sessionIds = []) =>
     if (!isUndefined(session)) {
       return session._bur;
     }
+    return undefined;
   });
 
 export const selectBackingPointsBySessions = (state, sessionIds = []) =>
-  sessionIds
-    .map((id) => {
-      const session = selectSessionByIndex(state, id);
-      if (!isUndefined(session)) {
-        if (!isUndefined(session.stats)) {
-          return session.stats.pt - session.stats.ab * 20;
-        }
+  sessionIds.map((id) => {
+    const session = selectSessionByIndex(state, id);
+    if (!isUndefined(session)) {
+      if (!isUndefined(session.stats)) {
+        return session.stats.pt - session.stats.ab * 20;
       }
-    })
-    .filter((v) => !isUndefined(v));
+    }
+    return undefined;
+  });
+// .filter((v) => !isUndefined(v));
 
 export const selectTotalPointsBySessions = (state, sessionIds = []) =>
-  sessionIds
-    .map((id) => {
-      const session = selectSessionByIndex(state, id);
-      if (!isUndefined(session)) {
-        if (!isUndefined(session.stats)) {
-          return session.stats.pt;
-        }
+  sessionIds.map((id) => {
+    const session = selectSessionByIndex(state, id);
+    if (!isUndefined(session)) {
+      if (!isUndefined(session.stats)) {
+        return session.stats.pt;
       }
-    })
-    .filter((v) => !isUndefined(v));
+    }
+    return undefined;
+  });
+// .filter((v) => !isUndefined(v));
 
 export const selectAuthoredBlocksBySessions = (state, sessionIds = []) =>
-  sessionIds
-    .map((id) => {
-      const session = selectSessionByIndex(state, id);
-      if (!isUndefined(session)) {
-        if (!isUndefined(session.stats)) {
-          return session.stats.ab;
-        }
+  sessionIds.map((id) => {
+    const session = selectSessionByIndex(state, id);
+    if (!isUndefined(session)) {
+      if (!isUndefined(session.stats)) {
+        return session.stats.ab;
       }
-    })
-    .filter((v) => !isUndefined(v));
+    }
+    return undefined;
+  });
+// .filter((v) => !isUndefined(v));
 
 export const selectDisputesBySessions = (state, sessionIds = []) =>
-  sessionIds
-    .map((id) => {
-      const session = selectSessionByIndex(state, id);
-      if (!isUndefined(session)) {
-        if (!isUndefined(session.stats)) {
-          return session.stats.di;
-        }
+  sessionIds.map((id) => {
+    const session = selectSessionByIndex(state, id);
+    if (!isUndefined(session)) {
+      if (!isUndefined(session.stats)) {
+        return session.stats.di;
       }
-    })
-    .filter((v) => !isUndefined(v));
+    }
+    return undefined;
+  });
+// .filter((v) => !isUndefined(v));
 
 // Pools
 export const selectPoolMembersBySessions = (state, sessionIds = []) =>
@@ -989,6 +992,7 @@ export const selectPoolMembersBySessions = (state, sessionIds = []) =>
       if (!isUndefined(session)) {
         return session._pool_members;
       }
+      return undefined;
     })
     .filter((v) => !isUndefined(v));
 
@@ -999,6 +1003,7 @@ export const selectPoolAvailableSessionsBySessions = (state, sessionIds = []) =>
       if (!isUndefined(session) && !isUndefined(session._pool_ids)) {
         return session.six;
       }
+      return undefined;
     })
     .filter((v) => !isUndefined(v));
 
@@ -1009,6 +1014,7 @@ export const selectPoolStakedBySessions = (state, sessionIds = []) =>
       if (!isUndefined(session)) {
         return session._pool_staked;
       }
+      return undefined;
     })
     .filter((v) => !isUndefined(v));
 
@@ -1019,6 +1025,7 @@ export const selectPoolRewardBySessions = (state, sessionIds = []) =>
       if (!isUndefined(session)) {
         return session._pool_reward;
       }
+      return undefined;
     })
     .filter((v) => !isUndefined(v));
 
@@ -1029,6 +1036,7 @@ export const selectPoolPointsBySessions = (state, sessionIds = []) =>
       if (!isUndefined(session)) {
         return session._pool_points;
       }
+      return undefined;
     })
     .filter((v) => !isUndefined(v));
 

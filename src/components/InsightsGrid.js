@@ -1,35 +1,30 @@
-import * as React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import * as React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import ValidatorsInsights from './ValidatorsInsights';
-import ValidatorsHistoryInsights from './ValidatorsHistoryInsights';
-import SubsetBox from './SubsetBox';
-import NodeVersionBox from './NodeVersionBox';
-import SubsetFilter from './SubsetFilter';
-import GradesWithFilterBox from './GradesWithFilterBox';
-import ValidatorsHistorySlideAndLoadBox from './ValidatorsHistorySlideAndLoadBox';
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import ValidatorsInsights from "./ValidatorsInsights";
+import ValidatorsHistoryInsights from "./ValidatorsHistoryInsights";
+import SubsetBox from "./SubsetBox";
+import NodeVersionBox from "./NodeVersionBox";
+import SubsetFilter from "./SubsetFilter";
+import GradesWithFilterBox from "./GradesWithFilterBox";
+import ValidatorsHistorySlideAndLoadBox from "./ValidatorsHistorySlideAndLoadBox";
+import { selectAddress, addressChanged } from "../features/chain/chainSlice";
 import {
-  selectAddress,
-  addressChanged
-} from '../features/chain/chainSlice';
-import { 
   selectSessionHistory,
   selectSessionCurrent,
-  selectSessionHistoryRangeIds
- } from '../features/api/sessionsSlice';
-import { 
+  selectSessionHistoryRangeIds,
+} from "../features/api/sessionsSlice";
+import {
   selectIsLiveMode,
-  selectIsHistoryMode
-} from '../features/layout/layoutSlice';
-import { 
-  selectIsSocketConnected,
-} from '../features/api/socketSlice';
+  selectIsHistoryMode,
+} from "../features/layout/layoutSlice";
+import { selectIsSocketConnected } from "../features/api/socketSlice";
 
 export default function InsightsGrid() {
-	// const theme = useTheme();
+  // const theme = useTheme();
   const { stash } = useParams();
   const dispatch = useDispatch();
   const isSocketConnected = useSelector(selectIsSocketConnected);
@@ -39,8 +34,12 @@ export default function InsightsGrid() {
   const isLiveMode = useSelector(selectIsLiveMode);
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
-  const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
-  
+  const sessionIndex = isLiveMode
+    ? currentSession
+    : !!historySession
+      ? historySession
+      : currentSession;
+
   React.useEffect(() => {
     if (stash && stash !== selectedAddress) {
       dispatch(addressChanged(stash));
@@ -49,46 +48,66 @@ export default function InsightsGrid() {
 
   if (!isSocketConnected) {
     // TODO websocket/network disconnected page
-    return (<Box sx={{ m: 2, minHeight: '100vh' }}></Box>)
+    return <Box sx={{ m: 2, minHeight: "100vh" }}></Box>;
   }
 
   return (
-		<Box sx={{ m: 0 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+    <Box sx={{ m: 0 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Validator Insights</Typography>
           <Typography variant="subtitle">
-          {isLiveMode ? 
-            `Active validators in the current session ${sessionIndex.format()}` : 
-            `Active validators between session ${historySessionRangeIds[0].format()} and ${historySessionRangeIds[historySessionRangeIds.length - 1].format()}`}
+            {isLiveMode
+              ? `Active validators in the current session ${sessionIndex?.format()}`
+              : `Active validators between session ${historySessionRangeIds[0].format()} and ${historySessionRangeIds[historySessionRangeIds.length - 1].format()}`}
           </Typography>
         </Box>
         <SubsetFilter />
       </Box>
       {isHistoryMode ? <ValidatorsHistorySlideAndLoadBox /> : null}
       <Grid container spacing={2}>
-        {isLiveMode ? 
+        {isLiveMode ? (
           <Grid item xs={10}>
-            <ValidatorsInsights sessionIndex={sessionIndex} skip={isNaN(sessionIndex)} />
-          </Grid> : null}
-        {isHistoryMode ? 
+            <ValidatorsInsights
+              sessionIndex={sessionIndex}
+              skip={isNaN(sessionIndex)}
+            />
+          </Grid>
+        ) : null}
+        {isHistoryMode ? (
           <Grid item xs={10}>
             <ValidatorsHistoryInsights skip={isNaN(sessionIndex)} />
-          </Grid> : null}
-          <Grid item xs={2}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <GradesWithFilterBox sessionIndex={sessionIndex} isHistoryMode={isHistoryMode}/>
-              </Grid>
-              <Grid item xs={12}>
-                <NodeVersionBox sessionIndex={sessionIndex} isHistoryMode={isHistoryMode}/>
-              </Grid>
-              <Grid item xs={12}>
-                <SubsetBox sessionIndex={sessionIndex} isHistoryMode={isHistoryMode}/>
-              </Grid>
-            </Grid>            
-          </Grid> 
+          </Grid>
+        ) : null}
+        <Grid item xs={2}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <GradesWithFilterBox
+                sessionIndex={sessionIndex}
+                isHistoryMode={isHistoryMode}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <NodeVersionBox
+                sessionIndex={sessionIndex}
+                isHistoryMode={isHistoryMode}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <SubsetBox
+                sessionIndex={sessionIndex}
+                isHistoryMode={isHistoryMode}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
-		</Box>
+    </Box>
   );
 }

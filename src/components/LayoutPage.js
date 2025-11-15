@@ -804,7 +804,6 @@ export default function LayoutPage({ api }) {
   const selectedApp = useSelector(selectApp);
   const selectedChain = useSelector(selectChain);
   const selectedPage = useSelector(selectPage);
-  const isVersionV1 = useSelector(selectVersionV1);
   const [loading, setLoading] = React.useState(true);
   let [searchParams, setSearchParams] = useSearchParams();
   useWeb3ChainInfo(api, setLoading);
