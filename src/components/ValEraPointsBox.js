@@ -21,8 +21,6 @@ export default function ValEraPointsBox({ address }) {
     selectSessionByIndex(state, currentSession),
   );
 
-  console.log("__validator", validator);
-
   if (isUndefined(validator) || isUndefined(session)) {
     return null;
   }

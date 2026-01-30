@@ -1,11 +1,17 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
-export default function NetValChartLegend({theme}) {
+export default function NetValChartLegend({ theme }) {
   return (
-    <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
-      <Typography variant="caption" color="inherit" sx={{mr: 1}}>
+    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+      <Typography variant="caption" color="inherit" sx={{ mr: 1 }}>
+        <span style={{ marginRight: "8px", color: theme.palette.grey[300] }}>
+          ●
+        </span>
+        ALL
+      </Typography>
+      {/* <Typography variant="caption" color="inherit" sx={{mr: 1}}>
         <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>DN
       </Typography>
       <Typography variant="caption" color="inherit" sx={{mr: 1}}>
@@ -13,7 +19,7 @@ export default function NetValChartLegend({theme}) {
       </Typography>
       <Typography variant="caption" color="inherit">
         <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>●</span>All Others
-      </Typography>
+      </Typography>*/}
     </Box>
   );
 }

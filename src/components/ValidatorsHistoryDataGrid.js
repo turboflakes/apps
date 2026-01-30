@@ -15,6 +15,7 @@ import GridIdentityLink from "./GridIdentityLink";
 import IdentityFilter from "./IdentityFilter";
 import InsightsInfoLegend from "./InsightsInfoLegend";
 import { gradeByRatios } from "../util/grade";
+import { commissionDisplayNumber, commissionDisplay } from "../util/display";
 import { selectValidatorsInsightsBySessions } from "../features/api/validatorsSlice";
 import { selectSessionHistoryRangeIds } from "../features/api/sessionsSlice";
 import {
@@ -88,14 +89,31 @@ const defineColumns = (theme, chainInfo) => {
         return "-";
       },
     },
+    // {
+    //   field: "subset",
+    //   headerName: "Subset",
+    //   width: 80,
+    //   headerAlign: "left",
+    //   align: "left",
+    //   sortable: false,
+    //   disableColumnMenu: true,
+    // },
     {
-      field: "subset",
-      headerName: "Subset",
+      field: "commission",
+      headerName: "Commission",
       width: 80,
       headerAlign: "left",
       align: "left",
-      sortable: false,
+      sortable: true,
       disableColumnMenu: true,
+      valueGetter: (params) =>
+        !isNull(params.row.commission)
+          ? commissionDisplayNumber(params.row.commission)
+          : null,
+      renderCell: (params) =>
+        !isNull(params.row.commission)
+          ? commissionDisplay(params.row.commission)
+          : null,
     },
     {
       field: "validator_index",

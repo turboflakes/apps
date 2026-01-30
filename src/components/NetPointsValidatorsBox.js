@@ -1,36 +1,42 @@
-import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
-import isUndefined from 'lodash/isUndefined'
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Skeleton from '@mui/material/Skeleton';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
-import NetStatToggle from './NetStatToggle';
-import NetValChartLegend from './NetValChartLegend';
-import { 
-  useGetSessionsQuery,
- } from '../features/api/sessionsSlice';
-
+import * as React from "react";
+import { useTheme } from "@mui/material/styles";
+import isUndefined from "lodash/isUndefined";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Skeleton from "@mui/material/Skeleton";
 import {
-  convertToIU
-} from '../util/display';
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import NetStatToggle from "./NetStatToggle";
+import NetValChartLegend from "./NetValChartLegend";
+import { useGetSessionsQuery } from "../features/api/sessionsSlice";
 
- const renderTooltip = (props, theme) => {
+import { convertToIU } from "../util/display";
+
+const renderTooltip = (props, theme) => {
   const { active, payload } = props;
   if (active && payload && payload.length) {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
-          bgcolor: '#fff',
+        sx={{
+          bgcolor: "#fff",
           p: 2,
           m: 0,
           borderRadius: 1,
-          boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px'
-         }}
+          boxShadow:
+            "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+        }}
       >
-        <Box sx={{mb: 2}}>
+        <Box sx={{ mb: 2 }}>
           <Typography component="div" variant="caption" color="inherit">
             <b>Era Points</b>
           </Typography>
@@ -38,19 +44,38 @@ import {
             <i>{`session #${data.session.format()} (${data.sessionIndex})`}</i>
           </Typography>
         </Box>
-        <Box sx={{ minWidth: '192px'}}>
+        <Box sx={{ minWidth: "192px" }}>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.semantics.blue }}>●</span>DN: <b>{data.tvp.format()}</b> ({Math.round((data.tvp * 100 ) / data.total)}%)
+            <span
+              style={{
+                marginRight: "8px",
+                color: theme.palette.semantics.blue,
+              }}
+            >
+              ●
+            </span>
+            DN: <b>{data.tvp.format()}</b> (
+            {Math.round((data.tvp * 100) / data.total)}%)
           </Typography>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>100% Com.: <b>{data.c100.format()}</b> ({Math.round((data.c100 * 100 ) / data.total)}%)
+            <span
+              style={{ marginRight: "8px", color: theme.palette.grey[900] }}
+            >
+              ●
+            </span>
+            100% Com.: <b>{data.c100.format()}</b> (
+            {Math.round((data.c100 * 100) / data.total)}%)
           </Typography>
           <Typography component="div" variant="caption">
-            <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>●</span>Others: <b>{data.others.format()}</b> ({Math.round((data.others * 100 ) / data.total)}%)
-          </Typography>  
+            <span
+              style={{ marginRight: "8px", color: theme.palette.grey[200] }}
+            >
+              ●
+            </span>
+            Others: <b>{data.others.format()}</b> (
+            {Math.round((data.others * 100) / data.total)}%)
+          </Typography>
         </Box>
-        
-        
       </Box>
     );
   }
@@ -58,72 +83,101 @@ import {
   return null;
 };
 
-export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
+export default function NetPointsValidatorsBox({ sessionIndex, maxSessions }) {
   const theme = useTheme();
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {skip: isNaN(sessionIndex)});
+  const { data, isSuccess, isFetching } = useGetSessionsQuery(
+    {
+      from: sessionIndex - maxSessions,
+      to: sessionIndex - 1,
+      show_netstats: true,
+    },
+    { skip: isNaN(sessionIndex) },
+  );
   const [key, setKey] = React.useState("vals_points_total");
 
   if (isFetching || isUndefined(data)) {
-    return (<Skeleton variant="rounded" sx={{
-      width: '100%',
-      height: '100%',
-      borderRadius: 3,
-      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-      bgcolor: 'white'
-    }} />)
-  }
-  
-  if (!isSuccess) {
-    return null
+    return (
+      <Skeleton
+        variant="rounded"
+        sx={{
+          width: "100%",
+          height: "100%",
+          borderRadius: 3,
+          boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+          bgcolor: "white",
+        }}
+      />
+    );
   }
 
-  // 
-  const mainValue = data.filter(s => s.six === sessionIndex - 1)
-    .map(s => !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m["vals_points_total"]).reduce((a, b) => a + b, 0) : 0)[0];
+  if (!isSuccess) {
+    return null;
+  }
+
+  //
+  const mainValue = data
+    .filter((s) => s.six === sessionIndex - 1)
+    .map((s) =>
+      !isUndefined(s.netstats)
+        ? s.netstats.subsets
+            .map((m) => m["vals_points_total"])
+            .reduce((a, b) => a + b, 0)
+        : 0,
+    )[0];
 
   const timelineData = data.map((s, i) => ({
     session: s.six,
     sessionIndex: s.esix,
-    total: !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m[key]).reduce((a, b) => a + b, 0) : 0,
-    c100: !isUndefined(s.netstats) ? 
-      (s.netstats.subsets.filter(f => f.subset === "C100").length > 0 ? s.netstats.subsets.filter(f => f.subset === "C100")[0][key] : 0) : 0,
-    tvp: !isUndefined(s.netstats) ? 
-      (s.netstats.subsets.filter(f => f.subset === "TVP").length > 0 ? s.netstats.subsets.filter(f => f.subset === "TVP")[0][key] : 0) : 0,
-    others: !isUndefined(s.netstats) ? 
-      (s.netstats.subsets.filter(f => f.subset === "NONTVP").length > 0 ? s.netstats.subsets.filter(f => f.subset === "NONTVP")[0][key] : 0) : 0,
-  }))
+    total: !isUndefined(s.netstats)
+      ? s.netstats.subsets.map((m) => m[key]).reduce((a, b) => a + b, 0)
+      : 0,
+    // c100: !isUndefined(s.netstats) ?
+    //   (s.netstats.subsets.filter(f => f.subset === "C100").length > 0 ? s.netstats.subsets.filter(f => f.subset === "C100")[0][key] : 0) : 0,
+    // tvp: !isUndefined(s.netstats) ?
+    //   (s.netstats.subsets.filter(f => f.subset === "TVP").length > 0 ? s.netstats.subsets.filter(f => f.subset === "TVP")[0][key] : 0) : 0,
+    // others: !isUndefined(s.netstats) ?
+    //   (s.netstats.subsets.filter(f => f.subset === "NONTVP").length > 0 ? s.netstats.subsets.filter(f => f.subset === "NONTVP")[0][key] : 0) : 0,
+  }));
 
   const handleStatChanged = (newValue) => {
-    setKey(`vals_points_${newValue}`)
-  }
+    setKey(`vals_points_${newValue}`);
+  };
 
   return (
     <Paper
       sx={{
         pt: 2,
         pl: 2,
-        display: 'flex',
+        display: "flex",
         // justifyContent: 'space-between',
-        flexDirection: 'column',
+        flexDirection: "column",
         // alignItems: 'center',
-        width: '100%',
-        height: '100%',
+        width: "100%",
+        height: "100%",
         borderRadius: 3,
         // borderTopLeftRadius: '24px',
         // borderTopRightRadius: '24px',
-        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+        boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
       }}
-      >
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption" gutterBottom>Total <b>Era Points</b> by the end of the previous epoch</Typography>
+    >
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Typography variant="caption" gutterBottom>
+            Total <b>Era Points</b> by the end of the previous epoch
+          </Typography>
           <Typography variant="h4">
             {!isUndefined(mainValue) ? mainValue.format() : 0}
           </Typography>
         </Box>
         <NetStatToggle onChange={handleStatChanged} />
       </Box>
-      <Box sx={{ height: '100%'}}>
+      <Box sx={{ height: "100%" }}>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             // width="100%"
@@ -136,38 +190,80 @@ export default function NetPointsValidatorsBox({sessionIndex, maxSessions}) {
               bottom: 16,
             }}
           >
-            <CartesianGrid strokeDasharray="1 4" vertical={false} horizontal={true} />
+            <CartesianGrid
+              strokeDasharray="1 4"
+              vertical={false}
+              horizontal={true}
+            />
 
-            <XAxis dataKey="session" angle={-30} tickMargin={8}
-              style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
-              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
-              tickLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
-              />
-            <YAxis type="number" 
+            <XAxis
+              dataKey="session"
+              angle={-30}
+              tickMargin={8}
+              style={{ fontSize: "0.75rem", whiteSpace: "nowrap" }}
+              axisLine={{ stroke: "#C8C9CC", strokeWidth: 1 }}
+              tickLine={{ stroke: "#C8C9CC", strokeWidth: 1 }}
+            />
+            <YAxis
+              type="number"
               // domain={['dataMin', 'dataMax']}
-              style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
-              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
-              tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
+              style={{ fontSize: "0.75rem", whiteSpace: "nowrap" }}
+              axisLine={{ stroke: "#C8C9CC", strokeWidth: 1 }}
+              tickLine={{ stroke: "#C8C9CC", strokeWidth: 1 }}
               tickFormatter={(a) => convertToIU(a, 0)}
-              />
-            <Tooltip 
-                cursor={{fill: theme.palette.divider}}
-                offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
-                content={props => renderTooltip(props, theme)} />
-            <Area type="monotone" stackId="1" dataKey="c100"
-              strokeWidth={0} fill={theme.palette.grey[900]} />
-            <Area type="monotone" stackId="1" dataKey="others"
-              strokeWidth={0} fill={theme.palette.grey[200]} />
-            <Area type="monotone" stackId="1" dataKey="tvp"
-              strokeWidth={0} fill={theme.palette.semantics.blue} />
-            
-            <Legend verticalAlign="top" content={() => NetValChartLegend({theme})} height={24} />
+            />
+            <Tooltip
+              cursor={{ fill: theme.palette.divider }}
+              offset={24}
+              wrapperStyle={{ zIndex: 100 }}
+              content={(props) => renderTooltip(props, theme)}
+            />
+            {/* <Area
+              type="monotone"
+              stackId="1"
+              dataKey="c100"
+              strokeWidth={0}
+              fill={theme.palette.grey[900]}
+            />
+            <Area
+              type="monotone"
+              stackId="1"
+              dataKey="others"
+              strokeWidth={0}
+              fill={theme.palette.grey[200]}
+            />
+            <Area
+              type="monotone"
+              stackId="1"
+              dataKey="tvp"
+              strokeWidth={0}
+              fill={theme.palette.semantics.blue}
+            />*/}
+
+            <Area
+              type="monotone"
+              stackId="1"
+              dataKey="total"
+              strokeWidth={0}
+              fill={theme.palette.grey[300]}
+            />
+
+            <Legend
+              verticalAlign="top"
+              content={() => NetValChartLegend({ theme })}
+              height={24}
+            />
           </AreaChart>
         </ResponsiveContainer>
       </Box>
-      <Typography variant='caption' align='right' sx={{mb: 1, mr: 3, color: theme.palette.grey[400]}}>
-        {!isUndefined(data[data.length-1].netstats) ? `latest data collected at block #${data[data.length-1].netstats.block_number}` : ""}
+      <Typography
+        variant="caption"
+        align="right"
+        sx={{ mb: 1, mr: 3, color: theme.palette.grey[400] }}
+      >
+        {!isUndefined(data[data.length - 1].netstats)
+          ? `latest data collected at block #${data[data.length - 1].netstats.block_number}`
+          : ""}
       </Typography>
     </Paper>
   );

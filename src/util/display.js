@@ -87,6 +87,12 @@ export const commissionDisplay = (commission) => {
   return `${parseFloat((Math.round((commission / 10000000) * 100) / 100).toFixed(2))}%`;
 };
 
+export const commissionDisplayNumber = (commission) => {
+  return parseFloat(
+    (Math.round((commission / 10000000) * 100) / 100).toFixed(2),
+  );
+};
+
 export const scoreDisplay = (score) => {
   return `${parseFloat((Math.round(score * 1000000) / 1000000).toFixed(6))}`;
 };

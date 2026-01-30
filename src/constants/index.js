@@ -62,7 +62,7 @@ const networkSettings = {
         svg: galenSVG,
       },
     ],
-    isDNAvailable: true,
+    isDNAvailable: false,
     isTestNetwork: false,
   },
   kusama: {
@@ -132,7 +132,7 @@ const networkSettings = {
         svg: fofoSVG,
       },
     ],
-    isDNAvailable: true,
+    isDNAvailable: false,
     isTestNetwork: false,
   },
   paseo: {
