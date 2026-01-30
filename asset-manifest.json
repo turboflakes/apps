@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.10d8a9f4.js",
+    "main.js": "/static/js/main.0ad41ef5.js",
     "static/js/27.5757e9a4.chunk.js": "/static/js/27.5757e9a4.chunk.js",
     "static/media/onet.svg": "/static/media/onet.939204028101409068e0d9f94ad911d2.svg",
     "static/media/moonriver.svg": "/static/media/moonriver.0d6c0ca22e4f0531f208781460392c87.svg",
@@ -141,7 +141,6 @@
     "static/media/math.svg": "/static/media/math.19212234cfaec388ea6f339d0cea9df9.svg",
     "static/media/chainx.svg": "/static/media/chainx.1c9f2ab4c7c5039cdab55381d5e2b467.svg",
     "static/media/equilibrium.svg": "/static/media/equilibrium.4b23cdc820fdde4f6eba18b5f4148fe4.svg",
-    "static/media/dn_valid.svg": "/static/media/dn_valid.602e8e39b980108d021e41cc78d76679.svg",
     "static/media/altair.svg": "/static/media/altair.5896748d34c9f7f556b73b7165b9a52f.svg",
     "static/media/crab.svg": "/static/media/crab.d492fe561f222c0cb38beaceaa074b08.svg",
     "static/media/scouty.svg": "/static/media/scouty.4705851fc1e278e5bef9f49d86bfceb5.svg",
@@ -192,12 +191,12 @@
     "static/media/zenlink.svg": "/static/media/zenlink.dd400fbe2eb9f8a4fe8a41330f174b7d.svg",
     "static/media/substrate-hexagon.svg": "/static/media/substrate-hexagon.1776e8780e0fdc810d6061e0a49ab980.svg",
     "static/media/jupiter.svg": "/static/media/jupiter.654d8f9fd6770c4b2475a03590e9eb06.svg",
+    "static/media/polkadot_icon.svg": "/static/media/polkadot_icon.1df0ad7fa68302e96c2aea5c9f2d111b.svg",
     "static/media/kreivo.svg": "/static/media/kreivo.fcbd434d675d80cbb4c81116f4a9acda.svg",
     "static/media/karura.svg": "/static/media/karura.cb78f2cd48d0a846c57211e3fbaca43e.svg",
     "static/media/zero.svg": "/static/media/zero.e1e96292750df717d6295cdc962ae3bf.svg",
     "static/media/dotreasury.svg": "/static/media/dotreasury.2336b28848696ff55819dc69e2f3b71f.svg",
     "static/media/github_black.svg": "/static/media/github_black.b1fb3876d50c656cbde3e718f20d59ab.svg",
-    "static/media/polkadot_icon.svg": "/static/media/polkadot_icon.307bb3eeb029c40621190e34664a5419.svg",
     "static/media/bridgeHubPolkadot.svg": "/static/media/bridgeHubPolkadot.92f312b2affe1462e255ab05c14993bd.svg",
     "static/media/bridgehub.svg": "/static/media/bridgehub.92f312b2affe1462e255ab05c14993bd.svg",
     "static/media/subsocialX.svg": "/static/media/subsocialX.86d61c0ce34b513a4dcd6d30ad78b3b5.svg",
@@ -264,6 +263,6 @@
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.10d8a9f4.js"
+    "static/js/main.0ad41ef5.js"
   ]
 }
