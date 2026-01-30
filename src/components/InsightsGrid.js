@@ -6,9 +6,9 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import ValidatorsInsights from "./ValidatorsInsights";
 import ValidatorsHistoryInsights from "./ValidatorsHistoryInsights";
-import SubsetBox from "./SubsetBox";
+import CommissionBox from "./CommissionBox";
 import NodeVersionBox from "./NodeVersionBox";
-import SubsetFilter from "./SubsetFilter";
+// import SubsetFilter from "./SubsetFilter";
 import GradesWithFilterBox from "./GradesWithFilterBox";
 import ValidatorsHistorySlideAndLoadBox from "./ValidatorsHistorySlideAndLoadBox";
 import { selectAddress, addressChanged } from "../features/chain/chainSlice";
@@ -68,7 +68,8 @@ export default function InsightsGrid() {
               : `Active validators between session ${historySessionRangeIds[0].format()} and ${historySessionRangeIds[historySessionRangeIds.length - 1].format()}`}
           </Typography>
         </Box>
-        <SubsetFilter />
+        {/* TODO: Review subset filter */}
+        {/* <SubsetFilter />*/}
       </Box>
       {isHistoryMode ? <ValidatorsHistorySlideAndLoadBox /> : null}
       <Grid container spacing={2}>
@@ -100,7 +101,7 @@ export default function InsightsGrid() {
               />
             </Grid>
             <Grid item xs={12}>
-              <SubsetBox
+              <CommissionBox
                 sessionIndex={sessionIndex}
                 isHistoryMode={isHistoryMode}
               />
