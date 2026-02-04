@@ -230,7 +230,7 @@ export default function ValAddressProfile({
                       : theme.palette.neutrals[300]
                   }
                 >
-                  self stake
+                  bonded
                 </Typography>
                 <Box>
                   <Typography
