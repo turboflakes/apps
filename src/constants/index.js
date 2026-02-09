@@ -138,7 +138,7 @@ const networkSettings = {
   paseo: {
     name: "Paseo",
     endpoint: process.env.REACT_APP_PASEO_API_ENDPOINT,
-    externalWSS: "wss://rpc.ibp.network/paseo",
+    externalWSS: "wss://paseo.dotters.network",
     icon: iconPaseoSVG,
     logo: logoPaseoSVG,
     url: "https://github.com/paseo-network",
@@ -159,7 +159,7 @@ const networkSettings = {
   westend: {
     name: "Westend",
     endpoint: process.env.REACT_APP_WESTEND_API_ENDPOINT,
-    externalWSS: "wss://rpc.turboflakes.io/westend",
+    externalWSS: "wss://westend.rpc.turboflakes.io",
     icon: iconWestendSVG,
     logo: logoWestendSVG,
     url: "https://polkadot.network",
