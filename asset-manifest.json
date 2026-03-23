@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.4ce4222e.css",
-    "main.js": "/static/js/main.6a05ede7.js",
+    "main.js": "/static/js/main.5792ffc4.js",
     "static/js/27.5757e9a4.chunk.js": "/static/js/27.5757e9a4.chunk.js",
     "static/media/onet.svg": "/static/media/onet.939204028101409068e0d9f94ad911d2.svg",
     "static/media/moonriver.svg": "/static/media/moonriver.0d6c0ca22e4f0531f208781460392c87.svg",
@@ -20,6 +20,7 @@
     "static/media/momo.svg": "/static/media/momo.e779369108a9cd20ab6b624e25559553.svg",
     "static/media/niskala.png": "/static/media/niskala.f97b6ff25df594279a54.png",
     "static/media/Gilroy-Bold.woff": "/static/media/Gilroy-Bold.0607a1bc636f63251ed8.woff",
+    "static/media/suno_logo_dark.svg": "/static/media/suno_logo_dark.83eabaab979b751ef4b28ccec82f242b.svg",
     "static/media/toto.svg": "/static/media/toto.d9b4ab049d2a53dcc04c3308b830d360.svg",
     "static/media/Gilroy-Heavy.woff": "/static/media/Gilroy-Heavy.406f336a83b15e582953.woff",
     "static/media/Gilroy-Extrabold.woff": "/static/media/Gilroy-Extrabold.f39ff81c45c126012265.woff",
@@ -263,6 +264,6 @@
   },
   "entrypoints": [
     "static/css/main.4ce4222e.css",
-    "static/js/main.6a05ede7.js"
+    "static/js/main.5792ffc4.js"
   ]
 }
