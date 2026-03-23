@@ -34,6 +34,7 @@ import nomiSVG from "../assets/nomi.svg";
 import crunchSVG from "../assets/crunchbot.svg";
 import scoutySVG from "../assets/scouty.svg";
 import claimitSVG from "../assets/claimit_logo.svg";
+import sunoSVG from "../assets/suno_logo_dark.svg";
 import corematchSVG from "../assets/corematch_logo_border.svg";
 // import polkadotSVG from "../assets/polkadot_icon.svg";
 // import kusamaSVG from "../assets/kusama_icon.svg";
@@ -164,7 +165,31 @@ function AppsOptions({ openLeftDrawer, onToolClicked, onAppChanged }) {
       </ListSubheader>
 
       <ListItemButton
-        onClick={() => onToolClicked("claimit", selectedChain)}
+        onClick={() => onToolClicked("suno", selectedChain)}
+        disableRipple
+      >
+        <ListItemIcon
+          sx={{ ml: theme.spacing(-1 / 2), py: theme.spacing(1 / 2) }}
+        >
+          <img
+            src={sunoSVG}
+            style={{
+              width: 32,
+              height: 32,
+            }}
+            alt={"suno"}
+          />
+        </ListItemIcon>
+        <ListItemText
+          primary="SUNO"
+          sx={{
+            "> .MuiTypography-root": { fontSize: "0.875rem", fontWeight: 600 },
+          }}
+        />
+      </ListItemButton>
+
+      <ListItemButton
+        onClick={() => onToolClicked("suno", selectedChain)}
         disableRipple
       >
         <ListItemIcon
@@ -187,24 +212,21 @@ function AppsOptions({ openLeftDrawer, onToolClicked, onAppChanged }) {
         />
       </ListItemButton>
 
-      <ListItemButton
-        onClick={() => onToolClicked("corematch", selectedChain)}
-        disableRipple
-      >
+      <ListItemButton onClick={() => onToolClicked("crunch")} disableRipple>
         <ListItemIcon
           sx={{ ml: theme.spacing(-1 / 2), py: theme.spacing(1 / 2) }}
         >
           <img
-            src={corematchSVG}
+            src={crunchSVG}
             style={{
               width: 32,
               height: 32,
             }}
-            alt={"corematch"}
+            alt={"crunch"}
           />
         </ListItemIcon>
         <ListItemText
-          primary="COREMATCH"
+          primary="CRUNCH"
           sx={{
             "> .MuiTypography-root": { fontSize: "0.875rem", fontWeight: 600 },
           }}
@@ -263,21 +285,24 @@ function AppsOptions({ openLeftDrawer, onToolClicked, onAppChanged }) {
         </ListItemButton>
       ) : null}
 
-      <ListItemButton onClick={() => onToolClicked("crunch")} disableRipple>
+      <ListItemButton
+        onClick={() => onToolClicked("corematch", selectedChain)}
+        disableRipple
+      >
         <ListItemIcon
           sx={{ ml: theme.spacing(-1 / 2), py: theme.spacing(1 / 2) }}
         >
           <img
-            src={crunchSVG}
+            src={corematchSVG}
             style={{
               width: 32,
               height: 32,
             }}
-            alt={"crunch"}
+            alt={"corematch"}
           />
         </ListItemIcon>
         <ListItemText
-          primary="CRUNCH"
+          primary="COREMATCH"
           sx={{
             "> .MuiTypography-root": { fontSize: "0.875rem", fontWeight: 600 },
           }}
@@ -882,6 +907,9 @@ export default function LayoutPage({ api }) {
           `https://www.goclaimit.app/?chain=${chain}&lc=false`,
           "_blank",
         );
+        break;
+      case "suno":
+        window.open(`https://github.com/turboflakes/suno`, "_blank");
         break;
       case "corematch":
         window.open(`https://www.corematch.xyz/?chain=${chain}`, "_blank");
