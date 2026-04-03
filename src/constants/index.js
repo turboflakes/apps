@@ -32,7 +32,7 @@ const networkSettings = {
   polkadot: {
     name: "Polkadot",
     endpoint: process.env.REACT_APP_POLKADOT_API_ENDPOINT,
-    externalWSS: "wss://rpc.ibp.network/polkadot",
+    externalWSS: "wss://polkadot.rpc.turboflakes.io",
     icon: iconPolkadotSVG,
     logo: logoPolkadotSVG,
     url: "https://polkadot.network",
@@ -68,7 +68,7 @@ const networkSettings = {
   kusama: {
     name: "Kusama",
     endpoint: process.env.REACT_APP_KUSAMA_API_ENDPOINT,
-    externalWSS: "wss://rpc.ibp.network/kusama",
+    externalWSS: "wss://kusama.rpc.turboflakes.io",
     icon: iconKusamaSVG,
     logo: logoKusamaSVG,
     url: "https://kusama.network",
