@@ -138,7 +138,7 @@ const networkSettings = {
   paseo: {
     name: "Paseo",
     endpoint: process.env.REACT_APP_PASEO_API_ENDPOINT,
-    externalWSS: "wss://paseo.dotters.network",
+    externalWSS: "wss://paseo.rpc.turboflakes.io",
     icon: iconPaseoSVG,
     logo: logoPaseoSVG,
     url: "https://github.com/paseo-network",
