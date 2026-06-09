@@ -567,7 +567,7 @@ export const selectPoolIdsBySessionSortedBy = (
         .filter(
           (f) =>
             f.state === stateFilter &&
-            (f.metadata.toLowerCase().includes(identityFilter.toLowerCase()) ||
+            (f.metadata?.toLowerCase().includes(identityFilter.toLowerCase()) ||
               (!isUndefined(f.nominees)
                 ? join(
                     !isUndefined(f.nominees)
@@ -608,7 +608,7 @@ export const selectPoolIdsBySessionSortedBy = (
         .filter(
           (f) =>
             f.state === stateFilter &&
-            (f.metadata.toLowerCase().includes(identityFilter.toLowerCase()) ||
+            (f.metadata?.toLowerCase().includes(identityFilter.toLowerCase()) ||
               (!isUndefined(f.nominees)
                 ? join(
                     !isUndefined(f.nominees)
@@ -640,7 +640,7 @@ export const selectPoolIdsBySessionSortedBy = (
         .filter(
           (f) =>
             f.state === stateFilter &&
-            (f.metadata.toLowerCase().includes(identityFilter.toLowerCase()) ||
+            (f.metadata?.toLowerCase().includes(identityFilter.toLowerCase()) ||
               (!isUndefined(f.nominees)
                 ? join(
                     !isUndefined(f.nominees)
@@ -672,7 +672,7 @@ export const selectPoolIdsBySessionSortedBy = (
         .filter(
           (f) =>
             f.state === stateFilter &&
-            (f.metadata.toLowerCase().includes(identityFilter.toLowerCase()) ||
+            (f.metadata?.toLowerCase().includes(identityFilter.toLowerCase()) ||
               (!isUndefined(f.nominees)
                 ? join(
                     !isUndefined(f.nominees)
