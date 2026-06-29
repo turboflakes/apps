@@ -15,7 +15,7 @@ import GridIdentityLink from "./GridIdentityLink";
 import IdentityFilter from "./IdentityFilter";
 import InsightsInfoLegend from "./InsightsInfoLegend";
 import { gradeByRatios } from "../util/grade";
-import { commissionDisplayNumber, commissionDisplay } from "../util/display";
+import { commissionDisplayNumber } from "../util/display";
 import {
   useGetValidatorsQuery,
   selectValidatorsInsightsBySessions,
@@ -25,7 +25,7 @@ import {
   selectIdentityFilter,
   selectSubsetFilter,
 } from "../features/layout/layoutSlice";
-import { scoreDisplay, versionDisplay } from "../util/display";
+import { stakeDisplay, scoreDisplay, versionDisplay } from "../util/display";
 import { isChainSupported, getChainName } from "../constants";
 import { chainAddress } from "../util/crypto";
 
@@ -102,6 +102,21 @@ const defineColumns = (theme, chain, chainInfo) => {
     //   disableColumnMenu: true,
     // },
     {
+      field: "own_stake",
+      headerName: `Self Stake (${chainInfo.tokenSymbol})`,
+      width: 96,
+      headerAlign: "left",
+      align: "left",
+      sortable: true,
+      disableColumnMenu: true,
+      valueGetter: (params) =>
+        !isNull(params.row.own_stake) ? params.row.own_stake : null,
+      renderCell: (params) =>
+        !isNull(params.row.own_stake)
+          ? stakeDisplay(params.row.own_stake, chainInfo, 0, false, false, true)
+          : null,
+    },
+    {
       field: "commission",
       headerName: "Commission",
       width: 80,
@@ -110,12 +125,12 @@ const defineColumns = (theme, chain, chainInfo) => {
       sortable: true,
       disableColumnMenu: true,
       valueGetter: (params) =>
-        !isNull(params.row.commission)
+        !isNull(params.row.own_stake)
           ? commissionDisplayNumber(params.row.commission)
           : null,
       renderCell: (params) =>
-        !isNull(params.row.commission)
-          ? commissionDisplay(params.row.commission)
+        !isNull(params.row.own_stake)
+          ? `${commissionDisplayNumber(params.row.commission)}%`
           : null,
     },
     {
@@ -332,12 +347,17 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
   ).length;
   const disputesCounter = rows.filter((v) => v.disputes > 0).length;
 
-  const columns =
+  let columns =
     disputesCounter > 0
       ? defineColumns(theme, selectedChain, chainInfo)
       : defineColumns(theme, selectedChain, chainInfo).filter(
           (c) => c.field !== "disputes",
         );
+
+  columns =
+    selectedChain !== "polkadot"
+      ? columns
+      : columns.filter((c) => c.field !== "commission");
 
   const handleOnlyPVChange = (event) => {
     setShowOnlyPV(event.target.checked);
@@ -354,6 +374,8 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
   const handleOnlyLowGradesChange = (event) => {
     setOnlyLowGrades(event.target.checked);
   };
+
+  const pageSize = selectedChain === "polkadot" ? 17 : 24;
 
   return (
     <Box
@@ -456,7 +478,7 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
         }}
         initialState={{
           pagination: {
-            pageSize: 17,
+            pageSize: pageSize,
           },
           sorting: {
             sortModel: [{ field: "score", sort: "desc" }],
@@ -465,7 +487,7 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
         // onRowClick={handleOnRowClick}
         rows={rowsFiltered4}
         columns={columns}
-        rowsPerPageOptions={[17]}
+        rowsPerPageOptions={[pageSize]}
         pagination
         disableSelectionOnClick
       />

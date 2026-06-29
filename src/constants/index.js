@@ -64,6 +64,8 @@ const networkSettings = {
     ],
     isDNAvailable: false,
     isTestNetwork: false,
+    stepUnits: 1000,
+    stepMultiplier: 10,
   },
   kusama: {
     name: "Kusama",
@@ -134,6 +136,8 @@ const networkSettings = {
     ],
     isDNAvailable: false,
     isTestNetwork: false,
+    stepUnits: 1,
+    stepMultiplier: 50,
   },
   paseo: {
     name: "Paseo",
@@ -155,6 +159,8 @@ const networkSettings = {
     validators: [],
     isDNAvailable: false,
     isTestNetwork: true,
+    stepUnits: 1000,
+    stepMultiplier: 25,
   },
   westend: {
     name: "Westend",
@@ -175,6 +181,8 @@ const networkSettings = {
     validators: [],
     isDNAvailable: false,
     isTestNetwork: true,
+    stepUnits: 1000,
+    stepMultiplier: 10,
   },
 };
 export const getNetworks = () => Object.keys(networkSettings);
@@ -263,6 +271,10 @@ export const isDNAvailable = (network) =>
 
 export const isTestNetwork = (network) =>
   networkSettings[network].isTestNetwork;
+
+export const getStepUnits = (network) => networkSettings[network].stepUnits;
+export const getStepMultiplier = (network) =>
+  networkSettings[network].stepMultiplier;
 
 // Used in all NOMI traits
 export const DECIMALS = 10000000;

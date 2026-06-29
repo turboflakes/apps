@@ -22,8 +22,8 @@ import {
   selectIdentityFilter,
   selectSubsetFilter,
 } from "../features/layout/layoutSlice";
-import { selectChainInfo } from "../features/chain/chainSlice";
-import { scoreDisplay, versionDisplay } from "../util/display";
+import { selectChain, selectChainInfo } from "../features/chain/chainSlice";
+import { stakeDisplay, scoreDisplay, versionDisplay } from "../util/display";
 import { chainAddress } from "../util/crypto";
 
 const defineColumns = (theme, chainInfo) => {
@@ -98,6 +98,21 @@ const defineColumns = (theme, chainInfo) => {
     //   sortable: false,
     //   disableColumnMenu: true,
     // },
+    {
+      field: "own_stake",
+      headerName: `Self Stake (${chainInfo.tokenSymbol})`,
+      width: 96,
+      headerAlign: "left",
+      align: "left",
+      sortable: true,
+      disableColumnMenu: true,
+      valueGetter: (params) =>
+        !isNull(params.row.own_stake) ? params.row.own_stake : null,
+      renderCell: (params) =>
+        !isNull(params.row.own_stake)
+          ? stakeDisplay(params.row.own_stake, chainInfo, 0, false, false, true)
+          : null,
+    },
     {
       field: "commission",
       headerName: "Commission",
@@ -298,6 +313,7 @@ const defineColumns = (theme, chainInfo) => {
 
 export default function ValidatorsHistoryDataGrid({ isFetching }) {
   const theme = useTheme();
+  const selectedChain = useSelector(selectChain);
   const identityFilter = useSelector(selectIdentityFilter);
   const subsetFilter = useSelector(selectSubsetFilter);
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
@@ -340,10 +356,15 @@ export default function ValidatorsHistoryDataGrid({ isFetching }) {
   ).length;
   const disputesCounter = rows.filter((v) => v.disputes > 0).length;
 
-  const columns =
+  let columns =
     disputesCounter > 0
       ? defineColumns(theme, chainInfo)
       : defineColumns(theme, chainInfo).filter((c) => c.field !== "disputes");
+
+  columns =
+    selectedChain !== "polkadot"
+      ? columns
+      : columns.filter((c) => c.field !== "commission");
 
   const handleOnlyPVChange = (event) => {
     setShowOnlyPV(event.target.checked);

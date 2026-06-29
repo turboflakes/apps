@@ -7,11 +7,16 @@ import Typography from "@mui/material/Typography";
 import ValidatorsInsights from "./ValidatorsInsights";
 import ValidatorsHistoryInsights from "./ValidatorsHistoryInsights";
 import CommissionBox from "./CommissionBox";
+import OwnStakeBox from "./OwnStakeBox";
 import NodeVersionBox from "./NodeVersionBox";
 // import SubsetFilter from "./SubsetFilter";
 import GradesWithFilterBox from "./GradesWithFilterBox";
 import ValidatorsHistorySlideAndLoadBox from "./ValidatorsHistorySlideAndLoadBox";
-import { selectAddress, addressChanged } from "../features/chain/chainSlice";
+import {
+  selectAddress,
+  addressChanged,
+  selectChain,
+} from "../features/chain/chainSlice";
 import {
   selectSessionHistory,
   selectSessionCurrent,
@@ -34,6 +39,7 @@ export default function InsightsGrid() {
   const isLiveMode = useSelector(selectIsLiveMode);
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
+  const selectedChain = useSelector(selectChain);
   const sessionIndex = isLiveMode
     ? currentSession
     : !!historySession
@@ -101,11 +107,20 @@ export default function InsightsGrid() {
               />
             </Grid>
             <Grid item xs={12}>
-              <CommissionBox
+              <OwnStakeBox
                 sessionIndex={sessionIndex}
                 isHistoryMode={isHistoryMode}
               />
             </Grid>
+            <Grid item xs={12}>
+              {selectedChain !== "polkadot" ? (
+                <CommissionBox
+                  sessionIndex={sessionIndex}
+                  isHistoryMode={isHistoryMode}
+                />
+              ) : null}
+            </Grid>
+            <Grid item xs={12}></Grid>
           </Grid>
         </Grid>
       </Grid>

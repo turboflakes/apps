@@ -1,25 +1,9 @@
 import * as React from "react";
-import { useTheme } from "@mui/material/styles";
+// import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import {
-  PieChart,
-  Pie,
-  Tooltip,
-  Cell,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from "recharts";
 import { Typography } from "@mui/material";
-
-const COLORS = (theme) => ({
-  NONVAL: theme.palette.semantics.red,
-  "Non-validator": theme.palette.semantics.red,
-  C100: theme.palette.grey[900],
-  NONTVP: theme.palette.grey[200],
-  Others: theme.palette.grey[200],
-  TVP: theme.palette.semantics.blue,
-  DN: theme.palette.semantics.blue,
-});
+import { ratioToHex } from "../util/display";
 
 const renderTooltip = (props) => {
   const { active, payload } = props;
@@ -38,15 +22,11 @@ const renderTooltip = (props) => {
         }}
       >
         <Typography component="div" variant="caption" color="inherit" paragraph>
-          <b>
-            {data.payload.name}{" "}
-            {data.payload.name !== "Non-validator" ? "validators" : ""}
-          </b>
+          <b>{data.payload.name === "" ? "N/D" : `${data.payload.name}`}</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
           <span style={{ marginRight: "8px", color: data.fill }}>●</span>
-          {data.payload.value}{" "}
-          {data.payload.name === "Non-validator" ? "addresses" : "validators"} (
+          {data.payload.value} validators (
           {`${Math.round((data.payload.value / data.payload.total) * 100)}%`})
         </Typography>
       </Box>
@@ -54,19 +34,6 @@ const renderTooltip = (props) => {
   }
 
   return null;
-};
-
-const renderLegend = (props) => {
-  return (
-    <Box sx={{ mt: 1, display: "flex", flexDirection: "column" }}>
-      {props.payload.map((o, i) => (
-        <Typography key={i} variant="caption" gutterBottom>
-          <span style={{ marginRight: "8px", color: o.color }}>●</span>
-          {o.payload.name}: {o.payload.value}
-        </Typography>
-      ))}
-    </Box>
-  );
 };
 
 const RADIAN = Math.PI / 180;
@@ -92,7 +59,6 @@ const renderCustomizedLabel = ({
       x={x}
       y={y}
       style={{ fontSize: "0.8rem" }}
-      fill={COLORS[index]}
       textAnchor={x > cx ? "start" : "end"}
       dominantBaseline="central"
     >
@@ -101,17 +67,12 @@ const renderCustomizedLabel = ({
   );
 };
 
-export default function CommissionPieChart({
-  data,
-  size,
-  showLegend,
-  showLabel,
-}) {
-  const theme = useTheme();
+export default function CommissionChart({ data, size, showLegend, showLabel }) {
+  // const theme = useTheme();
   const total = data.map((d) => d.value).reduce((a, b) => a + b, 0);
   const pieData = data.map((d) => {
     return {
-      name: d.commission,
+      name: d.legend,
       value: d.value,
       total,
     };
@@ -150,7 +111,10 @@ export default function CommissionPieChart({
             labelLine={false}
           >
             {pieData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS(theme)[entry.name]} />
+              <Cell
+                key={`cell-${index}`}
+                fill={ratioToHex(entry.value / entry.total, 174, 62)}
+              />
             ))}
           </Pie>
           <Tooltip
@@ -158,9 +122,6 @@ export default function CommissionPieChart({
             wrapperStyle={{ zIndex: 100 }}
             content={renderTooltip}
           />
-          {showLegend ? (
-            <Legend verticalAlign="top" content={renderLegend} height={56} />
-          ) : null}
         </PieChart>
       </ResponsiveContainer>
     </Box>

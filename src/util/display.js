@@ -75,12 +75,16 @@ export const stakeDisplayWeight = (stake, networkDetails) => {
   return stake;
 };
 
-export const stakeDisplayNoSymbol = (stake, networkDetails) => {
-  if (!!networkDetails.token_decimals) {
-    const networkDecimals = Math.pow(10, networkDetails.token_decimals);
+export const stakeDisplayNumber = (stake, networkDetails) => {
+  if (!!networkDetails?.token_decimals && !!networkDetails?.tokenSymbol[0]) {
+    const networkDecimals = Math.pow(10, networkDetails.token_decimals[0]);
     return parseFloat((stake / networkDecimals).toFixed(2));
   }
   return stake;
+};
+
+export const ratioToHex = (ratio, h = 353, l = 81) => {
+  return hslToHex(h, l, convertToPercentage(ratio, [0, 1]));
 };
 
 export const commissionDisplay = (commission) => {

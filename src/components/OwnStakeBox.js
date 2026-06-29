@@ -1,34 +1,37 @@
 import * as React from "react";
 import { useSelector } from "react-redux";
 import groupBy from "lodash/groupBy";
-import orderBy from "lodash/orderBy";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import IconButton from "@mui/material/IconButton";
 import PieChartIcon from "@mui/icons-material/PieChart";
 import ListIcon from "@mui/icons-material/List";
 import { useTheme } from "@mui/material/styles";
-import NodeVersionChart from "./NodeVersionChart";
-import Tooltip from "./Tooltip";
+import OwnStakeChart from "./OwnStakeChart";
 import { selectValidatorsInsightsBySessions } from "../features/api/validatorsSlice";
 import {
   selectIdentityFilter,
   selectSubsetFilter,
 } from "../features/layout/layoutSlice";
 import { selectSessionHistoryRangeIds } from "../features/api/sessionsSlice";
-import { versionDisplay, versionToNumber } from "../util/display";
+import { selectChain, selectChainInfo } from "../features/chain/chainSlice";
+import { stakeDisplayNumber, stakeDisplay, ratioToHex } from "../util/display";
+import { getStepUnits, getStepMultiplier } from "../constants";
 
-export default function NodeVersionBox({ sessionIndex, isHistoryMode }) {
+export default function OwnStakeBox({ sessionIndex, isHistoryMode }) {
   const theme = useTheme();
   const [showPie, setShowPie] = React.useState(true);
+  const selectedChain = useSelector(selectChain);
   const identityFilter = useSelector(selectIdentityFilter);
   const subsetFilter = useSelector(selectSubsetFilter);
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
+  const chainInfo = useSelector(selectChainInfo);
+
   const rows = useSelector((state) =>
     selectValidatorsInsightsBySessions(
       state,
@@ -47,16 +50,42 @@ export default function NodeVersionBox({ sessionIndex, isHistoryMode }) {
     return null;
   }
 
-  const groupedByVersion = groupBy(rows, (v) => versionDisplay(v.node_version));
-  const data = orderBy(
-    Object.keys(groupedByVersion).map((subset) => ({
-      subset,
-      value: groupedByVersion[subset].length,
-      n: versionToNumber(subset),
-    })),
-    "n",
-  );
+  const groupedByOwnStake = groupBy(rows, (v) => {
+    let tokenDecimals = chainInfo?.tokenDecimals
+      ? chainInfo.tokenDecimals[0]
+      : 10;
+
+    const networkDecimals = Math.pow(10, tokenDecimals);
+    const stepUnit = getStepUnits(selectedChain);
+    const stepMult = getStepMultiplier(selectedChain);
+    const floor =
+      Math.floor(
+        stakeDisplayNumber(v.own_stake, chainInfo) /
+          (networkDecimals * stepMult * stepUnit),
+      ) *
+      (networkDecimals * stepMult * stepUnit);
+
+    const ceil = networkDecimals * stepMult * stepUnit + floor;
+    // Group by own stake, display in Kilo
+    let showK =
+      stepUnit > 1 &&
+      stakeDisplay(floor / stepUnit, chainInfo, 0, false, false, true) !== "0";
+    return `${stakeDisplay(floor / stepUnit, chainInfo, 0, false, false, true)}${showK ? "K" : ""}  - ${stakeDisplay(ceil / stepUnit, chainInfo, 0, false, false, true)}${showK ? "K" : ""}`;
+  });
+
+  const data = Object.entries(groupedByOwnStake)
+    .map(([legend, arr]) => ({
+      legend,
+      value: arr.length,
+    }))
+    .sort(
+      (a, b) => (parseInt(a.legend, 10) || 0) - (parseInt(b.legend, 10) || 0),
+    );
+
   const total = data.map((d) => d.value).reduce((a, b) => a + b, 0);
+  const tokenSymbol = chainInfo?.tokenSymbol ? chainInfo.tokenSymbol[0] : "";
+  const stepUnit = getStepUnits(selectedChain);
+  const stepMult = getStepMultiplier(selectedChain);
 
   return (
     <Paper
@@ -87,36 +116,11 @@ export default function NodeVersionBox({ sessionIndex, isHistoryMode }) {
             <Typography
               variant="h6"
               sx={{ mr: 1, overflow: "hidden", textOverflow: "ellipsis" }}
-              title="Distribution by node version"
+              title="Distribution by self stake"
             >
-              Distribution by version
+              {`Distribution by self stake (${tokenSymbol})`}
             </Typography>
           </Box>
-          <Tooltip
-            disableFocusListener
-            placement="top"
-            title={
-              <Box sx={{ p: 1 }}>
-                <Typography el variant="caption" paragraph>
-                  {
-                    "The node version is collected from the Kademlia Distributed Hash Table (DHT) subsystem in libp2p."
-                  }
-                </Typography>
-                <Typography variant="caption" paragraph>
-                  {
-                    "The task to crawl and discover peer nodes in the network is executed every new session."
-                  }
-                </Typography>
-                <Typography variant="caption">
-                  {
-                    "Nodes that are not reached within the discovery process have their node version set to 'N/D'."
-                  }
-                </Typography>
-              </Box>
-            }
-          >
-            <InfoOutlinedIcon sx={{ color: theme.palette.neutrals[300] }} />
-          </Tooltip>
         </Box>
         <Typography
           variant="subtitle2"
@@ -141,7 +145,7 @@ export default function NodeVersionBox({ sessionIndex, isHistoryMode }) {
 
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           {showPie ? (
-            <NodeVersionChart data={data} size="md" showLegend showLabel />
+            <OwnStakeChart data={data} size="md" showLegend showLabel />
           ) : (
             <Box
               sx={{
@@ -153,7 +157,7 @@ export default function NodeVersionBox({ sessionIndex, isHistoryMode }) {
               }}
             >
               <List dense>
-                {data.reverse().map((g, i) => (
+                {data.map((g, i) => (
                   <ListItem
                     key={i}
                     sx={{
@@ -161,13 +165,21 @@ export default function NodeVersionBox({ sessionIndex, isHistoryMode }) {
                       "+ :last-child": { borderBottom: "none" },
                     }}
                     secondaryAction={
-                      <Typography variant="caption">{`${Math.round((g.value / total) * 10000) / 100}%`}</Typography>
+                      <Typography variant="caption">{`${g.value} (${Math.round((g.value / total) * stepMult * stepUnit) / 100}%)`}</Typography>
                     }
                   >
-                    <ListItemText
-                      sx={{ m: 0 }}
-                      primary={g.subset === "" ? "N/D" : `v${g.subset}`}
-                    />
+                    <ListItemIcon sx={{ minWidth: "24px" }}>
+                      <Box
+                        sx={{
+                          width: "8px",
+                          height: "8px",
+                          borderRadius: "50%",
+                          bgcolor: ratioToHex(g.value / total, 35, 100),
+                          display: "inline-block",
+                        }}
+                      ></Box>
+                    </ListItemIcon>
+                    <ListItemText sx={{ m: 0 }} primary={`${g.legend}`} />
                   </ListItem>
                 ))}
               </List>

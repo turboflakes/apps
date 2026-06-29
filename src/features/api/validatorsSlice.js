@@ -377,6 +377,7 @@ function createRows(
   availability,
   unavailability,
   timeline,
+  own_stake,
 ) {
   return {
     id,
@@ -399,6 +400,7 @@ function createRows(
     availability,
     unavailability,
     timeline,
+    own_stake,
   };
 }
 
@@ -599,6 +601,7 @@ export const selectValidatorsInsightsBySessions = (
       availability,
       unavailability,
       timeline.join(""),
+      profile?.own_stake ?? null,
     );
   });
 

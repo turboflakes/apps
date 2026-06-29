@@ -3,7 +3,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from "recharts";
 import { Typography } from "@mui/material";
-import { versionToHex } from "../util/display";
+import { ratioToHex } from "../util/display";
 
 const renderTooltip = (props) => {
   const { active, payload } = props;
@@ -22,7 +22,7 @@ const renderTooltip = (props) => {
         }}
       >
         <Typography component="div" variant="caption" color="inherit" paragraph>
-          <b>{data.payload.name === "" ? "N/D" : `v${data.payload.name}`}</b>
+          <b>{data.payload.name === "" ? "N/D" : `${data.payload.name}`}</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
           <span style={{ marginRight: "8px", color: data.fill }}>●</span>
@@ -67,17 +67,12 @@ const renderCustomizedLabel = ({
   );
 };
 
-export default function NodeVersionChart({
-  data,
-  size,
-  showLegend,
-  showLabel,
-}) {
+export default function OwnStakeChart({ data, size, showLegend, showLabel }) {
   // const theme = useTheme();
   const total = data.map((d) => d.value).reduce((a, b) => a + b, 0);
   const pieData = data.map((d) => {
     return {
-      name: d.subset,
+      name: d.legend,
       value: d.value,
       total,
     };
@@ -116,7 +111,10 @@ export default function NodeVersionChart({
             labelLine={false}
           >
             {pieData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={versionToHex(entry.name)} />
+              <Cell
+                key={`cell-${index}`}
+                fill={ratioToHex(entry.value / entry.total, 35, 100)}
+              />
             ))}
           </Pie>
           <Tooltip

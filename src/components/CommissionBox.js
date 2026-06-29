@@ -1,30 +1,68 @@
 import * as React from "react";
 import { useSelector } from "react-redux";
 import groupBy from "lodash/groupBy";
-import orderBy from "lodash/orderBy";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import CommissionPieChart from "./CommissionPieChart";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import IconButton from "@mui/material/IconButton";
+import PieChartIcon from "@mui/icons-material/PieChart";
+import ListIcon from "@mui/icons-material/List";
+import { useTheme } from "@mui/material/styles";
+import CommissionChart from "./CommissionChart";
 import { selectValidatorsInsightsBySessions } from "../features/api/validatorsSlice";
+import {
+  selectIdentityFilter,
+  selectSubsetFilter,
+} from "../features/layout/layoutSlice";
 import { selectSessionHistoryRangeIds } from "../features/api/sessionsSlice";
-import { commissionDisplayNumber } from "../util/display";
+import { commissionDisplayNumber, ratioToHex } from "../util/display";
 
-export default function BackingBox({ sessionIndex, isHistoryMode }) {
-  // const theme = useTheme();
+export default function CommissionBox({ sessionIndex, isHistoryMode }) {
+  const theme = useTheme();
+  const [showPie, setShowPie] = React.useState(true);
+  const identityFilter = useSelector(selectIdentityFilter);
+  const subsetFilter = useSelector(selectSubsetFilter);
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
+
   const rows = useSelector((state) =>
     selectValidatorsInsightsBySessions(
       state,
       isHistoryMode ? historySessionRangeIds : [sessionIndex],
       isHistoryMode,
+      identityFilter,
+      subsetFilter,
     ),
   );
+
+  const handleView = () => {
+    setShowPie(!showPie);
+  };
 
   if (!rows.length) {
     return null;
   }
 
+  // const groupedByOwnStake = groupBy(rows, (v) => {
+  //   let tokenDecimals = chainInfo?.tokenDecimals
+  //     ? chainInfo.tokenDecimals[0]
+  //     : 10;
+  //   let tokenSymbol = chainInfo?.tokenSymbol ? chainInfo.tokenSymbol[0] : "";
+  //   const networkDecimals = Math.pow(10, tokenDecimals);
+  //   const floor =
+  //     Math.floor(
+  //       stakeDisplayNumber(v.own_stake, chainInfo) / (networkDecimals * 10000),
+  //     ) *
+  //     (networkDecimals * 10000);
+
+  //   const ceil = networkDecimals * 10000 + floor;
+  //   // Group by own stake, display in Kilo
+  //   return `${stakeDisplay(floor / 1000, chainInfo, 0, false, false, true)} - ${stakeDisplay(ceil / 1000, chainInfo, 0, false, false, true)} (K${tokenSymbol})`;
+  // });
+  //
   const groupedByCommission = groupBy(rows, (v) => {
     const floor = Math.floor(commissionDisplayNumber(v.commission) / 10) * 10;
     const ceil = floor + 10;
@@ -34,13 +72,16 @@ export default function BackingBox({ sessionIndex, isHistoryMode }) {
     return `${floor}-${ceil}%`;
   });
 
-  const data = orderBy(
-    Object.keys(groupedByCommission).map((commission) => ({
-      commission,
-      value: groupedByCommission[commission].length,
-    })),
-    "commission",
-  );
+  const data = Object.entries(groupedByCommission)
+    .map(([legend, arr]) => ({
+      legend,
+      value: arr.length,
+    }))
+    .sort(
+      (a, b) => (parseInt(a.legend, 10) || 0) - (parseInt(b.legend, 10) || 0),
+    );
+
+  const total = data.map((d) => d.value).reduce((a, b) => a + b, 0);
 
   return (
     <Paper
@@ -67,41 +108,79 @@ export default function BackingBox({ sessionIndex, isHistoryMode }) {
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Box sx={{ display: "flex", width: "90%" }}>
+          <Box sx={{ display: "flex" }}>
+            <Typography
+              variant="h6"
+              sx={{ mr: 1, overflow: "hidden", textOverflow: "ellipsis" }}
+              title="Distribution by commission"
+            >
+              Distribution by commission
+            </Typography>
+          </Box>
+        </Box>
+        <Typography
+          variant="subtitle2"
+          sx={{ height: 16, overflow: "hidden", textOverflow: "ellipsis" }}
+        >
+          {subsetFilter !== "" ? (
+            <span>Only for subset {subsetFilter}</span>
+          ) : (
+            "All active validators"
+          )}
+        </Typography>
+
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <IconButton aria-label="grade-details" onClick={handleView}>
+            {!showPie ? (
+              <PieChartIcon fontSize="small" />
+            ) : (
+              <ListIcon fontSize="small" />
+            )}
+          </IconButton>
+        </Box>
+
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          {showPie ? (
+            <CommissionChart data={data} size="md" showLegend showLabel />
+          ) : (
             <Box
               sx={{
-                mr: 1,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
+                display: "flex",
+                flexDirection: "column",
+                width: "256px",
+                height: 234,
+                overflowY: "auto",
               }}
             >
-              <Box sx={{ display: "flex" }}>
-                <Typography
-                  variant="h6"
-                  sx={{ mr: 1, overflow: "hidden" }}
-                  title="Distribution by commission"
-                >
-                  Distribution by commission
-                </Typography>
-              </Box>
-              <Typography
-                variant="subtitle2"
-                sx={{
-                  height: 16,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-                paragraph
-              >
-                All active validators
-              </Typography>
+              <List dense>
+                {data.map((g, i) => (
+                  <ListItem
+                    key={i}
+                    sx={{
+                      borderBottom: `1px solid ${theme.palette.divider}`,
+                      "+ :last-child": { borderBottom: "none" },
+                    }}
+                    secondaryAction={
+                      <Typography variant="caption">{`${g.value} (${Math.round((g.value / total) * 10000) / 100}%)`}</Typography>
+                    }
+                  >
+                    <ListItemIcon sx={{ minWidth: "24px" }}>
+                      <Box
+                        sx={{
+                          width: "8px",
+                          height: "8px",
+                          borderRadius: "50%",
+                          bgcolor: ratioToHex(g.value / total, 174, 62),
+                          display: "inline-block",
+                        }}
+                      ></Box>
+                    </ListItemIcon>
+                    <ListItemText sx={{ m: 0 }} primary={`${g.legend}`} />
+                  </ListItem>
+                ))}
+              </List>
             </Box>
-          </Box>
-          <Box></Box>
-        </Box>
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <CommissionPieChart data={data} size="md" showLegend showLabel />
+          )}
         </Box>
       </Box>
     </Paper>
