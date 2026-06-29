@@ -104,24 +104,34 @@ const defineColumns = (theme, chain, chainInfo) => {
     {
       field: "own_stake",
       headerName: `Self Stake (${chainInfo.tokenSymbol})`,
+      type: "number",
       width: 96,
-      headerAlign: "left",
-      align: "left",
+      headerAlign: "right",
+      align: "right",
       sortable: true,
       disableColumnMenu: true,
       valueGetter: (params) =>
         !isNull(params.row.own_stake) ? params.row.own_stake : null,
       renderCell: (params) =>
         !isNull(params.row.own_stake)
-          ? stakeDisplay(params.row.own_stake, chainInfo, 0, false, false, true)
+          ? Math.round(
+              stakeDisplay(
+                params.row.own_stake,
+                chainInfo,
+                0,
+                false,
+                false,
+                true,
+              ),
+            ).format()
           : null,
     },
     {
       field: "commission",
       headerName: "Commission",
       width: 80,
-      headerAlign: "left",
-      align: "left",
+      headerAlign: "right",
+      align: "right",
       sortable: true,
       disableColumnMenu: true,
       valueGetter: (params) =>

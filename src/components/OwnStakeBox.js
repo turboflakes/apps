@@ -58,19 +58,33 @@ export default function OwnStakeBox({ sessionIndex, isHistoryMode }) {
     const networkDecimals = Math.pow(10, tokenDecimals);
     const stepUnit = getStepUnits(selectedChain);
     const stepMult = getStepMultiplier(selectedChain);
-    const floor =
+    const lowerBond =
       Math.floor(
         stakeDisplayNumber(v.own_stake, chainInfo) /
           (networkDecimals * stepMult * stepUnit),
       ) *
       (networkDecimals * stepMult * stepUnit);
+    const lowerBondDisplay = stakeDisplay(
+      lowerBond / stepUnit,
+      chainInfo,
+      0,
+      false,
+      false,
+      true,
+    );
+    let lowerBondShowK = stepUnit > 1 && lowerBondDisplay !== "0";
 
-    const ceil = networkDecimals * stepMult * stepUnit + floor;
-    // Group by own stake, display in Kilo
-    let showK =
-      stepUnit > 1 &&
-      stakeDisplay(floor / stepUnit, chainInfo, 0, false, false, true) !== "0";
-    return `${stakeDisplay(floor / stepUnit, chainInfo, 0, false, false, true)}${showK ? "K" : ""}  - ${stakeDisplay(ceil / stepUnit, chainInfo, 0, false, false, true)}${showK ? "K" : ""}`;
+    const upperBond = networkDecimals * stepMult * stepUnit + lowerBond;
+    const upperBondDisplay = stakeDisplay(
+      upperBond / stepUnit,
+      chainInfo,
+      0,
+      false,
+      false,
+      true,
+    );
+    let upperBondShowK = stepUnit > 1 && upperBondDisplay !== "0";
+    return `${lowerBondDisplay}${lowerBondShowK ? "K" : ""}  - ${upperBondDisplay}${upperBondShowK ? "K" : ""}`;
   });
 
   const data = Object.entries(groupedByOwnStake)
