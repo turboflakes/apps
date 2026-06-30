@@ -21,9 +21,9 @@ import {
   selectValProfileByAddress,
   useGetValidatorProfileByAddressQuery,
 } from "../features/api/valProfilesSlice";
-import { selectChainInfo } from "../features/chain/chainSlice";
+import { selectChain, selectChainInfo } from "../features/chain/chainSlice";
 import { selectIsLiveMode } from "../features/layout/layoutSlice";
-import { stakeDisplay, stashDisplay, symbolDisplay } from "../util/display";
+import { stakeDisplay, stashDisplay } from "../util/display";
 import { chainAddress } from "../util/crypto";
 
 export default function ValAddressProfile({
@@ -36,6 +36,7 @@ export default function ValAddressProfile({
   const theme = useTheme();
   const { isSuccess, isFetching } =
     useGetValidatorProfileByAddressQuery(address);
+  const selectedChain = useSelector(selectChain);
   const isLiveMode = useSelector(selectIsLiveMode);
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
@@ -178,40 +179,42 @@ export default function ValAddressProfile({
                   />
                 ) : null}
               </Box>
-              <Box
-                sx={{
-                  mr: theme.spacing(2),
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "left",
-                }}
-              >
-                <Typography
-                  variant="caption"
-                  sx={{ whiteSpace: "nowrap" }}
-                  gutterBottom
-                  color={
-                    showDark
-                      ? theme.palette.neutrals[200]
-                      : theme.palette.neutrals[300]
-                  }
+              {selectedChain !== "polkadot" ? (
+                <Box
+                  sx={{
+                    mr: theme.spacing(2),
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "left",
+                  }}
                 >
-                  commission
-                </Typography>
-                <Box>
                   <Typography
-                    variant="h5"
-                    component="span"
+                    variant="caption"
+                    sx={{ whiteSpace: "nowrap" }}
+                    gutterBottom
                     color={
                       showDark
-                        ? theme.palette.text.secondary
-                        : theme.palette.text.primary
+                        ? theme.palette.neutrals[200]
+                        : theme.palette.neutrals[300]
                     }
                   >
-                    {valProfile._commission}
+                    commission
                   </Typography>
+                  <Box>
+                    <Typography
+                      variant="h5"
+                      component="span"
+                      color={
+                        showDark
+                          ? theme.palette.text.secondary
+                          : theme.palette.text.primary
+                      }
+                    >
+                      {valProfile._commission}
+                    </Typography>
+                  </Box>
                 </Box>
-              </Box>
+              ) : null}
               <Box
                 sx={{
                   mr: theme.spacing(2),
