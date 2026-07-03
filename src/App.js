@@ -174,6 +174,7 @@ const App = () => {
               <Route path="insights" element={<OverviewPage tab={0} />} />
               <Route path="parachains" element={<OverviewPage tab={1} />} />
               <Route path="val-groups" element={<OverviewPage tab={2} />} />
+              <Route path="val-waiting" element={<OverviewPage tab={3} />} />
               {/* TODO: cores usage page
                   <Route path="cores" element={<OverviewPage tab={3} />} />
                 */}

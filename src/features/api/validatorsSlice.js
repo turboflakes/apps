@@ -13,7 +13,7 @@ import max from "lodash/max";
 import min from "lodash/min";
 import apiSlice from "./apiSlice";
 import { calculateMVR, calculateBAR, calculateBUR } from "../../util/math";
-import { isValidAddress, addressSS58 } from "../../util/crypto";
+// import { isValidAddress, addressSS58 } from "../../util/crypto";
 import { socketActions } from "./socketSlice";
 import { selectSessionByIndex } from "./sessionsSlice";
 import { selectIsLiveMode } from "../layout/layoutSlice";
@@ -378,6 +378,9 @@ function createRows(
   unavailability,
   timeline,
   own_stake,
+  nominators_stake,
+  nominators_raw_stake,
+  nominators_counter,
 ) {
   return {
     id,
@@ -401,6 +404,9 @@ function createRows(
     unavailability,
     timeline,
     own_stake,
+    nominators_stake,
+    nominators_raw_stake,
+    nominators_counter,
   };
 }
 
@@ -602,6 +608,9 @@ export const selectValidatorsInsightsBySessions = (
       unavailability,
       timeline.join(""),
       profile?.own_stake ?? null,
+      profile?.nominators_stake ?? null,
+      profile?.nominators_raw_stake ?? null,
+      profile?.nominators_counter ?? null,
     );
   });
 
