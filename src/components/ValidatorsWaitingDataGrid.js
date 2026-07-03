@@ -4,29 +4,19 @@ import isUndefined from "lodash/isUndefined";
 import isNull from "lodash/isNull";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-// import FormHelperText from '@mui/material/FormHelperText';
-import Switch from "@mui/material/Switch";
 import { DataGrid } from "@mui/x-data-grid";
 import Identicon from "@polkadot/react-identicon";
-import DetailsIcon from "./DetailsIcon";
 import GridIdentityLink from "./GridIdentityLink";
 import IdentityFilter from "./IdentityFilter";
 import InsightsInfoLegend from "./InsightsInfoLegend";
-import { gradeByRatios } from "../util/grade";
 import { commissionDisplayNumber } from "../util/display";
-import {
-  useGetValidatorsQuery,
-  selectValidatorsInsightsBySessions,
-} from "../features/api/validatorsSlice";
+import { selectValidatorsWaitingBySessions } from "../features/api/validatorsSlice";
 import { selectChain, selectChainInfo } from "../features/chain/chainSlice";
 import {
   selectIdentityFilter,
   selectSubsetFilter,
 } from "../features/layout/layoutSlice";
-import { stakeDisplay, scoreDisplay, versionDisplay } from "../util/display";
-import { isChainSupported, getChainName } from "../constants";
+import { stakeDisplay } from "../util/display";
 import { chainAddress } from "../util/crypto";
 
 const defineColumns = (theme, chain, chainInfo) => {
@@ -66,7 +56,7 @@ const defineColumns = (theme, chain, chainInfo) => {
     {
       field: "commission",
       headerName: "Commission",
-      width: 80,
+      width: 112,
       headerAlign: "right",
       align: "right",
       sortable: true,
@@ -84,7 +74,7 @@ const defineColumns = (theme, chain, chainInfo) => {
       field: "own_stake",
       headerName: `Self Stake (${chainInfo.tokenSymbol})`,
       type: "number",
-      width: 96,
+      width: 144,
       headerAlign: "right",
       align: "right",
       sortable: true,
@@ -109,7 +99,7 @@ const defineColumns = (theme, chain, chainInfo) => {
       field: "nominators_counter",
       headerName: `Nom. Counter`,
       type: "number",
-      width: 96,
+      width: 128,
       headerAlign: "right",
       align: "right",
       sortable: true,
@@ -127,7 +117,7 @@ const defineColumns = (theme, chain, chainInfo) => {
       field: "nominators_stake",
       headerName: `Nom. Stake (${chainInfo.tokenSymbol})`,
       type: "number",
-      width: 96,
+      width: 144,
       headerAlign: "right",
       align: "right",
       sortable: true,
@@ -160,7 +150,7 @@ export default function ValidatorsWaitingDataGrid({ sessionIndex, skip }) {
   const subsetFilter = useSelector(selectSubsetFilter);
 
   const rows = useSelector((state) =>
-    selectValidatorsInsightsBySessions(
+    selectValidatorsWaitingBySessions(
       state,
       [sessionIndex],
       false,
@@ -168,62 +158,19 @@ export default function ValidatorsWaitingDataGrid({ sessionIndex, skip }) {
       subsetFilter,
     ),
   );
-  const [showOnlyPV, setShowOnlyPV] = React.useState(true);
-  // const [showAllGrades, setShowAllGrades] = React.useState(false);
-  const [onlyDisputes, setOnlyDisputes] = React.useState(false);
-  const [onlyLowGrades, setOnlyLowGrades] = React.useState(false);
+
   const chainInfo = useSelector(selectChainInfo);
 
   if (isUndefined(rows)) {
     return null;
   }
 
-  const rowsFiltered1 = showOnlyPV ? rows.filter((v) => !isNull(v.mvr)) : rows;
-  // const rowsFiltered2 = showAllGrades ? rowsFiltered1 : rowsFiltered1.filter((v) => !isUndefined(v.mvr) ? grade(1-v.mvr) !== 'F' : false);
-  const rowsFiltered3 = onlyDisputes
-    ? rows.filter((v) => v.disputes > 0)
-    : rowsFiltered1;
-  const rowsFiltered4 = onlyLowGrades
-    ? rows.filter((v) =>
-        !isNull(v.mvr) && !isNull(v.bur)
-          ? gradeByRatios(v.mvr, v.bur) === "F"
-          : false,
-      )
-    : rowsFiltered3;
-  const gradeFsCounter = rowsFiltered1.filter((v) =>
-    !isNull(v.mvr) && !isNull(v.bur)
-      ? gradeByRatios(v.mvr, v.bur) === "F"
-      : false,
-  ).length;
-  const disputesCounter = rows.filter((v) => v.disputes > 0).length;
-
-  let columns =
-    disputesCounter > 0
-      ? defineColumns(theme, selectedChain, chainInfo)
-      : defineColumns(theme, selectedChain, chainInfo).filter(
-          (c) => c.field !== "disputes",
-        );
+  let columns = defineColumns(theme, selectedChain, chainInfo);
 
   columns =
     selectedChain !== "polkadot"
       ? columns
       : columns.filter((c) => c.field !== "commission");
-
-  const handleOnlyPVChange = (event) => {
-    setShowOnlyPV(event.target.checked);
-  };
-
-  // const handleViewAllGradesChange = (event) => {
-  //   setShowAllGrades(event.target.checked);
-  // };
-
-  const handleOnlyDisputesChange = (event) => {
-    setOnlyDisputes(event.target.checked);
-  };
-
-  const handleOnlyLowGradesChange = (event) => {
-    setOnlyLowGrades(event.target.checked);
-  };
 
   const pageSize = selectedChain === "polkadot" ? 17 : 24;
 
@@ -250,65 +197,7 @@ export default function ValidatorsWaitingDataGrid({ sessionIndex, skip }) {
         }}
       >
         <IdentityFilter />
-        <FormGroup sx={{ ml: 4, display: "flex", flexDirection: "row" }}>
-          <FormControlLabel
-            control={
-              <Switch
-                size="small"
-                checked={showOnlyPV}
-                onChange={handleOnlyPVChange}
-              />
-            }
-            label="Show only active para-validators"
-            sx={{
-              "& .MuiFormControlLabel-label": {
-                ...theme.typography.caption,
-              },
-            }}
-          />
-          <FormControlLabel
-            control={
-              <Switch
-                size="small"
-                disabled={disputesCounter === 0}
-                checked={onlyDisputes}
-                onChange={handleOnlyDisputesChange}
-              />
-            }
-            label="Show only disputes"
-            sx={{
-              "& .MuiFormControlLabel-label": {
-                ...theme.typography.caption,
-              },
-            }}
-          />
-          <FormControlLabel
-            control={
-              <Switch
-                size="small"
-                disabled={gradeFsCounter === 0}
-                checked={onlyLowGrades}
-                onChange={handleOnlyLowGradesChange}
-              />
-            }
-            label="Show only low grades"
-            sx={{
-              "& .MuiFormControlLabel-label": {
-                ...theme.typography.caption,
-              },
-            }}
-          />
-          {/* <FormControlLabel control={
-              <Switch size="small" disabled={gradeFsCounter === 0 || onlyDisputes || onlyLowGrades} checked={showAllGrades || onlyDisputes || onlyLowGrades}
-                onChange={handleViewAllGradesChange} />
-            }
-            label="Show all grades"
-            sx={{
-              '& .MuiFormControlLabel-label' : {
-                ...theme.typography.caption
-              }
-            }}/> */}
-        </FormGroup>
+
         <Box sx={{ position: "absolute", top: 0, right: 0 }}>
           <InsightsInfoLegend />
         </Box>
@@ -335,7 +224,7 @@ export default function ValidatorsWaitingDataGrid({ sessionIndex, skip }) {
           },
         }}
         // onRowClick={handleOnRowClick}
-        rows={rowsFiltered4}
+        rows={rows}
         columns={columns}
         rowsPerPageOptions={[pageSize]}
         pagination

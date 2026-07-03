@@ -7,15 +7,15 @@ import Typography from "@mui/material/Typography";
 import ValidatorsWaitingBox from "./ValidatorsWaitingBox";
 import CommissionBox from "./CommissionBox";
 import OwnStakeBox from "./OwnStakeBox";
-import NodeVersionBox from "./NodeVersionBox";
-// import SubsetFilter from "./SubsetFilter";
-import GradesWithFilterBox from "./GradesWithFilterBox";
 import {
   selectAddress,
   addressChanged,
   selectChain,
 } from "../features/chain/chainSlice";
-import { selectSessionCurrent } from "../features/api/sessionsSlice";
+import {
+  useGetSessionByIndexQuery,
+  selectSessionCurrent,
+} from "../features/api/sessionsSlice";
 import { selectIsSocketConnected } from "../features/api/socketSlice";
 import { useGetValidatorsQuery } from "../features/api/validatorsSlice";
 
@@ -28,6 +28,10 @@ export default function ValWaitingSection() {
   const currentSession = useSelector(selectSessionCurrent);
   const selectedChain = useSelector(selectChain);
   const sessionIndex = currentSession - 1;
+  const { isSuccess: isSessionSuccess } = useGetSessionByIndexQuery({
+    index: sessionIndex,
+  });
+
   const { isSuccess } = useGetValidatorsQuery(
     {
       session: sessionIndex,
@@ -43,7 +47,7 @@ export default function ValWaitingSection() {
     }
   }, [dispatch, stash, selectedAddress]);
 
-  if (!isSocketConnected || !isSuccess) {
+  if (!isSocketConnected || !isSuccess || !isSessionSuccess) {
     // TODO websocket/network disconnected page
     return <Box sx={{ m: 2, minHeight: "100vh" }}></Box>;
   }
@@ -75,28 +79,16 @@ export default function ValWaitingSection() {
         </Grid>
         <Grid item xs={2}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <GradesWithFilterBox
-                sessionIndex={sessionIndex}
-                isHistoryMode={false}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <NodeVersionBox
-                sessionIndex={sessionIndex}
-                isHistoryMode={false}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <OwnStakeBox sessionIndex={sessionIndex} isHistoryMode={false} />
-            </Grid>
-            <Grid item xs={12}>
-              {selectedChain !== "polkadot" ? (
+            {selectedChain !== "polkadot" ? (
+              <Grid item xs={12}>
                 <CommissionBox
                   sessionIndex={sessionIndex}
                   isHistoryMode={false}
                 />
-              ) : null}
+              </Grid>
+            ) : null}
+            <Grid item xs={12}>
+              <OwnStakeBox sessionIndex={sessionIndex} isHistoryMode={false} />
             </Grid>
             <Grid item xs={12}></Grid>
           </Grid>

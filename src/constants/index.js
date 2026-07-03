@@ -181,8 +181,8 @@ const networkSettings = {
     validators: [],
     isDNAvailable: false,
     isTestNetwork: true,
-    stepUnits: 1000,
-    stepMultiplier: 10,
+    stepUnits: 10,
+    stepMultiplier: 1,
   },
 };
 export const getNetworks = () => Object.keys(networkSettings);
