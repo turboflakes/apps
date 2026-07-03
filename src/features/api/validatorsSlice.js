@@ -513,7 +513,13 @@ export const selectValidatorsInsightsBySessions = (
     const para_points =
       f2.length > 0
         ? f2
-            .map((v) => v.auth.ep - v.auth.sp - v.auth.ab.length * 20)
+            .map((v) => {
+              let total_pts = v.auth.ep - v.auth.sp;
+              let total_author_pts = v.auth.ab.length * 20;
+              return total_pts > total_author_pts
+                ? total_pts - total_author_pts
+                : 0;
+            })
             .reduce((a, b) => a + b, 0)
         : null;
     const core_assignments =
@@ -540,6 +546,7 @@ export const selectValidatorsInsightsBySessions = (
             )
             .reduce((a, b) => a + b, 0)
         : null;
+
     const avg_bck_pts = f2.length > 0 ? para_points / f2.length : null;
     const paraId = f2.length > 0 ? f2.map((v) => v.para.pid) : null;
     const validator_index = !!f1.length ? f1[0].auth.aix : null;
