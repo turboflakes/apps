@@ -234,10 +234,10 @@ const sessionsSlice = createSlice({
         };
 
         // Filter validators if authority and p/v
-        const filtered = action.payload.data.filter((v) => v.is_auth);
+        // const filtered = action.payload.data.filter((v) => v.is_auth);
 
         // Group validators by session first
-        const groupedBySession = groupBy(filtered, (v) =>
+        const groupedBySession = groupBy(action.payload.data, (v) =>
           !!v.session ? v.session : action.payload.session,
         );
 

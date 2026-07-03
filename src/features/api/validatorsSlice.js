@@ -378,6 +378,9 @@ function createRows(
   unavailability,
   timeline,
   own_stake,
+  nominators_stake,
+  nominators_raw_stake,
+  nominators_counter,
 ) {
   return {
     id,
@@ -401,6 +404,31 @@ function createRows(
     unavailability,
     timeline,
     own_stake,
+    nominators_stake,
+    nominators_raw_stake,
+    nominators_counter,
+  };
+}
+
+function createBasicRows(
+  id,
+  identity,
+  address,
+  commission,
+  own_stake,
+  nominators_stake,
+  nominators_raw_stake,
+  nominators_counter,
+) {
+  return {
+    id,
+    identity,
+    address,
+    commission,
+    own_stake,
+    nominators_stake,
+    nominators_raw_stake,
+    nominators_counter,
   };
 }
 
@@ -475,6 +503,51 @@ export const SUBSET = {
   NONTVP: "Others",
   C100: "C100",
   NONVAL: "Non-validator",
+};
+
+export const selectValidatorsWaitingBySessions = (
+  state,
+  sessions = [],
+  isHistory = false,
+  identityFilter = "",
+  isFetching,
+) => {
+  const chainInfo = selectChainInfo(state);
+  const validators = selectValidatorsBySessions(
+    state,
+    sessions,
+    isHistory ? "_insights" : "",
+  );
+
+  console.log("validators", validators, sessions);
+  const rows = validators.map((x, i) => {
+    let session = x.length - 1;
+    const profile = selectValProfileByAddress(state, x[session].address);
+    const address = x[session].address;
+
+    return createBasicRows(
+      i + 1,
+      profile._identity ?? null,
+      address,
+      profile?.commission ?? null,
+      profile?.own_stake ?? null,
+      profile?.nominators_stake ?? null,
+      profile?.nominators_raw_stake ?? null,
+      profile?.nominators_counter ?? null,
+    );
+  });
+
+  const filteredRows = rows.filter((v) =>
+    !isUndefined(v.identity) && !isUndefined(v.address)
+      ? v.identity?.toLowerCase().includes(identityFilter?.toLowerCase()) ||
+        v.address?.toLowerCase().includes(identityFilter?.toLowerCase()) ||
+        chainAddress(v.address, chainInfo.ss58Format)
+          .toLowerCase()
+          .includes(identityFilter?.toLowerCase())
+      : false,
+  );
+
+  return filteredRows;
 };
 
 export const selectValidatorsInsightsBySessions = (
@@ -609,6 +682,9 @@ export const selectValidatorsInsightsBySessions = (
       unavailability,
       timeline.join(""),
       profile?.own_stake ?? null,
+      profile?.nominators_stake ?? null,
+      profile?.nominators_raw_stake ?? null,
+      profile?.nominators_counter ?? null,
     );
   });
 

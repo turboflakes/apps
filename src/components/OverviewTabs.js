@@ -9,10 +9,12 @@ import InsightsGrid from "./InsightsGrid";
 import ValGroupsGrid from "./ValGroupsGrid";
 import CoresGrid from "./CoresGrid";
 import ParachainsGrid from "./ParachainsGrid";
+import ValWaitingSection from "./ValWaitingSection";
 import ModeSwitch from "./ModeSwitch";
 import SessionHistoryTimelineChart from "./SessionHistoryTimelineChart";
 import { useGetValidatorsQuery } from "../features/api/validatorsSlice";
 import { selectChain } from "../features/chain/chainSlice";
+
 import {
   pageChanged,
   selectMode,
@@ -27,7 +29,7 @@ function a11yProps(index) {
   };
 }
 
-const tabPages = ["insights", "parachains", "val-groups"];
+const tabPages = ["insights", "parachains", "val-groups", "val-waiting"];
 
 export default function OverviewTabs({ sessionIndex, tab }) {
   // const theme = useTheme();
@@ -102,6 +104,14 @@ export default function OverviewTabs({ sessionIndex, tab }) {
             disableRipple
             disableFocusRipple
           />
+
+          <Tab
+            sx={{ my: 1, mr: 2, borderRadius: 3 }}
+            label="Val. Waiting"
+            {...a11yProps(2)}
+            disableRipple
+            disableFocusRipple
+          />
           {/* <Tab sx={{ my:1,  borderRadius: 3 }} label="Cores" {...a11yProps(3)} disableRipple disableFocusRipple /> */}
         </Tabs>
         {tab !== 3 ? <ModeSwitch mode={selectedMode} /> : null}
@@ -127,6 +137,8 @@ export default function OverviewTabs({ sessionIndex, tab }) {
         <ParachainsGrid sessionIndex={sessionIndex} />
       ) : tab === 2 ? (
         <ValGroupsGrid sessionIndex={sessionIndex} />
+      ) : tab === 3 ? (
+        <ValWaitingSection sessionIndex={sessionIndex} />
       ) : (
         <CoresGrid sessionIndex={sessionIndex} />
       )}

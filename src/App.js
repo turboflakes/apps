@@ -14,7 +14,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { getNetworkExternalWSS } from "./constants";
 import LayoutPage from "./components/LayoutPage";
-import UnderMaintenancePage from "./components/UnderMaintenancePage";
+// import UnderMaintenancePage from "./components/UnderMaintenancePage";
 // ONE-T Pages
 import DashboardPage from "./components/DashboardPage";
 import OverviewPage from "./components/OverviewPage";
@@ -24,10 +24,10 @@ import PoolsOverviewPage from "./components/PoolsOverviewPage";
 import NomiDashboardPage from "./components/nomi/DashboardPage";
 // TODO: (StakePage)
 // import StakePage from './components/stake/StakePage'
-import {
-  selectBestBlock,
-  selectFinalizedBlock,
-} from "./features/api/blocksSlice";
+// import {
+//   selectBestBlock,
+//   selectFinalizedBlock,
+// } from "./features/api/blocksSlice";
 import withTheme from "./theme/withTheme";
 import { selectApp } from "./features/app/appSlice";
 import { selectChain } from "./features/chain/chainSlice";
@@ -174,6 +174,7 @@ const App = () => {
               <Route path="insights" element={<OverviewPage tab={0} />} />
               <Route path="parachains" element={<OverviewPage tab={1} />} />
               <Route path="val-groups" element={<OverviewPage tab={2} />} />
+              <Route path="val-waiting" element={<OverviewPage tab={3} />} />
               {/* TODO: cores usage page
                   <Route path="cores" element={<OverviewPage tab={3} />} />
                 */}
