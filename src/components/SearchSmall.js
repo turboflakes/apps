@@ -16,6 +16,7 @@ import {
 import {
   pageChanged
 } from '../features/layout/layoutSlice';
+import { useGetValidatorsQuery } from '../features/api/validatorsSlice';
 
 export default function SearchSmall({width = 512}) {
   // const theme = useTheme();
@@ -25,6 +26,13 @@ export default function SearchSmall({width = 512}) {
   const currentSelected = useSelector(selectAddress);
   const [address, setAddress] = React.useState("");
   let [searchParams, setSearchParams] = useSearchParams();
+  
+  const { data: validators } = useGetValidatorsQuery({
+    show_profile: true,
+    size: 20
+  }, {
+    skip: !address || address.length < 3
+  });
 
   const handleChange = (event) => {
     setAddress(event.target.value);
@@ -32,7 +40,17 @@ export default function SearchSmall({width = 512}) {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    if (isValidAddress(address)) {
+    const validatorMatch = validators?.data?.find(v => 
+      v.identity?.display?.toLowerCase() === address.toLowerCase()
+    );
+    
+    if (validatorMatch) {
+      const defaultSS58 = addressSS58(validatorMatch.address);
+      dispatch(addressChanged(defaultSS58));
+      dispatch(pageChanged(`validator/${defaultSS58}`));
+      navigate(`/validator/${validatorMatch.address}`)
+      setAddress("");
+    } else if (isValidAddress(address)) {
       const defaultSS58 = addressSS58(address)
       dispatch(addressChanged(defaultSS58));
       dispatch(pageChanged(`validator/${defaultSS58}`));
@@ -52,7 +70,7 @@ export default function SearchSmall({width = 512}) {
             width,
           }}
           variant="outlined"
-          placeholder="Search by validator stash address"
+          placeholder="Search by identity or stash address"
           color="primary"
           value={address}
           onChange={handleChange}
