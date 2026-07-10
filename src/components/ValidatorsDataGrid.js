@@ -309,13 +309,13 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
   const selectedChain = useSelector(selectChain);
   const identityFilter = useSelector(selectIdentityFilter);
   const subsetFilter = useSelector(selectSubsetFilter);
-  let show_profile = selectedChain !== "paseo";
+
   const { isSuccess } = useGetValidatorsQuery(
     {
       session: sessionIndex,
       role: "authority",
       show_summary: true,
-      show_profile: show_profile,
+      show_profile: true,
       show_discovery: true,
     },
     { refetchOnMountOrArgChange: true, skip },

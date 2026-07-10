@@ -7,20 +7,18 @@ import {
   selectSessionHistoryIds,
 } from "../features/api/sessionsSlice";
 import { useGetValidatorsQuery } from "../features/api/validatorsSlice";
-import { selectChain } from "../features/chain/chainSlice";
 
 export default function ValidatorsHistoryInsights({ skip }) {
   // const theme = useTheme();
   const historySessionIds = useSelector(selectSessionHistoryIds);
-  const selectedChain = useSelector(selectChain);
-  let show_profile = selectedChain !== "paseo";
+
   const { isFetching: isFetchingValidators } = useGetValidatorsQuery(
     {
       role: "authority",
       from: historySessionIds[0],
       to: historySessionIds[5],
       show_summary: true,
-      show_profile: show_profile,
+      show_profile: true,
       show_discovery: true,
     },
     { skip },

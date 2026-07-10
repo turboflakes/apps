@@ -13,7 +13,6 @@ import ValWaitingSection from "./ValWaitingSection";
 import ModeSwitch from "./ModeSwitch";
 import SessionHistoryTimelineChart from "./SessionHistoryTimelineChart";
 import { useGetValidatorsQuery } from "../features/api/validatorsSlice";
-import { selectChain } from "../features/chain/chainSlice";
 
 import {
   pageChanged,
@@ -38,15 +37,13 @@ export default function OverviewTabs({ sessionIndex, tab }) {
   const selectedMode = useSelector(selectMode);
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
-  const selectedChain = useSelector(selectChain);
 
-  let show_profile = selectedChain !== "paseo";
   const { isSuccess } = useGetValidatorsQuery(
     {
       session: sessionIndex,
       role: "para_authority",
       show_summary: true,
-      show_profile: show_profile,
+      show_profile: true,
       show_discovery: true,
     },
     { refetchOnMountOrArgChange: true },
