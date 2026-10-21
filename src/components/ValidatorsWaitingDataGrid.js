@@ -8,7 +8,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import Identicon from "@polkadot/react-identicon";
 import GridIdentityLink from "./GridIdentityLink";
 import IdentityFilter from "./IdentityFilter";
-import InsightsInfoLegend from "./InsightsInfoLegend";
+// import InsightsInfoLegend from "./InsightsInfoLegend";
 import { commissionDisplayNumber } from "../util/display";
 import { selectValidatorsWaitingBySessions } from "../features/api/validatorsSlice";
 import { selectChain, selectChainInfo } from "../features/chain/chainSlice";
@@ -172,7 +172,7 @@ export default function ValidatorsWaitingDataGrid({ sessionIndex, skip }) {
       ? columns
       : columns.filter((c) => c.field !== "commission");
 
-  const pageSize = selectedChain === "polkadot" ? 17 : 24;
+  const pageSize = 24;
 
   return (
     <Box
@@ -199,7 +199,7 @@ export default function ValidatorsWaitingDataGrid({ sessionIndex, skip }) {
         <IdentityFilter />
 
         <Box sx={{ position: "absolute", top: 0, right: 0 }}>
-          <InsightsInfoLegend />
+          {/* <InsightsInfoLegend />*/}
         </Box>
       </Box>
       <DataGrid

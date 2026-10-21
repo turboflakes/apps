@@ -38,6 +38,16 @@ export const convertToIU = (value, decimals) => {
         : Math.abs(Number(value)).toFixed(decimals) + " ";
 };
 
+// Displays a raw stake in millions of tokens, e.g. `23.9154 MDOT`.
+// `power` = 2 is used for squared stakes, e.g. `1632.6243 MDOT²`.
+export const stakeDisplayMillions = (stake, networkDetails, power = 1) => {
+  const decimals = parseInt(networkDetails?.tokenDecimals?.[0] ?? 10, 10);
+  const symbol = networkDetails?.tokenSymbol?.[0] ?? "";
+  const divisor = Math.pow(Math.pow(10, decimals + 6), power);
+  const sup = power === 2 ? "²" : "";
+  return `${(Number(stake) / divisor).toFixed(4)} M${symbol}${sup}`;
+};
+
 export const stakeDisplay = (
   stake,
   networkDetails,

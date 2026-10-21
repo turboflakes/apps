@@ -1,0 +1,227 @@
+import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
+import isUndefined from "lodash/isUndefined";
+import { selectValProfileByAddress } from "./valProfilesSlice";
+import apiSlice from "./apiSlice";
+import { selectChainInfo } from "../chain/chainSlice";
+import { chainAddress } from "../../util/crypto";
+
+export const extendedApi = apiSlice.injectEndpoints({
+  tagTypes: ["Predictions", "PredictionValidators"],
+  endpoints: (builder) => ({
+    // GET /preds
+    getPredictions: builder.query({
+      query: () => ({ url: `/preds` }),
+      providesTags: [{ type: "Predictions", id: "LIST" }],
+    }),
+    // GET /preds/{target}
+    getPredictionByTarget: builder.query({
+      query: ({ target }) => ({ url: `/preds/${target}` }),
+      providesTags: (result, error, arg) => [
+        { type: "Predictions", id: arg.target },
+      ],
+    }),
+    // GET /preds/{target}/validators
+    getPredictionValidators: builder.query({
+      query: ({ target }) => ({ url: `/preds/${target}/validators` }),
+      providesTags: (result, error, arg) => [
+        { type: "PredictionValidators", id: arg.target },
+      ],
+    }),
+    // GET /preds/{target}/validators/{stash}
+    getPredictionValidator: builder.query({
+      query: ({ target, stash }) => ({ url: `/preds/${target}/validators/${stash}` }),
+      providesTags: (result, error, arg) => [
+        { type: "PredictionValidators", id: `${arg.n}_${arg.stash}` },
+      ],
+    }),
+    // GET /preds/{target}/validators/{stash}/nominators?page=&size=
+    getPredictionValidatorNominators: builder.query({
+      query: ({ target, stash, page, size }) => ({
+        url: `/preds/${target}/validators/${stash}/nominators`,
+        params: { page, size },
+      }),
+      providesTags: (result, error, arg) => [
+        {
+          type: "PredictionNominators",
+          id: `${arg.target}_${arg.stash}_${arg.page}_${arg.size}`,
+        },
+      ],
+    }),
+  }),
+});
+
+export const {
+  useGetPredictionsQuery,
+  useGetPredictionByTargetQuery,
+  useGetPredictionValidatorsQuery,
+  useGetPredictionValidatorQuery,
+  useGetPredictionValidatorNominatorsQuery,
+} = extendedApi;
+
+// Slice
+const adapter = createEntityAdapter({
+  selectId: (data) => data.n,
+  sortComparer: (a, b) => a.n - b.n,
+});
+
+const predictionsSlice = createSlice({
+  name: "predictions",
+  initialState: {
+    // defaults to the on-chain active set size once it is known
+    selected: undefined,
+    // validators list by target
+    validators: {},
+    // validator summary/metadata by `${target}_${stash}`
+    validator: {},
+    // nominators page by `${target}_${stash}`
+    nominators: {},
+    ...adapter.getInitialState(),
+  },
+  reducers: {
+    predictionChanged: (state, action) => {
+      state.selected = action.payload;
+    },
+  },
+  extraReducers(builder) {
+    builder
+      .addMatcher(
+        extendedApi.endpoints.getPredictions.matchFulfilled,
+        (state, action) => {
+          console.log("getPredictions", action.payload);
+          const preds = Array.isArray(action.payload)
+            ? action.payload
+            : action.payload?.data || [];
+          adapter.upsertMany(
+            state,
+            preds.map((p) => ({ ...p, _ts: +new Date() })),
+          );
+        },
+      )
+      .addMatcher(
+        extendedApi.endpoints.getPredictionByTarget.matchFulfilled,
+        (state, action) => {
+          const { target } = action.meta.arg.originalArgs;
+          adapter.upsertOne(state, {
+            ...action.payload,
+            n: Number(target),
+            _ts: +new Date(),
+          });
+        },
+      )
+      .addMatcher(
+        extendedApi.endpoints.getPredictionValidators.matchFulfilled,
+        (state, action) => {
+          const { target } = action.meta.arg.originalArgs;
+          state.validators[target] = action.payload;
+        },
+      )
+      .addMatcher(
+        extendedApi.endpoints.getPredictionValidator.matchFulfilled,
+        (state, action) => {
+          const { target, stash } = action.meta.arg.originalArgs;
+          state.validator[`${target}_${stash}`] = {
+            ...action.payload,
+            _ts: +new Date(),
+          };
+        },
+      )
+      .addMatcher(
+        extendedApi.endpoints.getPredictionValidatorNominators.matchFulfilled,
+        (state, action) => {
+          const { target, stash, page } = action.meta.arg.originalArgs;
+          const key = `${target}_${stash}`;
+          if (isUndefined(state.nominators[key])) {
+            state.nominators[key] = {};
+          }
+          state.nominators[key][page] = action.payload;
+        },
+      );
+  },
+});
+
+// Actions
+export const { predictionChanged } = predictionsSlice.actions;
+
+// Selectors
+export const {
+  selectAll: selectPredictionsAll,
+  selectById: selectPredictionByTarget,
+} = adapter.getSelectors((state) => state.predictions);
+
+export const selectPredictionSelected = (state) => state.predictions.selected;
+
+function createRows(
+  id,
+  identity,
+  address,
+  own_stake,
+  nominators_stake,
+  nominators_counter,
+  own_stake_pred,
+  nominators_stake_pred,
+  nominators_counter_pred,
+) {
+  return {
+    id,
+    identity,
+    address,
+    own_stake,
+    nominators_stake,
+    nominators_counter,
+    own_stake_pred,
+    nominators_stake_pred,
+    nominators_counter_pred,
+  };
+}
+
+
+export const selectPredictionValidatorsByTarget = (state, target, identityFilter, subsetFilter) => {
+  const chainInfo = selectChainInfo(state);
+  const validators = state.predictions.validators[target] ?? [];
+
+  const rows = validators.map((x, i) => {
+    const address = x.address;
+    const profile = selectValProfileByAddress(state, address);
+    return createRows(
+      i + 1,
+      profile?._identity ?? null,
+      address,
+      profile?.own_stake ?? null,
+      profile?.nominators_stake ?? null,
+      profile?.nominators_counter ?? null,
+      x.own_stake,
+      x.total_stake,
+      x.nominators_counter,
+    );
+  });
+
+  const query = identityFilter?.trim().toLowerCase();
+  if (!query) {
+    return rows;
+  }
+
+  const filteredRows = rows.filter((v) => {
+    if (!v.address) {
+      return false;
+    }
+    return (
+      v.identity?.toLowerCase().includes(query) ||
+      v.address.toLowerCase().includes(query) ||
+      chainAddress(v.address, chainInfo.ss58Format)
+        .toLowerCase()
+        .includes(query)
+    );
+  });
+
+  return filteredRows;
+
+}
+
+
+export const selectPredictionValidator = (state, target, stash) =>
+  state.predictions.validator[`${target}_${stash}`];
+
+export const selectPredictionNominators = (state, target, stash, page = 0) =>
+  state.predictions.nominators[`${target}_${stash}`]?.[page];
+
+export default predictionsSlice;
