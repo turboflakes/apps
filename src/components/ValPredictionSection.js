@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import ValidatorsPredictionBox from "./ValidatorsPredictionBox";
 import PredictionTargetFilter from "./PredictionTargetFilter";
-import OwnStakeBox from "./OwnStakeBox";
+import OwnStakeBoxPred from "./OwnStakeBoxPred";
 import {
   selectAddress,
   addressChanged,
@@ -84,7 +84,7 @@ export default function ValPredictioneSection() {
               </Grid>
             ) : null}
             <Grid item xs={12}>
-              {/* <OwnStakeBox sessionIndex={sessionIndex} isHistoryMode={false} />*/}
+              <OwnStakeBoxPred target={predictionTarget} />
             </Grid>
             <Grid item xs={12}></Grid>
           </Grid>

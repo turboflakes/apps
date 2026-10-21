@@ -49,7 +49,7 @@ export default function PredictionTargetFilter() {
               },
             }}
           >
-            {value}
+            {`target ${value}`}
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
