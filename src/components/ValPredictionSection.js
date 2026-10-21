@@ -8,6 +8,7 @@ import ValidatorsPredictionBox from "./ValidatorsPredictionBox";
 import PredictionTargetFilter from "./PredictionTargetFilter";
 import OwnStakeBoxPred from "./OwnStakeBoxPred";
 import NodeVersionBoxPred from "./NodeVersionBoxPred";
+import GradesWithFilterBoxPred from "./GradesWithFilterBoxPred";
 import PredictionRoundBox from "./PredictionRoundBox";
 import PredictionBlockBox from "./PredictionBlockBox";
 import PredictionMinimalStakeBox from "./PredictionMinimalStakeBox";
@@ -106,6 +107,9 @@ export default function ValPredictioneSection() {
                 />*/}
               </Grid>
             ) : null}
+            <Grid item xs={12}>
+              <GradesWithFilterBoxPred target={predictionTarget} />
+            </Grid>
             <Grid item xs={12}>
               <OwnStakeBoxPred target={predictionTarget} />
             </Grid>
