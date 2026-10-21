@@ -11,6 +11,7 @@ import CoresGrid from "./CoresGrid";
 import ParachainsGrid from "./ParachainsGrid";
 import ValWaitingSection from "./ValWaitingSection";
 import ValPredictionSection from "./ValPredictionSection";
+import { selectChain } from "../features/chain/chainSlice";
 import ModeSwitch from "./ModeSwitch";
 import SessionHistoryTimelineChart from "./SessionHistoryTimelineChart";
 import { useGetValidatorsQuery } from "../features/api/validatorsSlice";
@@ -35,6 +36,7 @@ export default function OverviewTabs({ sessionIndex, tab }) {
   // const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const selectedChain = useSelector(selectChain);
   const selectedMode = useSelector(selectMode);
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
@@ -111,13 +113,15 @@ export default function OverviewTabs({ sessionIndex, tab }) {
             disableFocusRipple
           />
 
-          <Tab
-            sx={{ my: 1, mr: 2, borderRadius: 3 }}
-            label="Predictions"
-            {...a11yProps(2)}
-            disableRipple
-            disableFocusRipple
-          />
+          {selectedChain === "polkadot" ? (
+            <Tab
+              sx={{ my: 1, mr: 2, borderRadius: 3 }}
+              label="Predictions"
+              {...a11yProps(4)}
+              disableRipple
+              disableFocusRipple
+            />
+          ) : null}
           {/* <Tab sx={{ my:1,  borderRadius: 3 }} label="Cores" {...a11yProps(3)} disableRipple disableFocusRipple /> */}
         </Tabs>
         {tab !== 4 ? <ModeSwitch mode={selectedMode} /> : null}

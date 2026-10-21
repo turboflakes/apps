@@ -175,7 +175,12 @@ const App = () => {
               <Route path="parachains" element={<OverviewPage tab={1} />} />
               <Route path="val-groups" element={<OverviewPage tab={2} />} />
               <Route path="val-waiting" element={<OverviewPage tab={3} />} />
-              <Route path="staking-prediction" element={<OverviewPage tab={4} />} />
+              {selectedChain === "polkadot" ? (
+                <Route
+                  path="staking-prediction"
+                  element={<OverviewPage tab={4} />}
+                />
+              ) : null}
               {/* TODO: cores usage page
                   <Route path="cores" element={<OverviewPage tab={3} />} />
                 */}
