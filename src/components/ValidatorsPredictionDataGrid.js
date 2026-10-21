@@ -197,7 +197,7 @@ export default function ValidatorsPredictionDataGrid({ target, skip }) {
 
   let columns = defineColumns(theme, selectedChain, chainInfo);
 
-  const pageSize = 24;
+  const pageSize = selectedChain === "polkadot" ? 17 : 24;
 
   return (
     <Box
