@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+import isUndefined from "lodash/isUndefined";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -17,13 +18,17 @@ import PredictionSumStakeSquaredBox from "./PredictionSumStakeSquaredBox";
 import {
   selectAddress,
   addressChanged,
-  selectChain,
 } from "../features/chain/chainSlice";
 import {
   useGetPredictionByTargetQuery,
   useGetPredictionValidatorsQuery,
   selectPredictionSelected,
+  predictionChanged,
 } from "../features/api/predictionsSlice";
+import {
+  useGetBlockQuery,
+  selectFinalizedBlock,
+} from "../features/api/blocksSlice";
 import { selectIsSocketConnected } from "../features/api/socketSlice";
 // import { useGetValidatorsQuery } from "../features/api/validatorsSlice";
 
@@ -33,20 +38,31 @@ export default function ValPredictioneSection() {
   const dispatch = useDispatch();
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const selectedAddress = useSelector(selectAddress);
-  // const currentSession = useSelector(selectSessionCurrent);
-  const selectedChain = useSelector(selectChain);
   const predictionTarget = useSelector(selectPredictionSelected);
-  const { isSuccess: isSessionSuccess } = useGetPredictionByTargetQuery({
-    target: predictionTarget,
-  });
+  useGetBlockQuery({ blockId: "finalized", chain_key: "rc", show_stats: true });
+  const activeSetSize = useSelector(
+    (state) => selectFinalizedBlock(state)?.stats?.na,
+  );
+  const skip = isUndefined(predictionTarget);
+  const { isSuccess: isSessionSuccess } = useGetPredictionByTargetQuery(
+    { target: predictionTarget },
+    { skip },
+  );
 
   const { isSuccess } = useGetPredictionValidatorsQuery(
     {
       target: predictionTarget,
       show_profile: true,
     },
-    { refetchOnMountOrArgChange: true },
+    { refetchOnMountOrArgChange: true, skip },
   );
+
+  // default to the on-chain active set until the user picks another target
+  React.useEffect(() => {
+    if (isUndefined(predictionTarget) && !isUndefined(activeSetSize)) {
+      dispatch(predictionChanged(activeSetSize));
+    }
+  }, [dispatch, predictionTarget, activeSetSize]);
 
   React.useEffect(() => {
     if (stash && stash !== selectedAddress) {
@@ -54,7 +70,7 @@ export default function ValPredictioneSection() {
     }
   }, [dispatch, stash, selectedAddress]);
 
-  if (!isSocketConnected || !isSuccess || !isSessionSuccess) {
+  if (skip || !isSocketConnected || !isSuccess || !isSessionSuccess) {
     // TODO websocket/network disconnected page
     return <Box sx={{ m: 2, minHeight: "100vh" }}></Box>;
   }
@@ -99,14 +115,6 @@ export default function ValPredictioneSection() {
         </Grid>
         <Grid item xs={2}>
           <Grid container spacing={2}>
-            {selectedChain !== "polkadot" ? (
-              <Grid item xs={12}>
-                {/* <CommissionBox
-                  sessionIndex={sessionIndex}
-                  isHistoryMode={false}
-                />*/}
-              </Grid>
-            ) : null}
             <Grid item xs={12}>
               <GradesWithFilterBoxPred target={predictionTarget} />
             </Grid>

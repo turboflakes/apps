@@ -67,7 +67,8 @@ const adapter = createEntityAdapter({
 const predictionsSlice = createSlice({
   name: "predictions",
   initialState: {
-    selected: 500,
+    // defaults to the on-chain active set size once it is known
+    selected: undefined,
     // validators list by target
     validators: {},
     // validator summary/metadata by `${target}_${stash}`
