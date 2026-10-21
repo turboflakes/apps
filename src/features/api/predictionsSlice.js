@@ -99,7 +99,7 @@ const predictionsSlice = createSlice({
       .addMatcher(
         extendedApi.endpoints.getPredictionByTarget.matchFulfilled,
         (state, action) => {
-          const target = action.meta.arg.originalArgs.n;
+          const { target } = action.meta.arg.originalArgs;
           adapter.upsertOne(state, {
             ...action.payload,
             n: Number(target),

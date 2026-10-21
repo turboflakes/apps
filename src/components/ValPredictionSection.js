@@ -8,6 +8,11 @@ import ValidatorsPredictionBox from "./ValidatorsPredictionBox";
 import PredictionTargetFilter from "./PredictionTargetFilter";
 import OwnStakeBoxPred from "./OwnStakeBoxPred";
 import NodeVersionBoxPred from "./NodeVersionBoxPred";
+import PredictionRoundBox from "./PredictionRoundBox";
+import PredictionBlockBox from "./PredictionBlockBox";
+import PredictionMinimalStakeBox from "./PredictionMinimalStakeBox";
+import PredictionSumStakeBox from "./PredictionSumStakeBox";
+import PredictionSumStakeSquaredBox from "./PredictionSumStakeSquaredBox";
 import {
   selectAddress,
   addressChanged,
@@ -70,6 +75,23 @@ export default function ValPredictioneSection() {
         </Box>
         <PredictionTargetFilter />
       </Box>
+      <Grid container spacing={2} sx={{ mb: 2 }}>
+        <Grid item xs={2}>
+          <PredictionRoundBox target={predictionTarget} />
+        </Grid>
+        <Grid item xs={2}>
+          <PredictionBlockBox target={predictionTarget} />
+        </Grid>
+        <Grid item xs={2}>
+          <PredictionMinimalStakeBox target={predictionTarget} />
+        </Grid>
+        <Grid item xs={2}>
+          <PredictionSumStakeBox target={predictionTarget} />
+        </Grid>
+        <Grid item xs>
+          <PredictionSumStakeSquaredBox target={predictionTarget} />
+        </Grid>
+      </Grid>
       <Grid container spacing={2}>
         <Grid item xs={10}>
           <ValidatorsPredictionBox target={predictionTarget} />
