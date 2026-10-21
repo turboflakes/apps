@@ -52,7 +52,7 @@ const renderTooltip = (props, theme) => {
             >
               ●
             </span>
-            ALL: <b>{data.tvp}</b> (
+            ALL: <b>{data.total}</b> (
             {Math.round((data.total * 100) / data.total)}%)
           </Typography>
           {/* <Typography component="div" variant="caption">
@@ -122,20 +122,25 @@ export default function NetTotalValidatorsBox({ sessionIndex, maxSessions }) {
     return null;
   }
 
-  //
-  const mainValue = data
-    .filter((s) => s.six === sessionIndex - 1)
-    .map((s) =>
-      !isUndefined(s.netstats)
-        ? s.netstats.subsets.map((m) => m.vals_total).reduce((a, b) => a + b, 0)
-        : 0,
-    )[0];
-
-  const timelineData = data.map((s, i) => ({
-    session: s.six,
-    total: !isUndefined(s.netstats)
+  // NOTE: the total validators are 0 while netstats are not yet available for the
+  // latest session, in that case fall back to the most recent previous session that has it
+  const totalValidators = (s) =>
+    !isUndefined(s.netstats)
       ? s.netstats.subsets.map((m) => m.vals_total).reduce((a, b) => a + b, 0)
-      : 0,
+      : 0;
+
+  const latest = data
+    .filter((s) => s.six <= sessionIndex - 1 && totalValidators(s) > 0)
+    .sort((a, b) => b.six - a.six)[0];
+
+  const mainValue = !isUndefined(latest) ? totalValidators(latest) : 0;
+
+  // sessions without values yet are not included in the timeline
+  const timelineData = data
+    .filter((s) => totalValidators(s) > 0)
+    .map((s, i) => ({
+      session: s.six,
+      total: totalValidators(s),
     // c100: !isUndefined(s.netstats) ?
     //   (s.netstats.subsets.filter(f => f.subset === "C100").length > 0 ? s.netstats.subsets.filter(f => f.subset === "C100")[0].vals_total : 0) : 0,
     // tvp: !isUndefined(s.netstats) ?

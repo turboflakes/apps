@@ -134,22 +134,25 @@ export default function NetOwnStakeValidatorsBox({
     return null;
   }
 
-  //
-  const mainValue = data
-    .filter((s) => s.six === sessionIndex - 1)
-    .map((s) =>
-      !isUndefined(s.netstats)
-        ? s.netstats.subsets
-            .map((m) => m["vals_own_stake_total"])
-            .reduce((a, b) => a + b, 0)
-        : 0,
-    )[0];
+  // NOTE: the value is 0 while netstats are not yet available for the latest session,
+  // in that case fall back to the most recent previous session that has it
+  const sessionValue = (s) =>
+    !isUndefined(s.netstats)
+      ? s.netstats.subsets.map((m) => m["vals_own_stake_total"]).reduce((a, b) => a + b, 0)
+      : 0;
 
-  const timelineData = data.map((s, i) => ({
-    session: s.six,
-    total: !isUndefined(s.netstats)
-      ? s.netstats.subsets.map((m) => m[key]).reduce((a, b) => a + b, 0)
-      : 0,
+  const latest = data
+    .filter((s) => s.six <= sessionIndex - 1 && sessionValue(s) > 0)
+    .sort((a, b) => b.six - a.six)[0];
+
+  const mainValue = !isUndefined(latest) ? sessionValue(latest) : 0;
+
+  // sessions without values yet are not included in the timeline
+  const timelineData = data
+    .filter((s) => sessionValue(s) > 0)
+    .map((s, i) => ({
+      session: s.six,
+      total: sessionValue(s),
     // c100: !isUndefined(s.netstats) ?
     //   (s.netstats.subsets.filter(f => f.subset === "C100").length > 0 ? s.netstats.subsets.filter(f => f.subset === "C100")[0][key] : 0) : 0,
     // tvp: !isUndefined(s.netstats) ?
@@ -289,8 +292,8 @@ export default function NetOwnStakeValidatorsBox({
         align="right"
         sx={{ mb: 1, mr: 3, color: theme.palette.grey[400] }}
       >
-        {!isUndefined(data[data.length - 1].netstats)
-          ? `latest data collected at block #${data[data.length - 1].netstats.block_number}`
+        {!isUndefined(latest)
+          ? `latest data collected at block #${latest.netstats.block_number}`
           : ""}
       </Typography>
     </Paper>

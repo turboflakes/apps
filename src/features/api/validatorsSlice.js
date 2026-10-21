@@ -313,14 +313,19 @@ export const selectValidatorGradeBySessionAndAddress = (
   return "-";
 };
 
+// NOTE: right after a session change the pool counter is not yet available for
+// the new session, in that case fall back to the most recent previous session that has it
 export const selectValidatorPoolCounterBySessionAndAddress = (
   state,
   session,
   address,
+  maxLookback = 6,
 ) => {
-  const v = selectValidatorBySessionAndAddress(state, session, address);
-  if (!isUndefined(v) && !isUndefined(v.pool_counter)) {
-    return v.pool_counter;
+  for (let i = 0; i <= maxLookback; i++) {
+    const v = selectValidatorBySessionAndAddress(state, session - i, address);
+    if (!isUndefined(v) && !isUndefined(v.pool_counter)) {
+      return v.pool_counter;
+    }
   }
   return "-";
 };

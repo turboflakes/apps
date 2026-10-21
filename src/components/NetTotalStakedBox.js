@@ -73,12 +73,14 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
     return null
   }
 
-  // 
-  const total_staked = data.filter(s => s.six === sessionIndex - 1)
-    .map(s => !isUndefined(s.netstats) ? s.netstats.total_staked : 0)[0];
+  // NOTE: `total_staked` is 0 while it is not yet available for the latest session,
+  // in that case fall back to the most recent previous session that has it
+  const latest = data
+    .filter(s => s.six <= sessionIndex - 1 && !isUndefined(s.netstats) && s.netstats.total_staked > 0)
+    .sort((a, b) => b.six - a.six)[0];
 
-  const total_issuance = data.filter(s => s.six === sessionIndex - 1)
-    .map(s => !isUndefined(s.netstats) ? s.netstats.total_issuance : 0)[0];
+  const total_staked = latest?.netstats.total_staked ?? 0;
+  const total_issuance = latest?.netstats.total_issuance ?? 0;
 
   const total_staked_percentage = total_issuance > 0 ? Math.round(total_staked / total_issuance * 100) : undefined;
 

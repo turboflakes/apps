@@ -122,22 +122,23 @@ export default function NetActiveValidatorsBox({ sessionIndex, maxSessions }) {
   if (!isSuccess) {
     return null;
   }
-  //
-  const mainValue = data
-    .filter((s) => s.six === sessionIndex - 1)
-    .map((s) =>
-      !isUndefined(s.netstats)
-        ? s.netstats.subsets
-            .map((m) => m.vals_active)
-            .reduce((a, b) => a + b, 0)
-        : 0,
-    )[0];
-
-  const timelineData = data.map((s, i) => ({
-    session: s.six,
-    total: !isUndefined(s.netstats)
+  // NOTE: the active validators are 0 while netstats are not yet available for the
+  // latest session, in that case fall back to the most recent previous session that has it
+  const activeValidators = (s) =>
+    !isUndefined(s.netstats)
       ? s.netstats.subsets.map((m) => m.vals_active).reduce((a, b) => a + b, 0)
-      : 0,
+      : 0;
+
+  const latest = data
+    .filter((s) => s.six <= sessionIndex - 1 && activeValidators(s) > 0)
+    .sort((a, b) => b.six - a.six)[0];
+
+  const mainValue = !isUndefined(latest) ? activeValidators(latest) : 0;
+
+  // sessions without values yet are not included in the timeline
+  const timelineData = data.filter((s) => activeValidators(s) > 0).map((s, i) => ({
+    session: s.six,
+    total: activeValidators(s),
     // c100: !isUndefined(s.netstats)
     //   ? s.netstats.subsets.filter((f) => f.subset === "C100").length > 0
     //     ? s.netstats.subsets.filter((f) => f.subset === "C100")[0].vals_active
