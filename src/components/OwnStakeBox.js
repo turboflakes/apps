@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import groupBy from "lodash/groupBy";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
@@ -25,6 +26,7 @@ import { getStepUnits, getStepMultiplier } from "../constants";
 
 export default function OwnStakeBox({ sessionIndex, isHistoryMode }) {
   const theme = useTheme();
+  const { pathname } = useLocation();
   const [showPie, setShowPie] = React.useState(true);
   const selectedChain = useSelector(selectChain);
   const identityFilter = useSelector(selectIdentityFilter);
@@ -143,7 +145,7 @@ export default function OwnStakeBox({ sessionIndex, isHistoryMode }) {
           {subsetFilter !== "" ? (
             <span>Only for subset {subsetFilter}</span>
           ) : (
-            "All active validators"
+            `All ${pathname.startsWith("/val-waiting") ? "waiting" : "active"} validators`
           )}
         </Typography>
 
