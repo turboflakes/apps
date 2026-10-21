@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import ValidatorsPredictionBox from "./ValidatorsPredictionBox";
 import PredictionTargetFilter from "./PredictionTargetFilter";
 import OwnStakeBoxPred from "./OwnStakeBoxPred";
+import NodeVersionBoxPred from "./NodeVersionBoxPred";
 import {
   selectAddress,
   addressChanged,
@@ -86,7 +87,9 @@ export default function ValPredictioneSection() {
             <Grid item xs={12}>
               <OwnStakeBoxPred target={predictionTarget} />
             </Grid>
-            <Grid item xs={12}></Grid>
+            <Grid item xs={12}>
+              <NodeVersionBoxPred target={predictionTarget} />
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
