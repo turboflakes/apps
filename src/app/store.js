@@ -9,6 +9,7 @@ import socketSlice from "../features/api/socketSlice";
 import blocksSlice from "../features/api/blocksSlice";
 import blocksAHSlice from "../features/api/blocksAHSlice";
 import sessionsSlice from "../features/api/sessionsSlice";
+import predictionsSlice from "../features/api/predictionsSlice";
 import validatorsSlice from "../features/api/validatorsSlice";
 import authoritiesSlice from "../features/api/authoritiesSlice";
 import valGroupsSlice from "../features/api/valGroupsSlice";
@@ -31,6 +32,7 @@ export const store = configureStore({
     blocks: blocksSlice.reducer,
     blocks_ah: blocksAHSlice.reducer,
     sessions: sessionsSlice.reducer,
+    predictions: predictionsSlice.reducer,
     validators: validatorsSlice.reducer,
     val_profiles: valProfilesSlice.reducer,
     val_groups: valGroupsSlice.reducer,
