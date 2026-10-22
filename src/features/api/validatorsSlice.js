@@ -42,6 +42,7 @@ export const extendedApi = apiSlice.injectEndpoints({
         show_stats,
         show_profile,
         show_discovery,
+        show_preds,
         fetch_peers,
       }) => ({
         url: `/validators`,
@@ -60,6 +61,7 @@ export const extendedApi = apiSlice.injectEndpoints({
           show_stats,
           show_profile,
           show_discovery,
+          show_preds,
           fetch_peers,
         },
       }),

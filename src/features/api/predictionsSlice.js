@@ -1,6 +1,10 @@
 import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
 import isUndefined from "lodash/isUndefined";
 import { selectValProfileByAddress } from "./valProfilesSlice";
+import {
+  matchValidatorReceived,
+  matchValidatorsReceived,
+} from "./validatorsSlice";
 import apiSlice from "./apiSlice";
 import { selectChainInfo } from "../chain/chainSlice";
 import { chainAddress } from "../../util/crypto";
@@ -58,6 +62,23 @@ export const {
   useGetPredictionValidatorNominatorsQuery,
 } = extendedApi;
 
+// Normalizes the `preds` field of a validator, if it is sent by the backend
+const upsertValidatorPreds = (state, validator) => {
+  if (!validator?.address || !Array.isArray(validator.preds)) {
+    return;
+  }
+  const entry = state.byValidator[validator.address] ?? {
+    targets: [],
+    data: {},
+  };
+  validator.preds.forEach(({ p, tts, nc, ts }) => {
+    entry.data[p] = { tts, nc, ts };
+  });
+  // the same order as sent by the backend
+  entry.targets = validator.preds.map((pred) => pred.p);
+  state.byValidator[validator.address] = entry;
+};
+
 // Slice
 const adapter = createEntityAdapter({
   selectId: (data) => data.n,
@@ -75,6 +96,9 @@ const predictionsSlice = createSlice({
     validator: {},
     // nominators page by `${target}_${stash}`
     nominators: {},
+    // predictions normalized by validator address, from validators `preds` field:
+    // { [address]: { targets: [600, 500, ...], data: { [target]: { tts, nc, ts } } } }
+    byValidator: {},
     ...adapter.getInitialState(),
   },
   reducers: {
@@ -135,7 +159,13 @@ const predictionsSlice = createSlice({
           }
           state.nominators[key][page] = action.payload;
         },
-      );
+      )
+      .addMatcher(matchValidatorsReceived, (state, action) => {
+        action.payload.data.forEach((v) => upsertValidatorPreds(state, v));
+      })
+      .addMatcher(matchValidatorReceived, (state, action) => {
+        upsertValidatorPreds(state, action.payload);
+      });
   },
 });
 
@@ -147,6 +177,15 @@ export const {
   selectAll: selectPredictionsAll,
   selectById: selectPredictionByTarget,
 } = adapter.getSelectors((state) => state.predictions);
+
+export const selectPredictionsByValidator = (state) =>
+  state.predictions.byValidator;
+
+export const selectPredictionTargetsByAddress = (state, address) =>
+  state.predictions.byValidator[address]?.targets;
+
+export const selectPredictionByAddressAndTarget = (state, address, target) =>
+  state.predictions.byValidator[address]?.data[target];
 
 export const selectPredictionSelected = (state) => state.predictions.selected;
 
