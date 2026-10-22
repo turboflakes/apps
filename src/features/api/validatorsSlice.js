@@ -524,8 +524,11 @@ export const selectValidatorsWaitingBySessions = (
     isHistory ? "_insights" : "",
   );
 
-  console.log("validators", validators, sessions);
-  const rows = validators.map((x, i) => {
+  // NOTE: the store also holds validators fetched for other roles (e.g. authorities),
+  // only the ones that are not authorities in the most recent session are waiting
+  const waiting = validators.filter((x) => !x[x.length - 1].is_auth);
+
+  const rows = waiting.map((x, i) => {
     let session = x.length - 1;
     const profile = selectValProfileByAddress(state, x[session].address);
     const address = x[session].address;
