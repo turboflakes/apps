@@ -70,10 +70,13 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
   }
 
   
-  // 
   const groupedByEra = groupBy(data, v => v.eix);
-  const dataGroupedByEra = Object.keys(groupedByEra).map(k => ({eix: Number(k), value: !isUndefined(groupedByEra[k][0].netstats) ? groupedByEra[k][0].netstats.last_rewarded : 0}))
-  const last_rewarded = dataGroupedByEra[dataGroupedByEra.length - 1].value;
+  // NOTE: the last reward is 0 while it is not yet available for the latest era,
+  // eras without a value are not included, so the previous one is shown instead
+  const dataGroupedByEra = Object.keys(groupedByEra)
+    .map(k => ({eix: Number(k), value: !isUndefined(groupedByEra[k][0].netstats) ? groupedByEra[k][0].netstats.last_rewarded : 0}))
+    .filter(e => e.value > 0)
+  const last_rewarded = dataGroupedByEra.length ? dataGroupedByEra[dataGroupedByEra.length - 1].value : 0;
 
   const timelineData = dataGroupedByEra.map((s, i) => ({
     era: s.eix,
@@ -134,7 +137,7 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
                 content={props => renderTooltip(props, theme, chainInfo)} />
             <Bar dataKey="last_rewarded" barSize={8} shape={<Rectangle radius={[8, 8, 0, 0]} />} >
               {
-                data.map((entry, index) => (
+                timelineData.map((entry, index) => (
                 <Cell key={`cell-${index}`} cursor="pointer" 
                   fill={theme.palette.semantics.green} />))
               }
