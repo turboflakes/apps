@@ -420,6 +420,12 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
       ? columns
       : columns.filter((c) => c.field !== "commission");
 
+  // predictions are only available for polkadot
+  columns =
+    selectedChain === "polkadot"
+      ? columns
+      : columns.filter((c) => c.field !== "predictions");
+
   const handleOnlyPVChange = (event) => {
     setShowOnlyPV(event.target.checked);
   };
