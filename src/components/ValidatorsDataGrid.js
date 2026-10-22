@@ -11,6 +11,7 @@ import Switch from "@mui/material/Switch";
 import { DataGrid } from "@mui/x-data-grid";
 import Identicon from "@polkadot/react-identicon";
 import DetailsIcon from "./DetailsIcon";
+import Tooltip from "./Tooltip";
 import GridIdentityLink from "./GridIdentityLink";
 import IdentityFilter from "./IdentityFilter";
 import InsightsInfoLegend from "./InsightsInfoLegend";
@@ -20,6 +21,8 @@ import {
   useGetValidatorsQuery,
   selectValidatorsInsightsBySessions,
 } from "../features/api/validatorsSlice";
+import { selectPredictionsByValidator } from "../features/api/predictionsSlice";
+import { PREDICTION_TARGETS } from "./PredictionTargetFilter";
 import { selectChain, selectChainInfo } from "../features/chain/chainSlice";
 import {
   selectIdentityFilter,
@@ -28,6 +31,41 @@ import {
 import { stakeDisplay, scoreDisplay, versionDisplay } from "../util/display";
 import { isChainSupported, getChainName } from "../constants";
 import { chainAddress } from "../util/crypto";
+
+// One circle for each prediction target, filled if the validator is included in
+// that target and with a visible border and white background if not
+function PredictionsCell({ targets, mvr, bur }) {
+  const theme = useTheme();
+  // filled with the current grade of the validator, if it has one
+  const gradeColor =
+    !isNull(mvr) && !isNull(bur)
+      ? theme.palette.grade[gradeByRatios(mvr, bur)]
+      : theme.palette.grey[900];
+  return (
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      {PREDICTION_TARGETS.map((target) => {
+        const isIncluded = !!targets?.includes(target);
+        return (
+          <Tooltip key={target} title={`Prediction target ${target}`} placement="top" arrow>
+            <Box
+              sx={{
+                boxSizing: "border-box",
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                border: `1px solid ${
+                  isIncluded ? gradeColor : theme.palette.grey[400]
+                }`,
+                bgcolor: isIncluded ? gradeColor : "#fff",
+                display: "inline-block",
+              }}
+            ></Box>
+          </Tooltip>
+        );
+      })}
+    </Box>
+  );
+}
 
 const defineColumns = (theme, chain, chainInfo) => {
   return [
@@ -144,12 +182,22 @@ const defineColumns = (theme, chain, chainInfo) => {
           : null,
     },
     {
-      field: "validator_index",
-      headerName: "V. Index",
-      width: 80,
+      field: "predictions",
+      headerName: "Prediction",
+      width: 96,
       headerAlign: "right",
       align: "right",
+      sortable: true,
       disableColumnMenu: true,
+      // sorted by the number of prediction targets available
+      valueGetter: (params) => params.row.predictions?.length ?? 0,
+      renderCell: (params) => (
+        <PredictionsCell
+          targets={params.row.predictions}
+          mvr={params.row.mvr}
+          bur={params.row.bur}
+        />
+      ),
     },
     {
       field: "node_version",
@@ -316,6 +364,7 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
       role: "authority",
       show_summary: true,
       show_profile: true,
+      show_preds: true,
       show_discovery: true,
     },
     { refetchOnMountOrArgChange: true, skip },
@@ -329,6 +378,7 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
       subsetFilter,
     ),
   );
+  const predictionsByValidator = useSelector(selectPredictionsByValidator);
   const [showOnlyPV, setShowOnlyPV] = React.useState(true);
   // const [showAllGrades, setShowAllGrades] = React.useState(false);
   const [onlyDisputes, setOnlyDisputes] = React.useState(false);
@@ -496,7 +546,10 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
           },
         }}
         // onRowClick={handleOnRowClick}
-        rows={rowsFiltered4}
+        rows={rowsFiltered4.map((v) => ({
+          ...v,
+          predictions: predictionsByValidator[v.address]?.targets,
+        }))}
         columns={columns}
         rowsPerPageOptions={[pageSize]}
         pagination
