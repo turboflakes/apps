@@ -38,11 +38,13 @@ export default function PredictionStatBox({ label, value, caption, isFetching })
           {label}
         </Typography>
         <Typography variant="h4">{value ?? "-"}</Typography>
-        {caption ? (
+        {typeof caption === "string" ? (
           <Typography variant="caption" sx={{ whiteSpace: "nowrap" }}>
             {caption}
           </Typography>
-        ) : null}
+        ) : (
+          caption
+        )}
       </Box>
     </Paper>
   );
