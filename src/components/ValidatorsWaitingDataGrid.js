@@ -172,7 +172,7 @@ export default function ValidatorsWaitingDataGrid({ sessionIndex, skip }) {
       ? columns
       : columns.filter((c) => c.field !== "commission");
 
-  const pageSize = 24;
+  const pageSize = selectedChain === "polkadot" ? 17 : 24;
 
   return (
     <Box
