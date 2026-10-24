@@ -21,10 +21,16 @@ export default function PredictionSumStakeBox({ target }) {
     ? null
     : stakeDisplayMillions(raw, chainInfo);
 
+  const rawSquared = prediction?.solution_score?.sum_stake_squared;
+  const caption = isNil(rawSquared)
+    ? null
+    : `${stakeDisplayMillions(rawSquared, chainInfo, 2)} squared`;
+
   return (
     <PredictionStatBox
       label="sum stake"
       value={value}
+      caption={caption}
       isFetching={isFetching && isNil(prediction)}
     />
   );

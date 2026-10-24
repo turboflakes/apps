@@ -37,7 +37,7 @@ export default function PredictionStatBox({ label, value, caption, isFetching })
         <Typography variant="caption" sx={{ whiteSpace: "nowrap" }}>
           {label}
         </Typography>
-        <Typography variant="h4">{value ?? "-"}</Typography>
+        <Typography variant="h5">{value ?? "-"}</Typography>
         {typeof caption === "string" ? (
           <Typography variant="caption" sx={{ whiteSpace: "nowrap" }}>
             {caption}
