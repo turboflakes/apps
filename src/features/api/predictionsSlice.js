@@ -1,10 +1,13 @@
 import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
 import isUndefined from "lodash/isUndefined";
+import isNull from "lodash/isNull";
 import { selectValProfileByAddress } from "./valProfilesSlice";
 import {
   matchValidatorReceived,
   matchValidatorsReceived,
+  selectValidatorGradeBySessionAndAddress,
 } from "./validatorsSlice";
+import { selectSessionCurrent } from "./sessionsSlice";
 import apiSlice from "./apiSlice";
 import { selectChainInfo } from "../chain/chainSlice";
 import { chainAddress } from "../../util/crypto";
@@ -38,6 +41,15 @@ export const extendedApi = apiSlice.injectEndpoints({
         { type: "PredictionValidators", id: `${arg.target}_${arg.stash}` },
       ],
     }),
+    // GET /preds/{target}/nominators/{address}
+    getPredictionNominator: builder.query({
+      query: ({ target, address }) => ({
+        url: `/preds/${target}/nominators/${address}`,
+      }),
+      providesTags: (result, error, arg) => [
+        { type: "PredictionNominators", id: `${arg.target}_${arg.address}` },
+      ],
+    }),
     // GET /preds/{target}/validators/{stash}/nominators?page=&size=
     getPredictionValidatorNominators: builder.query({
       query: ({ target, stash, page, size }) => ({
@@ -60,6 +72,7 @@ export const {
   useGetPredictionValidatorsQuery,
   useGetPredictionValidatorQuery,
   useGetPredictionValidatorNominatorsQuery,
+  useGetPredictionNominatorQuery,
 } = extendedApi;
 
 // Normalizes the `preds` field of a validator, if it is sent by the backend
@@ -214,14 +227,46 @@ function createRows(
 }
 
 
-export const selectPredictionValidatorsByTarget = (state, target, identityFilter, subsetFilter) => {
+// Maps the validators nominated by a nominator, given by the response of the
+// nominator endpoint, to the nomination: its state (active, waiting or inactive)
+// and the stake allocated to the validator, only known if it is active
+export const nominationsByValidator = (nominator) => {
+  const nominations = {};
+  const addressOf = (v) => v?.address ?? v;
+  (nominator?.inactive_validators ?? []).forEach((v) => {
+    nominations[addressOf(v)] = { state: "inactive" };
+  });
+  (nominator?.waiting_validators ?? []).forEach((v) => {
+    nominations[addressOf(v)] = { state: "waiting" };
+  });
+  (nominator?.active_validators ?? []).forEach((v) => {
+    nominations[addressOf(v)] = {
+      state: "active",
+      allocated_stake: v.allocated_stake,
+    };
+  });
+  return nominations;
+};
+
+export const selectPredictionValidatorsByTarget = (
+  state,
+  target,
+  identityFilter,
+  subsetFilter,
+  nominations = {},
+) => {
   const chainInfo = selectChainInfo(state);
   const validators = state.predictions.validators[target] ?? [];
+  // the grade is given by the performance of the validator in the latest session
+  const currentSession = selectSessionCurrent(state);
+  const gradeSession = Number.isInteger(currentSession)
+    ? currentSession - 1
+    : undefined;
 
   const rows = validators.map((x, i) => {
     const address = x.address;
     const profile = selectValProfileByAddress(state, address);
-    return createRows(
+    const row = createRows(
       i + 1,
       profile?._identity ?? null,
       address,
@@ -232,6 +277,15 @@ export const selectPredictionValidatorsByTarget = (state, target, identityFilter
       x.total_stake,
       x.nominators_counter,
     );
+    return {
+      ...row,
+      grade:
+        gradeSession !== undefined
+          ? selectValidatorGradeBySessionAndAddress(state, gradeSession, address)
+          : "-",
+      nomination: nominations[address]?.state ?? null,
+      allocated_stake: nominations[address]?.allocated_stake ?? null,
+    };
   });
 
   const query = identityFilter?.trim().toLowerCase();
@@ -244,6 +298,7 @@ export const selectPredictionValidatorsByTarget = (state, target, identityFilter
       return false;
     }
     return (
+      !isNull(v.nomination) ||
       v.identity?.toLowerCase().includes(query) ||
       v.address.toLowerCase().includes(query) ||
       chainAddress(v.address, chainInfo.ss58Format)

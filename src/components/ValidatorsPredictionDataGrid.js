@@ -2,22 +2,33 @@ import * as React from "react";
 import { useSelector } from "react-redux";
 import isUndefined from "lodash/isUndefined";
 import isNull from "lodash/isNull";
+import isNil from "lodash/isNil";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
 import Identicon from "@polkadot/react-identicon";
 import GridIdentityLink from "./GridIdentityLink";
 import IdentityFilter from "./IdentityFilter";
 import PredictionNominatorsDialog from "./PredictionNominatorsDialog";
-import { selectPredictionValidatorsByTarget } from "../features/api/predictionsSlice";
+import {
+  useGetSessionByIndexQuery,
+  selectSessionCurrent,
+} from "../features/api/sessionsSlice";
+import { useGetValidatorsQuery } from "../features/api/validatorsSlice";
+import {
+  selectPredictionValidatorsByTarget,
+  useGetPredictionNominatorQuery,
+  nominationsByValidator,
+} from "../features/api/predictionsSlice";
 import { selectChain, selectChainInfo } from "../features/chain/chainSlice";
 import {
   selectIdentityFilter,
   selectSubsetFilter,
 } from "../features/layout/layoutSlice";
 import { stakeDisplay } from "../util/display";
-import { chainAddress } from "../util/crypto";
+import { chainAddress, isValidAddress, addressSS58 } from "../util/crypto";
 
 const defineColumns = (theme, chain, chainInfo, onOpenNominators) => {
   return [
@@ -51,6 +62,35 @@ const defineColumns = (theme, chain, chainInfo, onOpenNominators) => {
           return null;
         }
         return <GridIdentityLink address={params.row.address} />;
+      },
+    },
+    {
+      field: "grade",
+      headerName: "Grade",
+      width: 64,
+      headerAlign: "left",
+      align: "left",
+      sortable: false,
+      disableColumnMenu: true,
+      renderCell: (params) => {
+        const gradeValue = params.row.grade;
+        if (gradeValue && gradeValue !== "-") {
+          return (
+            <Box>
+              <Box
+                sx={{
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  bgcolor: theme.palette.grade[gradeValue],
+                  display: "inline-block",
+                }}
+              ></Box>
+              <Box sx={{ ml: 1, display: "inline-block" }}>{gradeValue}</Box>
+            </Box>
+          );
+        }
+        return "-";
       },
     },
     {
@@ -179,6 +219,44 @@ const defineColumns = (theme, chain, chainInfo, onOpenNominators) => {
     //         ).format()
     //       : null,
     // },
+    {
+      field: "allocated_stake",
+      headerName: `Allocated Stake (${chainInfo.tokenSymbol})`,
+      type: "number",
+      width: 192,
+      headerAlign: "right",
+      align: "right",
+      sortable: true,
+      disableColumnMenu: true,
+      valueGetter: (params) =>
+        !isNil(params.row.allocated_stake)
+          ? Number(params.row.allocated_stake)
+          : null,
+      renderCell: (params) =>
+        !isNull(params.value)
+          ? stakeDisplay(params.value, chainInfo, 2, true, false, false)
+          : null,
+    },
+    {
+      field: "allocated_stake_share",
+      headerName: "% of Stake",
+      type: "number",
+      width: 112,
+      headerAlign: "right",
+      align: "right",
+      sortable: true,
+      disableColumnMenu: true,
+      // share of the validator total stake allocated by the nominator
+      valueGetter: (params) =>
+        !isNil(params.row.allocated_stake) &&
+        Number(params.row.nominators_stake_pred) > 0
+          ? (Number(params.row.allocated_stake) /
+              Number(params.row.nominators_stake_pred)) *
+            100
+          : null,
+      renderCell: (params) =>
+        !isNull(params.value) ? `${params.value.toFixed(2)}%` : null,
+    },
   ];
 };
 
@@ -188,12 +266,45 @@ export default function ValidatorsPredictionDataGrid({ target, skip }) {
   const identityFilter = useSelector(selectIdentityFilter);
   const subsetFilter = useSelector(selectSubsetFilter);
 
+  // if the filter is the address of a nominator, the validators nominated by it are
+  // also presented, with the stake allocated by it
+  const nominatorAddress = isValidAddress(identityFilter?.trim())
+    ? addressSS58(identityFilter.trim())
+    : undefined;
+  // the endpoint fails for addresses that are not nominators, e.g. a validator
+  const isValidator = useSelector((state) =>
+    (state.predictions.validators[target] ?? []).some(
+      (v) => v.address === nominatorAddress,
+    ),
+  );
+  const { currentData: nominator } = useGetPredictionNominatorQuery(
+    { target, address: nominatorAddress },
+    { skip: !nominatorAddress || isValidator },
+  );
+  const nominations = nominationsByValidator(nominator);
+  const hasNominations = Object.keys(nominations).length > 0;
+
+  // grades are calculated from the para-validators performance in the latest session
+  const currentSession = useSelector(selectSessionCurrent);
+  const gradeSession = Number.isInteger(currentSession)
+    ? currentSession - 1
+    : undefined;
+  useGetSessionByIndexQuery(
+    { index: gradeSession },
+    { skip: gradeSession === undefined },
+  );
+  useGetValidatorsQuery(
+    { session: gradeSession, role: "para_authority", show_summary: true },
+    { skip: gradeSession === undefined },
+  );
+
   const rows = useSelector((state) =>
     selectPredictionValidatorsByTarget(
       state,
       target,
       identityFilter,
       subsetFilter,
+      nominations,
     ),
   );
 
@@ -206,6 +317,13 @@ export default function ValidatorsPredictionDataGrid({ target, skip }) {
   }
 
   let columns = defineColumns(theme, selectedChain, chainInfo, setNominatorsOf);
+
+  // the allocated stake is only relevant when searching by a nominator
+  if (!hasNominations) {
+    columns = columns.filter(
+      (c) => !["allocated_stake", "allocated_stake_share"].includes(c.field),
+    );
+  }
 
   const pageSize = selectedChain === "polkadot" ? 17 : 24;
 
@@ -232,6 +350,11 @@ export default function ValidatorsPredictionDataGrid({ target, skip }) {
         }}
       >
         <IdentityFilter />
+        {hasNominations ? (
+          <Typography variant="subtitle2" sx={{ ml: 2, whiteSpace: "nowrap" }}>
+            ← Showing validators nominated by this address
+          </Typography>
+        ) : null}
 
         <Box sx={{ position: "absolute", top: 0, right: 0 }}>
           {/* <InsightsInfoLegend />*/}
@@ -249,7 +372,16 @@ export default function ValidatorsPredictionDataGrid({ target, skip }) {
           "& .MuiDataGrid-cell:focus": {
             border: 0,
           },
+          // validators without stake allocated by the searched nominator
+          "& .MuiDataGrid-row.not-allocated": {
+            bgcolor: theme.palette.grey[100],
+          },
         }}
+        getRowClassName={(params) =>
+          hasNominations && isNil(params.row.allocated_stake)
+            ? "not-allocated"
+            : ""
+        }
         initialState={{
           pagination: {
             pageSize: pageSize,

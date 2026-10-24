@@ -1,23 +1,25 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import isNull from "lodash/isNull";
 import { useTheme } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
 import Identicon from "@polkadot/react-identicon";
 import { useGetPredictionValidatorNominatorsQuery } from "../features/api/predictionsSlice";
 import { selectValProfileByAddress } from "../features/api/valProfilesSlice";
 import { selectChainInfo } from "../features/chain/chainSlice";
+import { identityFilterChanged } from "../features/layout/layoutSlice";
 import { stakeDisplay, stashDisplay, nameDisplay } from "../util/display";
 import { chainAddress } from "../util/crypto";
 
 const PAGE_SIZES = [10, 25, 50];
 
-const defineColumns = (chainInfo, totalStake) => [
+const defineColumns = (chainInfo, totalStake, onSelectNominator) => [
   {
     field: "id",
     headerName: "",
@@ -40,6 +42,16 @@ const defineColumns = (chainInfo, totalStake) => [
     disableColumnMenu: true,
     valueGetter: (params) =>
       chainAddress(params.row.address, chainInfo.ss58Format),
+    renderCell: (params) => (
+      <Link
+        component="button"
+        color="inherit"
+        underline="hover"
+        onClick={() => onSelectNominator(params.value)}
+      >
+        {params.value}
+      </Link>
+    ),
   },
   {
     field: "allocated_stake",
@@ -82,6 +94,7 @@ export default function PredictionNominatorsDialog({
   totalStake,
 }) {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const chainInfo = useSelector(selectChainInfo);
   const profile = useSelector((state) =>
     selectValProfileByAddress(state, stash),
@@ -98,6 +111,12 @@ export default function PredictionNominatorsDialog({
     { target, stash, page, size: pageSize },
     { skip: !open || !stash },
   );
+
+  // closes the dialog and searches for the validators backed by the nominator
+  const handleSelectNominator = (address) => {
+    dispatch(identityFilterChanged(address));
+    onClose();
+  };
 
   const rows = (data?.data ?? []).map((n) => ({ ...n, id: n.address }));
   const identity = profile?._identity ?? stashDisplay(stash, 4);
@@ -128,7 +147,7 @@ export default function PredictionNominatorsDialog({
               "& .MuiDataGrid-cell:focus": { border: 0 },
             }}
             rows={rows}
-            columns={defineColumns(chainInfo, totalStake)}
+            columns={defineColumns(chainInfo, totalStake, handleSelectNominator)}
             loading={isFetching}
             localeText={{
               MuiTablePagination: { labelRowsPerPage: "Rows" },
