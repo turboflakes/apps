@@ -14,7 +14,8 @@ import PredictionRoundBox from "./PredictionRoundBox";
 import PredictionBlockBox from "./PredictionBlockBox";
 import PredictionMinimalStakeBox from "./PredictionMinimalStakeBox";
 import PredictionSumStakeBox from "./PredictionSumStakeBox";
-import PredictionSumStakeSquaredBox from "./PredictionSumStakeSquaredBox";
+import PredictionNominatorsPieBox from "./PredictionNominatorsPieBox";
+import PredictionNominatorsStakePieBox from "./PredictionNominatorsStakePieBox";
 import {
   selectAddress,
   addressChanged,
@@ -93,7 +94,7 @@ export default function ValPredictioneSection() {
         <PredictionTargetFilter />
       </Box>
       <Grid container spacing={2} sx={{ mb: 2 }}>
-        <Grid item xs={2}>
+        <Grid item xs={1}>
           <PredictionRoundBox target={predictionTarget} />
         </Grid>
         <Grid item xs={2}>
@@ -105,8 +106,11 @@ export default function ValPredictioneSection() {
         <Grid item xs={2}>
           <PredictionSumStakeBox target={predictionTarget} />
         </Grid>
+        <Grid item xs={2}>
+          <PredictionNominatorsPieBox target={predictionTarget} />
+        </Grid>
         <Grid item xs>
-          <PredictionSumStakeSquaredBox target={predictionTarget} />
+          <PredictionNominatorsStakePieBox target={predictionTarget} />
         </Grid>
       </Grid>
       <Grid container spacing={2}>
