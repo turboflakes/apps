@@ -35,7 +35,7 @@ export const extendedApi = apiSlice.injectEndpoints({
     getPredictionValidator: builder.query({
       query: ({ target, stash }) => ({ url: `/preds/${target}/validators/${stash}` }),
       providesTags: (result, error, arg) => [
-        { type: "PredictionValidators", id: `${arg.n}_${arg.stash}` },
+        { type: "PredictionValidators", id: `${arg.target}_${arg.stash}` },
       ],
     }),
     // GET /preds/{target}/validators/{stash}/nominators?page=&size=

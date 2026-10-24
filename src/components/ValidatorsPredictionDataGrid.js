@@ -2,14 +2,14 @@ import * as React from "react";
 import { useSelector } from "react-redux";
 import isUndefined from "lodash/isUndefined";
 import isNull from "lodash/isNull";
-// import isNil from "lodash/isNil";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
 import { DataGrid } from "@mui/x-data-grid";
 import Identicon from "@polkadot/react-identicon";
 import GridIdentityLink from "./GridIdentityLink";
 import IdentityFilter from "./IdentityFilter";
-// import InsightsInfoLegend from "./InsightsInfoLegend";
+import PredictionNominatorsDialog from "./PredictionNominatorsDialog";
 import { selectPredictionValidatorsByTarget } from "../features/api/predictionsSlice";
 import { selectChain, selectChainInfo } from "../features/chain/chainSlice";
 import {
@@ -19,7 +19,7 @@ import {
 import { stakeDisplay } from "../util/display";
 import { chainAddress } from "../util/crypto";
 
-const defineColumns = (theme, chain, chainInfo) => {
+const defineColumns = (theme, chain, chainInfo, onOpenNominators) => {
   return [
     {
       field: "id",
@@ -89,12 +89,20 @@ const defineColumns = (theme, chain, chainInfo) => {
       disableColumnMenu: true,
       valueGetter: (params) =>
         !isNull(params.row.nominators_counter_pred)
-          ? params.row.nominators_counter
+          ? params.row.nominators_counter_pred
           : null,
       renderCell: (params) =>
-        !isNull(params.row.nominators_counter_pred)
-          ? Math.round(params.row.nominators_counter_pred).format()
-          : null,
+        !isNull(params.row.nominators_counter_pred) ? (
+          <Link
+            component="button"
+            color="inherit"
+            underline="always"
+            sx={{ textDecorationThickness: "2px", textUnderlineOffset: "3px" }}
+            onClick={() => onOpenNominators(params.row)}
+          >
+            {Math.round(params.row.nominators_counter_pred).format()}
+          </Link>
+        ) : null,
     },
     {
       field: "nominators_stake_pred",
@@ -190,12 +198,14 @@ export default function ValidatorsPredictionDataGrid({ target, skip }) {
   );
 
   const chainInfo = useSelector(selectChainInfo);
+  // validator row for which the nominators dialog is opened
+  const [nominatorsOf, setNominatorsOf] = React.useState(null);
 
   if (isUndefined(rows)) {
     return null;
   }
 
-  let columns = defineColumns(theme, selectedChain, chainInfo);
+  let columns = defineColumns(theme, selectedChain, chainInfo, setNominatorsOf);
 
   const pageSize = selectedChain === "polkadot" ? 17 : 24;
 
@@ -254,6 +264,13 @@ export default function ValidatorsPredictionDataGrid({ target, skip }) {
         rowsPerPageOptions={[pageSize]}
         pagination
         disableSelectionOnClick
+      />
+      <PredictionNominatorsDialog
+        open={!!nominatorsOf}
+        onClose={() => setNominatorsOf(null)}
+        target={target}
+        stash={nominatorsOf?.address}
+        totalStake={nominatorsOf?.nominators_stake_pred}
       />
     </Box>
   );
