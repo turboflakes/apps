@@ -46,7 +46,9 @@ function PredictionsCell({ targets, mvr, bur }) {
       {PREDICTION_TARGETS.map((target) => {
         const isIncluded = !!targets?.includes(target);
         return (
-          <Tooltip key={target} title={`Prediction target ${target}`} placement="top" arrow>
+          <Tooltip key={target} title={
+            isIncluded ? `Included in prediction target ${target}` : `Not included in prediction target ${target}`
+          } placement="top" arrow>
             <Box
               sx={{
                 boxSizing: "border-box",
