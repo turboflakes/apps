@@ -119,7 +119,10 @@ export default function PredictionNominatorsDialog({
   };
 
   const rows = (data?.data ?? []).map((n) => ({ ...n, id: n.address }));
-  const identity = profile?._identity ?? stashDisplay(stash, 4);
+
+  const identity = profile?.identity
+    ? profile._identity
+    : stashDisplay(stash ? chainAddress(stash, chainInfo.ss58Format) : stash, 4);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
