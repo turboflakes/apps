@@ -148,7 +148,7 @@ export default function OverviewTabs({ sessionIndex, tab }) {
       ) : tab === 2 ? (
         <ValGroupsGrid sessionIndex={sessionIndex} />
       ) : tab === 3 ? (
-        <ValWaitingSection sessionIndex={sessionIndex} />
+        <ValWaitingSection />
       ) : tab === 4 ? (
         <ValPredictionSection />
       )

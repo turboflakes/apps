@@ -27,19 +27,29 @@ export default function ValWaitingSection() {
   const selectedAddress = useSelector(selectAddress);
   const currentSession = useSelector(selectSessionCurrent);
   const selectedChain = useSelector(selectChain);
-  const sessionIndex = currentSession - 1;
+  const lastSession = currentSession - 1;
+  const waitingParams = { role: "waiting", show_profile: true };
+
+  const { data: lastData, isSuccess: isLastSuccess } = useGetValidatorsQuery(
+    { session: lastSession, ...waitingParams },
+    { refetchOnMountOrArgChange: true },
+  );
+
+  // the waiting validators might not be available yet for the last session,
+  // if that is the case the ones from the previous session are presented
+  const isLastEmpty = isLastSuccess && lastData?.data?.length === 0;
+  const previousSession = lastSession - 1;
+  const { isSuccess: isPreviousSuccess } = useGetValidatorsQuery(
+    { session: previousSession, ...waitingParams },
+    { refetchOnMountOrArgChange: true, skip: !isLastEmpty },
+  );
+
+  const sessionIndex = isLastEmpty ? previousSession : lastSession;
+  const isSuccess = isLastEmpty ? isPreviousSuccess : isLastSuccess;
+
   const { isSuccess: isSessionSuccess } = useGetSessionByIndexQuery({
     index: sessionIndex,
   });
-
-  const { isSuccess } = useGetValidatorsQuery(
-    {
-      session: sessionIndex,
-      role: "waiting",
-      show_profile: true,
-    },
-    { refetchOnMountOrArgChange: true },
-  );
 
   React.useEffect(() => {
     if (stash && stash !== selectedAddress) {
@@ -64,7 +74,7 @@ export default function ValWaitingSection() {
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Waiting Validators</Typography>
           <Typography variant="subtitle">
-            {`Waiting validators at the end of the previous session ${sessionIndex?.format()}`}
+            {`Waiting validators at the end of session ${sessionIndex?.format()}`}
           </Typography>
         </Box>
         {/* TODO: Review subset filter */}
