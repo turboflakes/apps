@@ -145,20 +145,20 @@ export const versionToNumber = (version) => {
   return 0;
 };
 
-const interval = [11000, 12500];
+const interval = [11000, 13000];
 const convertToPercentage = (value, intervalIn) => {
   const [minIn, maxIn] = intervalIn;
   return ((value - minIn) * 100) / (maxIn - minIn);
 };
 
+// The lightness is limited so that no version is presented as white or black
+const versionLightness = (n) =>
+  Math.min(Math.max(convertToPercentage(n, interval), 10), 90);
+
 export const versionToHex = (version) => {
-  return hslToHex(
-    210,
-    40,
-    convertToPercentage(versionToNumber(version), interval),
-  );
+  return hslToHex(210, 40, versionLightness(versionToNumber(version)));
 };
 
 export const versionNumberToHex = (n) => {
-  return hslToHex(210, 40, convertToPercentage(n, interval));
+  return hslToHex(210, 40, versionLightness(n));
 };
