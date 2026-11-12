@@ -13,7 +13,7 @@ import {
   predictionChanged,
 } from "../features/api/predictionsSlice";
 
-export const PREDICTION_TARGETS = [600, 500, 400, 320];
+export const PREDICTION_TARGETS = [500, 400, 320];
 
 const invertedSx = {
   bgcolor: "#0B1317",
