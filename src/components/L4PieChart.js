@@ -10,13 +10,13 @@ const COLORS_B = (theme) => ([theme.palette.grey[400], '#F26522'])
 const COLORS_A = (theme) => ([theme.palette.grey[300], theme.palette.grey[200],'#FF3D3D'])
 
 const renderTooltip = (props) => {
-  const { active, payload, color } = props;
+  const { active, payload } = props;
   if (active && payload && payload.length) {
     const data = payload[0] && payload[0].payload;
     const p = data.payload.total === 0 ? 0 : data.payload.value / data.payload.total
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -50,21 +50,21 @@ const renderLegend = (props) => {
   );
 }
 
-const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, value }) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 1.2;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-  if (!percent) {
-    return null
-  }
-  return (
-    <text x={x} y={y} style={{fontSize: "0.8rem"}} fill={COLORS_A[index]} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" >
-      {`${(percent * 100).toFixed(0)}%`}
-    </text>
-  );
-};
+// const RADIAN = Math.PI / 180;
+// const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, value }) => {
+//   const radius = innerRadius + (outerRadius - innerRadius) * 1.2;
+//   const x = cx + radius * Math.cos(-midAngle * RADIAN);
+//   const y = cy + radius * Math.sin(-midAngle * RADIAN);
+//
+//   if (!percent) {
+//     return null
+//   }
+//   return (
+//     <text x={x} y={y} style={{fontSize: "0.8rem"}} fill={COLORS_A[index]} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" >
+//       {`${(percent * 100).toFixed(0)}%`}
+//     </text>
+//   );
+// };
 
 export default function L4PieChart({dataL1, dataL2, dataL3, dataL4, showLegend, showIdentity, dark, size}) {
   const theme = useTheme();
@@ -82,7 +82,7 @@ export default function L4PieChart({dataL1, dataL2, dataL3, dataL4, showLegend, 
 
   const totalL1 = Object.values(dataL1).reduce((acc, value) => acc + value, 0);
   const pieL1 = Object.keys(dataL1).map(k => ({ name: k !== '-' ? `Grade ${k}` : `N/D`, value: dataL1[k], total: totalL1, label: `${dataL1[k]} validators`, n: k  }));
-  
+
   return (
     <Box
         sx={{
@@ -113,7 +113,7 @@ export default function L4PieChart({dataL1, dataL2, dataL3, dataL4, showLegend, 
                 labelLine={false}
               >
                  {pieL1.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={theme.palette.grade[entry.n]} borderRadius 
+                    <Cell key={`cell-${index}`} fill={theme.palette.grade[entry.n]} borderRadius
                     stroke={dark ? theme.palette.background.secondary : theme.palette.background.paper} strokeWidth={1} />
                   ))}
               </Pie>
@@ -166,9 +166,9 @@ export default function L4PieChart({dataL1, dataL2, dataL3, dataL4, showLegend, 
                   <Cell key={`cell-${index}`} fill={COLORS_A(theme)[index]} />
                 ))}
               </Pie>
-              <Tooltip 
+              <Tooltip
                 cursor={{fill: 'transparent'}}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={renderTooltip} />
                 {showLegend ? <Legend verticalAlign="top" content={renderLegend} height={84} /> : null}
             </PieChart>

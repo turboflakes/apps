@@ -9,12 +9,12 @@ import isUndefined from 'lodash/isUndefined'
 import { calculateMVR, calculateBAR, calculateBUR } from '../../util/math'
 import { versionDisplay } from '../../util/display'
 import { gradeByRatios } from '../../util/grade'
-import { 
+import {
   matchValidatorReceived,
   matchValidatorsReceived,
   selectValidatorById
 } from './validatorsSlice'
-import { 
+import {
   selectValProfileByAddress,
 } from './valProfilesSlice'
 
@@ -39,15 +39,15 @@ const valGroupsSlice = createSlice({
         if (!!_state.entities[id]) {
           if (!_state.entities[id]._validatorIds.includes(`${session}_${address}`)) {
             const _validatorIds = [..._state.entities[id]._validatorIds, `${session}_${address}`]
-            adapter.upsertOne(state, { 
+            adapter.upsertOne(state, {
               id,
               session,
               _validatorIds
             })
           }
         } else {
-          adapter.upsertOne(state, { 
-            id, 
+          adapter.upsertOne(state, {
+            id,
             session,
             _validatorIds: [`${session}_${address}`]
           })
@@ -57,7 +57,7 @@ const valGroupsSlice = createSlice({
     .addMatcher(matchValidatorsReceived, (state, action) => {
       // Filter validators if authority and p/v
       const filtered = action.payload.data.filter(v => v.is_auth && v.is_para && !isUndefined(v.para_summary));
-      
+
       // Group validators by session first
       const groupedBySession = groupBy(filtered, v => !!v.session ? v.session : action.payload.session)
 
@@ -65,7 +65,7 @@ const valGroupsSlice = createSlice({
 
         // Group validators by groupID
         const groupedByValGroupId = groupBy(validators, v => v.para.group);
-        
+
         const groups = Object.values(groupedByValGroupId).map(group =>  {
           return {
           id: `${session}_${group[0].para.group}`,
@@ -82,8 +82,8 @@ const valGroupsSlice = createSlice({
           _backing_points: parseInt(group.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0).reduce((a, b) => a + b, 0)  / group.length),
           _availability: group.map(v => v.para.bitfields.ba).reduce((a, b) => a + b, 0),
           _unavailability: group.map(v => v.para.bitfields.bu).reduce((a, b) => a + b, 0),
-          _versions: group.map(v => versionDisplay(v.discovery?.nv)),
           _grades: group.map(v => gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu))),
+          ...(group.some(v => !isUndefined(v.discovery)) ? { _versions: group.map(v => versionDisplay(v.discovery?.nv)) } : {}),
         }})
         adapter.upsertMany(state, groups)
       })
@@ -94,56 +94,56 @@ const valGroupsSlice = createSlice({
 export default valGroupsSlice;
 
 // Selectors
-const { 
+const {
   selectById,
 } = adapter.getSelectors(state => state.val_groups)
 
 export const selectValGroupBySessionAndGroupId = (state, session, groupId) => selectById(state, `${session}_${groupId}`);
 
-export const selectValidatorIdsBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+export const selectValidatorIdsBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ?
   (!isUndefined(selectById(state, `${session}_${groupId}`)._validatorIds) ? selectById(state, `${session}_${groupId}`)._validatorIds : []) : [];
 
-export const selectValGroupParaIdBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+export const selectValGroupParaIdBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ?
   (!isUndefined(selectById(state, `${session}_${groupId}`)._para_id) ? selectById(state, `${session}_${groupId}`)._para_id : undefined) : undefined;
 
-export const selectValGroupMvrBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+export const selectValGroupMvrBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ?
 (!isUndefined(selectById(state, `${session}_${groupId}`)._mvr) ? selectById(state, `${session}_${groupId}`)._mvr : undefined) : undefined;
 
-export const selectValGroupBarBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+export const selectValGroupBarBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ?
 (!isUndefined(selectById(state, `${session}_${groupId}`)._bar) ? selectById(state, `${session}_${groupId}`)._bar : undefined) : undefined;
 
-export const selectValGroupAvailabilityBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+export const selectValGroupAvailabilityBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ?
   (!isUndefined(selectById(state, `${session}_${groupId}`)._availability) ? selectById(state, `${session}_${groupId}`)._availability : 0) : 0;
 
-export const selectValGroupUnavailabilityBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+export const selectValGroupUnavailabilityBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ?
   (!isUndefined(selectById(state, `${session}_${groupId}`)._unavailability) ? selectById(state, `${session}_${groupId}`)._unavailability : 0) : 0;
 
-export const selectValGroupValidityExplicitVotesBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+export const selectValGroupValidityExplicitVotesBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ?
   (!isUndefined(selectById(state, `${session}_${groupId}`)._validity_ev) ? selectById(state, `${session}_${groupId}`)._validity_ev : 0) : 0;
 
-export const selectValGroupValidityImplicitVotesBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+export const selectValGroupValidityImplicitVotesBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ?
   (!isUndefined(selectById(state, `${session}_${groupId}`)._validity_iv) ? selectById(state, `${session}_${groupId}`)._validity_iv : 0) : 0;
 
-export const selectValGroupValidityMissedVotesBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+export const selectValGroupValidityMissedVotesBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ?
   (!isUndefined(selectById(state, `${session}_${groupId}`)._validity_mv) ? selectById(state, `${session}_${groupId}`)._validity_mv : 0) : 0;
 
-export const selectValGroupValidityVotesBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+export const selectValGroupValidityVotesBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ?
   (!isUndefined(selectById(state, `${session}_${groupId}`)._validity_votes) ? selectById(state, `${session}_${groupId}`)._validity_votes : 0) : 0;
 
-export const selectValGroupBackingPointsBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+export const selectValGroupBackingPointsBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ?
   (!isUndefined(selectById(state, `${session}_${groupId}`)._backing_points) ? selectById(state, `${session}_${groupId}`)._backing_points : 0) : 0;
 
-export const selectValGroupCoreAssignmentsBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+export const selectValGroupCoreAssignmentsBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ?
   (!isUndefined(selectById(state, `${session}_${groupId}`)._core_assignments) ? selectById(state, `${session}_${groupId}`)._core_assignments : 0) : 0;
 
-export const selectValGroupVersionsBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+export const selectValGroupVersionsBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ?
   (!isUndefined(selectById(state, `${session}_${groupId}`)._versions) ? selectById(state, `${session}_${groupId}`)._versions : 0) : 0;
 
-export const selectValGroupGradesBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ? 
+export const selectValGroupGradesBySessionAndGroupId = (state, session, groupId) => !isUndefined(selectById(state, `${session}_${groupId}`)) ?
   (!isUndefined(selectById(state, `${session}_${groupId}`)._grades) ? selectById(state, `${session}_${groupId}`)._grades : 0) : 0;
 
-export const selectValidatorsBySessionAndGroupId = (state, session, groupId) => 
-  selectValidatorIdsBySessionAndGroupId(state, session, groupId).map(id => { 
+export const selectValidatorsBySessionAndGroupId = (state, session, groupId) =>
+  selectValidatorIdsBySessionAndGroupId(state, session, groupId).map(id => {
     const validator = selectValidatorById(state, id);
     return {
       ...validator,
