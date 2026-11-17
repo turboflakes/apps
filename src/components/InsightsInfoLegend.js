@@ -63,16 +63,16 @@ const InsightsInfoLegend = ({showDisputes}) => {
                 Missed Collation Ratio (MCR)
               </Typography>
               <Typography variant="caption" gutterBottom>
-                MCR = (❒e - ❒p) / (❒e)
+                MCR = (✗b) / (■ + ✗b)
               </Typography>
               <Typography variant="caption" gutterBottom>
                 <span style={{ marginRight: '8px' }}>◷</span>Total number of slots owned by the collator
               </Typography>
               <Typography variant="caption" gutterBottom>
-                <span style={{ marginRight: '8px' }}>❒e</span>Total number of blocks expected to be produced in the owned slots
+                <span style={{ marginRight: '8px' }}>■</span>Total number of blocks produced by the collator
               </Typography>
               <Typography variant="caption" gutterBottom>
-                <span style={{ marginRight: '8px' }}>❒p</span>Total number of blocks produced
+                <span style={{ marginRight: '8px' }}>✗b</span>Total number of collation blocks missed
               </Typography>
               <Typography variant="caption" paragraph>
                 <span style={{ marginRight: '8px' }}>✗s</span>Total number of owned slots where no block was produced

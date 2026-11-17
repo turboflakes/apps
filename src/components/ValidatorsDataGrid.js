@@ -104,7 +104,7 @@ const COLUMN_GROUPS = [
   },
   {
     label: "Collation",
-    fields: ["collation_owned_slots", "collation_expected_blocks", "collation_produced_blocks", "collation_missed_slots", "collation_points", "collation_chains", "mcr"],
+    fields: ["collation_owned_slots", "collation_produced_blocks", "collation_missed_blocks", "collation_missed_slots", "collation_points", "collation_chains", "mcr"],
   },
 ];
 
@@ -389,18 +389,23 @@ const defineColumns = (theme, chain, chainInfo) => {
           : null,
     },
     {
-      field: "collation_expected_blocks",
-      headerName: "❒e",
+      field: "collation_produced_blocks",
+      headerName: "■",
       type: "number",
       width: 72,
       disableColumnMenu: true,
     },
     {
-      field: "collation_produced_blocks",
-      headerName: "❒p",
+      field: "collation_missed_blocks",
+      headerName: "✗b",
       type: "number",
       width: 72,
       disableColumnMenu: true,
+      valueGetter: (params) =>
+        !isNull(params.row.collation_expected_blocks)
+          ? params.row.collation_expected_blocks -
+            params.row.collation_produced_blocks
+          : null,
     },
     {
       field: "collation_missed_slots",
