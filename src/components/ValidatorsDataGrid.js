@@ -87,7 +87,7 @@ const COLUMN_GROUPS = [
   { label: "Authoring", fields: ["authored_blocks", "authored_pts"] },
   {
     label: "Performance",
-    fields: ["score", "mvr", "bar", "avg_pts"],
+    fields: ["score", "mvr", "bar", "avg_pts", "mcr"],
   },
   {
     label: "Para-Validation",
@@ -104,7 +104,7 @@ const COLUMN_GROUPS = [
   },
   {
     label: "Collation",
-    fields: ["collation_owned_slots", "collation_expected_blocks", "collation_produced_blocks", "collation_missed_slots", "collation_points"],
+    fields: ["collation_owned_slots", "collation_expected_blocks", "collation_produced_blocks", "collation_missed_slots", "collation_points", "mcr"],
   },
 ];
 
@@ -526,7 +526,9 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
   // collation columns are only available for the networks that support it
   columns = isCollationAvailable(selectedChain)
     ? columns
-    : columns.filter((c) => !c.field.startsWith("collation_"));
+    : columns.filter(
+        (c) => c.field !== "mcr" && !c.field.startsWith("collation_"),
+      );
 
   const handleOnlyPVChange = (event) => {
     setShowOnlyPV(event.target.checked);
