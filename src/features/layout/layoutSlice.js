@@ -16,7 +16,9 @@ const initialState = {
   mode: 'Live',
   maxHistoryEras: 16,
   identityFilter: '',
-  subsetFilter: ''
+  subsetFilter: '',
+  // columns hidden by the user in the insights grids: { [field]: false }
+  insightsColumnVisibilityModel: {}
 };
 
 const layoutSlice = createSlice({
@@ -38,6 +40,9 @@ const layoutSlice = createSlice({
     subsetFilterChanged: (state, action) => {
       state.subsetFilter = action.payload;
     },
+    insightsColumnVisibilityModelChanged: (state, action) => {
+      state.insightsColumnVisibilityModel = action.payload;
+    },
   },
 });
 
@@ -49,13 +54,16 @@ export const selectMaxHistoryEras = (state) => state.layout.maxHistoryEras;
 export const selectMaxHistorySessions = (state) => state.layout.maxHistoryEras * 6;
 export const selectIdentityFilter = (state) => state.layout.identityFilter;
 export const selectSubsetFilter = (state) => state.layout.subsetFilter;
+export const selectInsightsColumnVisibilityModel = (state) =>
+  state.layout.insightsColumnVisibilityModel;
 
 export const { 
   pageChanged, 
   modeChanged, 
   maxHistoryErasChanged,
   identityFilterChanged,
-  subsetFilterChanged
+  subsetFilterChanged,
+  insightsColumnVisibilityModelChanged
  } = layoutSlice.actions;
 
 export default layoutSlice;

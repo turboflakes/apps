@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import isUndefined from "lodash/isUndefined";
 import isNull from "lodash/isNull";
 import { useTheme } from "@mui/material/styles";
@@ -27,6 +27,8 @@ import { selectSessionHistoryRangeIds } from "../features/api/sessionsSlice";
 import {
   selectIdentityFilter,
   selectSubsetFilter,
+  selectInsightsColumnVisibilityModel,
+  insightsColumnVisibilityModelChanged,
 } from "../features/layout/layoutSlice";
 import { selectChain, selectChainInfo } from "../features/chain/chainSlice";
 import { stakeDisplay, scoreDisplay, versionDisplay } from "../util/display";
@@ -37,14 +39,14 @@ import {
 
 // preset groups of columns, toggled together
 const COLUMN_GROUPS = [
-  { label: "Stake", fields: ["own_stake", "commission"] },
-  { label: "Version", fields: ["node_version"] },
-  { label: "Sessions", fields: ["active_sessions", "para_sessions"] },
-  { label: "Authoring", fields: ["authored_blocks", "authored_pts"] },
   {
     label: "Performance",
     fields: ["grade","mvr", "bar", "mcr", "score"],
   },
+  { label: "Stake", fields: ["own_stake", "commission"] },
+  { label: "Version", fields: ["node_version"] },
+  { label: "Sessions", fields: ["active_sessions", "para_sessions"] },
+  { label: "Authority", fields: ["authored_blocks", "authored_pts"] },
   {
     label: "Para-Validation",
     fields: [
@@ -439,7 +441,13 @@ export default function ValidatorsHistoryDataGrid({ isFetching }) {
   const [onlyDisputes, setOnlyDisputes] = React.useState(false);
   const [onlyLowGrades, setOnlyLowGrades] = React.useState(false);
   // columns hidden by the user: { [field]: false }
-  const [columnVisibilityModel, setColumnVisibilityModel] = React.useState({});
+  // shared by the insights grids and boxes, so the boxes can follow the columns
+  const dispatch = useDispatch();
+  const columnVisibilityModel = useSelector(
+    selectInsightsColumnVisibilityModel,
+  );
+  const setColumnVisibilityModel = (model) =>
+    dispatch(insightsColumnVisibilityModelChanged(model));
   const [columnsAnchor, setColumnsAnchor] = React.useState(null);
   const chainInfo = useSelector(selectChainInfo);
 
@@ -620,13 +628,13 @@ export default function ValidatorsHistoryDataGrid({ isFetching }) {
                 key={group.label}
                 dense
                 onClick={() =>
-                  setColumnVisibilityModel((model) => ({
-                    ...model,
+                  setColumnVisibilityModel({
+                    ...columnVisibilityModel,
                     // hide the whole group if all visible, show it otherwise
                     ...Object.fromEntries(
                       fields.map((f) => [f, visible < fields.length]),
                     ),
-                  }))
+                  })
                 }
               >
                 <Checkbox
