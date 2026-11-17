@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import isUndefined from 'lodash/isUndefined';
-import isNull from 'lodash/isNull';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -14,17 +12,17 @@ import IconButton from '@mui/material/IconButton';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import ListIcon from '@mui/icons-material/List';
 // import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import GradesPieChart from './GradesPieChart';
 import Tooltip from './Tooltip';
 import {
   selectValidatorsInsightsBySessions,
 } from '../features/api/validatorsSlice'
-import { 
+import {
   selectIdentityFilter,
   selectSubsetFilter
  } from '../features/layout/layoutSlice'
-import { 
+import {
   selectSessionHistoryRangeIds,
 } from '../features/api/sessionsSlice'
 import { gradeByRatios } from '../util/grade'
@@ -38,13 +36,13 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
   const subsetFilter = useSelector(selectSubsetFilter);
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, isHistoryMode ? historySessionRangeIds : [sessionIndex], isHistoryMode, identityFilter, subsetFilter));
-  
+
   if (!rows.length) {
     return null
   }
 
-  const currentGrades = rows.filter(v => !isNull(v.mvr) && !isNull(v.bur)).map(v => gradeByRatios(v.mvr, v.bur))  
-  
+  const currentGrades = rows.map(v => gradeByRatios(v.mvr, v.bur, v.mcr)).filter(g => g !== "-")
+
   if (!currentGrades.length) {
     return null
   }
@@ -58,13 +56,13 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
       quantity,
     }
   });
-  
+
   const handleView = () => {
     setShowPie(!showPie);
   }
-  
+
   return (
-    <Paper sx={{ 
+    <Paper sx={{
       display: 'flex',
       flexDirection: 'column',
       // justifyContent: 'center',
@@ -118,25 +116,25 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
         </Box>
 
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-          { showPie ? 
-          
+          { showPie ?
+
             <GradesPieChart data={gradesData} size="md"  /> :
-           
+
             <Box sx={{ display: 'flex', flexDirection: 'column', width: '256px'}}>
               <List dense >
                 {gradesData.map((g, i) => (
-                  <ListItem key={i} sx={{ 
+                  <ListItem key={i} sx={{
                       // bgcolor: theme.palette.grade[g],
-                      borderBottom: `1px solid ${theme.palette.divider}`, 
-                      '+ :last-child': { borderBottom: 'none'} 
+                      borderBottom: `1px solid ${theme.palette.divider}`,
+                      '+ :last-child': { borderBottom: 'none'}
                     }}
                       secondaryAction={
                         <Typography variant="caption">{`${(Math.round(g.value*100)/100)}%`}</Typography>
                       }
                     >
                     <ListItemIcon sx={{ minWidth: '24px'}}>
-                      <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 
-                        bgcolor: theme.palette.grade[g.name], 
+                      <Box sx={{ width: '8px', height: '8px', borderRadius: '50%',
+                        bgcolor: theme.palette.grade[g.name],
                         display: "inline-block" }}>
                       </Box>
                     </ListItemIcon>

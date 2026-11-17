@@ -45,7 +45,12 @@ function ItemButtom({ address, sessionIndex, rank, diff }) {
     selectValProfileByAddress(state, address),
   );
   const grade = useSelector((state) =>
-    selectValidatorGradeBySessionAndAddress(state, sessionIndex, address),
+    selectValidatorGradeBySessionAndAddress(
+      state,
+      sessionIndex,
+      address,
+      true,
+    ),
   );
   const chainInfo = useSelector(selectChainInfo);
 

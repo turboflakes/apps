@@ -1,10 +1,38 @@
 import isUndefined from 'lodash/isUndefined'
+import { calculateMVR, calculateBUR, calculateMCR } from './math'
 
 // Note: Deprecated
 export const grade = (ratio) => { return  gradeByRatio(ratio) }
 
-export const gradeByRatios = (mvr, bur) => {
-  return gradeByRatio(1-(mvr * 0.75 + bur * 0.25))
+// Grade by the ratios available:
+// - validators only (mvr and bur): 1 - (0.75 * mvr + 0.25 * bur)
+// - collators only (mcr): 1 - mcr
+// - validators and collators (metanodes): 1 - (0.6 * mvr + 0.15 * bur + 0.25 * mcr)
+export const gradeByRatios = (mvr, bur, mcr) => {
+  const hasPara = Number.isFinite(mvr) && Number.isFinite(bur)
+  const hasCollation = Number.isFinite(mcr)
+  if (hasPara && hasCollation) {
+    return gradeByRatio(1-(mvr * 0.6 + bur * 0.15 + mcr * 0.25))
+  }
+  if (hasPara) {
+    return gradeByRatio(1-(mvr * 0.75 + bur * 0.25))
+  }
+  if (hasCollation) {
+    return gradeByRatio(1-mcr)
+  }
+  return "-"
+}
+
+// Grade of a validator object, by the para-validation (`para_summary` and `para`)
+// and/or the collation (`collation_summary`) available
+export const gradeByValidator = (v) => {
+  const isPara = !isUndefined(v.para_summary) && !isUndefined(v.para)
+  const isCollation = !!v.is_collator && !isUndefined(v.collation_summary)
+  return gradeByRatios(
+    isPara ? calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv) : undefined,
+    isPara ? calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu) : undefined,
+    isCollation ? calculateMCR(v.collation_summary.eb, v.collation_summary.pb) : undefined,
+  )
 }
 
 const gradeByRatio = (ratio) => {

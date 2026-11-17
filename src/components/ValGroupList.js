@@ -20,13 +20,12 @@ import {
 import {
   selectValidatorsBySessionAndGroupId
 } from '../features/api/valGroupsSlice';
-import { calculateMVR, calculateBUR } from '../util/math'
 import { stashDisplay, nameDisplay } from '../util/display'
-import { gradeByRatios } from '../util/grade';
+import { gradeByValidator } from '../util/grade';
 import { chainAddress } from '../util/crypto';
 import { getNetworkSS58Format } from '../constants'
 
-const gradeValue = (v) => gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu));
+const gradeValue = (v) => gradeByValidator(v);
 
 export default function ValGroupList({sessionIndex, groupId}) {
   const theme = useTheme();

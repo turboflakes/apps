@@ -12,7 +12,12 @@ import isArray from "lodash/isArray";
 import max from "lodash/max";
 import min from "lodash/min";
 import apiSlice from "./apiSlice";
-import { calculateMVR, calculateBAR, calculateBUR } from "../../util/math";
+import {
+  calculateMVR,
+  calculateBAR,
+  calculateBUR,
+  calculateMCR,
+} from "../../util/math";
 // import { isValidAddress, addressSS58 } from "../../util/crypto";
 import { socketActions } from "./socketSlice";
 import { selectSessionByIndex } from "./sessionsSlice";
@@ -300,19 +305,34 @@ export const selectValidatorsByAddressAndSessions = (
     })
     .filter((v) => !isUndefined(v));
 
+// NOTE: the collation is only taken into account if `withCollation` is true
 export const selectValidatorGradeBySessionAndAddress = (
   state,
   session,
   address,
+  withCollation = false,
 ) => {
   const v = selectValidatorBySessionAndAddress(state, session, address);
-  if (!isUndefined(v) && !isUndefined(v.para_summary) && !isUndefined(v.para)) {
-    return gradeByRatios(
-      calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv),
-      calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu),
-    );
+  if (isUndefined(v)) {
+    return "-";
   }
-  return "-";
+  const isPara = !isUndefined(v.para_summary) && !isUndefined(v.para);
+  const isCollation =
+    withCollation && v.is_collator && !isUndefined(v.collation_summary);
+  if (!isPara && !isCollation) {
+    return "-";
+  }
+  return gradeByRatios(
+    isPara
+      ? calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)
+      : undefined,
+    isPara
+      ? calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu)
+      : undefined,
+    isCollation
+      ? calculateMCR(v.collation_summary.eb, v.collation_summary.pb)
+      : undefined,
+  );
 };
 
 // NOTE: right after a session change the pool counter is not yet available for
@@ -518,10 +538,6 @@ const calculate_score = (
     ? metanode_performance_score(score, mcr)
     : score;
 };
-
-// Missed Collation Ratio: missed blocks over the expected blocks
-const calculateMCR = (expected, produced) =>
-  expected > 0 ? (expected - produced) / expected : undefined;
 
 // Timeline
 //

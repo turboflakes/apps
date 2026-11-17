@@ -44,13 +44,12 @@ import { chainAddress } from "../util/crypto";
 
 // One circle for each prediction target, filled if the validator is included in
 // that target and with a visible border and white background if not
-function PredictionsCell({ targets, mvr, bur }) {
+function PredictionsCell({ targets, mvr, bur, mcr }) {
   const theme = useTheme();
   // filled with the current grade of the validator, if it has one
+  const grade = gradeByRatios(mvr, bur, mcr);
   const gradeColor =
-    !isNull(mvr) && !isNull(bur)
-      ? theme.palette.grade[gradeByRatios(mvr, bur)]
-      : theme.palette.grey[900];
+    grade !== "-" ? theme.palette.grade[grade] : theme.palette.grey[900];
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
       {PREDICTION_TARGETS.map((target) => {
@@ -151,8 +150,12 @@ const defineColumns = (theme, chain, chainInfo) => {
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
-        if (!isNull(params.row.mvr) && !isNull(params.row.bur)) {
-          const gradeValue = gradeByRatios(params.row.mvr, params.row.bur);
+        const gradeValue = gradeByRatios(
+          params.row.mvr,
+          params.row.bur,
+          params.row.mcr,
+        );
+        if (gradeValue !== "-") {
           return (
             <Box>
               <Box
@@ -237,6 +240,7 @@ const defineColumns = (theme, chain, chainInfo) => {
           targets={params.row.predictions}
           mvr={params.row.mvr}
           bur={params.row.bur}
+          mcr={params.row.mcr}
         />
       ),
     },
@@ -507,20 +511,14 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
     ? rows.filter((v) => v.disputes > 0)
     : rowsFiltered1;
   const rowsFiltered4 = onlyLowGrades
-    ? rows.filter((v) =>
-        !isNull(v.mvr) && !isNull(v.bur)
-          ? gradeByRatios(v.mvr, v.bur) === "F"
-          : false,
-      )
+    ? rows.filter((v) => gradeByRatios(v.mvr, v.bur, v.mcr) === "F")
     : rowsFiltered3;
   const metanodesCounter = rows.filter((v) => v.is_collator).length;
   const rowsFiltered5 = onlyMetanodes
     ? rows.filter((v) => v.is_collator)
     : rowsFiltered4;
-  const gradeFsCounter = rowsFiltered1.filter((v) =>
-    !isNull(v.mvr) && !isNull(v.bur)
-      ? gradeByRatios(v.mvr, v.bur) === "F"
-      : false,
+  const gradeFsCounter = rowsFiltered1.filter(
+    (v) => gradeByRatios(v.mvr, v.bur, v.mcr) === "F",
   ).length;
   const disputesCounter = rows.filter((v) => v.disputes > 0).length;
 
