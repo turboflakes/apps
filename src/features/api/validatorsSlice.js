@@ -413,6 +413,7 @@ function createRows(
   collation_owned_slots,
   collation_expected_blocks,
   collation_produced_blocks,
+  collation_missed_blocks,
   collation_points,
   collation_missed_slots,
   collation_chains,
@@ -447,6 +448,7 @@ function createRows(
     collation_owned_slots,
     collation_expected_blocks,
     collation_produced_blocks,
+    collation_missed_blocks,
     collation_points,
     collation_missed_slots,
     collation_chains,
@@ -710,8 +712,27 @@ export const selectValidatorsInsightsBySessions = (
     const collation_sessions = is_collator ? f3.length : null;
     const collation_owned_slots = is_collator ? sumCollation("os") : null;
     const collation_expected_blocks = is_collator ? sumCollation("eb") : null;
-    const collation_produced_blocks = is_collator ? sumCollation("pb") : null;
-    const collation_points = is_collator ? sumCollation("pt") : null;
+    // NOTE: the summary only accounts for the slots already closed, the entry that
+    // currently holds the slot has its produced blocks in `pb` and points in `pt`
+    const collation_current_slots = x
+      .flatMap((y) => y.collation ?? [])
+      .filter((c) => !isUndefined(c.slot));
+    const sumCurrentSlots = (k) =>
+      collation_current_slots
+        .map((c) => c[k] ?? 0)
+        .reduce((a, b) => a + b, 0);
+    const collation_current_slot_blocks = sumCurrentSlots("pb");
+    const collation_current_slot_points = sumCurrentSlots("pt");
+    const collation_produced_blocks = is_collator
+      ? sumCollation("pb") + collation_current_slot_blocks
+      : null;
+    // missed blocks and ratio are only known for the closed slots
+    const collation_missed_blocks = is_collator
+      ? sumCollation("eb") - sumCollation("pb")
+      : null;
+    const collation_points = is_collator
+      ? sumCollation("pt") + collation_current_slot_points
+      : null;
     const collation_missed_slots = is_collator ? sumCollation("ms") : null;
     // System chains the validator is collating, given by the `collation` entries
     // with a `slot`
@@ -798,6 +819,7 @@ export const selectValidatorsInsightsBySessions = (
       collation_owned_slots,
       collation_expected_blocks,
       collation_produced_blocks,
+      collation_missed_blocks,
       collation_points,
       collation_missed_slots,
       collation_chains,
@@ -830,7 +852,7 @@ export const selectValidatorsInsightsBySessions = (
         v.collation_expected_blocks > 0
           ? calculateMCR(
               v.collation_expected_blocks,
-              v.collation_produced_blocks,
+              v.collation_expected_blocks - v.collation_missed_blocks,
             )
           : null;
       const score = calculate_score(

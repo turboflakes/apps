@@ -405,11 +405,6 @@ const defineColumns = (theme, chain, chainInfo) => {
       type: "number",
       width: 72,
       disableColumnMenu: true,
-      valueGetter: (params) =>
-        !isNull(params.row.collation_expected_blocks)
-          ? params.row.collation_expected_blocks -
-            params.row.collation_produced_blocks
-          : null,
     },
     {
       field: "collation_missed_slots",
