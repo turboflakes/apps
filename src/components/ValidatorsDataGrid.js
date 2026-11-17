@@ -86,7 +86,7 @@ const COLUMN_GROUPS = [
   { label: "Authoring", fields: ["authored_blocks", "authored_pts"] },
   {
     label: "Performance",
-    fields: ["score", "mvr", "bar", "avg_pts", "mcr"],
+    fields: ["grade","mvr", "bar", "mcr", "score"],
   },
   {
     label: "Para-Validation",
@@ -99,6 +99,7 @@ const COLUMN_GROUPS = [
       "availability",
       "unavailability",
       "disputes",
+      "avg_pts"
     ],
   },
   {
@@ -270,7 +271,7 @@ const defineColumns = (theme, chain, chainInfo) => {
       field: "authored_pts",
       headerName: "Authored Points",
       type: "number",
-      width: 64,
+      width: 96,
       disableColumnMenu: true,
       valueGetter: (params) =>
         !isNull(params.row.authored_blocks)
@@ -675,16 +676,13 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
             alignItems: "center",
           }}
         >
-          <Tooltip title="Columns" placement="top" arrow>
-            <Box component="span" sx={{ display: "inline-flex", mr: 1 }}>
-              <IconButton
-                size="small"
-                onClick={(e) => setColumnsAnchor(e.currentTarget)}
-              >
-                <ViewColumnIcon fontSize="small" />
-              </IconButton>
-            </Box>
-          </Tooltip>
+          <IconButton
+            size="medium"
+            sx={{ mr: 1 }}
+            onClick={(e) => setColumnsAnchor(e.currentTarget)}
+          >
+            <ViewColumnIcon fontSize="small" />
+          </IconButton>
           <InsightsInfoLegend />
         </Box>
         <Menu
