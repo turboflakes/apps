@@ -472,6 +472,7 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
   // const [showAllGrades, setShowAllGrades] = React.useState(false);
   const [onlyDisputes, setOnlyDisputes] = React.useState(false);
   const [onlyLowGrades, setOnlyLowGrades] = React.useState(false);
+  const [onlyMetanodes, setOnlyMetanodes] = React.useState(false);
   // columns hidden by the user: { [field]: false }
   const [columnVisibilityModel, setColumnVisibilityModel] = React.useState({});
   const [columnsAnchor, setColumnsAnchor] = React.useState(null);
@@ -493,6 +494,10 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
           : false,
       )
     : rowsFiltered3;
+  const metanodesCounter = rows.filter((v) => v.is_collator).length;
+  const rowsFiltered5 = onlyMetanodes
+    ? rows.filter((v) => v.is_collator)
+    : rowsFiltered4;
   const gradeFsCounter = rowsFiltered1.filter((v) =>
     !isNull(v.mvr) && !isNull(v.bur)
       ? gradeByRatios(v.mvr, v.bur) === "F"
@@ -539,6 +544,10 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
     setOnlyLowGrades(event.target.checked);
   };
 
+  const handleOnlyMetanodesChange = (event) => {
+    setOnlyMetanodes(event.target.checked);
+  };
+
   const pageSize = selectedChain === "polkadot" ? 17 : 24;
 
   return (
@@ -580,6 +589,26 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
               },
             }}
           />
+          {isCollationAvailable(selectedChain) ? (
+            <FormControlLabel
+              control={
+                <Switch
+                  size="small"
+                  disabled={
+                    metanodesCounter === 0 || metanodesCounter === rows.length
+                  }
+                  checked={onlyMetanodes}
+                  onChange={handleOnlyMetanodesChange}
+                />
+              }
+              label="Show only metanodes"
+              sx={{
+                "& .MuiFormControlLabel-label": {
+                  ...theme.typography.caption,
+                },
+              }}
+            />
+          ) : null}
           <FormControlLabel
             control={
               <Switch
@@ -709,7 +738,7 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
           },
         }}
         // onRowClick={handleOnRowClick}
-        rows={rowsFiltered4.map((v) => ({
+        rows={rowsFiltered5.map((v) => ({
           ...v,
           predictions: predictionsByValidator[v.address]?.targets,
         }))}

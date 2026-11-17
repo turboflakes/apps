@@ -388,6 +388,7 @@ function createRows(
   nominators_stake,
   nominators_raw_stake,
   nominators_counter,
+  is_collator,
   collation_sessions,
   collation_owned_slots,
   collation_expected_blocks,
@@ -420,6 +421,7 @@ function createRows(
     nominators_stake,
     nominators_raw_stake,
     nominators_counter,
+    is_collator,
     collation_sessions,
     collation_owned_slots,
     collation_expected_blocks,
@@ -686,13 +688,13 @@ export const selectValidatorsInsightsBySessions = (
     const f3 = x.filter((y) => y.is_collator && !isUndefined(y.collation_summary));
     const sumCollation = (k) =>
       f3.map((v) => v.collation_summary[k] ?? 0).reduce((a, b) => a + b, 0);
-    const hasCollation = f3.length > 0;
-    const collation_sessions = hasCollation ? f3.length : null;
-    const collation_owned_slots = hasCollation ? sumCollation("os") : null;
-    const collation_expected_blocks = hasCollation ? sumCollation("eb") : null;
-    const collation_produced_blocks = hasCollation ? sumCollation("pb") : null;
-    const collation_points = hasCollation ? sumCollation("pt") : null;
-    const collation_missed_slots = hasCollation ? sumCollation("ms") : null;
+    const is_collator = f3.length > 0;
+    const collation_sessions = is_collator ? f3.length : null;
+    const collation_owned_slots = is_collator ? sumCollation("os") : null;
+    const collation_expected_blocks = is_collator ? sumCollation("eb") : null;
+    const collation_produced_blocks = is_collator ? sumCollation("pb") : null;
+    const collation_points = is_collator ? sumCollation("pt") : null;
+    const collation_missed_slots = is_collator ? sumCollation("ms") : null;
 
     const timeline = sessions.map((s) => {
       const y = x.find((e) => e.session === s);
@@ -761,6 +763,7 @@ export const selectValidatorsInsightsBySessions = (
       profile?.nominators_stake ?? null,
       profile?.nominators_raw_stake ?? null,
       profile?.nominators_counter ?? null,
+      is_collator,
       collation_sessions,
       collation_owned_slots,
       collation_expected_blocks,
