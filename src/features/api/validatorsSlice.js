@@ -395,6 +395,7 @@ function createRows(
   collation_produced_blocks,
   collation_points,
   collation_missed_slots,
+  collation_chains,
 ) {
   return {
     id,
@@ -428,6 +429,7 @@ function createRows(
     collation_produced_blocks,
     collation_points,
     collation_missed_slots,
+    collation_chains,
   };
 }
 
@@ -695,6 +697,18 @@ export const selectValidatorsInsightsBySessions = (
     const collation_produced_blocks = is_collator ? sumCollation("pb") : null;
     const collation_points = is_collator ? sumCollation("pt") : null;
     const collation_missed_slots = is_collator ? sumCollation("ms") : null;
+    // System chains the validator is collating, given by the `collation` entries
+    // with a `slot`
+    const collation_chains = is_collator
+      ? [
+          ...new Set(
+            x
+              .flatMap((y) => y.collation ?? [])
+              .filter((c) => !isUndefined(c.slot))
+              .map((c) => c.pid),
+          ),
+        ]
+      : null;
 
     const timeline = sessions.map((s) => {
       const y = x.find((e) => e.session === s);
@@ -770,6 +784,7 @@ export const selectValidatorsInsightsBySessions = (
       collation_produced_blocks,
       collation_points,
       collation_missed_slots,
+      collation_chains,
     );
   });
 

@@ -13,6 +13,13 @@
 export const prodParasWestend = [
   {
     info: "assethub",
+    paraId: 1000,
+    text: "Asset Hub",
+    teleport: [-1],
+    providers: {},
+  },
+  {
+    info: "assethub",
     paraId: 1100,
     text: "Polkadot Asset Hub",
     teleport: [-1],

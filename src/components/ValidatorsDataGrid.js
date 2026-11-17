@@ -104,7 +104,7 @@ const COLUMN_GROUPS = [
   },
   {
     label: "Collation",
-    fields: ["collation_owned_slots", "collation_expected_blocks", "collation_produced_blocks", "collation_missed_slots", "collation_points", "mcr"],
+    fields: ["collation_owned_slots", "collation_expected_blocks", "collation_produced_blocks", "collation_missed_slots", "collation_points", "collation_chains", "mcr"],
   },
 ];
 
@@ -373,6 +373,20 @@ const defineColumns = (theme, chain, chainInfo) => {
       type: "number",
       width: 64,
       disableColumnMenu: true,
+    },
+    {
+      field: "collation_chains",
+      headerName: "Collation Chains",
+      width: 128,
+      disableColumnMenu: true,
+      valueGetter: (params) =>
+        params.row.collation_chains?.length
+          ? params.row.collation_chains
+              .map((pid) =>
+                isChainSupported(chain, pid) ? getChainName(chain, pid) : pid,
+              )
+              .join(", ")
+          : null,
     },
     {
       field: "collation_expected_blocks",
