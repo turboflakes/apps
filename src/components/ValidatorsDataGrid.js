@@ -4,10 +4,16 @@ import isUndefined from "lodash/isUndefined";
 import isNull from "lodash/isNull";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 // import FormHelperText from '@mui/material/FormHelperText';
 import Switch from "@mui/material/Switch";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Checkbox from "@mui/material/Checkbox";
+import IconButton from "@mui/material/IconButton";
+import ViewColumnIcon from "@mui/icons-material/ViewColumn";
 import { DataGrid } from "@mui/x-data-grid";
 import Identicon from "@polkadot/react-identicon";
 import DetailsIcon from "./DetailsIcon";
@@ -29,7 +35,11 @@ import {
   selectSubsetFilter,
 } from "../features/layout/layoutSlice";
 import { stakeDisplay, scoreDisplay, versionDisplay } from "../util/display";
-import { isChainSupported, getChainName } from "../constants";
+import {
+  isChainSupported,
+  getChainName,
+  isCollationAvailable,
+} from "../constants";
 import { chainAddress } from "../util/crypto";
 
 // One circle for each prediction target, filled if the validator is included in
@@ -68,6 +78,35 @@ function PredictionsCell({ targets, mvr, bur }) {
     </Box>
   );
 }
+
+// preset groups of columns, toggled together
+const COLUMN_GROUPS = [
+  { label: "Stake", fields: ["own_stake", "commission"] },
+  { label: "Predictions", fields: ["predictions"] },
+  { label: "Version", fields: ["node_version"] },
+  { label: "Authoring", fields: ["authored_blocks", "authored_pts"] },
+  {
+    label: "Performance",
+    fields: ["score", "mvr", "bar", "avg_pts"],
+  },
+  {
+    label: "Para-Validation",
+    fields: [
+      "paraId",
+      "core_assignments",
+      "implicit_votes",
+      "explicit_votes",
+      "missed_votes",
+      "availability",
+      "unavailability",
+      "disputes",
+    ],
+  },
+  {
+    label: "Collation",
+    fields: ["collation_owned_slots", "collation_expected_blocks", "collation_produced_blocks", "collation_missed_slots", "collation_points"],
+  },
+];
 
 const defineColumns = (theme, chain, chainInfo) => {
   return [
@@ -329,6 +368,54 @@ const defineColumns = (theme, chain, chainInfo) => {
         !isNull(params.row.avg_pts) ? Math.round(params.row.avg_pts) : null,
     },
     {
+      field: "collation_owned_slots",
+      headerName: "◷",
+      type: "number",
+      width: 64,
+      disableColumnMenu: true,
+    },
+    {
+      field: "collation_expected_blocks",
+      headerName: "❒e",
+      type: "number",
+      width: 72,
+      disableColumnMenu: true,
+    },
+    {
+      field: "collation_produced_blocks",
+      headerName: "❒p",
+      type: "number",
+      width: 72,
+      disableColumnMenu: true,
+    },
+    {
+      field: "collation_missed_slots",
+      headerName: "✗s",
+      type: "number",
+      width: 72,
+      disableColumnMenu: true,
+    },
+    {
+      field: "mcr",
+      headerName: "MCR",
+      type: "number",
+      width: 96,
+      disableColumnMenu: true,
+      valueGetter: (params) =>
+        !isNull(params.row.mcr)
+          ? params.row.mcr !== 0
+            ? params.row.mcr.toFixed(4)
+            : 0
+          : null,
+    },
+    {
+      field: "collation_points",
+      headerName: "Collation Points",
+      type: "number",
+      width: 128,
+      disableColumnMenu: true,
+    },
+    {
       field: "score",
       headerName: "Score",
       type: "number",
@@ -385,6 +472,9 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
   // const [showAllGrades, setShowAllGrades] = React.useState(false);
   const [onlyDisputes, setOnlyDisputes] = React.useState(false);
   const [onlyLowGrades, setOnlyLowGrades] = React.useState(false);
+  // columns hidden by the user: { [field]: false }
+  const [columnVisibilityModel, setColumnVisibilityModel] = React.useState({});
+  const [columnsAnchor, setColumnsAnchor] = React.useState(null);
   const chainInfo = useSelector(selectChainInfo);
 
   if (isUndefined(rows) && !isSuccess) {
@@ -427,6 +517,11 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
     selectedChain === "polkadot"
       ? columns
       : columns.filter((c) => c.field !== "predictions");
+
+  // collation columns are only available for the networks that support it
+  columns = isCollationAvailable(selectedChain)
+    ? columns
+    : columns.filter((c) => !c.field.startsWith("collation_"));
 
   const handleOnlyPVChange = (event) => {
     setShowOnlyPV(event.target.checked);
@@ -528,9 +623,69 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
               }
             }}/> */}
         </FormGroup>
-        <Box sx={{ position: "absolute", top: 0, right: 0 }}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Tooltip title="Columns" placement="top" arrow>
+            <Box component="span" sx={{ display: "inline-flex", mr: 1 }}>
+              <IconButton
+                size="small"
+                onClick={(e) => setColumnsAnchor(e.currentTarget)}
+              >
+                <ViewColumnIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          </Tooltip>
           <InsightsInfoLegend />
         </Box>
+        <Menu
+          anchorEl={columnsAnchor}
+          open={Boolean(columnsAnchor)}
+          onClose={() => setColumnsAnchor(null)}
+        >
+          {COLUMN_GROUPS.map((group) => {
+            const fields = group.fields.filter((f) =>
+              columns.some((c) => c.field === f),
+            );
+            if (!fields.length) {
+              return null;
+            }
+            const visible = fields.filter(
+              (f) => columnVisibilityModel[f] !== false,
+            ).length;
+            return (
+              <MenuItem
+                key={group.label}
+                dense
+                onClick={() =>
+                  setColumnVisibilityModel((model) => ({
+                    ...model,
+                    // hide the whole group if all visible, show it otherwise
+                    ...Object.fromEntries(
+                      fields.map((f) => [f, visible < fields.length]),
+                    ),
+                  }))
+                }
+              >
+                <Checkbox
+                  size="small"
+                  edge="start"
+                  checked={visible === fields.length}
+                  indeterminate={visible > 0 && visible < fields.length}
+                />
+                <Typography variant="caption">
+                  <b>{group.label}</b>
+                </Typography>
+              </MenuItem>
+            );
+          })}
+        </Menu>
       </Box>
       <DataGrid
         sx={{
@@ -559,6 +714,8 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
           predictions: predictionsByValidator[v.address]?.targets,
         }))}
         columns={columns}
+        columnVisibilityModel={columnVisibilityModel}
+        onColumnVisibilityModelChange={setColumnVisibilityModel}
         rowsPerPageOptions={[pageSize]}
         pagination
         disableSelectionOnClick

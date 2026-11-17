@@ -388,6 +388,12 @@ function createRows(
   nominators_stake,
   nominators_raw_stake,
   nominators_counter,
+  collation_sessions,
+  collation_owned_slots,
+  collation_expected_blocks,
+  collation_produced_blocks,
+  collation_points,
+  collation_missed_slots,
 ) {
   return {
     id,
@@ -414,6 +420,12 @@ function createRows(
     nominators_stake,
     nominators_raw_stake,
     nominators_counter,
+    collation_sessions,
+    collation_owned_slots,
+    collation_expected_blocks,
+    collation_produced_blocks,
+    collation_points,
+    collation_missed_slots,
   };
 }
 
@@ -445,6 +457,11 @@ function createBasicRows(
 // Performance Score
 // performance_score = (1 - mvr) * 0.5 + bar * 0.25 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
 
+// Performance Score with collation
+// Validators with at least MIN_COLLATION_EXPECTED_BLOCKS expected collation blocks
+// over the window: metanode_performance_score = performance_score * 0.75 + (1 - mcr) * 0.25
+// Everyone else keeps the performance_score
+
 // Commission Score
 // commission_score = performance_score * 0.25 + (1 - commission) * 0.75
 
@@ -464,6 +481,43 @@ const performance_score = (
     (para_sessions / total_sessions) * 0.07
   );
 };
+
+const MIN_COLLATION_EXPECTED_BLOCKS = 24;
+
+const metanode_performance_score = (performance_score, mcr) =>
+  performance_score * 0.75 + (1 - mcr) * 0.25;
+
+// Final score of a validator row: the performance score, combined with the
+// collation if there are enough expected collation blocks
+const calculate_score = (
+  row,
+  mvr,
+  bar,
+  mcr,
+  min_avg_pts,
+  max_avg_pts,
+  total_sessions,
+) => {
+  if (!(row.para_sessions > 0)) {
+    return null;
+  }
+  const score = performance_score(
+    mvr,
+    bar,
+    row.avg_pts,
+    min_avg_pts,
+    max_avg_pts,
+    row.para_sessions,
+    total_sessions,
+  );
+  return row.collation_expected_blocks >= MIN_COLLATION_EXPECTED_BLOCKS
+    ? metanode_performance_score(score, mcr)
+    : score;
+};
+
+// Missed Collation Ratio: missed blocks over the expected blocks
+const calculateMCR = (expected, produced) =>
+  expected > 0 ? (expected - produced) / expected : undefined;
 
 // Timeline
 //
@@ -628,6 +682,18 @@ export const selectValidatorsInsightsBySessions = (
     const paraId = f2.length > 0 ? f2.map((v) => v.para.pid) : null;
     const validator_index = !!f1.length ? f1[0].auth.aix : null;
 
+    // Collation summary, only available if the validator is a collator
+    const f3 = x.filter((y) => y.is_collator && !isUndefined(y.collation_summary));
+    const sumCollation = (k) =>
+      f3.map((v) => v.collation_summary[k] ?? 0).reduce((a, b) => a + b, 0);
+    const hasCollation = f3.length > 0;
+    const collation_sessions = hasCollation ? f3.length : null;
+    const collation_owned_slots = hasCollation ? sumCollation("os") : null;
+    const collation_expected_blocks = hasCollation ? sumCollation("eb") : null;
+    const collation_produced_blocks = hasCollation ? sumCollation("pb") : null;
+    const collation_points = hasCollation ? sumCollation("pt") : null;
+    const collation_missed_slots = hasCollation ? sumCollation("ms") : null;
+
     const timeline = sessions.map((s) => {
       const y = x.find((e) => e.session === s);
       if (!isUndefined(y)) {
@@ -695,6 +761,12 @@ export const selectValidatorsInsightsBySessions = (
       profile?.nominators_stake ?? null,
       profile?.nominators_raw_stake ?? null,
       profile?.nominators_counter ?? null,
+      collation_sessions,
+      collation_owned_slots,
+      collation_expected_blocks,
+      collation_produced_blocks,
+      collation_points,
+      collation_missed_slots,
     );
   });
 
@@ -720,23 +792,28 @@ export const selectValidatorsInsightsBySessions = (
         v.para_sessions > 0
           ? calculateBUR(v.availability, v.unavailability)
           : null;
-      const score =
-        v.para_sessions > 0
-          ? performance_score(
-              mvr,
-              bar,
-              v.avg_pts,
-              min_avg_pts,
-              max_avg_pts,
-              v.para_sessions,
-              sessions.length,
+      const mcr =
+        v.collation_expected_blocks > 0
+          ? calculateMCR(
+              v.collation_expected_blocks,
+              v.collation_produced_blocks,
             )
           : null;
+      const score = calculate_score(
+        v,
+        mvr,
+        bar,
+        mcr,
+        min_avg_pts,
+        max_avg_pts,
+        sessions.length,
+      );
       return {
         ...v,
         mvr,
         bar,
         bur,
+        mcr,
         score,
         isFetching,
       };

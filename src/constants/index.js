@@ -62,6 +62,7 @@ const networkSettings = {
         svg: galenSVG,
       },
     ],
+    isCollationAvailable: false,
     isDNAvailable: false,
     isTestNetwork: false,
     stepUnits: 1000,
@@ -134,6 +135,7 @@ const networkSettings = {
         svg: fofoSVG,
       },
     ],
+    isCollationAvailable: false,
     isDNAvailable: false,
     isTestNetwork: false,
     stepUnits: 1,
@@ -157,6 +159,7 @@ const networkSettings = {
     poolIds: [],
     chains: prodParasPaseo,
     validators: [],
+    isCollationAvailable: false,
     isDNAvailable: false,
     isTestNetwork: true,
     stepUnits: 1000,
@@ -165,7 +168,7 @@ const networkSettings = {
   westend: {
     name: "Westend",
     endpoint: process.env.REACT_APP_WESTEND_API_ENDPOINT,
-    externalWSS: "wss://westend.rpc.turboflakes.io",
+    externalWSS: "wss://westend-rpc.polkadot.io",
     icon: iconWestendSVG,
     logo: logoWestendSVG,
     url: "https://polkadot.network",
@@ -179,6 +182,7 @@ const networkSettings = {
     poolIds: [process.env.REACT_APP_WESTEND_POOL_ID_1],
     chains: prodParasWestend,
     validators: [],
+    isCollationAvailable: true,
     isDNAvailable: false,
     isTestNetwork: true,
     stepUnits: 10,
@@ -268,6 +272,9 @@ export const getChainLogo = (network, paraId) => {
 
 export const isDNAvailable = (network) =>
   networkSettings[network].isDNAvailable;
+
+export const isCollationAvailable = (network) =>
+  networkSettings[network].isCollationAvailable;
 
 export const isTestNetwork = (network) =>
   networkSettings[network].isTestNetwork;
