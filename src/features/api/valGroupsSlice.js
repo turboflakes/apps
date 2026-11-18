@@ -6,9 +6,9 @@ import {
 import forEach from 'lodash/forEach'
 import groupBy from 'lodash/groupBy'
 import isUndefined from 'lodash/isUndefined'
-import { calculateMVR, calculateBAR, calculateBUR } from '../../util/math'
+import { calculateMVR, calculateBAR } from '../../util/math'
 import { versionDisplay } from '../../util/display'
-import { gradeByRatios } from '../../util/grade'
+import { gradeByValidator } from '../../util/grade'
 import {
   matchValidatorReceived,
   matchValidatorsReceived,
@@ -82,7 +82,7 @@ const valGroupsSlice = createSlice({
           _backing_points: parseInt(group.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0).reduce((a, b) => a + b, 0)  / group.length),
           _availability: group.map(v => v.para.bitfields.ba).reduce((a, b) => a + b, 0),
           _unavailability: group.map(v => v.para.bitfields.bu).reduce((a, b) => a + b, 0),
-          _grades: group.map(v => gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu))),
+          _grades: group.map(v => gradeByValidator(v)),
           ...(group.some(v => !isUndefined(v.discovery)) ? { _versions: group.map(v => versionDisplay(v.discovery?.nv)) } : {}),
         }})
         adapter.upsertMany(state, groups)

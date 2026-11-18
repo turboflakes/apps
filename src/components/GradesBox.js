@@ -13,6 +13,7 @@ import { useTheme } from "@mui/material/styles";
 import GradesPieChart from "./GradesPieChart";
 import Spinner from "./Spinner";
 import Tooltip from "./Tooltip";
+import GradesInfoBox from "./GradesInfoBox";
 import { useGetValidatorsQuery } from "../features/api/validatorsSlice";
 import { selectGradesBySession } from "../features/api/sessionsSlice";
 
@@ -82,38 +83,15 @@ export default function GradesBox({ sessionIndex, size }) {
             <Tooltip
               disableFocusListener
               placement="bottom-end"
+              componentsProps={{ tooltip: { sx: { maxWidth: 480 } } }}
               title={
-                <Box sx={{ p: 1 }}>
-                  <Typography variant="caption">
-                    A grade is calculated as 75% of the Backing Votes Ratio
-                    (BVR) combined with 25% of the Bitfields Availability Ratio
-                    (BAR) for one or more validators:
-                  </Typography>
-                  <ul>
-                    <li>{"A+ = RATIO > 99%"}</li>
-                    <li>{"A = RATIO > 95%"}</li>
-                    <li>{"B+ = RATIO > 90%"}</li>
-                    <li>{"B = RATIO > 80%"}</li>
-                    <li>{"C+ = RATIO > 70%"}</li>
-                    <li>{"C = RATIO > 60%"}</li>
-                    <li>{"D+ = RATIO > 50%"}</li>
-                    <li>{"D = RATIO > 40%"}</li>
-                    <li>{"F = RATIO <= 40%"}</li>
-                  </ul>
-                  <i>RATIO = 0.75*BVR + 0.25*BAR</i>
-                  <br />
-                  <i>BVR = 1 - MVR</i>
-                  <br />
-                  <i>Backing Votes Ratio (BVR)</i>
-                  <br />
-                  <i>Missed Votes Ratio (MVR)</i>
-                  <br />
-                  <i>Bitfields Availability Ratio (BAR)</i>
-                  <br />
-                </Box>
+                <GradesInfoBox />
               }
             >
-              <InfoOutlinedIcon sx={{ color: theme.palette.neutrals[300] }} />
+              <InfoOutlinedIcon
+                fontSize="small"
+                sx={{ color: theme.palette.action.active }}
+              />
             </Tooltip>
           </Box>
           <List dense>

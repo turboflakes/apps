@@ -36,7 +36,12 @@ import { selectValidatorBySessionAndAuthId } from "./authoritiesSlice";
 import { selectChain, selectChainInfo } from "../chain/chainSlice";
 import { matchBoardsReceived } from "./boardsSlice";
 import { getChainName, isChainSupported } from "../../constants";
-import { calculateMVR, calculateBAR, calculateBUR } from "../../util/math";
+import {
+  calculateMVR,
+  calculateBAR,
+  calculateBUR,
+  calculateMCR,
+} from "../../util/math";
 import { gradeByRatios } from "../../util/grade";
 import { chainAddress } from "../../util/crypto";
 
@@ -171,6 +176,33 @@ export const matchSessionsReceived = isAnyOf(
   extendedApi.endpoints.getSessions.matchFulfilled,
 );
 
+const isParaGraded = (v) =>
+  v.is_auth &&
+  v.is_para &&
+  !isUndefined(v.para_summary) &&
+  !isUndefined(v.para);
+
+const isCollationGraded = (v) =>
+  v.is_collator && !isUndefined(v.collation_summary);
+
+// A validator is graded if it is a para-validator and/or a collator
+const isGraded = (v) => isParaGraded(v) || isCollationGraded(v);
+
+// Grade of a validator by the ratios available: para-validation (mvr and bur),
+// collation (mcr) or both
+const validatorGrade = (v) =>
+  gradeByRatios(
+    isParaGraded(v)
+      ? calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)
+      : undefined,
+    isParaGraded(v)
+      ? calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu)
+      : undefined,
+    isCollationGraded(v)
+      ? calculateMCR(v.collation_summary.eb, v.collation_summary.pb)
+      : undefined,
+  );
+
 const sessionsSlice = createSlice({
   name: "sessions",
   initialState: {
@@ -271,16 +303,9 @@ const sessionsSlice = createSlice({
           const _bars = filtered.map((v) =>
             calculateBAR(v.para.bitfields?.ba, v.para.bitfields?.bu),
           );
-          const _grades = filtered.map((v) =>
-            gradeByRatios(
-              calculateMVR(
-                v.para_summary.ev,
-                v.para_summary.iv,
-                v.para_summary.mv,
-              ),
-              calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu),
-            ),
-          );
+          // Grades take into account the collation, if available. Collators that
+          // are not para-validators are graded only by the collation
+          const _grades = validators.filter(isGraded).map(validatorGrade);
           const _validity_votes = filtered.map(
             (v) => v.para_summary.ev + v.para_summary.iv + v.para_summary.mv,
           );
@@ -301,17 +326,10 @@ const sessionsSlice = createSlice({
           const _dispute_stashes = filtered
             .filter((v) => !isUndefined(v.para.disputes))
             .map((v) => v.address);
-          const _f_grade_stashes = filtered
+          // NOTE: only authorities, para-validators or metanodes
+          const _f_grade_stashes = validators
             .filter(
-              (v) =>
-                gradeByRatios(
-                  calculateMVR(
-                    v.para_summary.ev,
-                    v.para_summary.iv,
-                    v.para_summary.mv,
-                  ),
-                  calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu),
-                ) === "F",
+              (v) => v.is_auth && isGraded(v) && validatorGrade(v) === "F",
             )
             .map((v) => v.address);
 

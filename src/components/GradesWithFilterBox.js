@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import isUndefined from 'lodash/isUndefined';
-import isNull from 'lodash/isNull';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -14,17 +12,18 @@ import IconButton from '@mui/material/IconButton';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import ListIcon from '@mui/icons-material/List';
 // import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import GradesPieChart from './GradesPieChart';
 import Tooltip from './Tooltip';
+import GradesInfoBox from './GradesInfoBox';
 import {
   selectValidatorsInsightsBySessions,
 } from '../features/api/validatorsSlice'
-import { 
+import {
   selectIdentityFilter,
   selectSubsetFilter
  } from '../features/layout/layoutSlice'
-import { 
+import {
   selectSessionHistoryRangeIds,
 } from '../features/api/sessionsSlice'
 import { gradeByRatios } from '../util/grade'
@@ -38,13 +37,13 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
   const subsetFilter = useSelector(selectSubsetFilter);
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
   const rows = useSelector(state => selectValidatorsInsightsBySessions(state, isHistoryMode ? historySessionRangeIds : [sessionIndex], isHistoryMode, identityFilter, subsetFilter));
-  
+
   if (!rows.length) {
     return null
   }
 
-  const currentGrades = rows.filter(v => !isNull(v.mvr) && !isNull(v.bur)).map(v => gradeByRatios(v.mvr, v.bur))  
-  
+  const currentGrades = rows.map(v => gradeByRatios(v.mvr, v.bur, v.mcr)).filter(g => g !== "-")
+
   if (!currentGrades.length) {
     return null
   }
@@ -58,13 +57,13 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
       quantity,
     }
   });
-  
+
   const handleView = () => {
     setShowPie(!showPie);
   }
-  
+
   return (
-    <Paper sx={{ 
+    <Paper sx={{ position: 'relative',
       display: 'flex',
       flexDirection: 'column',
       // justifyContent: 'center',
@@ -79,64 +78,31 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
           <Typography variant="h6" sx={{ overflow: "hidden", textOverflow: "ellipsis" }} title="Distribution by grade">
           Distribution by grade
           </Typography>
-          <Tooltip
-            disableFocusListener
-            placement="top"
-            title={
-              <Box sx={{ p: 1}}>
-                <Typography variant="caption" >A grade is calculated as 75% of the Backing Votes Ratio (BVR) combined with 25% of the Bitfields Availability Ratio (BAR) for one or more validators:</Typography>
-                  <ul>
-                    <li>{"A+ = RATIO > 99%"}</li>
-                    <li>{"A = RATIO > 95%"}</li>
-                    <li>{"B+ = RATIO > 90%"}</li>
-                    <li>{"B = RATIO > 80%"}</li>
-                    <li>{"C+ = RATIO > 70%"}</li>
-                    <li>{"C = RATIO > 60%"}</li>
-                    <li>{"D+ = RATIO > 50%"}</li>
-                    <li>{"D = RATIO > 40%"}</li>
-                    <li>{"F = RATIO <= 40%"}</li>
-                  </ul>
-                  <i>RATIO = 0.75*BVR + 0.25*BAR</i><br/>
-                  <i>BVR = 1 - MVR</i><br/>
-                  <i>Backing Votes Ratio (BVR)</i><br/>
-                  <i>Missed Votes Ratio (MVR)</i><br/>
-                  <i>Bitfields Availability Ratio (BAR)</i><br/>
-              </Box>
-            }
-            >
-            <InfoOutlinedIcon sx={{ color: theme.palette.neutrals[300]}}/>
-          </Tooltip>
         </Box>
         <Typography variant="subtitle2" sx={{ height: 16, overflow: "hidden", textOverflow: "ellipsis" }}>
           {subsetFilter !== '' ? <span>Only for subset {subsetFilter}</span> : 'Only para-validators'}
         </Typography>
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-          <IconButton aria-label="grade-details" onClick={handleView}>
-            { !showPie ? <PieChartIcon fontSize="small" /> : <ListIcon fontSize="small" /> }
-          </IconButton>
-        </Box>
-
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-          { showPie ? 
-          
+          { showPie ?
+
             <GradesPieChart data={gradesData} size="md"  /> :
-           
+
             <Box sx={{ display: 'flex', flexDirection: 'column', width: '256px'}}>
               <List dense >
                 {gradesData.map((g, i) => (
-                  <ListItem key={i} sx={{ 
+                  <ListItem key={i} sx={{
                       // bgcolor: theme.palette.grade[g],
-                      borderBottom: `1px solid ${theme.palette.divider}`, 
-                      '+ :last-child': { borderBottom: 'none'} 
+                      borderBottom: `1px solid ${theme.palette.divider}`,
+                      '+ :last-child': { borderBottom: 'none'}
                     }}
                       secondaryAction={
                         <Typography variant="caption">{`${(Math.round(g.value*100)/100)}%`}</Typography>
                       }
                     >
                     <ListItemIcon sx={{ minWidth: '24px'}}>
-                      <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 
-                        bgcolor: theme.palette.grade[g.name], 
+                      <Box sx={{ width: '8px', height: '8px', borderRadius: '50%',
+                        bgcolor: theme.palette.grade[g.name],
                         display: "inline-block" }}>
                       </Box>
                     </ListItemIcon>
@@ -147,6 +113,25 @@ export default function GradesWithFilterBox({sessionIndex, isHistoryMode}) {
             </Box>
           }
         </Box>
+      </Box>
+      {/* top right corner of the box */}
+      <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
+        <IconButton aria-label="grade-details" onClick={handleView}>
+          { !showPie ? <PieChartIcon fontSize="small" /> : <ListIcon fontSize="small" /> }
+        </IconButton>
+      </Box>
+      {/* bottom left corner of the box */}
+      <Box sx={{ position: 'absolute', left: 16, bottom: 12 }}>
+          <Tooltip
+            disableFocusListener
+            placement="top-start"
+            componentsProps={{ tooltip: { sx: { maxWidth: 480 } } }}
+            title={
+              <GradesInfoBox />
+            }
+            >
+            <InfoOutlinedIcon fontSize="small" sx={{ color: theme.palette.action.active }} />
+          </Tooltip>
       </Box>
     </Paper>
   )

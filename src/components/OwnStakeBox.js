@@ -106,6 +106,7 @@ export default function OwnStakeBox({ sessionIndex, isHistoryMode }) {
   return (
     <Paper
       sx={{
+        position: "relative",
         // m: 2,
         // p: 2,
         display: "flex",
@@ -127,7 +128,7 @@ export default function OwnStakeBox({ sessionIndex, isHistoryMode }) {
           justifyContent: "space-between",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", pr: 4 }}>
           <Box sx={{ display: "flex" }}>
             <Typography
               variant="h6"
@@ -148,16 +149,6 @@ export default function OwnStakeBox({ sessionIndex, isHistoryMode }) {
             `All ${pathname.startsWith("/val-waiting") ? "waiting" : "active"} validators`
           )}
         </Typography>
-
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <IconButton aria-label="grade-details" onClick={handleView}>
-            {!showPie ? (
-              <PieChartIcon fontSize="small" />
-            ) : (
-              <ListIcon fontSize="small" />
-            )}
-          </IconButton>
-        </Box>
 
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           {showPie ? (
@@ -202,6 +193,16 @@ export default function OwnStakeBox({ sessionIndex, isHistoryMode }) {
             </Box>
           )}
         </Box>
+      </Box>
+      {/* top right corner of the box */}
+      <Box sx={{ position: "absolute", top: 8, right: 8 }}>
+        <IconButton aria-label="grade-details" onClick={handleView}>
+          {!showPie ? (
+            <PieChartIcon fontSize="small" />
+          ) : (
+            <ListIcon fontSize="small" />
+          )}
+        </IconButton>
       </Box>
     </Paper>
   );

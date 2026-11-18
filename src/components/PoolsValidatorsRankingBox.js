@@ -101,6 +101,7 @@ export default function PoolsValidatorsRankingBox({sessionIndex, maxSessions, sk
   return (
     <Paper
       sx={{
+        position: 'relative',
         p: 2,
         display: 'flex',
         // justifyContent: 'space-between',
@@ -123,27 +124,6 @@ export default function PoolsValidatorsRankingBox({sessionIndex, maxSessions, sk
             Validators most frequently chosen
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
-          <Tooltip
-            disableFocusListener
-            placement="bottom-end"
-            title={
-              <Box sx={{ p: 1}}>
-                <Typography variant="caption" paragraph>
-                  <b>Top Validators in Nomination Pools</b>
-                </Typography>
-                <Typography component="div" variant="caption" paragraph>
-                  Validators that are the most frequently picked by pool operators as nominees
-                </Typography>
-                <Typography component="div" variant="caption" gutterBottom>
-                  <b>sorting:</b> Validators are sorted by pool counter in descending order
-                </Typography>
-              </Box>
-            }
-            >
-            <InfoOutlinedIcon sx={{ color: theme.palette.neutrals[300]}}/>
-          </Tooltip>
-        </Box>
       </Box>
       <Box sx={{ height: 308, display: 'flex', flexDirection: 'column'}}>
         {isFetching ?
@@ -160,6 +140,28 @@ export default function PoolsValidatorsRankingBox({sessionIndex, maxSessions, sk
         }
       </Box>
       <PaginationBox page={page} totalSize={RANK_SIZE} pageSize={PAGE_SIZE} onChange={handlePageChange} />
+      {/* bottom left corner of the box, same height and bottom padding as the pagination buttons (30px) */}
+      <Box sx={{ position: 'absolute', left: 16, bottom: 16, height: 30, display: 'flex', alignItems: 'center' }}>
+        <Tooltip
+            disableFocusListener
+            placement="top-start"
+            title={
+              <Box sx={{ p: 1}}>
+                <Typography variant="caption" paragraph>
+                  <b>Top Validators in Nomination Pools</b>
+                </Typography>
+                <Typography component="div" variant="caption" paragraph>
+                  Validators that are the most frequently picked by pool operators as nominees
+                </Typography>
+                <Typography component="div" variant="caption" gutterBottom>
+                  <b>sorting:</b> Validators are sorted by pool counter in descending order
+                </Typography>
+              </Box>
+            }
+            >
+            <InfoOutlinedIcon fontSize="small" sx={{ color: theme.palette.action.active }} />
+          </Tooltip>
+      </Box>
     </Paper>
   );
 }

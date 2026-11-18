@@ -172,3 +172,11 @@ export const calculateBAR = (a, u) => {
     } 
     return a / total
 }
+
+// Missed Collation Ratio: missed blocks over the expected blocks
+export const calculateMCR = (expected, produced) => {
+  if (!(expected > 0)) {
+    return undefined
+  }
+  return (expected - produced) / expected
+}

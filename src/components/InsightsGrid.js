@@ -25,6 +25,7 @@ import {
 import {
   selectIsLiveMode,
   selectIsHistoryMode,
+  selectInsightsColumnVisibilityModel,
 } from "../features/layout/layoutSlice";
 import { selectIsSocketConnected } from "../features/api/socketSlice";
 
@@ -40,6 +41,21 @@ export default function InsightsGrid() {
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const historySessionRangeIds = useSelector(selectSessionHistoryRangeIds);
   const selectedChain = useSelector(selectChain);
+  const columnVisibilityModel = useSelector(
+    selectInsightsColumnVisibilityModel,
+  );
+  // the boxes follow the columns of the grids
+  const isGradesBoxVisible = columnVisibilityModel.score !== false;
+  const isVersionBoxVisible = columnVisibilityModel.node_version !== false;
+  const isOwnStakeBoxVisible = columnVisibilityModel.own_stake !== false;
+  const isCommissionBoxVisible =
+    selectedChain !== "polkadot" && columnVisibilityModel.commission !== false;
+  // the grid takes the full width if there is no box to show
+  const hasBoxes =
+    isGradesBoxVisible ||
+    isVersionBoxVisible ||
+    isOwnStakeBoxVisible ||
+    isCommissionBoxVisible;
   const sessionIndex = isLiveMode
     ? currentSession
     : !!historySession
@@ -80,7 +96,7 @@ export default function InsightsGrid() {
       {isHistoryMode ? <ValidatorsHistorySlideAndLoadBox /> : null}
       <Grid container spacing={2}>
         {isLiveMode ? (
-          <Grid item xs={10}>
+          <Grid item xs={hasBoxes ? 10 : 12}>
             <ValidatorsInsights
               sessionIndex={sessionIndex}
               skip={isNaN(sessionIndex)}
@@ -88,41 +104,49 @@ export default function InsightsGrid() {
           </Grid>
         ) : null}
         {isHistoryMode ? (
-          <Grid item xs={10}>
+          <Grid item xs={hasBoxes ? 10 : 12}>
             <ValidatorsHistoryInsights skip={isNaN(sessionIndex)} />
           </Grid>
         ) : null}
-        <Grid item xs={2}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <GradesWithFilterBox
-                sessionIndex={sessionIndex}
-                isHistoryMode={isHistoryMode}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <NodeVersionBox
-                sessionIndex={sessionIndex}
-                isHistoryMode={isHistoryMode}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <OwnStakeBox
-                sessionIndex={sessionIndex}
-                isHistoryMode={isHistoryMode}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              {selectedChain !== "polkadot" ? (
-                <CommissionBox
-                  sessionIndex={sessionIndex}
-                  isHistoryMode={isHistoryMode}
-                />
+        {hasBoxes ? (
+          <Grid item xs={2}>
+            <Grid container spacing={2}>
+              {isGradesBoxVisible ? (
+                <Grid item xs={12}>
+                  <GradesWithFilterBox
+                    sessionIndex={sessionIndex}
+                    isHistoryMode={isHistoryMode}
+                  />
+                </Grid>
               ) : null}
+              {isVersionBoxVisible ? (
+                <Grid item xs={12}>
+                  <NodeVersionBox
+                    sessionIndex={sessionIndex}
+                    isHistoryMode={isHistoryMode}
+                  />
+                </Grid>
+              ) : null}
+              {isOwnStakeBoxVisible ? (
+                <Grid item xs={12}>
+                  <OwnStakeBox
+                    sessionIndex={sessionIndex}
+                    isHistoryMode={isHistoryMode}
+                  />
+                </Grid>
+              ) : null}
+              <Grid item xs={12}>
+                {isCommissionBoxVisible ? (
+                  <CommissionBox
+                    sessionIndex={sessionIndex}
+                    isHistoryMode={isHistoryMode}
+                  />
+                ) : null}
+              </Grid>
+              <Grid item xs={12}></Grid>
             </Grid>
-            <Grid item xs={12}></Grid>
           </Grid>
-        </Grid>
+        ) : null}
       </Grid>
     </Box>
   );

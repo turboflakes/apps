@@ -12,7 +12,12 @@ import isArray from "lodash/isArray";
 import max from "lodash/max";
 import min from "lodash/min";
 import apiSlice from "./apiSlice";
-import { calculateMVR, calculateBAR, calculateBUR } from "../../util/math";
+import {
+  calculateMVR,
+  calculateBAR,
+  calculateBUR,
+  calculateMCR,
+} from "../../util/math";
 // import { isValidAddress, addressSS58 } from "../../util/crypto";
 import { socketActions } from "./socketSlice";
 import { selectSessionByIndex } from "./sessionsSlice";
@@ -300,19 +305,34 @@ export const selectValidatorsByAddressAndSessions = (
     })
     .filter((v) => !isUndefined(v));
 
+// NOTE: the collation is only taken into account if `withCollation` is true
 export const selectValidatorGradeBySessionAndAddress = (
   state,
   session,
   address,
+  withCollation = false,
 ) => {
   const v = selectValidatorBySessionAndAddress(state, session, address);
-  if (!isUndefined(v) && !isUndefined(v.para_summary) && !isUndefined(v.para)) {
-    return gradeByRatios(
-      calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv),
-      calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu),
-    );
+  if (isUndefined(v)) {
+    return "-";
   }
-  return "-";
+  const isPara = !isUndefined(v.para_summary) && !isUndefined(v.para);
+  const isCollation =
+    withCollation && v.is_collator && !isUndefined(v.collation_summary);
+  if (!isPara && !isCollation) {
+    return "-";
+  }
+  return gradeByRatios(
+    isPara
+      ? calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv)
+      : undefined,
+    isPara
+      ? calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu)
+      : undefined,
+    isCollation
+      ? calculateMCR(v.collation_summary.eb, v.collation_summary.pb)
+      : undefined,
+  );
 };
 
 // NOTE: right after a session change the pool counter is not yet available for
@@ -388,6 +408,15 @@ function createRows(
   nominators_stake,
   nominators_raw_stake,
   nominators_counter,
+  is_collator,
+  collation_sessions,
+  collation_owned_slots,
+  collation_expected_blocks,
+  collation_produced_blocks,
+  collation_missed_blocks,
+  collation_points,
+  collation_missed_slots,
+  collation_chains,
 ) {
   return {
     id,
@@ -414,6 +443,15 @@ function createRows(
     nominators_stake,
     nominators_raw_stake,
     nominators_counter,
+    is_collator,
+    collation_sessions,
+    collation_owned_slots,
+    collation_expected_blocks,
+    collation_produced_blocks,
+    collation_missed_blocks,
+    collation_points,
+    collation_missed_slots,
+    collation_chains,
   };
 }
 
@@ -445,6 +483,11 @@ function createBasicRows(
 // Performance Score
 // performance_score = (1 - mvr) * 0.5 + bar * 0.25 + ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 + (pv_sessions / total_sessions) * 0.07
 
+// Performance Score with collation
+// Validators with at least MIN_COLLATION_EXPECTED_BLOCKS expected collation blocks
+// over the window: metanode_performance_score = performance_score * 0.75 + (1 - mcr) * 0.25
+// Everyone else keeps the performance_score
+
 // Commission Score
 // commission_score = performance_score * 0.25 + (1 - commission) * 0.75
 
@@ -463,6 +506,39 @@ const performance_score = (
     ((avg_pts - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 +
     (para_sessions / total_sessions) * 0.07
   );
+};
+
+const MIN_COLLATION_EXPECTED_BLOCKS = 24;
+
+const metanode_performance_score = (performance_score, mcr) =>
+  performance_score * 0.75 + (1 - mcr) * 0.25;
+
+// Final score of a validator row: the performance score, combined with the
+// collation if there are enough expected collation blocks
+const calculate_score = (
+  row,
+  mvr,
+  bar,
+  mcr,
+  min_avg_pts,
+  max_avg_pts,
+  total_sessions,
+) => {
+  if (!(row.para_sessions > 0)) {
+    return null;
+  }
+  const score = performance_score(
+    mvr,
+    bar,
+    row.avg_pts,
+    min_avg_pts,
+    max_avg_pts,
+    row.para_sessions,
+    total_sessions,
+  );
+  return row.collation_expected_blocks >= MIN_COLLATION_EXPECTED_BLOCKS
+    ? metanode_performance_score(score, mcr)
+    : score;
 };
 
 // Timeline
@@ -628,6 +704,49 @@ export const selectValidatorsInsightsBySessions = (
     const paraId = f2.length > 0 ? f2.map((v) => v.para.pid) : null;
     const validator_index = !!f1.length ? f1[0].auth.aix : null;
 
+    // Collation summary, only available if the validator is a collator
+    const f3 = x.filter((y) => y.is_collator && !isUndefined(y.collation_summary));
+    const sumCollation = (k) =>
+      f3.map((v) => v.collation_summary[k] ?? 0).reduce((a, b) => a + b, 0);
+    const is_collator = f3.length > 0;
+    const collation_sessions = is_collator ? f3.length : null;
+    const collation_owned_slots = is_collator ? sumCollation("os") : null;
+    const collation_expected_blocks = is_collator ? sumCollation("eb") : null;
+    // NOTE: the summary only accounts for the slots already closed, the entry that
+    // currently holds the slot has its produced blocks in `pb` and points in `pt`
+    const collation_current_slots = x
+      .flatMap((y) => y.collation ?? [])
+      .filter((c) => !isUndefined(c.slot));
+    const sumCurrentSlots = (k) =>
+      collation_current_slots
+        .map((c) => c[k] ?? 0)
+        .reduce((a, b) => a + b, 0);
+    const collation_current_slot_blocks = sumCurrentSlots("pb");
+    const collation_current_slot_points = sumCurrentSlots("pt");
+    const collation_produced_blocks = is_collator
+      ? sumCollation("pb") + collation_current_slot_blocks
+      : null;
+    // missed blocks and ratio are only known for the closed slots
+    const collation_missed_blocks = is_collator
+      ? sumCollation("eb") - sumCollation("pb")
+      : null;
+    const collation_points = is_collator
+      ? sumCollation("pt") + collation_current_slot_points
+      : null;
+    const collation_missed_slots = is_collator ? sumCollation("ms") : null;
+    // System chains the validator is collating, given by the `collation` entries
+    // with a `slot`
+    const collation_chains = is_collator
+      ? [
+          ...new Set(
+            x
+              .flatMap((y) => y.collation ?? [])
+              .filter((c) => !isUndefined(c.slot))
+              .map((c) => c.pid),
+          ),
+        ]
+      : null;
+
     const timeline = sessions.map((s) => {
       const y = x.find((e) => e.session === s);
       if (!isUndefined(y)) {
@@ -695,6 +814,15 @@ export const selectValidatorsInsightsBySessions = (
       profile?.nominators_stake ?? null,
       profile?.nominators_raw_stake ?? null,
       profile?.nominators_counter ?? null,
+      is_collator,
+      collation_sessions,
+      collation_owned_slots,
+      collation_expected_blocks,
+      collation_produced_blocks,
+      collation_missed_blocks,
+      collation_points,
+      collation_missed_slots,
+      collation_chains,
     );
   });
 
@@ -720,23 +848,28 @@ export const selectValidatorsInsightsBySessions = (
         v.para_sessions > 0
           ? calculateBUR(v.availability, v.unavailability)
           : null;
-      const score =
-        v.para_sessions > 0
-          ? performance_score(
-              mvr,
-              bar,
-              v.avg_pts,
-              min_avg_pts,
-              max_avg_pts,
-              v.para_sessions,
-              sessions.length,
+      const mcr =
+        v.collation_expected_blocks > 0
+          ? calculateMCR(
+              v.collation_expected_blocks,
+              v.collation_expected_blocks - v.collation_missed_blocks,
             )
           : null;
+      const score = calculate_score(
+        v,
+        mvr,
+        bar,
+        mcr,
+        min_avg_pts,
+        max_avg_pts,
+        sessions.length,
+      );
       return {
         ...v,
         mvr,
         bar,
         bur,
+        mcr,
         score,
         isFetching,
       };
