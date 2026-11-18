@@ -576,6 +576,7 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
   return (
     <Box
       sx={{
+        position: "relative",
         // p: 2,
         // m: 2,
         display: "flex",
@@ -686,12 +687,10 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
         >
           <IconButton
             size="medium"
-            sx={{ mr: 1 }}
             onClick={(e) => setColumnsAnchor(e.currentTarget)}
           >
             <ViewColumnIcon fontSize="small" />
           </IconButton>
-          <InsightsInfoLegend />
         </Box>
         <Menu
           anchorEl={columnsAnchor}
@@ -769,6 +768,10 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
         pagination
         disableSelectionOnClick
       />
+      {/* bottom left corner of the grid, the footer pagination is on the right */}
+      <Box sx={{ position: "absolute", left: 8, bottom: 8 }}>
+        <InsightsInfoLegend placement="right-end" />
+      </Box>
     </Box>
   );
 }

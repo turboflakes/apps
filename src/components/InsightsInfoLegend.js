@@ -8,14 +8,14 @@ import Tooltip from './Tooltip';
 import { selectChain } from '../features/chain/chainSlice';
 import { isCollationAvailable } from '../constants';
 
-const InsightsInfoLegend = ({showDisputes}) => {
+const InsightsInfoLegend = ({showDisputes, placement = 'left'}) => {
   const theme = useTheme();
   const selectedChain = useSelector(selectChain);
   const isCollation = isCollationAvailable(selectedChain);
   return (
     <Tooltip
       disableFocusListener
-      placement="left"
+      placement={placement}
       componentsProps={{ tooltip: { sx: { maxWidth: 480 } } }}
       title={
         <Box sx={{ p: 1 }}>
@@ -114,7 +114,7 @@ const InsightsInfoLegend = ({showDisputes}) => {
         </Box>
       }
       >
-      <InfoOutlinedIcon sx={{ color: theme.palette.neutrals[300]}}/>
+      <InfoOutlinedIcon fontSize="small" sx={{ color: theme.palette.action.active }}/>
     </Tooltip>
   );
 }

@@ -509,9 +509,12 @@ export default function ValidatorsHistoryDataGrid({ isFetching }) {
     setOnlyLowGrades(event.target.checked);
   };
 
+  const pageSize = selectedChain === "polkadot" ? 17 : 24;
+
   return (
     <Box
       sx={{
+        position: "relative",
         // p: 2,
         // m: 2,
         display: "flex",
@@ -601,12 +604,10 @@ export default function ValidatorsHistoryDataGrid({ isFetching }) {
         >
           <IconButton
             size="medium"
-            sx={{ mr: 1 }}
             onClick={(e) => setColumnsAnchor(e.currentTarget)}
           >
             <ViewColumnIcon fontSize="small" />
           </IconButton>
-          <InsightsInfoLegend />
         </Box>
         <Menu
           anchorEl={columnsAnchor}
@@ -666,7 +667,7 @@ export default function ValidatorsHistoryDataGrid({ isFetching }) {
         }}
         initialState={{
           pagination: {
-            pageSize: 17,
+            pageSize: pageSize,
           },
           sorting: {
             sortModel: [{ field: "score", sort: "desc" }],
@@ -677,10 +678,14 @@ export default function ValidatorsHistoryDataGrid({ isFetching }) {
         columns={columns}
         columnVisibilityModel={columnVisibilityModel}
         onColumnVisibilityModelChange={setColumnVisibilityModel}
-        rowsPerPageOptions={[17]}
+        rowsPerPageOptions={[pageSize]}
         pagination
         disableSelectionOnClick
       />
+      {/* bottom left corner of the grid, the footer pagination is on the right */}
+      <Box sx={{ position: "absolute", left: 8, bottom: 8 }}>
+        <InsightsInfoLegend placement="right-end" />
+      </Box>
     </Box>
   );
 }

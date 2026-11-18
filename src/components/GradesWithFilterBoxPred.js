@@ -15,6 +15,7 @@ import ListIcon from '@mui/icons-material/List';
 import { useTheme } from '@mui/material/styles';
 import GradesPieChart from './GradesPieChart';
 import Tooltip from './Tooltip';
+import GradesInfoBox from './GradesInfoBox';
 import {
   useGetValidatorsQuery,
   selectValidatorGradeBySessionAndAddress,
@@ -68,7 +69,7 @@ export default function GradesWithFilterBoxPred({target}) {
   }
 
   return (
-    <Paper sx={{
+    <Paper sx={{ position: 'relative',
       display: 'flex',
       flexDirection: 'column',
       // justifyContent: 'center',
@@ -83,43 +84,10 @@ export default function GradesWithFilterBoxPred({target}) {
           <Typography variant="h6" sx={{ overflow: "hidden", textOverflow: "ellipsis" }} title="Distribution by grade">
           Distribution by grade
           </Typography>
-          <Tooltip
-            disableFocusListener
-            placement="top"
-            title={
-              <Box sx={{ p: 1}}>
-                <Typography variant="caption" >A grade is calculated as 75% of the Backing Votes Ratio (BVR) combined with 25% of the Bitfields Availability Ratio (BAR) for one or more validators:</Typography>
-                  <ul>
-                    <li>{"A+ = RATIO > 99%"}</li>
-                    <li>{"A = RATIO > 95%"}</li>
-                    <li>{"B+ = RATIO > 90%"}</li>
-                    <li>{"B = RATIO > 80%"}</li>
-                    <li>{"C+ = RATIO > 70%"}</li>
-                    <li>{"C = RATIO > 60%"}</li>
-                    <li>{"D+ = RATIO > 50%"}</li>
-                    <li>{"D = RATIO > 40%"}</li>
-                    <li>{"F = RATIO <= 40%"}</li>
-                  </ul>
-                  <i>RATIO = 0.75*BVR + 0.25*BAR</i><br/>
-                  <i>BVR = 1 - MVR</i><br/>
-                  <i>Backing Votes Ratio (BVR)</i><br/>
-                  <i>Missed Votes Ratio (MVR)</i><br/>
-                  <i>Bitfields Availability Ratio (BAR)</i><br/>
-              </Box>
-            }
-            >
-            <InfoOutlinedIcon sx={{ color: theme.palette.neutrals[300]}}/>
-          </Tooltip>
         </Box>
         <Typography variant="subtitle2" sx={{ height: 16, overflow: "hidden", textOverflow: "ellipsis" }}>
           {subsetFilter !== '' ? <span>Only for subset {subsetFilter}</span> : `Para-validators in the predicted set of ${target}`}
         </Typography>
-
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-          <IconButton aria-label="grade-details" onClick={handleView}>
-            { !showPie ? <PieChartIcon fontSize="small" /> : <ListIcon fontSize="small" /> }
-          </IconButton>
-        </Box>
 
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
           { showPie ?
@@ -151,6 +119,28 @@ export default function GradesWithFilterBoxPred({target}) {
             </Box>
           }
         </Box>
+      </Box>
+      {/* top right corner of the box */}
+      <Box sx={{ position: "absolute", top: 8, right: 8 }}>
+        <IconButton aria-label="grade-details" onClick={handleView}>
+          {!showPie ? (
+            <PieChartIcon fontSize="small" />
+          ) : (
+            <ListIcon fontSize="small" />
+          )}
+        </IconButton>
+      </Box>
+      {/* bottom left corner of the box */}
+      <Box sx={{ position: 'absolute', left: 16, bottom: 12 }}>
+          <Tooltip
+            disableFocusListener
+            placement="top-start"
+            title={
+              <GradesInfoBox collation={false} />
+            }
+            >
+            <InfoOutlinedIcon fontSize="small" sx={{ color: theme.palette.action.active }} />
+          </Tooltip>
       </Box>
     </Paper>
   )

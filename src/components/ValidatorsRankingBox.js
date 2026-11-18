@@ -45,12 +45,7 @@ function ItemButtom({ address, sessionIndex, rank, diff }) {
     selectValProfileByAddress(state, address),
   );
   const grade = useSelector((state) =>
-    selectValidatorGradeBySessionAndAddress(
-      state,
-      sessionIndex,
-      address,
-      true,
-    ),
+    selectValidatorGradeBySessionAndAddress(state, sessionIndex, address, true),
   );
   const chainInfo = useSelector(selectChainInfo);
 
@@ -227,6 +222,7 @@ export default function ValidatorsRankingBox({
   return (
     <Paper
       sx={{
+        position: "relative",
         p: 2,
         display: "flex",
         // justifyContent: 'space-between',
@@ -247,49 +243,52 @@ export default function ValidatorsRankingBox({
             Performance ranking of the last {maxSessions} sessions
           </Typography>
         </Box>
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Tooltip
-            disableFocusListener
-            placement="bottom-end"
-            title={
-              <Box sx={{ p: 1 }}>
-                <Typography variant="caption" paragraph>
-                  <b>Top Validators Performances</b>
-                </Typography>
-                <Typography variant="caption" paragraph>
-                  ONE-T performance ranking is based on the following criteria:
-                </Typography>
-                <Typography component="div" variant="caption" gutterBottom>
-                  <b>score:</b> Backing Votes Ratio (1-MVR) make up 50% of the
-                  score, Bitfields Availability Ratio make up 25%, average p/v
-                  points make up 18% and number of sessions as p/v the remaining
-                  7%
-                </Typography>
-                <Typography component="div" variant="caption" gutterBottom>
-                  <b>sorting:</b> Validators are sorted by Score in descending
-                  order
-                </Typography>
-                <Typography component="div" variant="caption" paragraph>
-                  <b>inclusion:</b> To be considered for the ranking, validators
-                  must have been p/v for at least 5 times in the last{" "}
-                  {maxSessions} sessions.
-                </Typography>
-                <i>
-                  performance_score = (1 - mvr) * 0.50 + bar * 0.25 + ((avg_pts
-                  - min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 +
-                  (pv_sessions / total_sessions) * 0.07
-                </i>
-              </Box>
-            }
-          >
-            <InfoOutlinedIcon sx={{ color: theme.palette.neutrals[300] }} />
-          </Tooltip>
-        </Box>
       </Box>
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+      <Box sx={{ height: 594, display: "flex", flexDirection: "column" }}>
+        {isFetching || isPreviousFetching ? (
+          <Box
+            sx={{
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Spinner size={32} />
+          </Box>
+        ) : isSuccess ? (
+          <List
+            dense
+            sx={{
+              overflow: "auto",
+            }}
+          >
+            {ranking
+              .slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE)
+              .map((v, i) => (
+                <ItemButtom
+                  key={i}
+                  address={v.address}
+                  sessionIndex={sessionIndex}
+                  rank={i + page * PAGE_SIZE + 1}
+                  diff={v.diff}
+                />
+              ))}
+          </List>
+        ) : null}
+      </Box>
+      <PaginationBox
+        page={page}
+        totalSize={RANK_SIZE}
+        pageSize={PAGE_SIZE}
+        onChange={handlePageChange}
+      />
+      {/* top right corner of the box */}
+      {/* NOTE: subset toggle (All / DN) not in use for now
+      <Box sx={{ position: "absolute", top: 8, right: 8 }}>
         <ToggleButtonGroup
           size="small"
-          sx={{ mx: 2 }}
+          sx={{ mx: 0 }}
           value={subset}
           exclusive
           onChange={handleChange}
@@ -335,45 +334,59 @@ export default function ValidatorsRankingBox({
           ) : null}
         </ToggleButtonGroup>
       </Box>
-      <Box sx={{ height: 594, display: "flex", flexDirection: "column" }}>
-        {isFetching || isPreviousFetching ? (
-          <Box
-            sx={{
-              height: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Spinner size={32} />
-          </Box>
-        ) : isSuccess ? (
-          <List
-            dense
-            sx={{
-              overflow: "auto",
-            }}
-          >
-            {ranking
-              .slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE)
-              .map((v, i) => (
-                <ItemButtom
-                  key={i}
-                  address={v.address}
-                  sessionIndex={sessionIndex}
-                  rank={i + page * PAGE_SIZE + 1}
-                  diff={v.diff}
-                />
-              ))}
-          </List>
-        ) : null}
+      */}
+      {/* bottom left corner of the box */}
+      {/* same height and bottom padding as the pagination buttons (30px) */}
+      <Box
+        sx={{
+          position: "absolute",
+          left: 16,
+          bottom: 16,
+          height: 30,
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <Tooltip
+          disableFocusListener
+          placement="top-start"
+          title={
+            <Box sx={{ p: 1 }}>
+              <Typography variant="caption" paragraph>
+                <b>Top Validators Performances</b>
+              </Typography>
+              <Typography variant="caption" paragraph>
+                ONE-T performance ranking is based on the following criteria:
+              </Typography>
+              <Typography component="div" variant="caption" gutterBottom>
+                <b>score:</b> Backing Votes Ratio (1-MVR) make up 50% of the
+                score, Bitfields Availability Ratio make up 25%, average p/v
+                points make up 18% and number of sessions as p/v the remaining
+                7%
+              </Typography>
+              <Typography component="div" variant="caption" gutterBottom>
+                <b>sorting:</b> Validators are sorted by Score in descending
+                order
+              </Typography>
+              <Typography component="div" variant="caption" paragraph>
+                <b>inclusion:</b> To be considered for the ranking, validators
+                must have been p/v for at least 5 times in the last{" "}
+                {maxSessions} sessions.
+              </Typography>
+              <i>
+                performance_score = (1 - mvr) * 0.50 + bar * 0.25 + ((avg_pts -
+                min_avg_pts) / (max_avg_pts - min_avg_pts)) * 0.18 +
+                (pv_sessions / total_sessions) * 0.07
+              </i>
+            </Box>
+          }
+        >
+          <InfoOutlinedIcon
+            fontSize="small"
+            sx={{ color: theme.palette.action.active }}
+          />
+        </Tooltip>
       </Box>
-      <PaginationBox
-        page={page}
-        totalSize={RANK_SIZE}
-        pageSize={PAGE_SIZE}
-        onChange={handlePageChange}
-      />
     </Paper>
   );
 }

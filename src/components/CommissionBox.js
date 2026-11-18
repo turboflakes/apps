@@ -86,6 +86,7 @@ export default function CommissionBox({ sessionIndex, isHistoryMode }) {
   return (
     <Paper
       sx={{
+        position: "relative",
         // m: 2,
         // p: 2,
         display: "flex",
@@ -128,16 +129,6 @@ export default function CommissionBox({ sessionIndex, isHistoryMode }) {
             "All active validators"
           )}
         </Typography>
-
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <IconButton aria-label="grade-details" onClick={handleView}>
-            {!showPie ? (
-              <PieChartIcon fontSize="small" />
-            ) : (
-              <ListIcon fontSize="small" />
-            )}
-          </IconButton>
-        </Box>
 
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           {showPie ? (
@@ -182,6 +173,16 @@ export default function CommissionBox({ sessionIndex, isHistoryMode }) {
             </Box>
           )}
         </Box>
+      </Box>
+      {/* top right corner of the box */}
+      <Box sx={{ position: "absolute", top: 8, right: 8 }}>
+        <IconButton aria-label="grade-details" onClick={handleView}>
+          {!showPie ? (
+            <PieChartIcon fontSize="small" />
+          ) : (
+            <ListIcon fontSize="small" />
+          )}
+        </IconButton>
       </Box>
     </Paper>
   );

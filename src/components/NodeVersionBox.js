@@ -60,7 +60,7 @@ export default function NodeVersionBox({ sessionIndex, isHistoryMode }) {
 
   return (
     <Paper
-      sx={{
+      sx={{ position: 'relative',
         // m: 2,
         // p: 2,
         display: "flex",
@@ -92,31 +92,6 @@ export default function NodeVersionBox({ sessionIndex, isHistoryMode }) {
               Distribution by version
             </Typography>
           </Box>
-          <Tooltip
-            disableFocusListener
-            placement="top"
-            title={
-              <Box sx={{ p: 1 }}>
-                <Typography el variant="caption" paragraph>
-                  {
-                    "The node version is collected from the Kademlia Distributed Hash Table (DHT) subsystem in libp2p."
-                  }
-                </Typography>
-                <Typography variant="caption" paragraph>
-                  {
-                    "The task to crawl and discover peer nodes in the network is executed every new session."
-                  }
-                </Typography>
-                <Typography variant="caption">
-                  {
-                    "Nodes that are not reached within the discovery process have their node version set to 'N/D'."
-                  }
-                </Typography>
-              </Box>
-            }
-          >
-            <InfoOutlinedIcon sx={{ color: theme.palette.neutrals[300] }} />
-          </Tooltip>
         </Box>
         <Typography
           variant="subtitle2"
@@ -128,16 +103,6 @@ export default function NodeVersionBox({ sessionIndex, isHistoryMode }) {
             "All active validators"
           )}
         </Typography>
-
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <IconButton aria-label="grade-details" onClick={handleView}>
-            {!showPie ? (
-              <PieChartIcon fontSize="small" />
-            ) : (
-              <ListIcon fontSize="small" />
-            )}
-          </IconButton>
-        </Box>
 
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           {showPie ? (
@@ -174,6 +139,44 @@ export default function NodeVersionBox({ sessionIndex, isHistoryMode }) {
             </Box>
           )}
         </Box>
+      </Box>
+      {/* top right corner of the box */}
+      <Box sx={{ position: "absolute", top: 8, right: 8 }}>
+        <IconButton aria-label="grade-details" onClick={handleView}>
+          {!showPie ? (
+            <PieChartIcon fontSize="small" />
+          ) : (
+            <ListIcon fontSize="small" />
+          )}
+        </IconButton>
+      </Box>
+      {/* bottom left corner of the box */}
+      <Box sx={{ position: 'absolute', left: 16, bottom: 12 }}>
+          <Tooltip
+            disableFocusListener
+            placement="top-start"
+            title={
+              <Box sx={{ p: 1 }}>
+                <Typography el variant="caption" paragraph>
+                  {
+                    "The node version is collected from the Kademlia Distributed Hash Table (DHT) subsystem in libp2p."
+                  }
+                </Typography>
+                <Typography variant="caption" paragraph>
+                  {
+                    "The task to crawl and discover peer nodes in the network is executed every new session."
+                  }
+                </Typography>
+                <Typography variant="caption">
+                  {
+                    "Nodes that are not reached within the discovery process have their node version set to 'N/D'."
+                  }
+                </Typography>
+              </Box>
+            }
+          >
+            <InfoOutlinedIcon fontSize="small" sx={{ color: theme.palette.action.active }} />
+          </Tooltip>
       </Box>
     </Paper>
   );

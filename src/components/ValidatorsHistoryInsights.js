@@ -7,10 +7,12 @@ import {
   selectSessionHistoryIds,
 } from "../features/api/sessionsSlice";
 import { useGetValidatorsQuery } from "../features/api/validatorsSlice";
+import { selectChain } from "../features/chain/chainSlice";
 
 export default function ValidatorsHistoryInsights({ skip }) {
   // const theme = useTheme();
   const historySessionIds = useSelector(selectSessionHistoryIds);
+  const selectedChain = useSelector(selectChain);
 
   const { isFetching: isFetchingValidators } = useGetValidatorsQuery(
     {
@@ -38,7 +40,7 @@ export default function ValidatorsHistoryInsights({ skip }) {
         display: "flex",
         flexDirection: "column",
         width: "100%",
-        height: "1104px",
+        height: selectedChain === "polkadot" ? "1104px" : "1474px",
         borderRadius: 3,
         boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
       }}
