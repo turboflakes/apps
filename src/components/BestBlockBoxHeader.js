@@ -5,34 +5,25 @@ import isUndefined from "lodash/isUndefined";
 import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
 import { Typography } from "@mui/material";
-import {
-  useGetBlockQuery,
-  selectFinalizedBlock,
-} from "../features/api/blocksSlice";
-import { selectFinalizedBlockAH } from "../features/api/blocksAHSlice";
+import { useGetBlockQuery, selectBestBlock } from "../features/api/blocksSlice";
+import { selectBestBlockAH } from "../features/api/blocksAHSlice";
 
-export default function FinalizedBlockBoxHeaderV1({ dark }) {
+export default function BestBlockBoxHeader({ dark }) {
   const theme = useTheme();
   const { isSuccess, isFetching } = useGetBlockQuery(
-    { blockId: "finalized", chain_key: "rc", show_stats: true },
+    { blockId: "best", chain_key: "rc" },
     { refetchOnMountOrArgChange: true },
   );
   const { isSuccess: isSuccessAH, isFetching: isFetchingAH } = useGetBlockQuery(
     {
-      blockId: "finalized",
+      blockId: "best",
       chain_key: "ah",
     },
   );
+  const best = useSelector(selectBestBlock);
+  const bestAH = useSelector(selectBestBlockAH);
 
-  const finalized = useSelector(selectFinalizedBlock);
-  const finalizedAH = useSelector(selectFinalizedBlockAH);
-
-  if (
-    isFetching ||
-    isFetchingAH ||
-    isUndefined(finalized) ||
-    isUndefined(finalizedAH)
-  ) {
+  if (isFetching || isFetchingAH || isUndefined(best) || isUndefined(bestAH)) {
     return (
       <Skeleton
         variant="rounded"
@@ -56,8 +47,7 @@ export default function FinalizedBlockBoxHeaderV1({ dark }) {
     >
       <Box
         sx={{
-          ml: 4,
-          // mr: 2,
+          mx: 2,
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
@@ -67,7 +57,7 @@ export default function FinalizedBlockBoxHeaderV1({ dark }) {
           variant="caption1"
           color={dark ? theme.palette.text.secondary : "default"}
         >
-          finalized block
+          best block
         </Typography>
         <Typography
           variant="h6"
@@ -77,13 +67,10 @@ export default function FinalizedBlockBoxHeaderV1({ dark }) {
         >
           {isSuccessAH ? (
             <React.Fragment>
-              <Typography
-                variant="caption1"
-                sx={{ ml: -3, pr: 1, lineHeight: 0 }}
-              >
+              {/* <Typography variant="caption1" sx={{ ml: -4, pr: 1 }}>
                 AH
-              </Typography>
-              {`${finalizedAH.block_number.format()}`}
+              </Typography> */}
+              {`${bestAH.block_number.format()}`}
             </React.Fragment>
           ) : (
             "-"
@@ -92,13 +79,10 @@ export default function FinalizedBlockBoxHeaderV1({ dark }) {
         <Typography variant="subtitle3">
           {isSuccess ? (
             <React.Fragment>
-              <Typography
-                variant="caption1"
-                sx={{ ml: -3, pr: 1, lineHeight: 0 }}
-              >
+              {/* <Typography variant="caption1" sx={{ ml: -4, pr: 1 }}>
                 RC
-              </Typography>
-              {`${finalized.block_number.format()}`}
+              </Typography> */}
+              {`${best.block_number.format()}`}
             </React.Fragment>
           ) : (
             "-"

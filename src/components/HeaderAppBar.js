@@ -10,12 +10,9 @@ import SessionPerformancePieChartHeader from "./SessionPerformancePieChartHeader
 import SessionPieChartHeader from "./SessionPieChartHeader";
 import EraBoxHeader from "./EraBoxHeader";
 import SessionBoxHeader from "./SessionBoxHeader";
-import BestBlockBoxHeaderV0 from "./BestBlockBoxHeaderV0";
-import BestBlockBoxHeaderV1 from "./BestBlockBoxHeaderV1";
-import FinalizedBlockBoxHeaderV0 from "./FinalizedBlockBoxHeaderV0";
-import FinalizedBlockBoxHeaderV1 from "./FinalizedBlockBoxHeaderV1";
+import BestBlockBoxHeader from "./BestBlockBoxHeader";
+import FinalizedBlockBoxHeader from "./FinalizedBlockBoxHeader";
 import { getNetworkIcon, getNetworkName } from "../constants";
-import { selectVersionV1 } from "../features/api/pkgSlice";
 import { selectApp } from "../features/app/appSlice";
 import { selectChain } from "../features/chain/chainSlice";
 
@@ -47,7 +44,6 @@ export default function HeaderAppBar({
   const theme = useTheme();
   const selectedApp = useSelector(selectApp);
   const selectedChain = useSelector(selectChain);
-  const isVersionV1 = useSelector(selectVersionV1);
 
   return (
     <AppBar
@@ -155,12 +151,8 @@ export default function HeaderAppBar({
             <SessionPieChartHeader />
             <EraBoxHeader />
             <SessionBoxHeader />
-            {isVersionV1 ? (
-              <FinalizedBlockBoxHeaderV1 />
-            ) : (
-              <FinalizedBlockBoxHeaderV0 />
-            )}
-            {isVersionV1 ? <BestBlockBoxHeaderV1 /> : <BestBlockBoxHeaderV0 />}
+            <FinalizedBlockBoxHeader />
+            <BestBlockBoxHeader />
           </Box>
           {/* mode switch live/history */}
           {/* { selectedPage !== 'dashboard' ? <ModeSwitch mode={selectedMode} /> : null } */}

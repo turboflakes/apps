@@ -10,15 +10,21 @@ import AuthoredBlocksBox from './AuthoredBlocksBox';
 import BackingPointsBox from './BackingPointsBox';
 import AuthoritiesBox from './AuthoritiesBox';
 import GradesSmallBox from './GradesSmallBox';
+import CollationAuthoritiesBox from './CollationAuthoritiesBox';
+import CollationBlocksBox from './CollationBlocksBox';
+import CollationPointsBox from './CollationPointsBox';
+import CollationGradesBox from './CollationGradesBox';
 
-import { 
+import {
   selectSessionHistory,
   selectSessionCurrent,
  } from '../features/api/sessionsSlice'
-import { 
+import { selectChain } from '../features/chain/chainSlice';
+import { isCollationAvailable } from '../constants';
+import {
   selectIsLiveMode,
 } from '../features/layout/layoutSlice'
-import { 
+import {
   selectIsSocketConnected,
 } from '../features/api/socketSlice'
 
@@ -26,9 +32,10 @@ export default function OverviewPage({tab}) {
   // const theme = useTheme();
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const isLiveMode = useSelector(selectIsLiveMode);
+  const selectedChain = useSelector(selectChain);
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
-  
+
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
 
   if (!isSocketConnected) {
@@ -39,7 +46,7 @@ export default function OverviewPage({tab}) {
   return (
 		<Box sx={{ m: 2, mt: 2, pt: 1, minHeight: '100vh'}}>
       <Grid container spacing={2}>
-        
+
         <Grid item xs={12} md={2}>
           <AuthoritiesBox sessionIndex={currentSession} />
         </Grid>
@@ -58,9 +65,42 @@ export default function OverviewPage({tab}) {
         <Grid item xs={12} md={2}>
           <EraPointsBox />
         </Grid>
+        {isCollationAvailable(selectedChain) && (
+          <>
+            {/* Asset Hub */}
+            <Grid item xs={12} md={2}>
+              <CollationAuthoritiesBox chainKey="ah" name="asset hub" />
+            </Grid>
+            {/* <Grid item xs={12} md={1}>
+              <CollationBlocksBox paraId={1000} name="ah" />
+            </Grid>*/}
+            <Grid item xs={12} md={2}>
+              <CollationPointsBox paraId={1000} name="asset hub" />
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <CollationGradesBox paraId={1000} name="asset hub" />
+            </Grid>
+
+
+            {/* People */}
+            <Grid item xs={12} md={2}>
+              <CollationAuthoritiesBox chainKey="pp" name="people" />
+            </Grid>
+
+            {/* <Grid item xs={12} md={1}>
+              <CollationBlocksBox paraId={1004} name="people" />
+            </Grid>*/}
+            <Grid item xs={12} md={2}>
+              <CollationPointsBox paraId={1004} name="people" />
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <CollationGradesBox paraId={1004} name="people" />
+            </Grid>
+          </>
+        )}
 
         <Grid item xs={12}>
-          <Divider sx={{ 
+          <Divider sx={{
             mt: 1,
             opacity: 0.25,
             height: '1px',
@@ -71,9 +111,11 @@ export default function OverviewPage({tab}) {
             }} />
         </Grid>
 
+
         <Grid item xs={12}>
           <OverviewTabs sessionIndex={sessionIndex} tab={tab} />
         </Grid>
+        {/**/}
       </Grid>
 		</Box>
   );

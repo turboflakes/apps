@@ -6,7 +6,6 @@ import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
 import { Typography } from "@mui/material";
 import {
-  useGetSessionByIndexQuery,
   selectSessionByIndex,
   selectSessionCurrent,
 } from "../features/api/sessionsSlice";
@@ -14,14 +13,11 @@ import {
 export default function SessionBoxHeader({ dark }) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const { isSuccess, isFetching } = useGetSessionByIndexQuery({
-    index: currentSession,
-  });
   const session = useSelector((state) =>
     selectSessionByIndex(state, currentSession),
   );
 
-  if (isFetching || isUndefined(session)) {
+  if (isUndefined(session)) {
     return (
       <Skeleton
         variant="rounded"
@@ -63,7 +59,7 @@ export default function SessionBoxHeader({ dark }) {
             dark ? theme.palette.text.secondary : theme.palette.text.primary
           }
         >
-          {isSuccess ? `${session.six.format()}` : "-"}
+          {session.six.format()}
         </Typography>
       </Box>
     </Box>

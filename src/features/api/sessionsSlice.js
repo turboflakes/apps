@@ -35,7 +35,11 @@ import { selectValProfileByAddress } from "./valProfilesSlice";
 import { selectValidatorBySessionAndAuthId } from "./authoritiesSlice";
 import { selectChain, selectChainInfo } from "../chain/chainSlice";
 import { matchBoardsReceived } from "./boardsSlice";
-import { getChainName, isChainSupported } from "../../constants";
+import {
+  getChainName,
+  isChainSupported,
+  isCollationAvailable,
+} from "../../constants";
 import {
   calculateMVR,
   calculateBAR,
@@ -53,8 +57,9 @@ export const extendedApi = apiSlice.injectEndpoints({
         number_last_sessions,
         from,
         to,
-        show_stats,
-        show_netstats,
+        stats,
+        netstats,
+        collation_stats,
         retry,
       }) => ({
         url: `/sessions`,
@@ -62,8 +67,9 @@ export const extendedApi = apiSlice.injectEndpoints({
           number_last_sessions,
           from,
           to,
-          show_stats,
-          show_netstats,
+          stats,
+          netstats,
+          collation_stats,
           retry,
         },
       }),
@@ -75,7 +81,7 @@ export const extendedApi = apiSlice.injectEndpoints({
         try {
           await queryFulfilled;
           // `onSuccess` subscribe for updates
-          if (params.from && params.to && params.show_netstats) {
+          if (params.from && params.to && params.netstats) {
             const session = selectSessionByIndex(getState(), params.to);
             if (session.is_syncing) {
               const parsed = parseInt(params.retry, 10);
@@ -110,16 +116,29 @@ export const extendedApi = apiSlice.injectEndpoints({
       },
     }),
     getSessionByIndex: builder.query({
-      query: ({ index, retry }) => ({
+      query: ({ index, stats, collation_stats, retry }) => ({
         url: `/sessions/${index}`,
-        params: { retry },
+        params: { stats, collation_stats, retry },
       }),
       providesTags: (result, error, arg) => [{ type: "Sessions", id: arg }],
-      async onQueryStarted(params, { dispatch, queryFulfilled }) {
+      async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
           // `onSuccess` subscribe for updates
-          if (params.index === "current") {
+          if (
+            params.index === "current" &&
+            params.collation_stats &&
+            !params.stats
+          ) {
+            // requests made to load collation stats only (without `stats`)
+            // subscribe to the current session with collation stats (no new
+            // session subscription nor previous sessions refetch)
+            const msg = JSON.stringify({
+              method: "subscribe_session",
+              params: ["current"],
+            });
+            dispatch(socketActions.messageQueued(msg));
+          } else if (params.index === "current") {
             const msg = JSON.stringify({
               method: "subscribe_session",
               params: ["new"],
@@ -129,7 +148,11 @@ export const extendedApi = apiSlice.injectEndpoints({
             dispatch(
               extendedApi.endpoints.getSessions.initiate({
                 number_last_sessions: data.esix - 1,
-                show_stats: true,
+                stats: true,
+                // collation stats are only requested where collation is available
+                collation_stats: isCollationAvailable(selectChain(getState()))
+                  ? true
+                  : undefined,
               }),
             );
           }
@@ -231,19 +254,27 @@ const sessionsSlice = createSlice({
           state.current = action.payload.six;
         }
         // update session with timestamp
-        adapter.upsertOne(state, { ...action.payload, _ts: +new Date() });
+        // collation_stats are kept apart in the collationStats slice
+        const { collation_stats, ...session } = action.payload;
+        adapter.upsertOne(state, { ...session, _ts: +new Date() });
       })
       .addMatcher(matchSessionsReceived, (state, action) => {
-        const sessions = action.payload.map((session) => ({
-          ...session,
-          _mvr: !isUndefined(session.stats)
-            ? calculateMVR(session.stats.ev, session.stats.iv, session.stats.mv)
-            : undefined,
-          _bar: !isUndefined(session.stats)
-            ? calculateBAR(session.stats.ba, session.stats.bu)
-            : undefined,
-          _ts: +new Date(),
-        }));
+        const sessions = action.payload.map(
+          ({ collation_stats, ...session }) => ({
+            ...session,
+            _mvr: !isUndefined(session.stats)
+              ? calculateMVR(
+                  session.stats.ev,
+                  session.stats.iv,
+                  session.stats.mv,
+                )
+              : undefined,
+            _bar: !isUndefined(session.stats)
+              ? calculateBAR(session.stats.ba, session.stats.bu)
+              : undefined,
+            _ts: +new Date(),
+          }),
+        );
         adapter.upsertMany(state, sessions);
       })
       .addMatcher(matchValidatorsReceived, (state, action) => {
@@ -1067,10 +1098,13 @@ export const selectEraPointsBySession = (state, sessionId) => {
     for (let i = 1; i < session.esix; i++) {
       sessionIds.push(session.six - i);
     }
-    let previousSessionsPoints = selectTotalPointsBySessions(
-      state,
-      sessionIds,
-    ).reduce((a, b) => a + b, 0);
+    const previousPoints = selectTotalPointsBySessions(state, sessionIds);
+    // NOTE: unknown (and not a partial total or NaN) while any previous
+    // session has no stats loaded yet
+    if (previousPoints.some((p) => isUndefined(p))) {
+      return undefined;
+    }
+    let previousSessionsPoints = previousPoints.reduce((a, b) => a + b, 0);
     // Get current session points from last finalized block
     const block = selectFinalizedBlock(state);
     if (!isUndefined(block)) {

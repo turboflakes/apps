@@ -3,6 +3,7 @@ import isUndefined from "lodash/isUndefined";
 import findLast from "lodash/findLast";
 import { selectSessionByIndex } from "./sessionsSlice";
 import {
+  MAX_SYSTEM_CHAIN_BLOCKS,
   blocksAdapter,
   matchBlockReceived,
   matchBlocksReceived,
@@ -15,9 +16,9 @@ const blocksAHSlice = createSlice({
   extraReducers(builder) {
     builder
       .addMatcher(matchBlockReceived, (state, action) => {
-        // Only kept the last 1000 blocks in the store
+        // Only kept the last MAX_SYSTEM_CHAIN_BLOCKS blocks in the store
         let currentState = current(state);
-        if (currentState.ids.length >= 1000) {
+        if (currentState.ids.length >= MAX_SYSTEM_CHAIN_BLOCKS) {
           blocksAdapter.removeOne(state, currentState.ids[0]);
         }
         const block = action.payload;

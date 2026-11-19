@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import GradesPieChart from './GradesPieChart';
-import { 
+import {
   selectGradesBySession
  } from '../features/api/sessionsSlice'
 
@@ -30,9 +30,13 @@ const emptyBox = ({theme, dark}) => {
   )
 }
 
-export default function GradesSmallBox({sessionIndex, dark}) {
+// NOTE: `grades` overrides the grades of the session (e.g. collators only)
+export default function GradesSmallBox({
+  sessionIndex, dark, grades: gradesProp, label = 'session grade majority',
+  unit = 'para-authorities', variant = 'h5', height = 96, pieSize = 'sm' }) {
   const theme = useTheme();
-  const rawGrades = useSelector(state => selectGradesBySession(state, sessionIndex));
+  const sessionGrades = useSelector(state => selectGradesBySession(state, sessionIndex));
+  const rawGrades = gradesProp ?? sessionGrades;
 
   if (!rawGrades.length) {
     return emptyBox({theme, dark})
@@ -58,28 +62,28 @@ export default function GradesSmallBox({sessionIndex, dark}) {
   const topGrade = sortedGrades[0];
   // const bottomGrade = sortedGrades[sortedGrades.length - 1];
   return (
-    <Paper 
+    <Paper
       sx={{
         p: 2,
         display: 'flex',
         alignItems: 'flex-start',
         width: '100%',
-        height: 96,
+        height,
         borderRadius: 3,
-        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px', 
-        bgcolor: dark ? theme.palette.background.secondary : 'default'
+        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+        bgcolor: pieSize === 'xs' ? theme.palette.grey[300] : 'default'
       }}>
       <Box sx={{ px: 1, width: '50%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="caption" color={dark ? theme.palette.text.secondary : 'default'}>session grade majority</Typography>
-          <Typography variant="h5" color={dark ? theme.palette.text.secondary : 'default'}>{`${topGrade.name}`}</Typography>
+          <Typography variant="caption" color={dark ? theme.palette.text.secondary : 'default'}>{label}</Typography>
+          <Typography variant={variant} color={dark ? theme.palette.text.secondary : 'default'}>{`${topGrade.name}`}</Typography>
           <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : 'default'}>
-            {`${topGrade.quantity} para-authorities`}
+            {`${topGrade.quantity} ${unit}`}
           </Typography>
         </Box>
       </Box>
       <Box sx={{ px: 1, width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
-        <GradesPieChart data={gradesData} size="sm" dark={dark} />
+        <GradesPieChart data={gradesData} size={pieSize} dark={dark} />
       </Box>
     </Paper>
   );

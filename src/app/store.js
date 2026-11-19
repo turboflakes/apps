@@ -8,7 +8,11 @@ import socketMiddleware from "../features/api/socketMiddleware";
 import socketSlice from "../features/api/socketSlice";
 import blocksSlice from "../features/api/blocksSlice";
 import blocksAHSlice from "../features/api/blocksAHSlice";
+import blocksPPSlice from "../features/api/blocksPPSlice";
 import sessionsSlice from "../features/api/sessionsSlice";
+import collationStatsSlice from "../features/api/collationStatsSlice";
+import collationSlotsSlice from "../features/api/collationSlotsSlice";
+import collatorsSlice from "../features/api/collatorsSlice";
 import predictionsSlice from "../features/api/predictionsSlice";
 import validatorsSlice from "../features/api/validatorsSlice";
 import authoritiesSlice from "../features/api/authoritiesSlice";
@@ -31,7 +35,11 @@ export const store = configureStore({
     authorities: authoritiesSlice.reducer,
     blocks: blocksSlice.reducer,
     blocks_ah: blocksAHSlice.reducer,
+    blocks_pp: blocksPPSlice.reducer,
     sessions: sessionsSlice.reducer,
+    collation_stats: collationStatsSlice.reducer,
+    collation_slots: collationSlotsSlice.reducer,
+    collators: collatorsSlice.reducer,
     predictions: predictionsSlice.reducer,
     validators: validatorsSlice.reducer,
     val_profiles: valProfilesSlice.reducer,
