@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useSelector } from "react-redux";
 import isUndefined from "lodash/isUndefined";
-import Typography from "@mui/material/Typography";
 import {
   useGetBlockQuery,
   selectAll as selectAllBlocksRC,
@@ -26,7 +25,7 @@ const WINDOW_BLOCKS = 50;
 // the best blocks were received. It is the time between the first and the last
 // block of the window over the number of blocks between them (the blocks are
 // not necessarily received one by one).
-export default function AvgBlockTimeBox({ chainKey = "rc" }) {
+export function useAvgBlockTime(chainKey = "rc") {
   const selectedChain = useSelector(selectChain);
   // the system chains are only available where collation is available
   const isReady = chainKey === "rc" || isCollationAvailable(selectedChain);
@@ -55,17 +54,15 @@ export default function AvgBlockTimeBox({ chainKey = "rc" }) {
     return n > 0 ? (last._ts_best - first._ts_best) / 1000 / n : undefined;
   }, [blocks]);
 
-  if (!isReady || isUndefined(avgBlockTime)) {
+  return isReady ? avgBlockTime : undefined;
+}
+
+export default function AvgBlockTime({ chainKey = "rc" }) {
+  const avgBlockTime = useAvgBlockTime(chainKey);
+
+  if (isUndefined(avgBlockTime)) {
     return null;
   }
 
-  return (
-    <Typography
-      variant="subtitle2"
-      component="span"
-      sx={{ whiteSpace: "nowrap", lineHeight: 0.875 }}
-    >
-      {`${avgBlockTime.toFixed(3)}s`}
-    </Typography>
-  );
+  return <>{`${avgBlockTime.toFixed(3)}s`}</>;
 }

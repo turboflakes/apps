@@ -5,7 +5,6 @@ import isUndefined from 'lodash/isUndefined'
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import AvgBlockTimeSpan from "./AvgBlockTimeSpan";
 import {
   selectFinalizedBlock,
 } from '../features/api/blocksSlice';
@@ -35,12 +34,9 @@ export default function AuthoredBlocksBox() {
         <Typography variant="h5">
           {!isUndefined(block.stats.ab) ? block.stats.ab : '-'}
         </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
-            {`last #${block.block_number.format()}`}
-          </Typography>
-          <AvgBlockTimeSpan chainKey={"rc"} />
-        </Box>
+        <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap' }}>
+          {`last #${block.block_number.format()}`}
+        </Typography>
       </Box>
     </Paper>
   );

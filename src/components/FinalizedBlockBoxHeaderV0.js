@@ -9,15 +9,23 @@ import {
   useGetBlockQuery,
   selectFinalizedBlock,
 } from "../features/api/blocksSlice";
+import { selectFinalizedBlockAH } from "../features/api/blocksAHSlice";
+import { selectFinalizedBlockPP } from "../features/api/blocksPPSlice";
 
-export default function FinalizedBlockBoxHeaderV0({ dark }) {
+const SELECTORS = {
+  rc: selectFinalizedBlock,
+  ah: selectFinalizedBlockAH,
+  pp: selectFinalizedBlockPP,
+};
+
+export default function FinalizedBlockBoxHeaderV0({ dark, chain_key = "rc" }) {
   const theme = useTheme();
   const { isSuccess, isFetching } = useGetBlockQuery(
-    { blockId: "finalized", show_stats: true },
+    { blockId: "finalized", chain_key, stats: true },
     { refetchOnMountOrArgChange: true },
   );
 
-  const finalized = useSelector(selectFinalizedBlock);
+  const finalized = useSelector(SELECTORS[chain_key]);
 
   if (isFetching || isUndefined(finalized)) {
     return (
@@ -53,6 +61,7 @@ export default function FinalizedBlockBoxHeaderV0({ dark }) {
         <Typography
           variant="caption1"
           color={dark ? theme.palette.text.secondary : "default"}
+          sx={{ whiteSpace: "nowrap" }}
         >
           finalized block
         </Typography>

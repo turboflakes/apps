@@ -10,8 +10,9 @@ import SessionPerformancePieChartHeader from "./SessionPerformancePieChartHeader
 import SessionPieChartHeader from "./SessionPieChartHeader";
 import EraBoxHeader from "./EraBoxHeader";
 import SessionBoxHeader from "./SessionBoxHeader";
-import BestBlockBoxHeader from "./BestBlockBoxHeader";
-import FinalizedBlockBoxHeader from "./FinalizedBlockBoxHeader";
+import BestBlockBoxHeader from "./BestBlockBoxHeaderV0";
+import FinalizedBlockBoxHeader from "./FinalizedBlockBoxHeaderV0";
+import AvgBlockTimeBoxHeader from "./AvgBlockTimeBoxHeader";
 import { getNetworkIcon, getNetworkName } from "../constants";
 import { selectApp } from "../features/app/appSlice";
 import { selectChain } from "../features/chain/chainSlice";
@@ -153,6 +154,7 @@ export default function HeaderAppBar({
             <SessionBoxHeader />
             <FinalizedBlockBoxHeader />
             <BestBlockBoxHeader />
+            <AvgBlockTimeBoxHeader />
           </Box>
           {/* mode switch live/history */}
           {/* { selectedPage !== 'dashboard' ? <ModeSwitch mode={selectedMode} /> : null } */}

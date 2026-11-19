@@ -16,18 +16,18 @@ export default function CollationAuthoritiesBox({ chainKey, name }) {
   const isReady = isCollationAvailable(selectedChain);
 
   useGetCollatorsQuery(
-    { chain_key: chainKey, infra: true },
+    { chain_key: chainKey, kind_counter: true },
     { skip: !isReady },
   );
   const summary = useSelector((state) =>
     selectCollatorsSummaryLatest(state, chainKey),
   );
 
-  if (!isReady || isUndefined(summary?.infra)) {
+  if (!isReady || isUndefined(summary?.kind_counter)) {
     return null;
   }
 
-  const { ni, np, nv } = summary.infra;
+  const { i, p, v } = summary.kind_counter;
 
   return (
     <Paper
@@ -54,12 +54,12 @@ export default function CollationAuthoritiesBox({ chainKey, name }) {
         <Typography variant="caption" sx={{ whiteSpace: "nowrap" }}>
           {name} collators
         </Typography>
-        <Typography variant="h6">{(ni + np + nv).format()}</Typography>
+        <Typography variant="h6">{(i + p + v).format()}</Typography>
         <Typography
           variant="subtitle2"
           sx={{ whiteSpace: "nowrap", lineHeight: 0.875 }}
         >
-          {`${nv.format()} metanodes`}
+          {`${v.format()} metanodes`}
         </Typography>
       </Box>
     </Paper>

@@ -16,8 +16,7 @@ export const extendedApi = apiSlice.injectEndpoints({
         chain_key,
         session,
         stats,
-        infra,
-        infra_only,
+        kind_counter,
         block_numbers,
         missed_slots,
       }) => ({
@@ -27,8 +26,7 @@ export const extendedApi = apiSlice.injectEndpoints({
           chain_key,
           session,
           stats,
-          infra,
-          infra_only,
+          kind_counter,
           block_numbers,
           missed_slots,
         },
@@ -50,7 +48,7 @@ const adapter = createEntityAdapter({
 const collatorsSlice = createSlice({
   name: "collators",
   initialState: adapter.getInitialState({
-    // summary (stats, infra and open slot) by `${chain_key}_${session}`
+    // summary (stats, kind counter and open slot) by `${chain_key}_${session}`
     summaries: {},
   }),
   reducers: {},

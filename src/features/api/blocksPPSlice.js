@@ -61,3 +61,6 @@ export const selectFinalizedBlockPP = (state) =>
     selectAll(state),
     (block) => !isUndefined(block.is_finalized) && block.is_finalized,
   );
+
+export const selectBestBlockPP = (state) =>
+  findLast(selectAll(state), (block) => isUndefined(block.is_finalized));

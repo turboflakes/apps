@@ -6,14 +6,22 @@ import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
 import { Typography } from "@mui/material";
 import { useGetBlockQuery, selectBestBlock } from "../features/api/blocksSlice";
+import { selectBestBlockAH } from "../features/api/blocksAHSlice";
+import { selectBestBlockPP } from "../features/api/blocksPPSlice";
 
-export default function BestBlockBoxHeaderV0({ dark }) {
+const SELECTORS = {
+  rc: selectBestBlock,
+  ah: selectBestBlockAH,
+  pp: selectBestBlockPP,
+};
+
+export default function BestBlockBoxHeaderV0({ dark, chain_key = "rc" }) {
   const theme = useTheme();
   const { isSuccess, isFetching } = useGetBlockQuery(
-    { blockId: "best" },
+    { blockId: "best", chain_key },
     { refetchOnMountOrArgChange: true },
   );
-  const best = useSelector(selectBestBlock);
+  const best = useSelector(SELECTORS[chain_key]);
 
   if (isFetching || isUndefined(best)) {
     return (

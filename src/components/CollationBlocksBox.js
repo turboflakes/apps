@@ -8,14 +8,10 @@ import {
   selectSessionCurrent,
   useGetSessionByIndexQuery,
 } from "../features/api/sessionsSlice";
-import AvgBlockTimeSpan from "./AvgBlockTimeSpan";
 import { selectCollationStatsBySessionAndPid } from "../features/api/collationStatsSlice";
 import { selectCollationSlotBySessionAndPid } from "../features/api/collationSlotsSlice";
 import { selectChain } from "../features/chain/chainSlice";
 import { isCollationAvailable } from "../constants";
-
-// `chain_key` of the system chains by paraId
-const CHAIN_KEYS = { 1000: "ah", 1004: "pp" };
 
 export default function CollationBlocksBox({ paraId, name }) {
   const selectedChain = useSelector(selectChain);
@@ -66,21 +62,12 @@ export default function CollationBlocksBox({ paraId, name }) {
         <Typography variant="h6">
           {(stats.pb + (slot?.pb ?? 0)).format()}
         </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+        <Typography
+          variant="subtitle2"
+          sx={{ whiteSpace: "nowrap", lineHeight: 0.875 }}
         >
-          <Typography
-            variant="subtitle2"
-            sx={{ whiteSpace: "nowrap", lineHeight: 0.875 }}
-          >
-            {`last #${slot.bix.format()}`}
-          </Typography>
-          <AvgBlockTimeSpan chainKey={CHAIN_KEYS[paraId]} />
-        </Box>
+          {`last #${slot.bix.format()}`}
+        </Typography>
       </Box>
     </Paper>
   );
