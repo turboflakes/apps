@@ -14,6 +14,7 @@ import CollationAuthoritiesBox from './CollationAuthoritiesBox';
 import CollationBlocksBox from './CollationBlocksBox';
 import CollationPointsBox from './CollationPointsBox';
 import CollationGradesBox from './CollationGradesBox';
+import CollationSlotBox from './CollationSlotBox';
 
 import {
   selectSessionHistory,
@@ -71,30 +72,37 @@ export default function OverviewPage({tab}) {
             <Grid item xs={12} md={2}>
               <CollationAuthoritiesBox chainKey="ah" name="asset hub" />
             </Grid>
-            {/* <Grid item xs={12} md={1}>
-              <CollationBlocksBox paraId={1000} name="ah" />
-            </Grid>*/}
-            <Grid item xs={12} md={2}>
-              <CollationPointsBox paraId={1000} name="asset hub" />
-            </Grid>
             <Grid item xs={12} md={2}>
               <CollationGradesBox paraId={1000} name="asset hub" />
             </Grid>
-
-
+            <Grid item xs={12} md={2}>
+              <CollationBlocksBox paraId={1000} name="asset hub" />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <CollationSlotBox paraId={1000} name="asset hub" />
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <CollationPointsBox paraId={1000} name="asset hub" />
+            </Grid>
+          </>
+        )}
+        {isCollationAvailable(selectedChain) && (
+          <>
             {/* People */}
             <Grid item xs={12} md={2}>
               <CollationAuthoritiesBox chainKey="pp" name="people" />
             </Grid>
-
-            {/* <Grid item xs={12} md={1}>
-              <CollationBlocksBox paraId={1004} name="people" />
-            </Grid>*/}
-            <Grid item xs={12} md={2}>
-              <CollationPointsBox paraId={1004} name="people" />
-            </Grid>
             <Grid item xs={12} md={2}>
               <CollationGradesBox paraId={1004} name="people" />
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <CollationBlocksBox paraId={1004} name="people" />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <CollationSlotBox paraId={1004} name="people" />
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <CollationPointsBox paraId={1004} name="people" />
             </Grid>
           </>
         )}

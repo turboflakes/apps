@@ -71,7 +71,7 @@ export default function GradesSmallBox({
         height,
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-        bgcolor: pieSize === 'xs' ? theme.palette.grey[300] : 'default'
+        bgcolor: pieSize === 'xs' ? theme.palette.grey[50] : 'default'
       }}>
       <Box sx={{ px: 1, width: '50%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>

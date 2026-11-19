@@ -8,10 +8,14 @@ import {
   selectSessionCurrent,
   useGetSessionByIndexQuery,
 } from "../features/api/sessionsSlice";
+import AvgBlockTimeSpan from "./AvgBlockTimeSpan";
 import { selectCollationStatsBySessionAndPid } from "../features/api/collationStatsSlice";
 import { selectCollationSlotBySessionAndPid } from "../features/api/collationSlotsSlice";
 import { selectChain } from "../features/chain/chainSlice";
 import { isCollationAvailable } from "../constants";
+
+// `chain_key` of the system chains by paraId
+const CHAIN_KEYS = { 1000: "ah", 1004: "pp" };
 
 export default function CollationBlocksBox({ paraId, name }) {
   const selectedChain = useSelector(selectChain);
@@ -41,7 +45,7 @@ export default function CollationBlocksBox({ paraId, name }) {
         justifyContent: "space-between",
         alignItems: "center",
         width: "100%",
-        height: 96,
+        height: 80,
         borderRadius: 3,
         bgcolor: (theme) => theme.palette.grey[50],
         boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
@@ -50,6 +54,7 @@ export default function CollationBlocksBox({ paraId, name }) {
       <Box
         sx={{
           px: 1,
+          width: "100%",
           display: "flex",
           flexDirection: "column",
           alignItems: "left",
@@ -58,15 +63,24 @@ export default function CollationBlocksBox({ paraId, name }) {
         <Typography variant="caption" sx={{ whiteSpace: "nowrap" }}>
           {name} authored blocks
         </Typography>
-        <Typography variant="h5">
+        <Typography variant="h6">
           {(stats.pb + (slot?.pb ?? 0)).format()}
         </Typography>
-        <Typography
-          variant="subtitle2"
-          sx={{ whiteSpace: "nowrap", lineHeight: 0.875 }}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
-          {`last #${slot.bix.format()}`}
-        </Typography>
+          <Typography
+            variant="subtitle2"
+            sx={{ whiteSpace: "nowrap", lineHeight: 0.875 }}
+          >
+            {`last #${slot.bix.format()}`}
+          </Typography>
+          <AvgBlockTimeSpan chainKey={CHAIN_KEYS[paraId]} />
+        </Box>
       </Box>
     </Paper>
   );

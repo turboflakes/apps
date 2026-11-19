@@ -39,7 +39,7 @@ export default function CollationAuthoritiesBox({ chainKey, name }) {
         width: "100%",
         height: 80,
         borderRadius: 3,
-        bgcolor: (theme) => theme.palette.grey[300],
+        bgcolor: (theme) => theme.palette.grey[50],
         boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
       }}
     >

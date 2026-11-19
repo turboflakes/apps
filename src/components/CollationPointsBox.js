@@ -43,7 +43,7 @@ export default function CollationPointsBox({ paraId, name }) {
         width: "100%",
         height: 80,
         borderRadius: 3,
-        bgcolor: (theme) => theme.palette.grey[300],
+        bgcolor: (theme) => theme.palette.background.secondary,
         boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
       }}
     >
@@ -55,14 +55,14 @@ export default function CollationPointsBox({ paraId, name }) {
           alignItems: "left",
         }}
       >
-        <Typography variant="caption" sx={{ whiteSpace: "nowrap" }}>
+        <Typography variant="caption" color="textSecondary" sx={{ whiteSpace: "nowrap" }}>
           {name} collation points
         </Typography>
-        <Typography variant="h6">
+        <Typography variant="h6" color="textSecondary">
           {(stats.pt + (slot?.pt ?? 0)).format()}
         </Typography>
         <Typography
-          variant="subtitle2"
+          variant="subtitle2" color="textSecondary"
           sx={{ whiteSpace: "nowrap", lineHeight: 0.875 }}
         >
           {`since session ${stats.six.format()} started`}

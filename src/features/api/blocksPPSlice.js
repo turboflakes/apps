@@ -16,16 +16,28 @@ const blocksPPSlice = createSlice({
   extraReducers(builder) {
     builder
       .addMatcher(matchBlockReceived, (state, action) => {
+        const block = action.payload;
+        if (block.chain_key !== "pp") {
+          return;
+        }
         // Only kept the last MAX_SYSTEM_CHAIN_BLOCKS blocks in the store
         let currentState = current(state);
         if (currentState.ids.length >= MAX_SYSTEM_CHAIN_BLOCKS) {
           blocksAdapter.removeOne(state, currentState.ids[0]);
         }
-        const block = action.payload;
-        if (block.chain_key !== "pp") {
-          return;
-        }
-        blocksAdapter.upsertOne(state, { ...block, _ts: +new Date() });
+        blocksAdapter.upsertOne(state, {
+          ...block,
+          _ts: +new Date(),
+          // time the best block was first received (kept when the block is
+          // finalized later)
+          ...(isUndefined(block.is_finalized)
+            ? {
+                _ts_best:
+                  currentState.entities[block.block_number]?._ts_best ??
+                  +new Date(),
+              }
+            : {}),
+        });
       })
       .addMatcher(matchBlocksReceived, (state, action) => {
         const blocks = action.payload.data
@@ -39,7 +51,10 @@ const blocksPPSlice = createSlice({
 export default blocksPPSlice;
 
 // Selectors
-const { selectAll } = blocksAdapter.getSelectors((state) => state.blocks_pp);
+export const { selectAll: selectAllBlocksPP } = blocksAdapter.getSelectors(
+  (state) => state.blocks_pp,
+);
+const selectAll = selectAllBlocksPP;
 
 export const selectFinalizedBlockPP = (state) =>
   findLast(

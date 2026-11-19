@@ -85,7 +85,7 @@ export default function GradesPieChart({data, size, dark, showNetworkIcon}) {
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={theme.palette.grade[entry.name]} borderRadius
-                  stroke={ size === 'xs' ? theme.palette.grey[300] : theme.palette.background.paper} strokeWidth={1} />
+                  stroke={ size === 'xs' ? theme.palette.grey[50] : theme.palette.background.paper} strokeWidth={1} />
                 ))}
               </Pie>
               {!showNetworkIcon ?

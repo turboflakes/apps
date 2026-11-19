@@ -200,6 +200,11 @@ const blocksSlice = createSlice({
           blocksAdapter.upsertOne(state, {
             ...action.payload,
             _ts: +new Date(),
+            // time the best block was first received (kept when the block is
+            // finalized later)
+            _ts_best:
+              currentState.entities[block.block_number]?._ts_best ??
+              +new Date(),
           });
         }
       })
