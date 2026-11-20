@@ -13,8 +13,6 @@ import ListItemText from "@mui/material/ListItemText";
 import Identicon from "@polkadot/react-identicon";
 import Skeleton from "@mui/material/Skeleton";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Tooltip from "./Tooltip";
 import Spinner from "./Spinner";
 import PaginationBox from "./PaginationBox";
@@ -229,7 +227,8 @@ export default function ValidatorsRankingBox({
         flexDirection: "column",
         // alignItems: 'center',
         width: "100%",
-        // height: 192,
+        // fill the grid item, so the box has the height of the row
+        height: "100%",
         borderRadius: 3,
         // borderTopLeftRadius: '24px',
         // borderTopRightRadius: '24px',
@@ -244,7 +243,7 @@ export default function ValidatorsRankingBox({
           </Typography>
         </Box>
       </Box>
-      <Box sx={{ height: 594, display: "flex", flexDirection: "column" }}>
+      <Box sx={{ flex: 1, minHeight: 594, display: "flex", flexDirection: "column" }}>
         {isFetching || isPreviousFetching ? (
           <Box
             sx={{
