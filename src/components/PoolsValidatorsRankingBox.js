@@ -29,13 +29,13 @@ import {
   pageChanged
 } from '../features/layout/layoutSlice';
 import {
-  selectValProfileByAddress, 
+  selectValProfileByAddress,
 } from '../features/api/valProfilesSlice';
 import {
   chainAddress
 } from '../util/crypto';
-import { 
-  stashDisplay, 
+import {
+  stashDisplay,
   nameDisplay } from '../util/display'
 
 function ItemButtom({address, sessionIndex}) {
@@ -61,19 +61,19 @@ function ItemButtom({address, sessionIndex}) {
   return (
     <ListItemButton sx={{ borderRadius: 30}} disableRipple onClick={() => handleAddressSelected(address)}>
       <ListItemIcon sx={{minWidth: 0, mr: 1, display: 'flex', alignItems: 'center'}}>
-        <span style={{ width: '4px', height: '4px', marginLeft: '-4px', marginRight: '8px', borderRadius: '50%', 
-          backgroundColor: theme.palette.grade[grade], 
+        <span style={{ width: '4px', height: '4px', marginLeft: '-4px', marginRight: '8px', borderRadius: '50%',
+          backgroundColor: theme.palette.grade[grade],
           display: "inline-block" }}></span>
         <Identicon
           value={chainAddress(address, chainInfo.ss58Format)}
           size={24}
           theme={'polkadot'} />
       </ListItemIcon>
-      <ListItemText sx={{whiteSpace: "nowrap"}} 
+      <ListItemText sx={{whiteSpace: "nowrap"}}
       // primaryTypographyProps={{ style: {fontWeight: 600}}}
         primary={nameDisplay(!!valProfile ? valProfile._identity : stashDisplay(address, 4), 24)}
       />
-      <ListItemText align="right" 
+      <ListItemText align="right"
         primary={`${counter}x`}
       />
     </ListItemButton>
@@ -86,7 +86,7 @@ const PAGE_SIZE = 8;
 export default function PoolsValidatorsRankingBox({sessionIndex, maxSessions, skip}) {
   const theme = useTheme();
   const [page, setPage] = React.useState(0);
-  const params = {ranking: "pools", size: RANK_SIZE, show_profile: true}
+  const params = {ranking: "pools", size: RANK_SIZE, profile: true}
   const {data, isSuccess, isFetching} = useGetValidatorsQuery(params, {skip});
 
   const handlePageChange = (page) => {
@@ -134,7 +134,7 @@ export default function PoolsValidatorsRankingBox({sessionIndex, maxSessions, sk
             <List dense sx={{
               overflow: 'auto',
             }}>
-              {ranking.slice(page * PAGE_SIZE, (page * PAGE_SIZE) + PAGE_SIZE).map((v, i) => 
+              {ranking.slice(page * PAGE_SIZE, (page * PAGE_SIZE) + PAGE_SIZE).map((v, i) =>
                 (<ItemButtom key={i} address={v.address} sessionIndex={sessionIndex} rank={i + (page * PAGE_SIZE) + 1} />))}
             </List> : null)
         }

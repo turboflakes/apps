@@ -89,11 +89,11 @@ const renderTooltip = (props, theme) => {
 export default function SessionPerformance600Timeline({ sessionIndex, skip }) {
   const theme = useTheme();
   const { isFetching: isFetchingCurrent } = useGetBlocksQuery(
-    { session: sessionIndex, show_stats: true },
+    { session: sessionIndex, stats: true },
     { skip },
   );
   const { isFetching: isFetchingPrevious } = useGetBlocksQuery(
-    { session: sessionIndex - 1, show_stats: true },
+    { session: sessionIndex - 1, stats: true },
     { skip },
   );
   const blocks = useSelector(selectLastXBlocks);

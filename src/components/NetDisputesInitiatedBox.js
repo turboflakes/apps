@@ -6,10 +6,10 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { ComposedChart, XAxis, YAxis, Tooltip, CartesianGrid, Legend, 
+import { ComposedChart, XAxis, YAxis, Tooltip, CartesianGrid, Legend,
   Bar, Rectangle, Cell, ResponsiveContainer } from 'recharts';
 
-import { 
+import {
   useGetSessionsQuery,
  } from '../features/api/sessionsSlice'
 
@@ -19,7 +19,7 @@ import {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -38,7 +38,7 @@ import {
         <Box sx={{ minWidth: '192px'}}>
          <Typography component="div" variant="caption">
             <span style={{ marginRight: '8px', color: theme.palette.semantics.red }}>❚</span>Disputes: <b>{data.disputes}</b>
-          </Typography>  
+          </Typography>
         </Box>
       </Box>
     );
@@ -59,7 +59,7 @@ function ChartLegend({theme}) {
 
 export default function NetDisputesInitiatedBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
-  const {data, isSuccess, isFetching} = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_stats: true, show_netstats: true}, {skip: isNaN(sessionIndex)});
+  const {data, isSuccess, isFetching} = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, stats: true, netstats: true}, {skip: isNaN(sessionIndex)});
 
   if (isFetching || isUndefined(data)) {
     return (<Skeleton variant="rounded" sx={{
@@ -70,7 +70,7 @@ export default function NetDisputesInitiatedBox({sessionIndex, maxSessions}) {
       bgcolor: 'white'
     }} />)
   }
-  
+
   if (!isSuccess) {
     return null
   }
@@ -126,28 +126,28 @@ export default function NetDisputesInitiatedBox({sessionIndex, maxSessions}) {
 
             <XAxis dataKey="session" angle={-30} tickMargin={8}
               style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
-              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
-              tickLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
+              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}}
+              tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
               />
-            <YAxis type="number" 
+            <YAxis type="number"
               // domain={['dataMin', 'dataMax']}
               style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
-              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
+              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}}
               tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
               />
             <Bar dataKey="disputes"
               barSize={8} shape={<Rectangle radius={[8, 8, 0, 0]} />} >
               {
                 data.map((entry, index) => (
-                <Cell key={`cell-${index}`} cursor="pointer" 
+                <Cell key={`cell-${index}`} cursor="pointer"
                   fill={theme.palette.semantics.red} />))
               }
             </Bar>
-            
-            <Tooltip 
+
+            <Tooltip
                 cursor={{fill: theme.palette.divider}}
                 offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme)} />
             <Legend verticalAlign="top" content={() => ChartLegend({theme})} height={24} />
           </ComposedChart>

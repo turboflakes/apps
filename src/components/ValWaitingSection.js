@@ -28,7 +28,8 @@ export default function ValWaitingSection() {
   const currentSession = useSelector(selectSessionCurrent);
   const selectedChain = useSelector(selectChain);
   const lastSession = currentSession - 1;
-  const waitingParams = { role: "waiting", show_profile: true };
+
+  const waitingParams = { role: "waiting", profile: true };
 
   const { data: lastData, isSuccess: isLastSuccess } = useGetValidatorsQuery(
     { session: lastSession, ...waitingParams },

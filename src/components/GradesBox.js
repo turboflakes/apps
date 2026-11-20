@@ -24,7 +24,7 @@ export default function GradesBox({ sessionIndex, size }) {
   const { isFetching } = useGetValidatorsQuery({
     session: sessionIndex,
     role: "para_authority",
-    show_summary: true,
+    summary: true,
   });
   const rawGrades = useSelector((state) =>
     selectGradesBySession(state, sessionIndex),

@@ -95,7 +95,7 @@ export default function NetPoolHistoryBox({ sessionIndex, skip }) {
     {
       from: sessionIndex - maxSessions,
       to: sessionIndex - 1,
-      show_stats: true,
+      stats: true,
     },
     { skip },
   );

@@ -99,7 +99,7 @@ export default function NetActiveValidatorsBox({ sessionIndex, maxSessions }) {
     {
       from: sessionIndex - maxSessions,
       to: sessionIndex - 1,
-      show_netstats: true,
+      netstats: true,
     },
     { skip: isNaN(sessionIndex) },
   );

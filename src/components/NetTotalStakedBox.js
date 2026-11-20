@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { 
+import {
   useGetSessionsQuery,
  } from '../features/api/sessionsSlice';
 import {
@@ -21,7 +21,7 @@ import { stakeDisplay } from '../util/display';
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -45,8 +45,8 @@ import { stakeDisplay } from '../util/display';
             <span style={{ marginRight: '8px', color: theme.palette.grey[900] }}>●</span>Total Staked: <b>{stakeDisplay(data.total_staked, chainInfo, 4, true, true, true)}</b> ({Math.round(data.total_staked / data.total_issuance * 100 )}%)
           </Typography>
         </Box>
-        
-        
+
+
       </Box>
     );
   }
@@ -57,7 +57,7 @@ import { stakeDisplay } from '../util/display';
 export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
   const chainInfo = useSelector(selectChainInfo)
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true, skip: isNaN(sessionIndex)});
+  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, netstats: true}, {refetchOnMountOrArgChange: true, skip: isNaN(sessionIndex)});
 
   if (isFetching || isUndefined(data) || isUndefined(chainInfo)) {
     return (<Skeleton variant="rounded" sx={{
@@ -68,7 +68,7 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
       bgcolor: 'white'
     }} />)
   }
-  
+
   if (!isSuccess) {
     return null
   }
@@ -133,7 +133,7 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
               bottom: -20,
             }}
           >
-            <XAxis dataKey="session" interval={0} angle={-45} dx={20} fontSize="0.75rem" 
+            <XAxis dataKey="session" interval={0} angle={-45} dx={20} fontSize="0.75rem"
               tick={false}
               tickLine={false}
               axisLine={false} />
@@ -150,14 +150,14 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
               tick={false}
               tickLine={false}
               axisLine={false} />
-            <Tooltip 
+            <Tooltip
                 cursor={{fill: theme.palette.divider}}
                 offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme, chainInfo)} />
-            <Line yAxisId="total_issuance_id" isAnimationActive={false} type="monotone" dataKey="total_issuance" 
+            <Line yAxisId="total_issuance_id" isAnimationActive={false} type="monotone" dataKey="total_issuance"
               strokeWidth={2} stroke={theme.palette.semantics.red} dot={false} />
-            <Line yAxisId="total_staked_id" isAnimationActive={false} type="monotone" dataKey="total_staked" 
+            <Line yAxisId="total_staked_id" isAnimationActive={false} type="monotone" dataKey="total_staked"
               strokeWidth={2} stroke={theme.palette.grey[900]} dot={false} />
           </LineChart>
         </ResponsiveContainer>

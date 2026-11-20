@@ -472,10 +472,10 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
     {
       session: sessionIndex,
       role: "authority",
-      show_summary: true,
-      show_profile: true,
-      show_preds: true,
-      show_discovery: true,
+      summary: true,
+      profile: true,
+      preds: true,
+      discovery: true,
     },
     { refetchOnMountOrArgChange: true, skip },
   );
