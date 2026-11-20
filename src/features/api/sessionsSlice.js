@@ -165,10 +165,10 @@ export const extendedApi = apiSlice.injectEndpoints({
               extendedApi.endpoints.getSessions.initiate({
                 number_last_sessions: data.esix - 1,
                 stats: true,
-                // // collation stats are only requested where collation is available
-                // collation_stats: isCollationAvailable(selectChain(getState()))
-                //   ? true
-                //   : undefined,
+                // collation stats are only requested where collation is available
+                collation_stats: isCollationAvailable(selectChain(getState()))
+                  ? true
+                  : undefined,
               }),
             );
           }
@@ -304,6 +304,11 @@ const sessionsSlice = createSlice({
         adapter.upsertMany(state, sessions);
       })
       .addMatcher(matchValidatorsReceived, (state, action) => {
+        // ranking requests (e.g. pools) are not session data and would
+        // overwrite the session's grades, groups, etc.
+        if (action.meta?.arg?.originalArgs?.ranking) {
+          return;
+        }
         const setKey = (action, prefix) => {
           if (!isUndefined(action)) {
             if (!isUndefined(action.meta)) {
