@@ -4,33 +4,43 @@ import isUndefined from "lodash/isUndefined";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {
-  selectSessionCurrent,
-  useGetSessionByIndexQuery,
-} from "../features/api/sessionsSlice";
+import { selectCollatorsSummaryLatest } from "../features/api/collatorsSlice";
 import { selectCollationStatsBySessionAndPid } from "../features/api/collationStatsSlice";
 import { selectCollationSlotBySessionAndPid } from "../features/api/collationSlotsSlice";
+import { selectSessionCurrent } from "../features/api/sessionsSlice";
 import { selectChain } from "../features/chain/chainSlice";
 import { isCollationAvailable } from "../constants";
+import CollationEmptyBox from "./CollationEmptyBox";
 
-export default function CollationPointsBox({ paraId, name }) {
+// Points of the latest session of the system chain (`chainKey`)
+export default function CollationPointsBox({ chainKey, name }) {
   const selectedChain = useSelector(selectChain);
-  const currentSession = useSelector(selectSessionCurrent);
-  const isReady = isCollationAvailable(selectedChain) && !isNaN(currentSession);
+  const isReady = isCollationAvailable(selectedChain);
 
-  useGetSessionByIndexQuery(
-    { index: "current", collation_stats: true },
-    { skip: !isReady },
+  // latest session of the system chain (not the relay chain session)
+  const summary = useSelector((state) =>
+    selectCollatorsSummaryLatest(state, chainKey),
   );
   const stats = useSelector((state) =>
-    selectCollationStatsBySessionAndPid(state, currentSession, paraId),
+    selectCollationStatsBySessionAndPid(
+      state,
+      summary?.session,
+      summary?.para_id,
+      chainKey,
+    ),
   );
+  // open slot of the chain, tied to the current relay session
+  const currentSession = useSelector(selectSessionCurrent);
   const slot = useSelector((state) =>
-    selectCollationSlotBySessionAndPid(state, currentSession, paraId),
+    selectCollationSlotBySessionAndPid(
+      state,
+      currentSession,
+      summary?.para_id,
+    ),
   );
 
   if (!isReady || isUndefined(stats)) {
-    return null;
+    return <CollationEmptyBox />;
   }
 
   return (
@@ -43,7 +53,7 @@ export default function CollationPointsBox({ paraId, name }) {
         width: "100%",
         height: 80,
         borderRadius: 3,
-        bgcolor: (theme) => theme.palette.background.secondary,
+        bgcolor: 'default',
         boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
       }}
     >
@@ -55,14 +65,14 @@ export default function CollationPointsBox({ paraId, name }) {
           alignItems: "left",
         }}
       >
-        <Typography variant="caption" color="textSecondary" sx={{ whiteSpace: "nowrap" }}>
+        <Typography variant="caption" sx={{ whiteSpace: "nowrap" }}>
           {name} collation points
         </Typography>
-        <Typography variant="h6" color="textSecondary">
+        <Typography variant="h6">
           {(stats.pt + (slot?.pt ?? 0)).format()}
         </Typography>
         <Typography
-          variant="subtitle2" color="textSecondary"
+          variant="subtitle2"
           sx={{ whiteSpace: "nowrap", lineHeight: 0.875 }}
         >
           {`since session ${stats.six.format()} started`}

@@ -60,10 +60,12 @@ export const extendedApi = apiSlice.injectEndpoints({
         stats,
         netstats,
         collation_stats,
+        chain_key,
         retry,
       }) => ({
         url: `/sessions`,
         params: {
+          chain_key,
           number_last_sessions,
           from,
           to,
@@ -116,14 +118,28 @@ export const extendedApi = apiSlice.injectEndpoints({
       },
     }),
     getSessionByIndex: builder.query({
-      query: ({ index, stats, collation_stats, retry }) => ({
+      query: ({ index, stats, collation_stats, chain_key, retry }) => ({
         url: `/sessions/${index}`,
-        params: { stats, collation_stats, retry },
+        params: { stats, collation_stats, chain_key, retry },
       }),
       providesTags: (result, error, arg) => [{ type: "Sessions", id: arg }],
       async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
+          // sessions of a system chain have no relay chain subscriptions
+          if (["ah", "pp"].includes(params.chain_key)) {
+            if (params.index === "current") {
+              // Fetch previous sessions stats for the current era
+              dispatch(
+                extendedApi.endpoints.getSessions.initiate({
+                  chain_key: params.chain_key,
+                  number_last_sessions: data.esix - 1,
+                  stats: true,
+                }),
+              );
+            }
+            return;
+          }
           // `onSuccess` subscribe for updates
           if (
             params.index === "current" &&
@@ -149,10 +165,10 @@ export const extendedApi = apiSlice.injectEndpoints({
               extendedApi.endpoints.getSessions.initiate({
                 number_last_sessions: data.esix - 1,
                 stats: true,
-                // collation stats are only requested where collation is available
-                collation_stats: isCollationAvailable(selectChain(getState()))
-                  ? true
-                  : undefined,
+                // // collation stats are only requested where collation is available
+                // collation_stats: isCollationAvailable(selectChain(getState()))
+                //   ? true
+                //   : undefined,
               }),
             );
           }
@@ -198,6 +214,10 @@ export const matchSessionsReceived = isAnyOf(
   socketSessionsReceived,
   extendedApi.endpoints.getSessions.matchFulfilled,
 );
+
+// Sessions requested for a system chain are kept in their own slices
+export const isSystemChainSessionRequest = (action) =>
+  ["ah", "pp"].includes(action.meta?.arg?.originalArgs?.chain_key);
 
 const isParaGraded = (v) =>
   v.is_auth &&
@@ -249,6 +269,9 @@ const sessionsSlice = createSlice({
   extraReducers(builder) {
     builder
       .addMatcher(matchSessionReceived, (state, action) => {
+        if (isSystemChainSessionRequest(action)) {
+          return;
+        }
         // update session current from sessionReceived (needed when new session is received)
         if (action.payload.is_current) {
           state.current = action.payload.six;
@@ -259,6 +282,9 @@ const sessionsSlice = createSlice({
         adapter.upsertOne(state, { ...session, _ts: +new Date() });
       })
       .addMatcher(matchSessionsReceived, (state, action) => {
+        if (isSystemChainSessionRequest(action)) {
+          return;
+        }
         const sessions = action.payload.map(
           ({ collation_stats, ...session }) => ({
             ...session,

@@ -7,23 +7,23 @@ import Skeleton from "@mui/material/Skeleton";
 import { Typography } from "@mui/material";
 import { useGetBlockQuery, selectBestBlock } from "../features/api/blocksSlice";
 import { selectBestBlockAH } from "../features/api/blocksAHSlice";
+import { selectBestBlockPP } from "../features/api/blocksPPSlice";
 
-export default function BestBlockBoxHeader({ dark }) {
+const SELECTORS = {
+  rc: selectBestBlock,
+  ah: selectBestBlockAH,
+  pp: selectBestBlockPP,
+};
+
+export default function BestBlockBoxHeader({ dark, chain_key = "rc" }) {
   const theme = useTheme();
   const { isSuccess, isFetching } = useGetBlockQuery(
-    { blockId: "best", chain_key: "rc" },
+    { blockId: "best",  ...(chain_key !== "rc" ? { chain_key } : {}), },
     { refetchOnMountOrArgChange: true },
   );
-  const { isSuccess: isSuccessAH, isFetching: isFetchingAH } = useGetBlockQuery(
-    {
-      blockId: "best",
-      chain_key: "ah",
-    },
-  );
-  const best = useSelector(selectBestBlock);
-  const bestAH = useSelector(selectBestBlockAH);
+  const best = useSelector(SELECTORS[chain_key]);
 
-  if (isFetching || isFetchingAH || isUndefined(best) || isUndefined(bestAH)) {
+  if (isFetching || isUndefined(best)) {
     return (
       <Skeleton
         variant="rounded"
@@ -41,6 +41,7 @@ export default function BestBlockBoxHeader({ dark }) {
     <Box
       sx={{
         mx: 2,
+        minWidth: 96,
         display: "flex",
         alignItems: "flex-start",
       }}
@@ -65,25 +66,8 @@ export default function BestBlockBoxHeader({ dark }) {
             dark ? theme.palette.text.secondary : theme.palette.text.primary
           }
         >
-          {isSuccessAH ? (
-            <React.Fragment>
-              {/* <Typography variant="caption1" sx={{ ml: -4, pr: 1 }}>
-                AH
-              </Typography> */}
-              {`${bestAH.block_number.format()}`}
-            </React.Fragment>
-          ) : (
-            "-"
-          )}
-        </Typography>
-        <Typography variant="subtitle3">
           {isSuccess ? (
-            <React.Fragment>
-              {/* <Typography variant="caption1" sx={{ ml: -4, pr: 1 }}>
-                RC
-              </Typography> */}
-              {`${best.block_number.format()}`}
-            </React.Fragment>
+            <React.Fragment>{`${best.block_number.format()}`}</React.Fragment>
           ) : (
             "-"
           )}

@@ -25,16 +25,16 @@ const WINDOW_BLOCKS = 50;
 // the best blocks were received. It is the time between the first and the last
 // block of the window over the number of blocks between them (the blocks are
 // not necessarily received one by one).
-export function useAvgBlockTime(chainKey = "rc") {
+export function useAvgBlockTime(chain_key = "rc") {
   const selectedChain = useSelector(selectChain);
   // the system chains are only available where collation is available
-  const isReady = chainKey === "rc" || isCollationAvailable(selectedChain);
+  const isReady = chain_key === "rc" || isCollationAvailable(selectedChain);
 
   useGetBlockQuery(
-    { blockId: "best", chain_key: chainKey },
+    { blockId: "best", ...(chain_key !== "rc" ? { chain_key } : {}) },
     { skip: !isReady },
   );
-  const blocks = useSelector(selectors[chainKey]);
+  const blocks = useSelector(selectors[chain_key]);
   const avgBlockTime = React.useMemo(() => {
     const sorted = blocks
       .filter((b) => !isUndefined(b._ts_best))

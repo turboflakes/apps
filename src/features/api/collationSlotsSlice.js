@@ -5,6 +5,7 @@ import {
   socketSessionReceived,
   socketSessionsReceived,
 } from "./sessionsSlice";
+import { socketCollatorsReceived } from "./collatorsSlice";
 
 // The open slot of each system chain (`pid`) in the current relay session. Only
 // the latest slot is kept per chain: it is replaced on every update and removed
@@ -47,6 +48,21 @@ const collationSlotsSlice = createSlice({
             _ts: +new Date(),
           });
         });
+      });
+    });
+    // the open slot is also pushed with the collators of a system chain
+    builder.addMatcher(socketCollatorsReceived.match, (state, action) => {
+      const { para_id, slot, relay_six } = action.payload;
+      // the pushes of the collators have no slot, the slot ones are the pushes
+      // subscribed with `slot`, so a missing slot is not a removal
+      if (isUndefined(slot)) {
+        return;
+      }
+      adapter.setOne(state, {
+        ...slot,
+        pid: para_id,
+        six: relay_six,
+        _ts: +new Date(),
       });
     });
   },

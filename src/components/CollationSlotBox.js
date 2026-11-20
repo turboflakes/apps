@@ -5,13 +5,11 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
-import {
-  selectSessionCurrent,
-  useGetSessionByIndexQuery,
-} from "../features/api/sessionsSlice";
+import { selectSessionCurrent } from "../features/api/sessionsSlice";
 import { selectCollationSlotBySessionAndPid } from "../features/api/collationSlotsSlice";
 import {
-  selectCollatorsAll,
+  selectCollatorsByChainAndSession,
+  selectCollatorsSummaryLatest,
 } from "../features/api/collatorsSlice";
 import { selectChain } from "../features/chain/chainSlice";
 import {
@@ -21,20 +19,26 @@ import {
 import { isCollationAvailable, getNetworkSS58Format } from "../constants";
 import { nameDisplay, stashDisplay } from "../util/display";
 import { chainAddress } from "../util/crypto";
+import CollationEmptyBox from "./CollationEmptyBox";
 
 const BLOCKS_PER_SLOT = 12;
 
-export default function CollationSlotBox({ paraId, name }) {
+export default function CollationSlotBox({ chainKey, name }) {
   const selectedChain = useSelector(selectChain);
   const currentSession = useSelector(selectSessionCurrent);
   const isReady = isCollationAvailable(selectedChain) && !isNaN(currentSession);
 
-  useGetSessionByIndexQuery(
-    { index: "current", collation_stats: true },
-    { skip: !isReady },
+  // latest session of the system chain (not the relay chain session)
+  const summary = useSelector((state) =>
+    selectCollatorsSummaryLatest(state, chainKey),
   );
+  // open slot of the chain, tied to the current relay session
   const slot = useSelector((state) =>
-    selectCollationSlotBySessionAndPid(state, currentSession, paraId),
+    selectCollationSlotBySessionAndPid(
+      state,
+      currentSession,
+      summary?.para_id,
+    ),
   );
 
   // identity of the collator that owns the slot (set only for metanodes or
@@ -46,24 +50,16 @@ export default function CollationSlotBox({ paraId, name }) {
     selectValProfileByAddress(state, slot?.owner),
   );
 
-  const collators = useSelector(selectCollatorsAll);
-  const summaries = useSelector((state) => state.collators.summaries);
+  const collators = useSelector((state) =>
+    selectCollatorsByChainAndSession(state, chainKey, summary?.session),
+  );
   const nextOwner = React.useMemo(() => {
-    const latest = Math.max(
-      -1,
-      ...Object.values(summaries)
-        .filter((s) => s.para_id === paraId)
-        .map((s) => s.session),
-    );
-    const list = collators.filter(
-      (c) => c.para_id === paraId && c.session === latest,
-    );
-    if (isUndefined(slot) || !list.length) {
+    if (isUndefined(slot) || !collators.length) {
       return undefined;
     }
-    const total = Math.max(...list.map((c) => c.cix)) + 1;
-    return list.find((c) => c.cix === (slot.cix + 1) % total)?.address;
-  }, [collators, summaries, paraId, slot]);
+    const total = Math.max(...collators.map((c) => c.cix)) + 1;
+    return collators.find((c) => c.cix === (slot.cix + 1) % total)?.address;
+  }, [collators, slot]);
   useGetValidatorProfileByAddressQuery(nextOwner, {
     skip: isUndefined(nextOwner),
   });
@@ -72,7 +68,9 @@ export default function CollationSlotBox({ paraId, name }) {
   );
 
   if (!isReady || isUndefined(slot)) {
-    return null;
+    return (
+      <CollationEmptyBox bgcolor={(theme) => theme.palette.neutrals[200]} />
+    );
   }
 
   const owner = chainAddress(slot.owner, getNetworkSS58Format(selectedChain));
@@ -87,7 +85,7 @@ export default function CollationSlotBox({ paraId, name }) {
         width: "100%",
         height: 80,
         borderRadius: 3,
-        bgcolor: (theme) => theme.palette.grey[300],
+        bgcolor: (theme) => theme.palette.neutrals[200],
         boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
       }}
     >
@@ -121,7 +119,7 @@ export default function CollationSlotBox({ paraId, name }) {
                     width: 8,
                     height: 8,
                     borderRadius: "50%",
-                    bgcolor: i < slot.pb ? "common.black" : "common.white",
+                    bgcolor: (theme) => i < slot.pb ? theme.palette.neutrals[300] : theme.palette.neutrals[100],
                   }}
                 />
               ))}

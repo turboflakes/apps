@@ -10,24 +10,19 @@ import {
   selectSessionByIndex,
   selectSessionCurrent,
 } from "../features/api/sessionsSlice";
-import { selectChain } from "../features/chain/chainSlice";
-import { isCollationAvailable } from "../constants";
 
 export default function EraBoxHeader({ dark }) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const selectedChain = useSelector(selectChain);
 
-  const { isSuccess, isFetching } =
-    useGetSessionByIndexQuery({
-      index: currentSession,
-      stats: true,
-      // collation stats are only requested where collation is available
-      collation_stats: isCollationAvailable(selectedChain) ? true : undefined,
-    });
+  const { isSuccess, isFetching } = useGetSessionByIndexQuery({
+    index: currentSession,
+    stats: true,
+  });
   const session = useSelector((state) =>
     selectSessionByIndex(state, currentSession),
   );
+
   if (isFetching || isUndefined(session)) {
     return (
       <Skeleton
@@ -65,6 +60,7 @@ export default function EraBoxHeader({ dark }) {
         <Typography
           variant="caption1"
           color={dark ? theme.palette.text.secondary : "default"}
+          sx={{ whiteSpace: "nowrap" }}
         >
           era
         </Typography>

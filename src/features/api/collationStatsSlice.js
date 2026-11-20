@@ -11,6 +11,7 @@ import {
   socketSessionReceived,
   socketSessionsReceived,
 } from "./sessionsSlice";
+import { socketCollatorsReceived } from "./collatorsSlice";
 import { selectCollationSlotsPointsBySession } from "./collationSlotsSlice";
 
 // Collation stats are tied to the session of the chain that reports them
@@ -58,6 +59,21 @@ const collationStatsSlice = createSlice({
         });
       });
       adapter.upsertMany(state, entries);
+    });
+    // stats of the system chain session pushed with its collators, tied to the
+    // system chain (`chain_key`) session and not to the relay chain session
+    builder.addMatcher(socketCollatorsReceived.match, (state, action) => {
+      const { chain_key, para_id, session, stats } = action.payload;
+      if (isUndefined(stats)) {
+        return;
+      }
+      adapter.upsertOne(state, {
+        ...stats,
+        chain_key,
+        six: session,
+        pid: para_id,
+        _ts: +new Date(),
+      });
     });
   },
 });

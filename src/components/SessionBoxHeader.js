@@ -8,16 +8,50 @@ import { Typography } from "@mui/material";
 import {
   selectSessionByIndex,
   selectSessionCurrent,
+  useGetSessionByIndexQuery,
 } from "../features/api/sessionsSlice";
+import {
+  selectSessionByIndexAH,
+  selectSessionCurrentIndexAH,
+} from "../features/api/sessionsAHSlice";
+import {
+  selectSessionByIndexPP,
+  selectSessionCurrentIndexPP,
+} from "../features/api/sessionsPPSlice";
 
-export default function SessionBoxHeader({ dark }) {
+// Selectors of the current session index and of a session by chain
+const SELECTORS = {
+  rc: {
+    current: selectSessionCurrent,
+    byIndex: selectSessionByIndex,
+  },
+  ah: {
+    current: selectSessionCurrentIndexAH,
+    byIndex: selectSessionByIndexAH,
+  },
+  pp: {
+    current: selectSessionCurrentIndexPP,
+    byIndex: selectSessionByIndexPP,
+  },
+};
+
+// Session of the relay chain (`rc`) or of a system chain (`ah` or `pp`)
+export default function SessionBoxHeader({ dark, chain_key = "rc" }) {
   const theme = useTheme();
-  const currentSession = useSelector(selectSessionCurrent);
+  const selectors = SELECTORS[chain_key];
+  const currentSession = useSelector(selectors.current);
   const session = useSelector((state) =>
-    selectSessionByIndex(state, currentSession),
+    selectors.byIndex(state, currentSession),
   );
+  // the relay chain request has no `chain_key`
+  useGetSessionByIndexQuery({
+    index: currentSession,
+    stats: true,
+    ...(chain_key !== "rc" ? { chain_key } : {}),
+  });
+  const six = session?.six;
 
-  if (isUndefined(session)) {
+  if (isUndefined(six)) {
     return (
       <Skeleton
         variant="rounded"
@@ -59,7 +93,7 @@ export default function SessionBoxHeader({ dark }) {
             dark ? theme.palette.text.secondary : theme.palette.text.primary
           }
         >
-          {session.six.format()}
+          {six.format()}
         </Typography>
       </Box>
     </Box>

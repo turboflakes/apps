@@ -32,6 +32,7 @@ export default function AvgBlockTimeBoxHeader({ dark, chain_key = "rc" }) {
         <Typography
           variant="caption1"
           color={dark ? theme.palette.text.secondary : "default"}
+          sx={{ whiteSpace: "nowrap" }}
         >
           avg block time
         </Typography>

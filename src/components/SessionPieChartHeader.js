@@ -31,7 +31,6 @@ export default function SessionPieChartHeader() {
     isFetching: isFetchingBlockSuccess,
   } = useGetBlockQuery({
     blockId: "finalized",
-    chain_key: "rc",
     stats: true,
   });
   const finalized = useSelector(selectFinalizedBlock);

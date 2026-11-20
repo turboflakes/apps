@@ -10,8 +10,8 @@ import SessionPerformancePieChartHeader from "./SessionPerformancePieChartHeader
 import SessionPieChartHeader from "./SessionPieChartHeader";
 import EraBoxHeader from "./EraBoxHeader";
 import SessionBoxHeader from "./SessionBoxHeader";
-import BestBlockBoxHeader from "./BestBlockBoxHeaderV0";
-import FinalizedBlockBoxHeader from "./FinalizedBlockBoxHeaderV0";
+import BestBlockBoxHeader from "./BestBlockBoxHeader";
+import FinalizedBlockBoxHeader from "./FinalizedBlockBoxHeader";
 import AvgBlockTimeBoxHeader from "./AvgBlockTimeBoxHeader";
 import { getNetworkIcon, getNetworkName } from "../constants";
 import { selectApp } from "../features/app/appSlice";

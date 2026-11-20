@@ -10,29 +10,28 @@ import {
   selectFinalizedBlock,
 } from "../features/api/blocksSlice";
 import { selectFinalizedBlockAH } from "../features/api/blocksAHSlice";
+import { selectFinalizedBlockPP } from "../features/api/blocksPPSlice";
 
-export default function FinalizedBlockBoxHeader({ dark }) {
+const SELECTORS = {
+  rc: selectFinalizedBlock,
+  ah: selectFinalizedBlockAH,
+  pp: selectFinalizedBlockPP,
+};
+
+export default function FinalizedBlockBoxHeader({ dark, chain_key = "rc" }) {
   const theme = useTheme();
   const { isSuccess, isFetching } = useGetBlockQuery(
-    { blockId: "finalized", chain_key: "rc", stats: true },
-    { refetchOnMountOrArgChange: true },
-  );
-  const { isSuccess: isSuccessAH, isFetching: isFetchingAH } = useGetBlockQuery(
     {
       blockId: "finalized",
-      chain_key: "ah",
+      stats: true,
+      ...(chain_key !== "rc" ? { chain_key } : {}),
     },
+    { refetchOnMountOrArgChange: true },
   );
 
-  const finalized = useSelector(selectFinalizedBlock);
-  const finalizedAH = useSelector(selectFinalizedBlockAH);
+  const finalized = useSelector(SELECTORS[chain_key]);
 
-  if (
-    isFetching ||
-    isFetchingAH ||
-    isUndefined(finalized) ||
-    isUndefined(finalizedAH)
-  ) {
+  if (isFetching || isUndefined(finalized)) {
     return (
       <Skeleton
         variant="rounded"
@@ -56,8 +55,7 @@ export default function FinalizedBlockBoxHeader({ dark }) {
     >
       <Box
         sx={{
-          ml: 4,
-          // mr: 2,
+          mx: 2,
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
@@ -66,6 +64,7 @@ export default function FinalizedBlockBoxHeader({ dark }) {
         <Typography
           variant="caption1"
           color={dark ? theme.palette.text.secondary : "default"}
+          sx={{ whiteSpace: "nowrap" }}
         >
           finalized block
         </Typography>
@@ -75,29 +74,8 @@ export default function FinalizedBlockBoxHeader({ dark }) {
             dark ? theme.palette.text.secondary : theme.palette.text.primary
           }
         >
-          {isSuccessAH ? (
-            <React.Fragment>
-              <Typography
-                variant="caption1"
-                sx={{ ml: -3, pr: 1, lineHeight: 0 }}
-              >
-                AH
-              </Typography>
-              {`${finalizedAH.block_number.format()}`}
-            </React.Fragment>
-          ) : (
-            "-"
-          )}
-        </Typography>
-        <Typography variant="subtitle3">
           {isSuccess ? (
             <React.Fragment>
-              <Typography
-                variant="caption1"
-                sx={{ ml: -3, pr: 1, lineHeight: 0 }}
-              >
-                RC
-              </Typography>
               {`${finalized.block_number.format()}`}
             </React.Fragment>
           ) : (

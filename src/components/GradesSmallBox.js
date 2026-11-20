@@ -13,7 +13,7 @@ import {
 
 const grades = ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "F"]
 
-const emptyBox = ({theme, dark}) => {
+const emptyBox = ({theme, dark, height = 96}) => {
   return (
     <Paper sx={{
       p: 2,
@@ -22,7 +22,7 @@ const emptyBox = ({theme, dark}) => {
       justifyContent: 'space-between',
       alignItems: 'center',
       width: '100%',
-      height: 96,
+      height,
       borderRadius: 3,
       boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       bgcolor: dark ? theme.palette.background.secondary : 'default'
@@ -39,13 +39,13 @@ export default function GradesSmallBox({
   const rawGrades = gradesProp ?? sessionGrades;
 
   if (!rawGrades.length) {
-    return emptyBox({theme, dark})
+    return emptyBox({theme, dark, height})
   }
 
   const currentGrades = rawGrades.filter(g => !isUndefined(g) && !isNull(g) && g !== '-')
 
   if (!currentGrades.length) {
-    return emptyBox({theme, dark})
+    return emptyBox({theme, dark, height})
   }
 
   const gradesData = grades.map(g => {
@@ -71,7 +71,7 @@ export default function GradesSmallBox({
         height,
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-        bgcolor: pieSize === 'xs' ? theme.palette.grey[50] : 'default'
+        bgcolor: 'default'
       }}>
       <Box sx={{ px: 1, width: '50%', display: 'flex', justifyContent: 'space-between', whiteSpace: 'nowrap'  }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>

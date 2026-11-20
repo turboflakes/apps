@@ -4,30 +4,23 @@ import isUndefined from "lodash/isUndefined";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {
-  useGetCollatorsQuery,
-  selectCollatorsSummaryLatest,
-} from "../features/api/collatorsSlice";
+import { selectCollationKindLatest } from "../features/api/collationKindSlice";
 import { selectChain } from "../features/chain/chainSlice";
 import { isCollationAvailable } from "../constants";
+import CollationEmptyBox from "./CollationEmptyBox";
 
 export default function CollationAuthoritiesBox({ chainKey, name }) {
   const selectedChain = useSelector(selectChain);
   const isReady = isCollationAvailable(selectedChain);
-
-  useGetCollatorsQuery(
-    { chain_key: chainKey, kind_counter: true },
-    { skip: !isReady },
-  );
-  const summary = useSelector((state) =>
-    selectCollatorsSummaryLatest(state, chainKey),
+  const kind = useSelector((state) =>
+    selectCollationKindLatest(state, chainKey),
   );
 
-  if (!isReady || isUndefined(summary?.kind_counter)) {
-    return null;
+  if (!isReady || isUndefined(kind)) {
+    return <CollationEmptyBox />;
   }
 
-  const { i, p, v } = summary.kind_counter;
+  const { i, p, v } = kind;
 
   return (
     <Paper
@@ -39,7 +32,7 @@ export default function CollationAuthoritiesBox({ chainKey, name }) {
         width: "100%",
         height: 80,
         borderRadius: 3,
-        bgcolor: (theme) => theme.palette.grey[50],
+        bgcolor: 'default',
         boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
       }}
     >

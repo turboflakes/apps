@@ -42,14 +42,18 @@ export const extendedApi = apiSlice.injectEndpoints({
             let msg = JSON.stringify({
               method: "subscribe_block",
               params: isSystemChain
-                ? ["finalized", "0", params.chain_key]
+                ? ["finalized", "0", params.chain_key, "stats"]
                 : ["finalized", "1"],
             });
             dispatch(socketActions.messageQueued(msg));
           } else if (params.blockId === "best") {
-            const msg = JSON.stringify({
+            const isSystemChain =
+              params.chain_key === "ah" || params.chain_key === "pp";
+            let msg = JSON.stringify({
               method: "subscribe_block",
-              params: ["best"],
+              params: isSystemChain
+                ? ["best", "0", params.chain_key]
+                : ["best"],
             });
             dispatch(socketActions.messageQueued(msg));
           }

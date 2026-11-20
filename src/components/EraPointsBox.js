@@ -12,7 +12,14 @@ import {
   selectSessionCurrent,
   selectEraPointsBySession
 } from '../features/api/sessionsSlice';
-import { selectEraCollationPointsBySession } from '../features/api/collationStatsSlice';
+import {
+  selectSessionCurrentIndexAH,
+  selectEraPointsBySessionAH,
+} from '../features/api/sessionsAHSlice';
+import {
+  selectSessionCurrentIndexPP,
+  selectEraPointsBySessionPP,
+} from '../features/api/sessionsPPSlice';
 import { selectChain } from '../features/chain/chainSlice';
 import { isCollationAvailable } from '../constants';
 
@@ -23,7 +30,10 @@ export default function EraPointsBox() {
   const selectedChain = useSelector(selectChain);
   const isCollation = isCollationAvailable(selectedChain);
   const relayPoints = useSelector(state => selectEraPointsBySession(state, currentSession))
-  const collationPoints = useSelector(state => selectEraCollationPointsBySession(state, currentSession))
+  // collation points are the era points of each system chain, in its own sessions
+  const pointsAH = useSelector(state => selectEraPointsBySessionAH(state, selectSessionCurrentIndexAH(state)))
+  const pointsPP = useSelector(state => selectEraPointsBySessionPP(state, selectSessionCurrentIndexPP(state)))
+  const collationPoints = isUndefined(pointsAH) || isUndefined(pointsPP) ? undefined : pointsAH + pointsPP
   // era points = relay points + collation points (unknown until both are loaded)
   const eraPoints = isCollation
     ? (isUndefined(relayPoints) || isUndefined(collationPoints) ? undefined : relayPoints + collationPoints)
