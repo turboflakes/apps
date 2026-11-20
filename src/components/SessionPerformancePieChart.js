@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import { PieChart, Pie, Cell } from 'recharts';
 import { Typography } from '@mui/material';
-import { 
+import {
   useGetBlockQuery,
   selectFinalizedBlock,
   selectPreviousFinalizedBlock
@@ -19,10 +19,10 @@ function createData(name, value) {
 
 export default function SessionPerformancePieChart() {
   const theme = useTheme();
-  const {isSuccess, isFetching} = useGetBlockQuery({blockId: "finalized", show_stats: true});
+  const {isSuccess, isFetching} = useGetBlockQuery({blockId: "finalized", stats: true});
   const finalized = useSelector(selectFinalizedBlock)
   const previousFinalized = useSelector(selectPreviousFinalizedBlock)
-  
+
   if (isFetching || isUndefined(finalized) || isUndefined(previousFinalized)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
@@ -64,7 +64,7 @@ export default function SessionPerformancePieChart() {
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
           <Typography variant="caption">network performance</Typography>
           <Typography variant="h5">{!isUndefined(finalized._mvr) ? `${Math.round((1 - finalized._mvr) * 100)}%` : '-'}</Typography>
-          <Typography variant="subtitle2" 
+          <Typography variant="subtitle2"
               sx={{color: Math.sign(trendPer) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red}}>
           {!isNaN(trendPer) ? (trendPer !== 0 ? `${trendPer}%` : ``) : ''}
           </Typography>

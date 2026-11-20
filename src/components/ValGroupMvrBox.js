@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import Skeleton from '@mui/material/Skeleton';
 import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
-import { 
+import {
   useGetValidatorsQuery,
  } from '../features/api/validatorsSlice';
 import {
@@ -24,7 +24,7 @@ const renderTooltip = (props, theme) => {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -51,7 +51,7 @@ const renderTooltip = (props, theme) => {
 
 export default function ValGroupMvrBox({groupId, sessionIndex}) {
   const theme = useTheme();
-  const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
+  const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", summary: true});
   const _mvr = useSelector(state => selectValGroupMvrBySessionAndGroupId(state, sessionIndex,  groupId));
   const mvr = Math.round(_mvr * 10000) / 10000;
   const allMVRs = useSelector(state => selectMVRsBySession(state, sessionIndex));
@@ -73,7 +73,7 @@ export default function ValGroupMvrBox({groupId, sessionIndex}) {
   const data = [
     {name: 'MVR', value: mvr, avg, groupId},
   ];
-  
+
   return (
     <Paper sx={{
         p: 2,
@@ -110,10 +110,10 @@ export default function ValGroupMvrBox({groupId, sessionIndex}) {
           }}>
           <Bar dataKey="value" barSize={12} fill={theme.palette.text.primary} />
           <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
-          <ChartTooltip 
+          <ChartTooltip
                 cursor={{fill: 'transparent'}}
                 offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme)} />
         </BarChart>
       </ResponsiveContainer>

@@ -194,10 +194,10 @@ const socketMiddleware = (store) => {
           //       // const selectedAddress = selectAddress(store.getState())
           //       // const chainName = selectChain(store.getState())
           //       // const maxSessions = getMaxHistorySessions(chainName);
-          //       // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
+          //       // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, summary: true, stats: false, fetch_peers: true }, {forceRefetch: true}))
           //       // // get all validators summary for the selected session (useful to get the comparison stats)
           //       // const historySession = selectSessionHistory(store.getState());
-          //       // store.dispatch(apiSlice.endpoints.getValidators.initiate({session: historySession, role: "para_authority", show_summary: true}, {forceRefetch: true}));
+          //       // store.dispatch(apiSlice.endpoints.getValidators.initiate({session: historySession, role: "para_authority", summary: true}, {forceRefetch: true}));
           //     }
           //     break
           //   }
@@ -245,7 +245,7 @@ const socketMiddleware = (store) => {
             //     // const selectedAddress = selectAddress(store.getState())
             //     // const chainName = selectChain(store.getState())
             //     // const maxSessions = getMaxHistorySessions(chainName);
-            //     // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
+            //     // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, summary: true, stats: false, fetch_peers: true }, {forceRefetch: true}))
 
             //   } else if (action.payload === 'Live') {
             //     // dispatchValidator(store, "subscribe");

@@ -8,7 +8,7 @@ import Skeleton from '@mui/material/Skeleton';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 import { Typography } from '@mui/material';
-import { 
+import {
   useGetBlocksQuery,
   selectBlocksBySession,
  } from '../features/api/blocksSlice'
@@ -20,7 +20,7 @@ import {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -44,8 +44,8 @@ import {
             Total votes: <b>{data.votes}</b>
           </Typography>
         </Box>
-        
-        
+
+
       </Box>
     );
   }
@@ -55,7 +55,7 @@ import {
 
 export default function SessionPerformanceTimeline({sessionIndex}) {
   const theme = useTheme();
-  const {isSuccess, isFetching} = useGetBlocksQuery({session: sessionIndex, show_stats: true});
+  const {isSuccess, isFetching} = useGetBlocksQuery({session: sessionIndex, stats: true});
   const blocks = useSelector(state => selectBlocksBySession(state, sessionIndex))
 
   if (isFetching) {
@@ -67,21 +67,21 @@ export default function SessionPerformanceTimeline({sessionIndex}) {
       bgcolor: 'white'
     }} />)
   }
-  
+
   if (!isSuccess) {
     return null
   }
-  
+
   // Minimum of 4 blocks to draw a trend
   if (blocks.length < 2 ) {
     return null
   }
-  
+
   const timelineData = blocks.map((o, i) => ({
     block: o.block_number.format(),
     bvr: 1 - o._mvr,
-    votes: !isUndefined(o.stats) ? (i > 0 ? 
-      ((o.stats.ev + o.stats.iv + o.stats.mv) - (blocks[i-1].stats.ev + blocks[i-1].stats.iv + blocks[i-1].stats.mv)) : 
+    votes: !isUndefined(o.stats) ? (i > 0 ?
+      ((o.stats.ev + o.stats.iv + o.stats.mv) - (blocks[i-1].stats.ev + blocks[i-1].stats.iv + blocks[i-1].stats.mv)) :
       (o.stats.ev + o.stats.iv + o.stats.mv))  : undefined
   }))
 
@@ -127,20 +127,20 @@ export default function SessionPerformanceTimeline({sessionIndex}) {
               </linearGradient>
             </defs>
             {/* <CartesianGrid strokeDasharray="3 3" /> */}
-            <XAxis dataKey="block" interval={0} angle={-45} dx={20} fontSize="0.75rem" 
+            <XAxis dataKey="block" interval={0} angle={-45} dx={20} fontSize="0.75rem"
               tick={false}
               tickLine={false}
               axisLine={false} />
-            <YAxis type="number" domain={['auto', 'dataMax']} 
+            <YAxis type="number" domain={['auto', 'dataMax']}
               tick={false}
               tickLine={false}
               axisLine={false} />
-            <Tooltip 
+            <Tooltip
                 cursor={{fill: theme.palette.divider}}
                 offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme)} />
-            <Line isAnimationActive={false} type="monotone" dataKey="bvr" 
+            <Line isAnimationActive={false} type="monotone" dataKey="bvr"
               strokeWidth={2} stroke="#0B1317" fill="#F1F1F0" dot={false} />
           </LineChart>
         </ResponsiveContainer>

@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { 
+import {
   useGetValidatorsQuery,
  } from '../features/api/validatorsSlice';
 import {
@@ -13,9 +13,9 @@ import {
 
 export default function ValGroupCoreAssignmentBox({groupId, sessionIndex}) {
   // const theme = useTheme();
-  const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
+  const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", summary: true});
   const coreAssignments = useSelector(state => selectValGroupCoreAssignmentsBySessionAndGroupId(state, sessionIndex,  groupId));
-  
+
   if (isFetching) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
@@ -25,7 +25,7 @@ export default function ValGroupCoreAssignmentBox({groupId, sessionIndex}) {
       bgcolor: 'white'
     }} />)
   }
-  
+
   return (
     <Paper sx={{
         p: 2,

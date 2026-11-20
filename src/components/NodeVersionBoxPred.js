@@ -44,11 +44,11 @@ export default function NodeVersionBoxPred({ target }) {
   // node versions are collected from the discovery of the latest session
   useGetSessionByIndexQuery({ index: sessionIndex }, { skip });
   useGetValidatorsQuery(
-    { session: sessionIndex, role: "authority", show_discovery: true },
+    { session: sessionIndex, role: "authority", discovery: true },
     { skip },
   );
   useGetValidatorsQuery(
-    { session: sessionIndex, role: "waiting", show_discovery: true },
+    { session: sessionIndex, role: "waiting", discovery: true },
     { skip },
   );
 

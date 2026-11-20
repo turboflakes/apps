@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import Skeleton from '@mui/material/Skeleton';
 import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
-import { 
+import {
   useGetValidatorsQuery,
  } from '../features/api/validatorsSlice';
 import {
@@ -29,7 +29,7 @@ const renderTooltip = (props, theme) => {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -60,7 +60,7 @@ const renderTooltip = (props, theme) => {
 export default function ValBackingPointsBox({address}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const {isFetching} = useGetValidatorsQuery({session: currentSession, role: "para_authority", show_summary: true});
+  const {isFetching} = useGetValidatorsQuery({session: currentSession, role: "para_authority", summary: true});
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
   const allBackingPoints = useSelector(state => selectBackingPointsBySession(state, currentSession));
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
@@ -106,13 +106,13 @@ export default function ValBackingPointsBox({address}) {
   const backingPoints = (validator.auth.ep - validator.auth.sp) - (validator.auth.ab.length * 20) > 0 ? (validator.auth.ep - validator.auth.sp) - (validator.auth.ab.length * 20) : 0;
   const avg = !!allBackingPoints.length ? Math.round(allBackingPoints.reduce((a, b) => a + b, 0) / (allBackingPoints.length)) : 0;
   const diff = !!avg ? Math.round(((backingPoints * 100 / avg) - 100) * 10) / 10 : 0;
-  
+
   const data = [
     {name: nameDisplay(valProfile._identity, 12), value: backingPoints, avg, session: currentSession},
   ];
-  
+
   return (
-    <Paper 
+    <Paper
       sx={{
         p: 2,
         display: 'flex',
@@ -130,7 +130,7 @@ export default function ValBackingPointsBox({address}) {
           {!isUndefined(backingPoints) ? backingPoints.format() : '-'}
         </Typography>
         <Tooltip title={`${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of Backing Points collected by all Para-Authorities in the current session.`} arrow>
-          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 
+          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap',
             lineHeight: 0.875,
             color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red }}>
             <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${diff}%` : `-${Math.abs(diff)}%`) : ' '}</b>
@@ -147,10 +147,10 @@ export default function ValBackingPointsBox({address}) {
           }}>
           <Bar dataKey="value" barSize={12} fill={theme.palette.text.primary} />
           <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
-          <ChartTooltip 
+          <ChartTooltip
                 cursor={{fill: 'transparent'}}
                 offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme)} />
         </BarChart>
       </ResponsiveContainer>

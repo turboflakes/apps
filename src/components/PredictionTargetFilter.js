@@ -31,7 +31,7 @@ export default function PredictionTargetFilter() {
   useGetBlockQuery({
     blockId: "finalized",
     chain_key: "rc",
-    show_stats: true,
+    stats: true,
   });
   const activeSetSize = useSelector(
     (state) => selectFinalizedBlock(state)?.stats?.na,

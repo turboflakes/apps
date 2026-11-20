@@ -7,11 +7,11 @@ import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import { PieChart, Pie, Cell } from 'recharts';
 import { Typography } from '@mui/material';
-import { 
+import {
   useGetBlockQuery,
   selectFinalizedBlock,
  } from '../features/api/blocksSlice';
-import { 
+import {
   useGetSessionByIndexQuery,
   selectSessionByIndex,
  } from '../features/api/sessionsSlice';
@@ -31,8 +31,8 @@ export default function SessionPieChart({sessionIndex}) {
   const selectedChain = useSelector(selectChain);
   const nBlocksTarget = getBlocksPerSessionTarget(selectedChain);
   const {
-    isSuccess: isSuccessFinalizedBlock, 
-    isFetching: isFetchingBlockSuccess} = useGetBlockQuery({blockId: "finalized", show_stats: true});
+    isSuccess: isSuccessFinalizedBlock,
+    isFetching: isFetchingBlockSuccess} = useGetBlockQuery({blockId: "finalized", stats: true});
   const {
     isSuccess: isSuccessSession,
     isFetching: isFetchingSession } = useGetSessionByIndexQuery({index: sessionIndex});
@@ -60,21 +60,21 @@ export default function SessionPieChart({sessionIndex}) {
     createData('progress', Math.round(((nBlocksTarget-diff) * 100)/nBlocksTarget)),
   ]
   const eraPercentage = Math.round(((session.esix - 1) / 6 * 100) + (donePercentage / 6));
-  
+
   let pieEraData = [];
   for (let i = 1; i <= 6; i++) {
     if (session.esix === i) {
       pieEraData.push({
         name: `S${i}.1`,
         status: "done",
-        index: i, 
+        index: i,
         value: donePercentage,
 
       })
       pieEraData.push({
         name: `S${i}.0`,
         status: "progress",
-        index: i, 
+        index: i,
         value: 100 - donePercentage
       })
     } else if (session.esix < i) {
@@ -131,12 +131,12 @@ export default function SessionPieChart({sessionIndex}) {
                 fill={index === 0 ? theme.palette.text.primary : theme.palette.grey[200] } />
             ))}
           </Pie>
-          <Pie 
-            data={pieEraData} 
-            dataKey="value" 
-            cx="50%" 
-            cy="50%" 
-            innerRadius={2} 
+          <Pie
+            data={pieEraData}
+            dataKey="value"
+            cx="50%"
+            cy="50%"
+            innerRadius={2}
             outerRadius={16}
             startAngle={90}
             endAngle={-360}
@@ -154,7 +154,7 @@ export default function SessionPieChart({sessionIndex}) {
                 }
               })}
             </Pie>
-            {/* <text x="50%" y="50%" fill="#343434" style={{ fontSize: '1rem' }} 
+            {/* <text x="50%" y="50%" fill="#343434" style={{ fontSize: '1rem' }}
               textAnchor={'middle'} dominantBaseline="central">
               {pieData[0].value}%
             </text> */}

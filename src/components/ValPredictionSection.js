@@ -40,7 +40,7 @@ export default function ValPredictioneSection() {
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const selectedAddress = useSelector(selectAddress);
   const predictionTarget = useSelector(selectPredictionSelected);
-  useGetBlockQuery({ blockId: "finalized", chain_key: "rc", show_stats: true });
+  useGetBlockQuery({ blockId: "finalized", chain_key: "rc", stats: true });
   const activeSetSize = useSelector(
     (state) => selectFinalizedBlock(state)?.stats?.na,
   );
@@ -53,7 +53,7 @@ export default function ValPredictioneSection() {
   const { isSuccess } = useGetPredictionValidatorsQuery(
     {
       target: predictionTarget,
-      show_profile: true,
+      profile: true,
     },
     { refetchOnMountOrArgChange: true, skip },
   );

@@ -366,12 +366,12 @@ export default function ValidatorSessionHistoryTimelineChart({
   const { isFetching: isFetchingSession } = useGetSessionByIndexQuery({
     index: historySession,
   });
-  // const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true});
+  // const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, stats: true});
   const { isFetching } = useGetValidatorsQuery({
     address: address,
     number_last_sessions: maxSessions,
-    show_summary: true,
-    show_stats: false,
+    summary: true,
+    stats: false,
     fetch_peers: true,
   });
   const historySessionIds = buildSessionIdsArrayHelper(

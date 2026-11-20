@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import Skeleton from '@mui/material/Skeleton';
 import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
-import { 
+import {
   useGetValidatorsQuery,
  } from '../features/api/validatorsSlice';
 import {
@@ -24,7 +24,7 @@ const renderTooltip = (props, theme) => {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -51,10 +51,10 @@ const renderTooltip = (props, theme) => {
 
 export default function ValGroupBackingPointsBox({groupId, sessionIndex}) {
   const theme = useTheme();
-  const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
+  const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", summary: true});
   const backingPoints = useSelector(state => selectValGroupBackingPointsBySessionAndGroupId(state, sessionIndex,  groupId));
   const all = useSelector(state => selectBackingPointsBySession(state, sessionIndex));
-  
+
   if (isFetching) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
@@ -71,7 +71,7 @@ export default function ValGroupBackingPointsBox({groupId, sessionIndex}) {
   const data = [
     {name: 'Backing Points', value: backingPoints, avg, groupId},
   ];
-  
+
   return (
     <Paper sx={{
         p: 2,
@@ -90,7 +90,7 @@ export default function ValGroupBackingPointsBox({groupId, sessionIndex}) {
           {!isUndefined(backingPoints) ? backingPoints.format() : '-'}
         </Typography>
         <Tooltip title={`${Math.abs(diff)}% ${diff !== 0 ? (Math.sign(diff) > 0 ? `more` : `less`) : ''} than the average backing points from all Val. Groups in the current session.`} arrow>
-          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 
+          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap',
             lineHeight: 0.875,
             color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red }}>
             <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${diff}%` : `-${Math.abs(diff)}%`) : ' '}</b>
@@ -107,10 +107,10 @@ export default function ValGroupBackingPointsBox({groupId, sessionIndex}) {
           }}>
           <Bar dataKey="value" barSize={12} fill={theme.palette.text.primary} />
           <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
-          <ChartTooltip 
+          <ChartTooltip
                 cursor={{fill: 'transparent'}}
                 offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme)} />
         </BarChart>
       </ResponsiveContainer>

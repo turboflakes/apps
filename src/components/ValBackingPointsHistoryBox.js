@@ -28,7 +28,7 @@ const renderTooltip = (props, theme) => {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -59,8 +59,8 @@ const renderTooltip = (props, theme) => {
 export default function ValBackingPointsHistoryBox({address, maxSessions}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true});
-  const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
+  const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, stats: true});
+  const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, summary: true, stats: false, fetch_peers: true });
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
   const allBackingPoints = useSelector(state => selectBackingPointsBySessions(state, historySessionIds));
@@ -77,17 +77,17 @@ export default function ValBackingPointsHistoryBox({address, maxSessions}) {
   }
 
   const backingPoints = Math.round(filtered.map(v => ((v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20)) > 0 ? (v.auth.ep - v.auth.sp) - (v.auth.ab.length * 20) : 0).reduce((a, b) => a + b, 0) / filtered.length);
-  
+
   // TODO get the total para-authorities per session from backend
   const avg = !!allBackingPoints.length ? Math.round(allBackingPoints.reduce((a, b) => a + b, 0) / (allBackingPoints.length * 200)) : 0;
   const diff = !!avg ? Math.round(((backingPoints * 100 / avg) - 100) * 10) / 10 : 0;
-  
+
   const data = [
     {name: nameDisplay(valProfile._identity, 12), value: backingPoints, valueQty: filtered.length, avg, avgQty: allBackingPoints.length},
   ];
-  
+
   return (
-    <Paper 
+    <Paper
       sx={{
         p: 2,
         display: 'flex',
@@ -105,7 +105,7 @@ export default function ValBackingPointsHistoryBox({address, maxSessions}) {
           {!isUndefined(backingPoints) ? backingPoints.format() : '-'}
         </Typography>
         <Tooltip title={`${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of Backing Points collected by all Para-Authorities of the last ${allBackingPoints.length} sessions.`} arrow>
-          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 
+          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap',
             lineHeight: 0.875,
             color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red }}>
             <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${diff}%` : `-${Math.abs(diff)}%`) : ' '}</b>
@@ -123,10 +123,10 @@ export default function ValBackingPointsHistoryBox({address, maxSessions}) {
           }}>
           <Bar dataKey="value" barSize={12} fill={theme.palette.text.primary} />
           <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
-          <ChartTooltip 
+          <ChartTooltip
                 cursor={{fill: 'transparent'}}
                 offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme)} />
         </BarChart>
       </ResponsiveContainer>
