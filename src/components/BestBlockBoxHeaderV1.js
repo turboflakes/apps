@@ -8,7 +8,7 @@ import { Typography } from "@mui/material";
 import { useGetBlockQuery, selectBestBlock } from "../features/api/blocksSlice";
 import { selectBestBlockAH } from "../features/api/blocksAHSlice";
 
-export default function BestBlockBoxHeaderV1({ dark }) {
+export default function BestBlockBoxHeader({ dark }) {
   const theme = useTheme();
   const { isSuccess, isFetching } = useGetBlockQuery(
     { blockId: "best", chain_key: "rc" },

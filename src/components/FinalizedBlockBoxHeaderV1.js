@@ -11,10 +11,10 @@ import {
 } from "../features/api/blocksSlice";
 import { selectFinalizedBlockAH } from "../features/api/blocksAHSlice";
 
-export default function FinalizedBlockBoxHeaderV1({ dark }) {
+export default function FinalizedBlockBoxHeader({ dark }) {
   const theme = useTheme();
   const { isSuccess, isFetching } = useGetBlockQuery(
-    { blockId: "finalized", chain_key: "rc", show_stats: true },
+    { blockId: "finalized", chain_key: "rc", stats: true },
     { refetchOnMountOrArgChange: true },
   );
   const { isSuccess: isSuccessAH, isFetching: isFetchingAH } = useGetBlockQuery(

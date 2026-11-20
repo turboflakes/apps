@@ -14,21 +14,21 @@ import PoolsPendingRewardsBox from './PoolsPendingRewardsBox';
 import PoolsStakedBox from './PoolsStakedBox';
 import PoolsNomineesBox from './PoolsNomineesBox';
 
-import { 
+import {
   selectSessionHistory,
   selectSessionCurrent,
  } from '../features/api/sessionsSlice'
-import { 
+import {
   useGetPoolsQuery,
   selectPoolBySessionAndPoolId
  } from '../features/api/poolsSlice'
-import { 
+import {
   useGetValidatorsQuery,
  } from '../features/api/validatorsSlice'
-import { 
+import {
   selectIsLiveMode,
 } from '../features/layout/layoutSlice'
-import { 
+import {
   selectIsSocketConnected,
 } from '../features/api/socketSlice'
 import {
@@ -47,12 +47,12 @@ export default function PoolsOverviewPage({tab}) {
   const nSessionsTarget = getSessionsPerDayTarget(selectedChain);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
   const pool = useSelector(state => selectPoolBySessionAndPoolId(state, currentSession, 1));
-  useGetPoolsQuery({session: sessionIndex, show_metadata: true, show_nominees: true, show_stats: true, show_nomstats: true}, 
+  useGetPoolsQuery({session: sessionIndex, metadata: true, nominees: true, stats: true, nomstats: true},
     {refetchOnMountOrArgChange: true, pollingInterval: 60000});
-  
-  useGetValidatorsQuery({session: sessionIndex, nominees_only: true, show_profile: true, show_summary: true});
-  
-  useGetPoolsQuery({session: sessionIndex - nSessionsTarget, show_stats: true, show_nomstats: true}, 
+
+  useGetValidatorsQuery({session: sessionIndex, nominees_only: true, profile: true, summary: true});
+
+  useGetPoolsQuery({session: sessionIndex - nSessionsTarget, stats: true, nomstats: true},
       {refetchOnMountOrArgChange: true });
 
   return (
@@ -77,7 +77,7 @@ export default function PoolsOverviewPage({tab}) {
           <PoolsPendingRewardsBox sessionIndex={currentSession} />
         </Grid>
         <Grid item xs={12}>
-          <Divider sx={{ 
+          <Divider sx={{
             mt: 1,
             opacity: 0.25,
             height: '1px',

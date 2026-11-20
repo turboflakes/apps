@@ -28,7 +28,7 @@ const renderTooltip = (props, theme) => {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -59,8 +59,8 @@ const renderTooltip = (props, theme) => {
 export default function ValAuthoredBlocksHistoryBox({address, maxSessions, showDark, noChart}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true});
-  const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
+  const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, stats: true});
+  const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, summary: true, stats: false, fetch_peers: true });
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
   const allAuthoredBlocks = useSelector(state => selectAuthoredBlocksBySessions(state, historySessionIds));
@@ -79,14 +79,14 @@ export default function ValAuthoredBlocksHistoryBox({address, maxSessions, showD
 
   const authoredBlocksTotal = filtered.map(v => v.auth.ab.length).reduce((a, b) => a + b, 0);
   const authoredBlocks = Math.round((authoredBlocksTotal / filtered.length) * 100) / 100;
-  
+
   const avg = !!allAuthoredBlocks.length ? Math.round((allAuthoredBlocks.reduce((a, b) => a + b, 0) / (allAuthoredBlocks.length * 1000)) * 100) / 100 : 0;
   const diff = !!avg ? Math.round(((authoredBlocks * 100 / avg) - 100) * 10) / 10 : 0;
-  
+
   const data = [
     {name: nameDisplay(valProfile._identity, 12), value: authoredBlocks, valueQty: filtered.length, avg, avgQty: allAuthoredBlocks.length},
   ];
-  
+
   return (
     <Paper sx={{
         p: 2,
@@ -107,14 +107,14 @@ export default function ValAuthoredBlocksHistoryBox({address, maxSessions, showD
           {!isUndefined(authoredBlocksTotal) ? authoredBlocksTotal : '-'}
         </Typography>
         <Tooltip title={`${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of Authored Blocks per session of all the Authorities of the last ${allAuthoredBlocks.length} sessions.`} arrow>
-          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 
+          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap',
             lineHeight: 0.875,
             color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red }}>
             <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${diff}%` : `-${Math.abs(diff)}%`) : ' '}</b>
           </Typography>
         </Tooltip>
       </Box>
-      { !noChart ? 
+      { !noChart ?
         <ResponsiveContainer height='100%' sx={{ display: 'flex', justifyContent: 'flex-end'}}>
           <BarChart data={data}
             margin={{
@@ -125,7 +125,7 @@ export default function ValAuthoredBlocksHistoryBox({address, maxSessions, showD
             }}>
             <Bar dataKey="value" barSize={12} fill={showDark ? theme.palette.grey[500] : theme.palette.text.primary} />
             <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
-            <ChartTooltip 
+            <ChartTooltip
                   cursor={{fill: 'transparent'}}
                   offset={48}
                   wrapperStyle={{ zIndex: 100 }}

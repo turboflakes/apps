@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import Skeleton from '@mui/material/Skeleton';
 import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
-import { 
+import {
   useGetValidatorsQuery,
  } from '../features/api/validatorsSlice';
 import {
@@ -24,7 +24,7 @@ const renderTooltip = (props, theme) => {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -52,11 +52,11 @@ const renderTooltip = (props, theme) => {
 export default function ValGroupValidityVotesBox({groupId, sessionIndex}) {
   const theme = useTheme();
   // fetch history summary for all validators in the selected history session
-  const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", show_summary: true});
+  const {isFetching} = useGetValidatorsQuery({session: sessionIndex, role: "para_authority", summary: true});
   const _validityVotes = useSelector(state => selectValGroupValidityVotesBySessionAndGroupId(state, sessionIndex,  groupId));
   const validatorIds = useSelector(state => selectValidatorIdsBySessionAndGroupId(state, sessionIndex,  groupId));
   const allValidityVotes = useSelector(state => selectValidityVotesBySession(state, sessionIndex));
-  
+
   if (isFetching || validatorIds.length === 0) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
@@ -66,7 +66,7 @@ export default function ValGroupValidityVotesBox({groupId, sessionIndex}) {
       bgcolor: 'white'
     }} />)
   }
-  
+
   const validityVotes = _validityVotes / validatorIds.length;
   const avg = Math.round((!!allValidityVotes.length ? allValidityVotes.reduce((a, b) => a + b, 0) / allValidityVotes.length : 0) * 100) / 100;
   const diff = !!avg ? Math.round(((validityVotes * 100 / avg) - 100) * 10) / 10 : 0;
@@ -74,7 +74,7 @@ export default function ValGroupValidityVotesBox({groupId, sessionIndex}) {
   const data = [
     {name: 'Validity votes', value: validityVotes, avg, groupId},
   ];
-  
+
   return (
     <Paper sx={{
         p: 2,
@@ -111,10 +111,10 @@ export default function ValGroupValidityVotesBox({groupId, sessionIndex}) {
           }}>
           <Bar dataKey="value" barSize={12} fill={theme.palette.text.primary} />
           <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
-          <ChartTooltip 
+          <ChartTooltip
                 cursor={{fill: 'transparent'}}
                 offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme)} />
         </BarChart>
       </ResponsiveContainer>

@@ -19,14 +19,14 @@ export default function ValidatorsHistoryInsights({ skip }) {
       role: "authority",
       from: historySessionIds[0],
       to: historySessionIds[5],
-      show_summary: true,
-      show_profile: true,
-      show_discovery: true,
+      summary: true,
+      profile: true,
+      discovery: true,
     },
     { skip },
   );
   const { isFetching: isFetchingSessions } = useGetSessionsQuery(
-    { from: historySessionIds[0], to: historySessionIds[5], show_stats: true },
+    { from: historySessionIds[0], to: historySessionIds[5], stats: true },
     { skip },
   );
 

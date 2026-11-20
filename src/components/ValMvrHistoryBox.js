@@ -29,7 +29,7 @@ const renderTooltip = (props, theme) => {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -60,13 +60,13 @@ const renderTooltip = (props, theme) => {
 export default function ValMvrHistoryBox({address, maxSessions, showDark, noChart}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true});
-  const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
+  const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, stats: true});
+  const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, summary: true, stats: false, fetch_peers: true });
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
   const allMvrs = useSelector(state => selectMVRBySessions(state, historySessionIds)).filter(v => !isUndefined(v));
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
-  
+
   if (!isSuccess || !isSessionSuccess || isUndefined(valProfile)) {
     return null
   }
@@ -76,7 +76,7 @@ export default function ValMvrHistoryBox({address, maxSessions, showDark, noChar
   if (!filtered.length) {
     return null
   }
-  
+
   const mvr = Math.round(calculateMVR(
     filtered.map(v => v.para_summary.ev).reduce((a, b) => a + b, 0),
     filtered.map(v => v.para_summary.iv).reduce((a, b) => a + b, 0),
@@ -85,13 +85,13 @@ export default function ValMvrHistoryBox({address, maxSessions, showDark, noChar
 
   const avg = Math.round((!!allMvrs.length ? allMvrs.reduce((a, b) => a + b, 0) / allMvrs.length : 0) * 10000) / 10000;
   const diff = !!avg && !!mvr ? Math.round(((mvr * 100 / avg) - 100) * 10) / 10 : 0;
-  
+
   const data = [
     {name: nameDisplay(valProfile._identity, 12), value: mvr, valueQty: filtered.length, avg, avgQty: allMvrs.length},
   ];
-  
+
   return (
-    <Paper 
+    <Paper
       sx={{
         p: 2,
         display: 'flex',
@@ -118,7 +118,7 @@ export default function ValMvrHistoryBox({address, maxSessions, showDark, noChar
           </Typography>
         </Tooltip>
       </Box>
-      {!noChart ? 
+      {!noChart ?
         <ResponsiveContainer height='100%' sx={{ display: 'flex', justifyContent: 'flex-end'}}>
           <BarChart data={data}
             margin={{
@@ -129,10 +129,10 @@ export default function ValMvrHistoryBox({address, maxSessions, showDark, noChar
             }}>
             <Bar dataKey="value" barSize={12} fill={showDark ? theme.palette.grey[500] : theme.palette.text.primary} />
             <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
-            <ChartTooltip 
+            <ChartTooltip
                   cursor={{fill: 'transparent'}}
                   offset={24}
-                  wrapperStyle={{ zIndex: 100 }} 
+                  wrapperStyle={{ zIndex: 100 }}
                   content={props => renderTooltip(props, theme)} />
           </BarChart>
         </ResponsiveContainer> : null}

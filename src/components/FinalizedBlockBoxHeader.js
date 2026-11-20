@@ -5,17 +5,33 @@ import isUndefined from "lodash/isUndefined";
 import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
 import { Typography } from "@mui/material";
-import { useGetBlockQuery, selectBestBlock } from "../features/api/blocksSlice";
+import {
+  useGetBlockQuery,
+  selectFinalizedBlock,
+} from "../features/api/blocksSlice";
+import { selectFinalizedBlockAH } from "../features/api/blocksAHSlice";
+import { selectFinalizedBlockPP } from "../features/api/blocksPPSlice";
 
-export default function BestBlockBoxHeaderV0({ dark }) {
+const SELECTORS = {
+  rc: selectFinalizedBlock,
+  ah: selectFinalizedBlockAH,
+  pp: selectFinalizedBlockPP,
+};
+
+export default function FinalizedBlockBoxHeader({ dark, chain_key = "rc" }) {
   const theme = useTheme();
   const { isSuccess, isFetching } = useGetBlockQuery(
-    { blockId: "best" },
+    {
+      blockId: "finalized",
+      stats: true,
+      ...(chain_key !== "rc" ? { chain_key } : {}),
+    },
     { refetchOnMountOrArgChange: true },
   );
-  const best = useSelector(selectBestBlock);
 
-  if (isFetching || isUndefined(best)) {
+  const finalized = useSelector(SELECTORS[chain_key]);
+
+  if (isFetching || isUndefined(finalized)) {
     return (
       <Skeleton
         variant="rounded"
@@ -48,8 +64,9 @@ export default function BestBlockBoxHeaderV0({ dark }) {
         <Typography
           variant="caption1"
           color={dark ? theme.palette.text.secondary : "default"}
+          sx={{ whiteSpace: "nowrap" }}
         >
-          best block
+          finalized block
         </Typography>
         <Typography
           variant="h6"
@@ -58,7 +75,9 @@ export default function BestBlockBoxHeaderV0({ dark }) {
           }
         >
           {isSuccess ? (
-            <React.Fragment>{`${best.block_number.format()}`}</React.Fragment>
+            <React.Fragment>
+              {`${finalized.block_number.format()}`}
+            </React.Fragment>
           ) : (
             "-"
           )}

@@ -8,7 +8,7 @@ import Skeleton from '@mui/material/Skeleton';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Legend, ResponsiveContainer } from 'recharts';
 import NetValChartLegend from './NetValChartLegend';
 
-import { 
+import {
   useGetSessionsQuery,
  } from '../features/api/sessionsSlice'
 
@@ -18,7 +18,7 @@ import {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -43,10 +43,10 @@ import {
           </Typography>
           <Typography component="div" variant="caption">
             <span style={{ marginRight: '8px', color: theme.palette.grey[200] }}>●</span>Others: <b>{data.others}</b> ({Math.round((data.others * 100 ) / data.total)}%)
-          </Typography>  
+          </Typography>
         </Box>
-        
-        
+
+
       </Box>
     );
   }
@@ -56,7 +56,7 @@ import {
 
 export default function NetOversubscribedValidatorsBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {skip: isNaN(sessionIndex)});
+  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, netstats: true}, {skip: isNaN(sessionIndex)});
 
   if (isFetching || isUndefined(data)) {
     return (<Skeleton variant="rounded" sx={{
@@ -67,23 +67,23 @@ export default function NetOversubscribedValidatorsBox({sessionIndex, maxSession
       bgcolor: 'white'
     }} />)
   }
-  
+
   if (!isSuccess) {
     return null
   }
 
-  // 
+  //
   const mainValue = data.filter(s => s.six === sessionIndex - 1)
     .map(s => !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m.vals_oversubscribed).reduce((a, b) => a + b, 0) : 0)[0];
 
   const timelineData = data.map((s, i) => ({
     session: s.six,
     total: !isUndefined(s.netstats) ? s.netstats.subsets.map(m => m.vals_oversubscribed).reduce((a, b) => a + b, 0) : 0,
-    c100: !isUndefined(s.netstats) ? 
+    c100: !isUndefined(s.netstats) ?
       (s.netstats.subsets.filter(f => f.subset === "C100").length > 0 ? s.netstats.subsets.filter(f => f.subset === "C100")[0].vals_oversubscribed : 0) : 0,
-    tvp: !isUndefined(s.netstats) ? 
+    tvp: !isUndefined(s.netstats) ?
       (s.netstats.subsets.filter(f => f.subset === "TVP").length > 0 ? s.netstats.subsets.filter(f => f.subset === "TVP")[0].vals_oversubscribed : 0) : 0,
-    others: !isUndefined(s.netstats) ? 
+    others: !isUndefined(s.netstats) ?
       (s.netstats.subsets.filter(f => f.subset === "NONTVP").length > 0 ? s.netstats.subsets.filter(f => f.subset === "NONTVP")[0].vals_oversubscribed : 0) : 0,
   }))
 
@@ -129,19 +129,19 @@ export default function NetOversubscribedValidatorsBox({sessionIndex, maxSession
 
             <XAxis dataKey="session" angle={-30} tickMargin={8}
               style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
-              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
-              tickLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
-              />
-            <YAxis type="number" 
-              // domain={['dataMin', 'dataMax']}
-              style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
-              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} 
+              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}}
               tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
               />
-            <Tooltip 
+            <YAxis type="number"
+              // domain={['dataMin', 'dataMax']}
+              style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
+              axisLine={{stroke: '#C8C9CC', strokeWidth: 1}}
+              tickLine={{stroke: '#C8C9CC', strokeWidth: 1}}
+              />
+            <Tooltip
                 cursor={{fill: theme.palette.divider}}
                 offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme)} />
             <Area type="monotone" stackId="1" dataKey="c100"
               strokeWidth={0} fill={theme.palette.grey[900]} />
@@ -149,7 +149,7 @@ export default function NetOversubscribedValidatorsBox({sessionIndex, maxSession
               strokeWidth={0} fill={theme.palette.grey[200]} />
             <Area type="monotone" stackId="1" dataKey="tvp"
               strokeWidth={0} fill={theme.palette.semantics.blue} />
-            
+
             <Legend verticalAlign="top" content={() => NetValChartLegend({theme})} height={24} />
           </AreaChart>
         </ResponsiveContainer>

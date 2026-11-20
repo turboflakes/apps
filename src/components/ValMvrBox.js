@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import Skeleton from '@mui/material/Skeleton';
 import { BarChart, Bar, Tooltip as ChartTooltip, ResponsiveContainer } from 'recharts';
-import { 
+import {
   useGetValidatorsQuery,
  } from '../features/api/validatorsSlice';
 import {
@@ -30,7 +30,7 @@ const renderTooltip = (props, theme) => {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -61,11 +61,11 @@ const renderTooltip = (props, theme) => {
 export default function ValMvrBox({address}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const {isFetching} = useGetValidatorsQuery({session: currentSession, role: "para_authority", show_summary: true});
+  const {isFetching} = useGetValidatorsQuery({session: currentSession, role: "para_authority", summary: true});
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
   const allMvrs = useSelector(state => selectMVRsBySession(state, currentSession));
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
-  
+
   if (isFetching || isUndefined(validator) || isUndefined(valProfile)) {
     return (<Skeleton variant="rounded" sx={{
       width: '100%',
@@ -106,11 +106,11 @@ export default function ValMvrBox({address}) {
   const mvr = Math.round(calculateMVR(validator.para_summary?.ev, validator.para_summary?.iv, validator.para_summary?.mv) * 10000) / 10000;
   const avg = Math.round((!!allMvrs.length ? allMvrs.reduce((a, b) => a + b, 0) / allMvrs.length : 0) * 10000) / 10000;
   const diff = !!avg && !!mvr ? Math.round(((mvr * 100 / avg) - 100) * 10) / 10 : 0;
-  
+
   const data = [
     {name: nameDisplay(valProfile._identity, 12), value: mvr, avg, session: currentSession},
   ];
-  
+
   return (
     <Paper sx={{
         p: 2,
@@ -147,10 +147,10 @@ export default function ValMvrBox({address}) {
           }}>
           <Bar dataKey="value" barSize={12} fill={theme.palette.text.primary} />
           <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
-          <ChartTooltip 
+          <ChartTooltip
                 cursor={{fill: 'transparent'}}
                 offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme)} />
         </BarChart>
       </ResponsiveContainer>

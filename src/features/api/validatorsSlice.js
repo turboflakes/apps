@@ -43,11 +43,11 @@ export const extendedApi = apiSlice.injectEndpoints({
         size,
         subset,
         nominees_only,
-        show_summary,
-        show_stats,
-        show_profile,
-        show_discovery,
-        show_preds,
+        summary,
+        stats,
+        profile,
+        discovery,
+        preds,
         fetch_peers,
       }) => ({
         url: `/validators`,
@@ -62,11 +62,11 @@ export const extendedApi = apiSlice.injectEndpoints({
           size,
           subset,
           nominees_only,
-          show_summary,
-          show_stats,
-          show_profile,
-          show_discovery,
-          show_preds,
+          summary,
+          stats,
+          profile,
+          discovery,
+          preds,
           fetch_peers,
         },
       }),
@@ -87,7 +87,7 @@ export const extendedApi = apiSlice.injectEndpoints({
               params.nominees_only === true) &&
             session.is_current
           ) {
-            if (params.show_summary) {
+            if (params.summary) {
               let msg = JSON.stringify({
                 method: "subscribe_para_authorities_summary",
                 params: [params.session.toString()],
@@ -99,7 +99,7 @@ export const extendedApi = apiSlice.injectEndpoints({
                 params: [(params.session - 1).toString()],
               });
               dispatch(socketActions.messageQueued(msg));
-            } else if (params.show_stats) {
+            } else if (params.stats) {
               let msg = JSON.stringify({
                 method: "subscribe_para_authorities_stats",
                 params: [params.session.toString()],
@@ -123,16 +123,16 @@ export const extendedApi = apiSlice.injectEndpoints({
       query: ({
         address,
         session,
-        show_summary,
-        show_stats,
-        show_discovery,
+        summary,
+        stats,
+        discovery,
       }) => ({
         url: `/validators/${address}`,
-        params: { session, show_summary, show_stats, show_discovery },
+        params: { session, summary, stats, discovery },
       }),
       providesTags: (result, error, arg) => [{ type: "Validators", id: arg }],
       async onQueryStarted(
-        { address, session, show_summary, show_stats, show_discovery },
+        { address, session, summary, stats, discovery },
         { getState, dispatch, queryFulfilled },
       ) {
         try {
@@ -154,9 +154,9 @@ export const extendedApi = apiSlice.injectEndpoints({
                     address,
                     peer,
                     session,
-                    show_summary,
-                    show_stats,
-                    show_discovery,
+                    summary,
+                    stats,
+                    discovery,
                   },
                   { forceRefetch: true },
                 ),
@@ -174,12 +174,12 @@ export const extendedApi = apiSlice.injectEndpoints({
         address,
         peer,
         session,
-        show_summary,
-        show_stats,
-        show_discovery,
+        summary,
+        stats,
+        discovery,
       }) => ({
         url: `/validators/${address}/peers/${peer}`,
-        params: { session, show_summary, show_stats, show_discovery },
+        params: { session, summary, stats, discovery },
       }),
       providesTags: (result, error, arg) => [{ type: "Validators", id: arg }],
       async onQueryStarted(_, { getState, dispatch, queryFulfilled }) {
@@ -201,9 +201,9 @@ export const extendedApi = apiSlice.injectEndpoints({
       },
     }),
     getValidatorGradeByAddress: builder.query({
-      query: ({ address, number_last_sessions, show_summary, show_stats }) => ({
+      query: ({ address, number_last_sessions, summary, stats }) => ({
         url: `/validators/${address}/grade`,
-        params: { address, number_last_sessions, show_summary, show_stats },
+        params: { address, number_last_sessions, summary, stats },
       }),
       providesTags: (result, error, arg) => [{ type: "Validators", id: arg }],
     }),

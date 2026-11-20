@@ -15,12 +15,15 @@ export default function EraBoxHeader({ dark }) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
 
-  const { isSuccess: isSessionSuccess, isFetching: isFetchingSession } =
-    useGetSessionByIndexQuery({ index: currentSession });
+  const { isSuccess, isFetching } = useGetSessionByIndexQuery({
+    index: currentSession,
+    stats: true,
+  });
   const session = useSelector((state) =>
     selectSessionByIndex(state, currentSession),
   );
-  if (isFetchingSession || isUndefined(session)) {
+
+  if (isFetching || isUndefined(session)) {
     return (
       <Skeleton
         variant="rounded"
@@ -34,7 +37,7 @@ export default function EraBoxHeader({ dark }) {
     );
   }
 
-  if (!isSessionSuccess) {
+  if (!isSuccess) {
     return null;
   }
 
@@ -57,6 +60,7 @@ export default function EraBoxHeader({ dark }) {
         <Typography
           variant="caption1"
           color={dark ? theme.palette.text.secondary : "default"}
+          sx={{ whiteSpace: "nowrap" }}
         >
           era
         </Typography>
@@ -66,7 +70,7 @@ export default function EraBoxHeader({ dark }) {
             dark ? theme.palette.text.secondary : theme.palette.text.primary
           }
         >
-          {isSessionSuccess ? `${session.eix.format()}` : "-"}
+          {isSuccess ? `${session.eix.format()}` : "-"}
         </Typography>
       </Box>
     </Box>

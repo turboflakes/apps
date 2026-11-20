@@ -15,7 +15,7 @@ const renderTooltip = (props) => {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -55,59 +55,60 @@ export default function GradesPieChart({data, size, dark, showNetworkIcon}) {
         }}
         >
           <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative'}}>
-            {showNetworkIcon ? 
+            {showNetworkIcon ?
               <Box sx={{
                 position: 'absolute',
                 display: 'flex', justifyContent: 'center', alignItems: 'center',
                 bgcolor: '#fff',
                 width: 254,
                 height: 254,
-                borderRadius: "50%", 
+                borderRadius: "50%",
                 boxShadow: 'rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px',
                 }}>
-                <img src={getNetworkIcon(selectedChain)}  style={{ 
+                <img src={getNetworkIcon(selectedChain)}  style={{
                       width: 80,
                       height: 80 }} alt={selectedChain}/>
               </Box> : null}
-            <PieChart width={size === "lg" ? 272 : (size === "md" ? 208 : 64)} height={ size === "lg" ? 272 : (size === "md" ? 272 : 64)}>
+            <PieChart width={size === "lg" ? 272 : (size === "md" ? 208 : 64)} height={ size === "lg" ? 272 : (size === "md" ? 272 : (size === "sm" ? 64 : 52))}>
             <Pie
                 isAnimationActive={false}
                 dataKey="value"
                 data={data}
                 cx="50%"
                 cy="50%"
-                outerRadius={size === "lg" ? 128 : (size === "md" ? 96 : 32)}
-                innerRadius={size === "lg" ? 96 : (size === "md" ? 64 : 20)}
+                outerRadius={size === "lg" ? 128 : (size === "md" ? 96 : (size === "sm" ? 32 : 26))}
+                innerRadius={size === "lg" ? 96 : (size === "md" ? 64 : (size === "sm" ? 20 : 18))}
                 startAngle={90}
                 endAngle={-360}
                 // label={renderCustomizedLabel}
                 labelLine={false}
               >
                 {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={theme.palette.grade[entry.name]} borderRadius 
-                  stroke={dark ? theme.palette.background.secondary : theme.palette.background.paper} strokeWidth={1} />
+                  <Cell key={`cell-${index}`} fill={theme.palette.grade[entry.name]} borderRadius
+                  stroke={ size === 'xs' ? theme.palette.grey[50] : theme.palette.background.paper} strokeWidth={1} />
                 ))}
               </Pie>
               {!showNetworkIcon ?
                 (size === "md" ?
-                  <text x="50%" y="50%" fill={dark ? theme.palette.text.secondary : '#343434'} style={{ 
+                  <text x="50%" y="50%" fill={dark ? theme.palette.text.secondary : '#343434'} style={{
                     fontFamily: theme.typography.h2.fontFamily,
                     fontSize: theme.typography.h2.fontSize,
                     color: dark ? theme.palette.text.secondary : 'default'
                     }} textAnchor={'middle'} dominantBaseline="central">
                     {data.slice().sort((a, b) => b.value - a.value)[0].name}
-                  </text> : 
-                  <text x="50%" y="50%" fill={dark ? theme.palette.text.secondary : '#343434'} style={{ 
+                  </text> :
+                  <text x="50%" y="50%" fill={dark ? theme.palette.text.secondary : '#343434'} style={{
                     fontFamily: theme.typography.caption.fontFamily,
                     fontSize: theme.typography.caption.fontSize,
-                    fontWeight: 'bold'
+                    color: theme.typography.caption.color,
+                    fontWeight: size === 'xs' ? 'normal' : 'bold'
                     }} textAnchor={'middle'} dominantBaseline="central">
                     {`${Math.floor(data.slice().sort((a, b) => b.value - a.value)[0].value)}%`}
                   </text>) : null
               }
-              {!showNetworkIcon ? 
+              {!showNetworkIcon ?
                 (size === "md" ?
-                  <text x="50%" y="58%" fill={dark ? theme.palette.text.secondary : '#343434'} style={{ 
+                  <text x="50%" y="58%" fill={dark ? theme.palette.text.secondary : '#343434'} style={{
                     fontFamily: theme.typography.caption.fontFamily,
                     fontSize: theme.typography.caption.fontSize,
                     color: dark ? theme.palette.text.secondary : 'default'
@@ -115,9 +116,9 @@ export default function GradesPieChart({data, size, dark, showNetworkIcon}) {
                     majority
                   </text> :  null) : null
               }
-              <Tooltip 
+              <Tooltip
                 cursor={{fill: 'transparent'}}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={renderTooltip} />
             </PieChart>
         </Box>

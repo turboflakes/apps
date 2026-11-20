@@ -3,6 +3,7 @@ import isUndefined from "lodash/isUndefined";
 import findLast from "lodash/findLast";
 import { selectSessionByIndex } from "./sessionsSlice";
 import {
+  MAX_SYSTEM_CHAIN_BLOCKS,
   blocksAdapter,
   matchBlockReceived,
   matchBlocksReceived,
@@ -15,11 +16,6 @@ const blocksAHSlice = createSlice({
   extraReducers(builder) {
     builder
       .addMatcher(matchBlockReceived, (state, action) => {
-        // Only kept the last 1000 blocks in the store
-        let currentState = current(state);
-        if (currentState.ids.length >= 1000) {
-          blocksAdapter.removeOne(state, currentState.ids[0]);
-        }
         const block = action.payload;
 
         // NOTE: Only map asset-hub blocks
@@ -27,9 +23,24 @@ const blocksAHSlice = createSlice({
           return;
         }
 
+        // Only kept the last MAX_SYSTEM_CHAIN_BLOCKS blocks in the store
+        let currentState = current(state);
+        if (currentState.ids.length >= MAX_SYSTEM_CHAIN_BLOCKS) {
+          blocksAdapter.removeOne(state, currentState.ids[0]);
+        }
+
         blocksAdapter.upsertOne(state, {
           ...action.payload,
           _ts: +new Date(),
+          // time the best block was first received (kept when the block is
+          // finalized later)
+          ...(isUndefined(block.is_finalized)
+            ? {
+                _ts_best:
+                  currentState.entities[block.block_number]?._ts_best ??
+                  +new Date(),
+              }
+            : {}),
         });
       })
       .addMatcher(matchBlocksReceived, (state, action) => {

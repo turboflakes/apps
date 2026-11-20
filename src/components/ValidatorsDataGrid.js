@@ -375,13 +375,6 @@ const defineColumns = (theme, chain, chainInfo) => {
         !isNull(params.row.avg_pts) ? Math.round(params.row.avg_pts) : null,
     },
     {
-      field: "collation_owned_slots",
-      headerName: "◷",
-      type: "number",
-      width: 64,
-      disableColumnMenu: true,
-    },
-    {
       field: "collation_chains",
       headerName: "Collation Chains",
       width: 128,
@@ -396,6 +389,13 @@ const defineColumns = (theme, chain, chainInfo) => {
           : null,
     },
     {
+      field: "collation_owned_slots",
+      headerName: "◷",
+      type: "number",
+      width: 64,
+      disableColumnMenu: true,
+    },
+    {
       field: "collation_produced_blocks",
       headerName: "■",
       type: "number",
@@ -404,14 +404,14 @@ const defineColumns = (theme, chain, chainInfo) => {
     },
     {
       field: "collation_missed_blocks",
-      headerName: "✗b",
+      headerName: "✗■",
       type: "number",
       width: 72,
       disableColumnMenu: true,
     },
     {
       field: "collation_missed_slots",
-      headerName: "✗s",
+      headerName: "✗◷",
       type: "number",
       width: 72,
       disableColumnMenu: true,
@@ -472,10 +472,10 @@ export default function ValidatorsDataGrid({ sessionIndex, skip }) {
     {
       session: sessionIndex,
       role: "authority",
-      show_summary: true,
-      show_profile: true,
-      show_preds: true,
-      show_discovery: true,
+      summary: true,
+      profile: true,
+      preds: true,
+      discovery: true,
     },
     { refetchOnMountOrArgChange: true, skip },
   );

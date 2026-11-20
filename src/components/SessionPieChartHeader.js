@@ -11,7 +11,6 @@ import {
   selectFinalizedBlock,
 } from "../features/api/blocksSlice";
 import {
-  useGetSessionByIndexQuery,
   selectSessionByIndex,
   selectSessionCurrent,
 } from "../features/api/sessionsSlice";
@@ -32,17 +31,14 @@ export default function SessionPieChartHeader() {
     isFetching: isFetchingBlockSuccess,
   } = useGetBlockQuery({
     blockId: "finalized",
-    chain_key: "rc",
-    show_stats: true,
+    stats: true,
   });
-  const { isSuccess: isSuccessSession, isFetching: isFetchingSession } =
-    useGetSessionByIndexQuery({ index: currentSession });
   const finalized = useSelector(selectFinalizedBlock);
   const session = useSelector((state) =>
     selectSessionByIndex(state, currentSession),
   );
 
-  if (isFetchingBlockSuccess || isFetchingSession || isUndefined(session)) {
+  if (isFetchingBlockSuccess || isUndefined(session)) {
     return (
       <Skeleton
         variant="rounded"
@@ -57,7 +53,6 @@ export default function SessionPieChartHeader() {
 
   if (
     !isSuccessFinalizedBlock ||
-    !isSuccessSession ||
     !finalized?.block_number ||
     !session?.sbix ||
     !session?.esix

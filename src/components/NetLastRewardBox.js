@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Cell, Rectangle, ResponsiveContainer } from 'recharts';
-import { 
+import {
   useGetSessionsQuery,
  } from '../features/api/sessionsSlice';
 import {
@@ -22,7 +22,7 @@ import { stakeDisplay } from '../util/display';
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -53,7 +53,7 @@ import { stakeDisplay } from '../util/display';
 export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
   const theme = useTheme();
   const chainInfo = useSelector(selectChainInfo)
-  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, show_netstats: true}, {refetchOnMountOrArgChange: true, skip: isNaN(sessionIndex)});
+  const {data, isSuccess, isFetching } = useGetSessionsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, netstats: true}, {refetchOnMountOrArgChange: true, skip: isNaN(sessionIndex)});
 
   if (isFetching || isUndefined(data) || isUndefined(chainInfo)) {
     return (<Skeleton variant="rounded" sx={{
@@ -64,12 +64,12 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
       bgcolor: 'white'
     }} />)
   }
-  
+
   if (!isSuccess) {
     return null
   }
 
-  
+
   const groupedByEra = groupBy(data, v => v.eix);
   // NOTE: the last reward is 0 while it is not yet available for the latest era,
   // eras without a value are not included, so the previous one is shown instead
@@ -121,30 +121,30 @@ export default function NetTotalStakedBox({sessionIndex, maxSessions}) {
               bottom: -20,
             }}
           >
-            <XAxis dataKey="session" interval={0} angle={-45} dx={20} fontSize="0.75rem" 
+            <XAxis dataKey="session" interval={0} angle={-45} dx={20} fontSize="0.75rem"
               tick={false}
               tickLine={false}
               axisLine={false} />
-            <YAxis type="number" 
-              domain={['dataMin', 'dataMax']} 
+            <YAxis type="number"
+              domain={['dataMin', 'dataMax']}
               tick={false}
               tickLine={false}
               axisLine={false} />
-            <Tooltip 
+            <Tooltip
                 cursor={{fill: theme.palette.divider}}
                 offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme, chainInfo)} />
             <Bar dataKey="last_rewarded" barSize={8} shape={<Rectangle radius={[8, 8, 0, 0]} />} >
               {
                 timelineData.map((entry, index) => (
-                <Cell key={`cell-${index}`} cursor="pointer" 
+                <Cell key={`cell-${index}`} cursor="pointer"
                   fill={theme.palette.semantics.green} />))
               }
             </Bar>
-            {/* <Line isAnimationActive={false} type="monotone" dataKey="total_issuance" 
+            {/* <Line isAnimationActive={false} type="monotone" dataKey="total_issuance"
               strokeWidth={2} stroke={theme.palette.semantics.red} dot={false} />
-            <Line isAnimationActive={false} type="monotone" dataKey="total_staked" 
+            <Line isAnimationActive={false} type="monotone" dataKey="total_staked"
               strokeWidth={2} stroke={theme.palette.grey[900]} dot={false} /> */}
           </ComposedChart>
         </ResponsiveContainer>

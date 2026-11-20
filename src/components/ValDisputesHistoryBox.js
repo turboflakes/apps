@@ -19,11 +19,11 @@ import {
 export default function ValDisputesHistoryBox({address, maxSessions}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true});
-  const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
+  const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, stats: true});
+  const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, summary: true, stats: false, fetch_peers: true });
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
-  
+
   if (!isSuccess || !isSessionSuccess) {
     return null
   }
@@ -37,7 +37,7 @@ export default function ValDisputesHistoryBox({address, maxSessions}) {
   const disputesTotal = filtered.map(v => v.para.disputes.length).reduce((a, b) => a + b, 0);
   const lastDispute = filtered[filtered.length - 1];
   const lastDisputeBlock = lastDispute.para.disputes[lastDispute.para.disputes.length-1][0];
-  
+
   return (
     <Paper sx={{
         p: 2,

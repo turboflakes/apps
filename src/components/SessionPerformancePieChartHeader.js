@@ -20,7 +20,7 @@ export default function SessionPerformancePieChartHeader() {
   const theme = useTheme();
   const { isSuccess, isFetching } = useGetBlockQuery({
     blockId: "finalized",
-    show_stats: true,
+    stats: true,
   });
   const finalized = useSelector(selectFinalizedBlock);
   const previousFinalized = useSelector(selectPreviousFinalizedBlock);

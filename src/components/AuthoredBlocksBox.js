@@ -12,7 +12,7 @@ import {
 export default function AuthoredBlocksBox() {
   // const theme = useTheme();
   const block = useSelector(selectFinalizedBlock);
-  
+
   if (isUndefined(block) || isUndefined(block.stats)) {
     return null
   }
@@ -29,7 +29,7 @@ export default function AuthoredBlocksBox() {
         borderRadius: 3,
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
       }}>
-      <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
+      <Box sx={{ px: 1, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
         <Typography variant="caption" sx={{whiteSpace: 'nowrap'}}>authored blocks</Typography>
         <Typography variant="h5">
           {!isUndefined(block.stats.ab) ? block.stats.ab : '-'}

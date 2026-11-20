@@ -344,14 +344,14 @@ const defineColumns = (theme, chainInfo, chain) => {
     },
     {
       field: "collation_missed_blocks",
-      headerName: "✗b",
+      headerName: "✗■",
       type: "number",
       width: 72,
       disableColumnMenu: true,
     },
     {
       field: "collation_missed_slots",
-      headerName: "✗s",
+      headerName: "✗◷",
       type: "number",
       width: 72,
       disableColumnMenu: true,

@@ -16,16 +16,16 @@ export const extendedApi = apiSlice.injectEndpoints({
   tagTypes: ["Blocks"],
   endpoints: (builder) => ({
     getBlocks: builder.query({
-      query: ({ session, show_stats }) => ({
+      query: ({ session, stats }) => ({
         url: `/blocks`,
-        params: { session, show_stats },
+        params: { session, stats },
       }),
       providesTags: (result, error, arg) => [{ type: "Blocks", id: arg }],
     }),
     getBlock: builder.query({
-      query: ({ blockId, show_stats, chain_key }) => ({
+      query: ({ blockId, stats, chain_key }) => ({
         url: `/blocks/${blockId}`,
-        params: { show_stats, chain_key },
+        params: { stats, chain_key },
       }),
       providesTags: (result, error, arg) => [{ type: "Blocks", id: arg }],
       async onQueryStarted(params, { getState, dispatch, queryFulfilled }) {
@@ -34,16 +34,26 @@ export const extendedApi = apiSlice.injectEndpoints({
           await queryFulfilled;
           // `onSuccess` subscribe for updates
           if (params.blockId === "finalized") {
-            // subscribe to finalized block and from previous session at the same index
+            // system chains (asset hub, people) are subscribed by chain key
+            // without the block from the previous session
+            // relay chain: subscribe to finalized block and from previous session at the same index
+            const isSystemChain =
+              params.chain_key === "ah" || params.chain_key === "pp";
             let msg = JSON.stringify({
               method: "subscribe_block",
-              params: ["finalized", "1"],
+              params: isSystemChain
+                ? ["finalized", "0", params.chain_key, "stats"]
+                : ["finalized", "1"],
             });
             dispatch(socketActions.messageQueued(msg));
           } else if (params.blockId === "best") {
-            const msg = JSON.stringify({
+            const isSystemChain =
+              params.chain_key === "ah" || params.chain_key === "pp";
+            let msg = JSON.stringify({
               method: "subscribe_block",
-              params: ["best"],
+              params: isSystemChain
+                ? ["best", "0", params.chain_key]
+                : ["best"],
             });
             dispatch(socketActions.messageQueued(msg));
           }
@@ -57,6 +67,9 @@ export const extendedApi = apiSlice.injectEndpoints({
 });
 
 export const { useGetBlockQuery, useGetBlocksQuery } = extendedApi;
+
+// Max number of blocks kept in the store for each system chain (asset hub, people)
+export const MAX_SYSTEM_CHAIN_BLOCKS = 100;
 
 // Actions
 export const socketBlockReceived = createAction("blocks/blockReceived");
@@ -162,7 +175,7 @@ const blocksSlice = createSlice({
         }
         const block = action.payload;
         // NOTE: Only map relay-chain blocks
-        if (block.hasOwnProperty("chain_key") && block.chain_key === "ah") {
+        if (block.hasOwnProperty("chain_key") && block.chain_key !== "rc") {
           return;
         }
 
@@ -191,6 +204,11 @@ const blocksSlice = createSlice({
           blocksAdapter.upsertOne(state, {
             ...action.payload,
             _ts: +new Date(),
+            // time the best block was first received (kept when the block is
+            // finalized later)
+            _ts_best:
+              currentState.entities[block.block_number]?._ts_best ??
+              +new Date(),
           });
         }
       })

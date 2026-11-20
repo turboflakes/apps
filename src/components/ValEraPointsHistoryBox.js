@@ -28,7 +28,7 @@ const renderTooltip = (props, theme) => {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -59,8 +59,8 @@ const renderTooltip = (props, theme) => {
 export default function ValTotalPointsHistoryBox({address, maxSessions, showDark, noChart}) {
   const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
-  const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true});
-  const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true });
+  const {isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, stats: true});
+  const {isSuccess} = useGetValidatorsQuery({address: address, number_last_sessions: maxSessions, summary: true, stats: false, fetch_peers: true });
   const historySessionIds = buildSessionIdsArrayHelper(currentSession - 1, maxSessions);
   const validators = useSelector(state => selectValidatorsByAddressAndSessions(state, address, historySessionIds, true));
   const allTotalPoints = useSelector(state => selectTotalPointsBySessions(state, historySessionIds));
@@ -78,18 +78,18 @@ export default function ValTotalPointsHistoryBox({address, maxSessions, showDark
 
   const totalPoints = filtered.map(v => ((v.auth.ep - v.auth.sp) > 0 ? v.auth.ep - v.auth.sp : 0)).reduce((a, b) => a + b, 0);
   const avgPoints = Math.round(totalPoints / (filtered.length / 6));
-  
+
   // TODO get the total authorities per session from backend
   const avgAll = !!allTotalPoints.length ? (allTotalPoints.reduce((a, b) => a + b, 0) / (allTotalPoints.length / 6)) / 1000 : 0;
-  
+
   const diff = !!avgAll ? Math.round(((avgPoints * 100 / avgAll) - 100) * 10) / 10 : 0;
-  
+
   const data = [
     {name: nameDisplay(valProfile._identity, 12), value: avgPoints, valueQty: Math.round(filtered.length / 6), avg: avgAll, avgQty: Math.round(allTotalPoints.length / 6)},
   ];
 
   return (
-    <Paper 
+    <Paper
       sx={{
         p: 2,
         display: 'flex',
@@ -108,16 +108,16 @@ export default function ValTotalPointsHistoryBox({address, maxSessions, showDark
           {!isUndefined(avgPoints) ? avgPoints.format() : '-'}
         </Typography>
         <Tooltip title={`${Math.abs(diff)}% ${Math.sign(diff) > 0 ? 'more' : 'less'} than the average of Era Points collected by all Authorities of the last ${Math.round(allTotalPoints.length / 6)} eras.`} arrow>
-          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap', 
+          <Typography variant="subtitle2" sx={{ whiteSpace: 'nowrap',
             lineHeight: 0.875,
             color: Math.sign(diff) > 0 ? theme.palette.semantics.green : theme.palette.semantics.red }}>
             <b style={{whiteSpace: 'pre'}}>{diff !== 0 ? (Math.sign(diff) > 0 ? `+${diff}%` : `-${Math.abs(diff)}%`) : ' '}</b>
           </Typography>
         </Tooltip>
       </Box>
-      { !noChart ? 
+      { !noChart ?
         <ResponsiveContainer height='100%' sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-          <BarChart 
+          <BarChart
             data={data}
             margin={{
               top: 4,
@@ -127,10 +127,10 @@ export default function ValTotalPointsHistoryBox({address, maxSessions, showDark
             }}>
             <Bar dataKey="value" barSize={12} fill={showDark ? theme.palette.grey[500] : theme.palette.text.primary} />
             <Bar dataKey="avg" barSize={12} fill={theme.palette.grey[200]} />
-            <ChartTooltip 
+            <ChartTooltip
                   cursor={{fill: 'transparent'}}
                   offset={24}
-                  wrapperStyle={{ zIndex: 100 }} 
+                  wrapperStyle={{ zIndex: 100 }}
                   content={props => renderTooltip(props, theme)} />
           </BarChart>
         </ResponsiveContainer> : null}

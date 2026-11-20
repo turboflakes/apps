@@ -45,9 +45,9 @@ export default function OverviewTabs({ sessionIndex, tab }) {
     {
       session: sessionIndex,
       role: "para_authority",
-      show_summary: true,
-      show_profile: true,
-      show_discovery: true,
+      summary: true,
+      profile: true,
+      discovery: true,
     },
     { refetchOnMountOrArgChange: true },
   );

@@ -16,20 +16,20 @@ import {
   selectAddress,
   addressChanged
 } from '../features/chain/chainSlice';
-import { 
+import {
   selectSessionHistory,
   selectSessionCurrent,
  } from '../features/api/sessionsSlice';
-import { 
+import {
   selectIsLiveMode,
   selectIsHistoryMode,
   selectMode,
   selectMaxHistorySessions
 } from '../features/layout/layoutSlice';
-import { 
+import {
   selectIsSocketConnected,
 } from '../features/api/socketSlice';
-import { 
+import {
   useGetValidatorByAddressQuery,
   selectValidatorBySessionAndAddress
 } from '../features/api/validatorsSlice';
@@ -51,7 +51,7 @@ export default function ValidatorPage() {
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
-  const {isSuccess, isError} = useGetValidatorByAddressQuery({address: stash, session: sessionIndex, show_summary: true, show_stats: true, show_discovery: true});
+  const {isSuccess, isError} = useGetValidatorByAddressQuery({address: stash, session: sessionIndex, summary: true, stats: true, discovery: true});
   const {isError: isProfileError} = useGetValidatorProfileByAddressQuery(stash)
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, addressSS58(stash)))
 
@@ -69,10 +69,10 @@ export default function ValidatorPage() {
   if (isError || isProfileError || (isSuccess && isUndefined(validator))) {
     return (
       <Box sx={{ m: 2, mt: 2, pt: 1, minHeight: '100vh'}}>
-        <Box sx={{display: "flex", justifyContent:"center", 
+        <Box sx={{display: "flex", justifyContent:"center",
           alignItems: "center", height: "80vh", }}>
           <Box sx={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-            <img src={onetSVG} style={{ 
+            <img src={onetSVG} style={{
                 margin: "32px",
                 opacity: 0.2,
                 width: 256,
@@ -88,11 +88,11 @@ export default function ValidatorPage() {
   return (
 		<Box sx={{ m: 2, mt: 2, pt: 1, minHeight: '100vh'}}>
       <Grid container spacing={2}>
-          
+
         <Grid item xs={12}>
-          {isSuccess ? 
-            <ValHeaderBox address={selectedAddress} sessionIndex={sessionIndex} /> : 
-            <Box sx={{ 
+          {isSuccess ?
+            <ValHeaderBox address={selectedAddress} sessionIndex={sessionIndex} /> :
+            <Box sx={{
               width: '100%',
               height: 232,
               display: 'flex',
@@ -100,14 +100,14 @@ export default function ValidatorPage() {
               justifyContent: 'center',
               alignItems: 'center'
             }}><Spinner size={32}/></Box>}
-        </Grid> 
+        </Grid>
 
         <Grid item xs={12}>
           {isSuccess ?
             <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
               <ModeSwitch mode={selectedMode} />
             </Box> : null}
-        </Grid> 
+        </Grid>
 
         {isHistoryMode ?
           <Grid item xs={12}>

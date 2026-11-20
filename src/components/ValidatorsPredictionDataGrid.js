@@ -294,7 +294,7 @@ export default function ValidatorsPredictionDataGrid({ target, skip }) {
     { skip: gradeSession === undefined },
   );
   useGetValidatorsQuery(
-    { session: gradeSession, role: "para_authority", show_summary: true },
+    { session: gradeSession, role: "para_authority", summary: true },
     { skip: gradeSession === undefined },
   );
 

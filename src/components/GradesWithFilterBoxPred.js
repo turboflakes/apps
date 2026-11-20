@@ -43,7 +43,7 @@ export default function GradesWithFilterBoxPred({target}) {
 
   // grades are calculated from the para-validators performance in the latest session
   useGetSessionByIndexQuery({ index: sessionIndex }, { skip });
-  useGetValidatorsQuery({ session: sessionIndex, role: 'para_authority', show_summary: true }, { skip });
+  useGetValidatorsQuery({ session: sessionIndex, role: 'para_authority', summary: true }, { skip });
 
   const addresses = useSelector(state => selectPredictionValidatorsByTarget(state, target, identityFilter, subsetFilter).map(v => v.address), shallowEqual);
   const currentGrades = useSelector(state => addresses

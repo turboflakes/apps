@@ -1,17 +1,18 @@
 import isUndefined from 'lodash/isUndefined'
 import { socketActions, selectIsSocketConnected, selectMessagesInQueue } from './socketSlice'
-import { 
+import {
   socketBlockReceived,
   socketBlocksReceived } from './blocksSlice'
-import { 
+import { socketCollatorsReceived } from './collatorsSlice'
+import {
   selectSessionCurrent,
   socketSessionReceived } from './sessionsSlice'
-import { 
+import {
   socketValidatorReceived,
   socketValidatorsReceived,
   selectValidatorBySessionAndAddress,
 } from './validatorsSlice'
-import { 
+import {
   socketParachainsReceived,
 } from './parachainsSlice'
 import {
@@ -25,7 +26,7 @@ import {
   selectPage,
 } from '../layout/layoutSlice';
 // import apiSlice from './apiSlice';
-import { 
+import {
   getNetworkHost
 } from '../../constants'
 
@@ -46,13 +47,13 @@ const dispatchValidator = (store, address, method = 'subscribe') => {
 }
 
 const initWebsocket = (store) => {
-  
+
   const chainName = selectChain(store.getState())
   // const protocol = document.location.protocol === 'http:' ? 'ws:' : 'wss:'
   const protocol = getNetworkHost(chainName).includes("localhost") ? 'ws:' : 'wss:';
   const adjustedUrl = `${protocol}//${getNetworkHost(chainName)}/api/v1/ws`
   const socket = new WebSocket(adjustedUrl);
-  
+
   // verify if there are any queued messages and dispatch
   const intervalId = setInterval(() => {
     if (selectMessagesInQueue(store.getState())) {
@@ -85,6 +86,13 @@ const initWebsocket = (store) => {
             store.dispatch(socketSessionReceived(message.result))
             break
           }
+          case 'collators': {
+            store.dispatch(socketCollatorsReceived({
+              ...message.result,
+              relay_six: selectSessionCurrent(store.getState())
+            }))
+            break
+          }
           case 'validator': {
             store.dispatch(socketValidatorReceived(message.result))
             break
@@ -106,8 +114,8 @@ const initWebsocket = (store) => {
       console.warn(err)
     }
   }
-  
-    
+
+
   // listen to onclose event
   socket.onclose = event => {
     console.warn("websocket closed:", event)
@@ -132,7 +140,7 @@ const initWebsocket = (store) => {
 
 const socketMiddleware = (store) => {
   if (window["WebSocket"]) {
-    
+
     initWebsocket(store);
 
     return (next) => {
@@ -146,10 +154,10 @@ const socketMiddleware = (store) => {
           const nextValidator = selectValidatorBySessionAndAddress(store.getState(), currentSession, nextAddress);
           const isConnected = selectIsSocketConnected(store.getState())
           if (isConnected) {
-            if (previousAddress !== nextAddress.payload && 
-              !isUndefined(previousValidator) && 
-              !isUndefined(nextValidator) && 
-              previousValidator.is_para && nextValidator.is_para && 
+            if (previousAddress !== nextAddress.payload &&
+              !isUndefined(previousValidator) &&
+              !isUndefined(nextValidator) &&
+              previousValidator.is_para && nextValidator.is_para &&
               previousValidator.para.group !== nextValidator.para.group) {
               // NOTE: Only unsubscribe if address is in a different val. group
               dispatchValidator(store, previousAddress, "unsubscribe");
@@ -186,10 +194,10 @@ const socketMiddleware = (store) => {
           //       // const selectedAddress = selectAddress(store.getState())
           //       // const chainName = selectChain(store.getState())
           //       // const maxSessions = getMaxHistorySessions(chainName);
-          //       // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
+          //       // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, summary: true, stats: false, fetch_peers: true }, {forceRefetch: true}))
           //       // // get all validators summary for the selected session (useful to get the comparison stats)
           //       // const historySession = selectSessionHistory(store.getState());
-          //       // store.dispatch(apiSlice.endpoints.getValidators.initiate({session: historySession, role: "para_authority", show_summary: true}, {forceRefetch: true}));
+          //       // store.dispatch(apiSlice.endpoints.getValidators.initiate({session: historySession, role: "para_authority", summary: true}, {forceRefetch: true}));
           //     }
           //     break
           //   }
@@ -237,7 +245,7 @@ const socketMiddleware = (store) => {
             //     // const selectedAddress = selectAddress(store.getState())
             //     // const chainName = selectChain(store.getState())
             //     // const maxSessions = getMaxHistorySessions(chainName);
-            //     // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, show_summary: true, show_stats: false, fetch_peers: true }, {forceRefetch: true}))
+            //     // store.dispatch(apiSlice.endpoints.getValidators.initiate({address: selectedAddress, number_last_sessions: maxSessions, summary: true, stats: false, fetch_peers: true }, {forceRefetch: true}))
 
             //   } else if (action.payload === 'Live') {
             //     // dispatchValidator(store, "subscribe");
@@ -269,5 +277,5 @@ const socketMiddleware = (store) => {
     console.warn("Your browser does not support WebSockets.")
   }
 }
- 
+
 export default socketMiddleware;

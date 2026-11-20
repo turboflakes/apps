@@ -5,8 +5,8 @@ import Slider from '@mui/material/Slider';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
-import { 
-  useGetSessionsQuery, 
+import {
+  useGetSessionsQuery,
   sessionHistoryChanged,
   selectSessionHistory,
 } from '../features/api/sessionsSlice'
@@ -89,10 +89,10 @@ function useSessionIndex(sessionIndex) {
 export default function SessionSlider({maxSessions, showLegend}) {
   // const theme = useTheme();
   const dispatch = useDispatch();
-  const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, show_stats: true}, {refetchOnMountOrArgChange: true});
+  const {data, isSuccess: isSessionSuccess } = useGetSessionsQuery({number_last_sessions: maxSessions, stats: true}, {refetchOnMountOrArgChange: true});
   const historySession = useSelector(selectSessionHistory);
   const [sessionIndex, setSessionIndex] = useSessionIndex(historySession);
-  
+
   if (!isSessionSuccess) {
     return null
   }
@@ -108,7 +108,7 @@ export default function SessionSlider({maxSessions, showLegend}) {
   }
 
   let marks = data.map(session => {
-    
+
     if (session.esix === 1) {
       return {
         value: session.six,
@@ -116,14 +116,14 @@ export default function SessionSlider({maxSessions, showLegend}) {
         label: session.eix.format()
       }
     }
-    
+
     return {
       value: session.six,
       label: ``
     }
-    
+
   });
-  
+
   return (
     <Box
       sx={{
@@ -146,7 +146,7 @@ export default function SessionSlider({maxSessions, showLegend}) {
           <Typography variant="h6">History</Typography>
         </Box>
       </Box> */}
-      <Stack spacing={3} direction="row" 
+      <Stack spacing={3} direction="row"
         sx={{ mb: 1, ml: !showLegend ? 6 : 0, mr: !showLegend ? 6 : 0 }} alignItems="center">
         {showLegend ? <Typography variant="caption" sx={{ ml: 3 }}>past</Typography> : null}
         <CustomSlider

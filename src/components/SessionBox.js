@@ -6,12 +6,12 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import { Typography } from '@mui/material';
-import { 
+import {
   useGetBlockQuery,
   selectBestBlock,
   selectFinalizedBlock
  } from '../features/api/blocksSlice'
-import { 
+import {
   useGetSessionByIndexQuery,
   selectSessionByIndex,
  } from '../features/api/sessionsSlice'
@@ -23,7 +23,7 @@ export default function SessionBox({sessionIndex, dark}) {
   const theme = useTheme();
   const {
     isSuccess: isFinalizedBlockSuccess,
-    isFetching: isFetchingFinalizedBlock} = useGetBlockQuery({blockId: "finalized", show_stats: true}, {refetchOnMountOrArgChange: true});
+    isFetching: isFetchingFinalizedBlock} = useGetBlockQuery({blockId: "finalized", stats: true}, {refetchOnMountOrArgChange: true});
   const {
     isSuccess: isBestBlockSuccess,
     isFetching: isFetchingBlockSuccess} = useGetBlockQuery({blockId: "best"}, {refetchOnMountOrArgChange: true});
@@ -34,7 +34,7 @@ export default function SessionBox({sessionIndex, dark}) {
   const finalized = useSelector(selectFinalizedBlock)
   const session = useSelector(state => selectSessionByIndex(state, sessionIndex))
   const isLiveMode = useSelector(selectIsLiveMode)
-  
+
   if (isFetchingFinalizedBlock || isFetchingBlockSuccess || isFetchingSession
      || isUndefined(session) || isUndefined(best) || isUndefined(finalized)) {
       return (<Skeleton variant="rounded" sx={{
@@ -46,13 +46,13 @@ export default function SessionBox({sessionIndex, dark}) {
       }} />)
   }
 
-  if (!isFinalizedBlockSuccess || !isBestBlockSuccess || 
+  if (!isFinalizedBlockSuccess || !isBestBlockSuccess ||
     !isSessionSuccess) {
     return null
   }
 
   const diff = (isLiveMode ? finalized.block_number - session.sbix : session.ebix - session.sbix) + 1;
-  
+
   return (
     <Paper
       sx={{
@@ -79,11 +79,11 @@ export default function SessionBox({sessionIndex, dark}) {
           </Box>
         </Box>
         {isLiveMode ?
-          <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : 'default'}>{isFinalizedBlockSuccess ? `${diff.format()} finalized blocks since block #${session.sbix.format()}` : `-`}</Typography> : 
+          <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : 'default'}>{isFinalizedBlockSuccess ? `${diff.format()} finalized blocks since block #${session.sbix.format()}` : `-`}</Typography> :
           <Typography variant="subtitle2" color={dark ? theme.palette.text.secondary : 'default'}>{`${diff.format()} blocks from #${session.sbix.format()} to #${session.ebix.format()}`}</Typography>
         }
       </Box>
-      {isLiveMode ? 
+      {isLiveMode ?
         <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'flex-start'}}>
           <Typography variant="caption" align='right' color={dark ? theme.palette.text.secondary : 'default'}>finalized block</Typography>
           <Typography variant="h5" color={dark ? theme.palette.text.secondary : theme.palette.text.primary}>{isFinalizedBlockSuccess ? `# ${finalized.block_number.format()}` : '-'}</Typography>

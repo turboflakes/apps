@@ -4,6 +4,7 @@ import isUndefined from "lodash/isUndefined";
 import isNull from "lodash/isNull";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Skeleton from "@mui/material/Skeleton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -11,7 +12,6 @@ import ListItemText from "@mui/material/ListItemText";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useTheme } from "@mui/material/styles";
 import GradesPieChart from "./GradesPieChart";
-import Spinner from "./Spinner";
 import Tooltip from "./Tooltip";
 import GradesInfoBox from "./GradesInfoBox";
 import { useGetValidatorsQuery } from "../features/api/validatorsSlice";
@@ -21,29 +21,68 @@ const grades = ["A+", "A", "B+", "B", "C+", "C", "D+", "D", "F"];
 
 export default function GradesBox({ sessionIndex, size }) {
   const theme = useTheme();
-  const { isFetching } = useGetValidatorsQuery({
-    session: sessionIndex,
-    role: "para_authority",
-    show_summary: true,
-  });
+  useGetValidatorsQuery(
+    {
+      session: sessionIndex,
+      role: "para_authority",
+      summary: true,
+    },
+    { skip: isNaN(sessionIndex) },
+  );
   const rawGrades = useSelector((state) =>
     selectGradesBySession(state, sessionIndex),
   );
   const currentGrades = rawGrades.filter((g) => !isUndefined(g) && !isNull(g));
 
-  if (isFetching || !rawGrades.length || !currentGrades.length) {
+  if (!rawGrades.length || !currentGrades.length) {
     return (
       <Box
         sx={{
-          width: "100%",
-          height: 320,
+          p: 2,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
+          width: "100%",
+          height: 320,
         }}
       >
-        <Spinner size={32} />
+        <Box sx={{ display: "flex" }}>
+          <Box
+            sx={{
+              width: size === "lg" ? 288 : size === "md" ? 208 : 64,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+            }}
+          >
+            <Skeleton
+              variant="circular"
+              sx={{ mr: 1, mb: 1 }}
+              width={size === "lg" ? 256 : 192}
+              height={size === "lg" ? 256 : 192}
+            />
+          </Box>
+          <Box
+            sx={{
+              ml: 4,
+              display: "flex",
+              flexDirection: "column",
+              width: 144,
+              visibility: "hidden",
+            }}
+          >
+            <Box sx={{ ml: 1, display: "flex" }}>
+              <InfoOutlinedIcon fontSize="small" />
+            </Box>
+            <List dense>
+              {grades.map((g) => (
+                <ListItem key={g}>
+                  <ListItemText sx={{ m: 0 }} primary={g} />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </Box>
       </Box>
     );
   }

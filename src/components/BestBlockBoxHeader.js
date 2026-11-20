@@ -5,21 +5,25 @@ import isUndefined from "lodash/isUndefined";
 import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
 import { Typography } from "@mui/material";
-import {
-  useGetBlockQuery,
-  selectFinalizedBlock,
-} from "../features/api/blocksSlice";
+import { useGetBlockQuery, selectBestBlock } from "../features/api/blocksSlice";
+import { selectBestBlockAH } from "../features/api/blocksAHSlice";
+import { selectBestBlockPP } from "../features/api/blocksPPSlice";
 
-export default function FinalizedBlockBoxHeaderV0({ dark }) {
+const SELECTORS = {
+  rc: selectBestBlock,
+  ah: selectBestBlockAH,
+  pp: selectBestBlockPP,
+};
+
+export default function BestBlockBoxHeader({ dark, chain_key = "rc" }) {
   const theme = useTheme();
   const { isSuccess, isFetching } = useGetBlockQuery(
-    { blockId: "finalized", show_stats: true },
+    { blockId: "best",  ...(chain_key !== "rc" ? { chain_key } : {}), },
     { refetchOnMountOrArgChange: true },
   );
+  const best = useSelector(SELECTORS[chain_key]);
 
-  const finalized = useSelector(selectFinalizedBlock);
-
-  if (isFetching || isUndefined(finalized)) {
+  if (isFetching || isUndefined(best)) {
     return (
       <Skeleton
         variant="rounded"
@@ -37,14 +41,14 @@ export default function FinalizedBlockBoxHeaderV0({ dark }) {
     <Box
       sx={{
         mx: 2,
+        minWidth: 96,
         display: "flex",
         alignItems: "flex-start",
       }}
     >
       <Box
         sx={{
-          ml: 4,
-          // mr: 2,
+          mx: 2,
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-end",
@@ -54,7 +58,7 @@ export default function FinalizedBlockBoxHeaderV0({ dark }) {
           variant="caption1"
           color={dark ? theme.palette.text.secondary : "default"}
         >
-          finalized block
+          best block
         </Typography>
         <Typography
           variant="h6"
@@ -63,9 +67,7 @@ export default function FinalizedBlockBoxHeaderV0({ dark }) {
           }
         >
           {isSuccess ? (
-            <React.Fragment>
-              {`${finalized.block_number.format()}`}
-            </React.Fragment>
+            <React.Fragment>{`${best.block_number.format()}`}</React.Fragment>
           ) : (
             "-"
           )}

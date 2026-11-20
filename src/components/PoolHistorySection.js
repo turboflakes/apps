@@ -13,7 +13,7 @@ import PoolHistoryToggle from './PoolHistoryToggle';
 import {
   useGetPoolsQuery
 } from '../features/api/poolsSlice';
-import { 
+import {
   selectMaxHistorySessions,
 } from '../features/layout/layoutSlice'
 import {
@@ -33,7 +33,7 @@ const renderTooltip = (props, theme, selectedKey, selectedChainInfo) => {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -66,8 +66,8 @@ export default function PoolHistorySection({sessionIndex, poolId}) {
   const [key, setKey] = React.useState("members");
   const selectedChainInfo = useSelector(selectChainInfo)
   const maxSessions = useSelector(selectMaxHistorySessions);
-  
-  const {data, isFetching, isSuccess} = useGetPoolsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, pool: poolId, show_stats: true});
+
+  const {data, isFetching, isSuccess} = useGetPoolsQuery({from: sessionIndex - maxSessions, to: sessionIndex - 1, pool: poolId, stats: true});
 
   if (isFetching) {
     return (
@@ -116,27 +116,27 @@ export default function PoolHistorySection({sessionIndex, poolId}) {
           >
             <CartesianGrid strokeDasharray="1 4" vertical={false} horizontal={true} />
 
-            <XAxis dataKey="session" angle={-30} fontSize="0.75rem" tickMargin={8} /> 
+            <XAxis dataKey="session" angle={-30} fontSize="0.75rem" tickMargin={8} />
 
             <YAxis type="number"
               yAxisId="axis_id"
               dataKey={key}
               domain={['dataMin', 'dataMax']}
               style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}
-              axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}} 
+              axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}}
               tickFormatter={(a) => ["reward", "staked"].includes(key) ? stakeDisplay(a, selectedChainInfo, 0, true, false) : a}
               // tickCount={5}
               // tick={false}
               // tickLine={false}
-              // axisLine={false} 
+              // axisLine={false}
               />
-            <Line yAxisId="axis_id" isAnimationActive={false} type="monotone" dataKey={key} 
+            <Line yAxisId="axis_id" isAnimationActive={false} type="monotone" dataKey={key}
               strokeWidth={2} stroke={theme.palette.text.primary} dot={false} />
-            
-            <Tooltip 
+
+            <Tooltip
                 cursor={{fill: theme.palette.divider}}
                 offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme, key, selectedChainInfo)} />
           </LineChart>
         </ResponsiveContainer>
