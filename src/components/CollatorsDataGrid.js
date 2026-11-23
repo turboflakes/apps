@@ -97,8 +97,8 @@ const defineColumns = (theme, chainInfo, selectedChain) => [
   },
   ...[
     ["os", "◷ Owned Slots"],
-    ["mb", "✗■ Missed Blocks"],
     ["pb", "■ Authored Blocks"],
+    ["mb", "✗■ Missed Blocks"],
     ["ms", "✗◷ Missed Slots"],
     // points are only calculated for metanodes
     ["pt", "Points", (row) => row.kind === "v"],

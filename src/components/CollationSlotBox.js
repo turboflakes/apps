@@ -129,7 +129,7 @@ export default function CollationSlotBox({ chainKey, name }) {
         {!isUndefined(nextOwner) && (
             <Typography variant="caption"
               sx={{ whiteSpace: "nowrap" }}>
-              {`${
+              {`next slot ${
                 nextProfile?.identity
                   ? nameDisplay(nextProfile._identity, 32)
                   : stashDisplay(
@@ -139,7 +139,7 @@ export default function CollationSlotBox({ chainKey, name }) {
                       ),
                       4,
                     )
-              } next`}
+              }`}
             </Typography>
           )}
         </Box>
