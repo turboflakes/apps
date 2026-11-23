@@ -16,6 +16,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HubIcon from "@mui/icons-material/Hub";
+import LanOutlinedIcon from "@mui/icons-material/LanOutlined";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLink,
@@ -55,7 +56,11 @@ import {
   sessionHistoryChanged,
 } from "../features/api/sessionsSlice";
 import { selectVersionV1 } from "../features/api/pkgSlice";
-import { getNetworkIcon, isTestNetwork } from "../constants";
+import {
+  getNetworkIcon,
+  isTestNetwork,
+  isCollationAvailable,
+} from "../constants";
 import { addressSS58 } from "../util/crypto";
 
 function useWeb3ChainInfo(api, setLoading) {
@@ -521,6 +526,22 @@ function OnetOptions({
           sx={{ "> .MuiTypography-root": { fontSize: "0.875rem" } }}
         />
       </ListItemButton>
+
+      {isCollationAvailable(selectedChain) ? (
+        <ListItemButton
+          selected={selectedPage === "collators"}
+          disableRipple
+          onClick={() => onOptionChanged("collators")}
+        >
+          <ListItemIcon>
+            <LanOutlinedIcon sx={{ color: theme.palette.text.primary }} />
+          </ListItemIcon>
+          <ListItemText
+            primary="Collators"
+            sx={{ "> .MuiTypography-root": { fontSize: "0.875rem" } }}
+          />
+        </ListItemButton>
+      ) : null}
 
       <ListItemButton
         selected={selectedPage === "parachains"}
