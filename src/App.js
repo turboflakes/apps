@@ -32,7 +32,7 @@ import withTheme from "./theme/withTheme";
 import { selectApp } from "./features/app/appSlice";
 import { selectChain } from "./features/chain/chainSlice";
 import { useGetPkgQuery } from "./features/api/apiSlice";
-import { isNetworkSupported } from "./constants";
+import { isNetworkSupported, isCollationAvailable } from "./constants";
 import onetSVG from "./assets/onet.svg";
 import nomiSVG from "./assets/nomi.svg";
 
@@ -172,13 +172,16 @@ const App = () => {
               <Route index element={<Navigate to="/dashboard" />} />
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="insights" element={<OverviewPage tab={0} />} />
-              <Route path="parachains" element={<OverviewPage tab={1} />} />
-              <Route path="val-groups" element={<OverviewPage tab={2} />} />
-              <Route path="val-waiting" element={<OverviewPage tab={3} />} />
+              <Route path="parachains" element={<OverviewPage tab={2} />} />
+              <Route path="val-groups" element={<OverviewPage tab={3} />} />
+              <Route path="val-waiting" element={<OverviewPage tab={4} />} />
+              {isCollationAvailable(selectedChain) ? (
+                <Route path="collators" element={<OverviewPage tab={1} />} />
+              ) : null}
               {selectedChain === "polkadot" ? (
                 <Route
                   path="staking-prediction"
-                  element={<OverviewPage tab={4} />}
+                  element={<OverviewPage tab={5} />}
                 />
               ) : null}
               {/* TODO: cores usage page

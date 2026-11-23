@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OverviewTabs from './OverviewTabs';
 import EraPointsBox from './EraPointsBox';
 import SessionPointsBox from './SessionPointsBox';
@@ -25,6 +28,9 @@ import { selectChain } from '../features/chain/chainSlice';
 import { isCollationAvailable } from '../constants';
 import {
   selectIsLiveMode,
+  selectCollatorsChain,
+  selectCollationHidden,
+  collationHiddenChanged,
 } from '../features/layout/layoutSlice'
 import {
   selectIsSocketConnected,
@@ -32,11 +38,37 @@ import {
 
 export default function OverviewPage({tab}) {
   // const theme = useTheme();
+  const dispatch = useDispatch();
   const isSocketConnected = useSelector(selectIsSocketConnected);
   const isLiveMode = useSelector(selectIsLiveMode);
   const selectedChain = useSelector(selectChain);
+  const collatorsChain = useSelector(selectCollatorsChain);
+  const isCollatorsTab = tab === 1;
+  const isNotSelected = (chainKey) => isCollatorsTab && collatorsChain !== chainKey;
+  // the hidden chains stay mounted, the requests are made by them
+  const hiddenIfNotSelected = (chainKey) => isNotSelected(chainKey) ? { display: 'none' } : undefined;
+  const collationHidden = useSelector(state => ({
+    ah: selectCollationHidden(state, 'ah'),
+    pp: selectCollationHidden(state, 'pp'),
+  }), shallowEqual);
+  const isAllHidden = collationHidden.ah && collationHidden.pp;
+  // the button that hides or shows the details lives in the row of the last visible header
+  const isButtonInAH = isCollatorsTab && collatorsChain === 'ah';
+  
+  const hiddenIfNotExpanded = (chainKey) => collationHidden[chainKey] ? { display: 'none' } : undefined;
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
+
+  // hides or shows the details of the chains
+  const hideButton = (
+    <IconButton
+      size="medium"
+      onClick={() => dispatch(collationHiddenChanged(!isAllHidden))}
+      aria-label={isAllHidden ? 'show details' : 'hide details'}
+    >
+      {isAllHidden ? <ExpandMoreIcon fontSize="small" /> : <ExpandLessIcon fontSize="small" />}
+    </IconButton>
+  );
 
   const sessionIndex = isLiveMode ? currentSession : (!!historySession ? historySession : currentSession);
 
@@ -82,47 +114,59 @@ export default function OverviewPage({tab}) {
                 }} />
             </Grid>
             {/* Asset Hub */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={isNotSelected("pp") ? 12 : 6} sx={{ position: 'relative', ...hiddenIfNotSelected("ah") }}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <CollationHeader chainKey="ah" name="Asset Hub" />
+                  {/* the button lives in the row of the last visible header */}
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ flexGrow: 1 }}>
+                      <CollationHeader chainKey="ah" name="Asset Hub" />
+                    </Box>
+                    {isButtonInAH && hideButton}
+                  </Box>
                 </Grid>
-                 <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("ah")}>
                   <CollationAuthoritiesBox chainKey="ah" />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("ah")}>
                   <CollationBlocksBox chainKey="ah" />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("ah")}>
                   <CollationPointsBox chainKey="ah" />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("ah")}>
                   <CollationGradesBox chainKey="ah" />
                 </Grid>
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={8} sx={hiddenIfNotExpanded("ah")}>
                   <CollationSlotBox chainKey="ah" />
                 </Grid>
               </Grid>
             </Grid>
             {/* People */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={isNotSelected("ah") ? 12 : 6} sx={hiddenIfNotSelected("pp")}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <CollationHeader chainKey="pp" name="People" />
+                  {/* the button lives in the row of the last visible header */}
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ flexGrow: 1 }}>
+                      <CollationHeader chainKey="pp" name="People" />
+                    </Box>
+                    {!isButtonInAH && hideButton}
+                  </Box>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("pp")}>
                   <CollationAuthoritiesBox chainKey="pp" />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("pp")}>
                   <CollationBlocksBox chainKey="pp" />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("pp")}>
                   <CollationPointsBox chainKey="pp" />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("pp")}>
                   <CollationGradesBox chainKey="pp" name="people" />
                 </Grid>
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={8} sx={hiddenIfNotExpanded("pp")}>
                   <CollationSlotBox chainKey="pp" />
                 </Grid>
               </Grid>

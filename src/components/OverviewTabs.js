@@ -11,7 +11,9 @@ import CoresGrid from "./CoresGrid";
 import ParachainsGrid from "./ParachainsGrid";
 import ValWaitingSection from "./ValWaitingSection";
 import ValPredictionSection from "./ValPredictionSection";
+import CollatorsSection from "./CollatorsSection";
 import { selectChain } from "../features/chain/chainSlice";
+import { isCollationAvailable } from "../constants";
 import ModeSwitch from "./ModeSwitch";
 import SessionHistoryTimelineChart from "./SessionHistoryTimelineChart";
 import { useGetValidatorsQuery } from "../features/api/validatorsSlice";
@@ -30,7 +32,15 @@ function a11yProps(index) {
   };
 }
 
-const tabPages = ["insights", "parachains", "val-groups", "val-waiting", "staking-prediction"];
+// NOTE: the position of each page is the index of its tab
+const tabPages = [
+  "insights",
+  "collators",
+  "parachains",
+  "val-groups",
+  "val-waiting",
+  "staking-prediction",
+];
 
 export default function OverviewTabs({ sessionIndex, tab }) {
   // const theme = useTheme();
@@ -86,29 +96,42 @@ export default function OverviewTabs({ sessionIndex, tab }) {
           <Tab
             sx={{ my: 1, mr: 2, borderRadius: 3 }}
             label="Insights"
+            value={0}
             {...a11yProps(0)}
             disableRipple
             disableFocusRipple
           />
+          {isCollationAvailable(selectedChain) ? (
+            <Tab
+              sx={{ my: 1, mr: 2, borderRadius: 3 }}
+              label="Collators"
+              value={1}
+              {...a11yProps(1)}
+              disableRipple
+              disableFocusRipple
+            />
+          ) : null}
           <Tab
             sx={{ my: 1, mr: 2, borderRadius: 3 }}
             label="Parachains"
-            {...a11yProps(1)}
+            value={2}
+            {...a11yProps(2)}
             disableRipple
             disableFocusRipple
           />
           <Tab
             sx={{ my: 1, mr: 2, borderRadius: 3 }}
             label="Val. Groups"
-            {...a11yProps(2)}
+            value={3}
+            {...a11yProps(3)}
             disableRipple
             disableFocusRipple
           />
-
           <Tab
             sx={{ my: 1, mr: 2, borderRadius: 3 }}
             label="Val. Waiting"
-            {...a11yProps(2)}
+            value={4}
+            {...a11yProps(4)}
             disableRipple
             disableFocusRipple
           />
@@ -117,14 +140,15 @@ export default function OverviewTabs({ sessionIndex, tab }) {
             <Tab
               sx={{ my: 1, mr: 2, borderRadius: 3 }}
               label="Predictions"
-              {...a11yProps(4)}
+              value={5}
+              {...a11yProps(5)}
               disableRipple
               disableFocusRipple
             />
           ) : null}
           {/* <Tab sx={{ my:1,  borderRadius: 3 }} label="Cores" {...a11yProps(3)} disableRipple disableFocusRipple /> */}
         </Tabs>
-        {tab !== 4 ? <ModeSwitch mode={selectedMode} /> : null}
+        {tab !== 1 && tab !== 5 ? <ModeSwitch mode={selectedMode} /> : null}
       </Box>
 
       {/* <Divider sx={{
@@ -136,7 +160,7 @@ export default function OverviewTabs({ sessionIndex, tab }) {
         backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
         }} /> */}
 
-      {isHistoryMode && (tab === 1 || tab === 2) ? (
+      {isHistoryMode && (tab === 2 || tab === 3) ? (
         <Box sx={{ my: 2 }}>
           <SessionHistoryTimelineChart maxSessions={maxHistorySessions} />
         </Box>
@@ -144,12 +168,14 @@ export default function OverviewTabs({ sessionIndex, tab }) {
       {tab === 0 ? (
         <InsightsGrid />
       ) : tab === 1 ? (
-        <ParachainsGrid sessionIndex={sessionIndex} />
+        <CollatorsSection />
       ) : tab === 2 ? (
-        <ValGroupsGrid sessionIndex={sessionIndex} />
+        <ParachainsGrid sessionIndex={sessionIndex} />
       ) : tab === 3 ? (
-        <ValWaitingSection />
+        <ValGroupsGrid sessionIndex={sessionIndex} />
       ) : tab === 4 ? (
+        <ValWaitingSection />
+      ) : tab === 5 ? (
         <ValPredictionSection />
       )
       : (
