@@ -77,30 +77,62 @@ export const selectSessionCurrentPP = (state) =>
 export const selectTotalPointsBySessionsPP = (state, sessionIds = []) =>
   sessionIds.map((id) => selectSessionByIndexPP(state, id)?.stats?.pt);
 
+// Points of the previous sessions of the era of a session (the
+// session itself is not included). Unknown (undefined) while the session or
+// any previous session stats are not loaded.
+export const selectEraPreviousPointsBySessionPP = (state, sessionId) => {
+  const session = selectSessionByIndexPP(state, sessionId);
+  if (isUndefined(session) || !Number.isInteger(session.esix)) {
+    return undefined;
+  }
+  const sessionIds = [];
+  for (let i = 1; i < session.esix; i++) {
+    sessionIds.push(session.six - i);
+  }
+  const points = selectTotalPointsBySessionsPP(state, sessionIds);
+  // unknown while any previous session has no stats loaded yet
+  if (points.some((p) => isUndefined(p))) {
+    return undefined;
+  }
+  return points.reduce((a, b) => a + b, 0);
+};
+
 // Points of the era of a session: the previous sessions of the era plus the
 // current session points from the last finalized block
 export const selectEraPointsBySessionPP = (state, sessionId) => {
-  const session = selectSessionByIndexPP(state, sessionId);
-  if (!isUndefined(session)) {
-    // Calculate previous sessions points
-    let sessionIds = [];
-    for (let i = 1; i < session.esix; i++) {
-      sessionIds.push(session.six - i);
-    }
-    const previousPoints = selectTotalPointsBySessionsPP(state, sessionIds);
-    // NOTE: unknown (and not a partial total or NaN) while any previous
-    // session has no stats loaded yet
-    if (previousPoints.some((p) => isUndefined(p))) {
-      return undefined;
-    }
-    const previousSessionsPoints = previousPoints.reduce((a, b) => a + b, 0);
-    // Get current session points from last finalized block
-    const block = selectFinalizedBlockPP(state);
-    if (!isUndefined(block?.stats)) {
-      return previousSessionsPoints + block.stats.pt;
-    }
-    return previousSessionsPoints;
+  // NOTE: unknown (and not a partial total or NaN) while the session or any
+  // previous session has no stats loaded yet
+  const previousPoints = selectEraPreviousPointsBySessionPP(state, sessionId);
+  if (isUndefined(previousPoints)) {
+    return undefined;
   }
-  // unknown while the session is not loaded
-  return undefined;
+  // Get current session points from last finalized block
+  const block = selectFinalizedBlockPP(state);
+  return !isUndefined(block?.stats)
+    ? previousPoints + block.stats.pt
+    : previousPoints;
+};
+
+// Authored blocks of the sessions of the chain (undefined when its stats are not loaded)
+export const selectTotalBlocksBySessionsPP = (state, sessionIds = []) =>
+  sessionIds.map((id) => selectSessionByIndexPP(state, id)?.stats?.pb);
+
+// Authored blocks of the previous sessions of the era of a session (the
+// session itself is not included). Unknown (undefined) while the session or
+// any previous session stats are not loaded.
+export const selectEraPreviousBlocksBySessionPP = (state, sessionId) => {
+  const session = selectSessionByIndexPP(state, sessionId);
+  if (isUndefined(session) || !Number.isInteger(session.esix)) {
+    return undefined;
+  }
+  const sessionIds = [];
+  for (let i = 1; i < session.esix; i++) {
+    sessionIds.push(session.six - i);
+  }
+  const blocks = selectTotalBlocksBySessionsPP(state, sessionIds);
+  // unknown while any previous session has no stats loaded yet
+  if (blocks.some((b) => isUndefined(b))) {
+    return undefined;
+  }
+  return blocks.reduce((a, b) => a + b, 0);
 };

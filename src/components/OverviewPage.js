@@ -15,6 +15,7 @@ import AuthoritiesBox from './AuthoritiesBox';
 import GradesSmallBox from './GradesSmallBox';
 import CollationAuthoritiesBox from './CollationAuthoritiesBox';
 import CollationBlocksBox from './CollationBlocksBox';
+import CollationEraPointsBox from './CollationEraPointsBox';
 import CollationPointsBox from './CollationPointsBox';
 import CollationGradesBox from './CollationGradesBox';
 import CollationSlotBox from './CollationSlotBox';
@@ -54,7 +55,7 @@ export default function OverviewPage({tab}) {
   const isAllHidden = collationHidden.ah && collationHidden.pp;
   // the button that hides or shows the details lives in the row of the last visible header
   const isButtonInAH = isCollatorsTab && collatorsChain === 'ah';
-  
+
   const hiddenIfNotExpanded = (chainKey) => collationHidden[chainKey] ? { display: 'none' } : undefined;
   const historySession = useSelector(selectSessionHistory);
   const currentSession = useSelector(selectSessionCurrent);
@@ -125,19 +126,22 @@ export default function OverviewPage({tab}) {
                     {isButtonInAH && hideButton}
                   </Box>
                 </Grid>
-                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("ah")}>
+                <Grid item xs={12} md={isCollatorsTab ? 3 : 4} sx={hiddenIfNotExpanded("ah")}>
                   <CollationAuthoritiesBox chainKey="ah" />
                 </Grid>
-                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("ah")}>
+                <Grid item xs={12} md={isCollatorsTab ? 3 : 4} sx={hiddenIfNotExpanded("ah")}>
                   <CollationBlocksBox chainKey="ah" />
                 </Grid>
-                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("ah")}>
+                <Grid item xs={12} md={isCollatorsTab ? 3 : 4} sx={hiddenIfNotExpanded("ah")}>
                   <CollationPointsBox chainKey="ah" />
                 </Grid>
-                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("ah")}>
-                  <CollationGradesBox chainKey="ah" />
+                {isCollatorsTab && (<Grid item xs={12} md={3} sx={hiddenIfNotExpanded("ah")}>
+                  <CollationEraPointsBox chainKey="ah" name="asset hub" />
+                </Grid>)}
+                <Grid item xs={12} md={isCollatorsTab ? 3 : 4} sx={hiddenIfNotExpanded("ah")}>
+                  <CollationGradesBox chainKey="ah" name="asset hub" />
                 </Grid>
-                <Grid item xs={12} md={8} sx={hiddenIfNotExpanded("ah")}>
+                <Grid item xs={12} md={isCollatorsTab ? 9 : 8} sx={hiddenIfNotExpanded("ah")}>
                   <CollationSlotBox chainKey="ah" />
                 </Grid>
               </Grid>
@@ -154,19 +158,22 @@ export default function OverviewPage({tab}) {
                     {!isButtonInAH && hideButton}
                   </Box>
                 </Grid>
-                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("pp")}>
+                <Grid item xs={12} md={isCollatorsTab ? 3 : 4} sx={hiddenIfNotExpanded("pp")}>
                   <CollationAuthoritiesBox chainKey="pp" />
                 </Grid>
-                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("pp")}>
+                <Grid item xs={12} md={isCollatorsTab ? 3 : 4} sx={hiddenIfNotExpanded("pp")}>
                   <CollationBlocksBox chainKey="pp" />
                 </Grid>
-                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("pp")}>
+                <Grid item xs={12} md={isCollatorsTab ? 3 : 4} sx={hiddenIfNotExpanded("pp")}>
                   <CollationPointsBox chainKey="pp" />
                 </Grid>
-                <Grid item xs={12} md={4} sx={hiddenIfNotExpanded("pp")}>
+                {isCollatorsTab && (<Grid item xs={12} md={3} sx={hiddenIfNotExpanded("pp")}>
+                  <CollationEraPointsBox chainKey="pp" name="people" />
+                </Grid>)}
+                <Grid item xs={12} md={isCollatorsTab ? 3 : 4} sx={hiddenIfNotExpanded("pp")}>
                   <CollationGradesBox chainKey="pp" name="people" />
                 </Grid>
-                <Grid item xs={12} md={8} sx={hiddenIfNotExpanded("pp")}>
+                <Grid item xs={12} md={isCollatorsTab ? 9 : 8} sx={hiddenIfNotExpanded("pp")}>
                   <CollationSlotBox chainKey="pp" />
                 </Grid>
               </Grid>
