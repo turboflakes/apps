@@ -14,7 +14,6 @@ import Identicon from "@polkadot/react-identicon";
 import Skeleton from "@mui/material/Skeleton";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Tooltip from "./Tooltip";
-import Spinner from "./Spinner";
 import PaginationBox from "./PaginationBox";
 import {
   useGetValidatorsQuery,
@@ -245,15 +244,12 @@ export default function ValidatorsRankingBox({
       </Box>
       <Box sx={{ flex: 1, minHeight: 594, display: "flex", flexDirection: "column" }}>
         {isFetching || isPreviousFetching ? (
-          <Box
-            sx={{
-              height: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Spinner size={32} />
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1, py: 1 }}>
+            <Skeleton
+              variant="rounded"
+              height={36}
+              sx={{ borderRadius: 30 }}
+            />
           </Box>
         ) : isSuccess ? (
           <List
