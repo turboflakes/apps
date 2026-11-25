@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import isUndefined from "lodash/isUndefined";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
@@ -11,7 +12,8 @@ import {
   selectCollatorsByChainAndSession,
   selectCollatorsSummaryLatest,
 } from "../features/api/collatorsSlice";
-import { selectChain } from "../features/chain/chainSlice";
+import { selectChain, addressChanged } from "../features/chain/chainSlice";
+import { pageChanged } from "../features/layout/layoutSlice";
 import {
   selectValProfileByAddress,
   useGetValidatorProfileByAddressQuery,
@@ -24,6 +26,8 @@ import CollationEmptyBox from "./CollationEmptyBox";
 const BLOCKS_PER_SLOT = 12;
 
 export default function CollationSlotBox({ chainKey, name }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const selectedChain = useSelector(selectChain);
   const currentSession = useSelector(selectSessionCurrent);
   const isReady = isCollationAvailable(selectedChain) && !isNaN(currentSession);
@@ -67,6 +71,18 @@ export default function CollationSlotBox({ chainKey, name }) {
     selectValProfileByAddress(state, nextOwner),
   );
 
+  const isMetanode =
+    collators.find((c) => c.address === slot?.owner)?.kind === "v";
+
+  const isNextMetanode =
+    collators.find((c) => c.address === nextOwner)?.kind === "v";
+
+  const handleAddressClick = (address) => {
+    dispatch(addressChanged(address));
+    dispatch(pageChanged(`validator/${address}`));
+    navigate(`/validator/${address}`);
+  };
+
   if (!isReady || isUndefined(slot)) {
     return (
       <CollationEmptyBox bgcolor={(theme) => theme.palette.neutrals[200]} />
@@ -101,7 +117,15 @@ export default function CollationSlotBox({ chainKey, name }) {
         <Typography variant="caption" sx={{ whiteSpace: "nowrap" }}>
           {name} current slot
         </Typography>
-        <Typography variant="h6">
+        <Typography
+          variant="h6"
+          onClick={isMetanode ? () => handleAddressClick(slot.owner) : undefined}
+          sx={
+            isMetanode
+              ? { cursor: "pointer", "&:hover": { textDecoration: "underline" } }
+              : undefined
+          }
+        >
           {profile?.identity
             ? nameDisplay(profile._identity, 32)
             : stashDisplay(owner, 4)}
@@ -129,8 +153,22 @@ export default function CollationSlotBox({ chainKey, name }) {
         {!isUndefined(nextOwner) && (
             <Typography variant="caption"
               sx={{ whiteSpace: "nowrap" }}>
-              {`next ${
-                nextProfile?.identity
+              {"next "}
+              <Box
+                component="span"
+                onClick={
+                  isNextMetanode ? () => handleAddressClick(nextOwner) : undefined
+                }
+                sx={
+                  isNextMetanode
+                    ? {
+                        cursor: "pointer",
+                        "&:hover": { textDecoration: "underline" },
+                      }
+                    : undefined
+                }
+              >
+                {nextProfile?.identity
                   ? nameDisplayMiddle(nextProfile._identity, 20)
                   : stashDisplay(
                       chainAddress(
@@ -138,8 +176,8 @@ export default function CollationSlotBox({ chainKey, name }) {
                         getNetworkSS58Format(selectedChain),
                       ),
                       4,
-                    )
-              }`}
+                    )}
+              </Box>
             </Typography>
           )}
         </Box>
