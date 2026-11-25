@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import isUndefined from "lodash/isUndefined";
 import { useTheme } from "@mui/material/styles";
@@ -148,6 +149,13 @@ export default function CollatorsDataGrid({ chainKey }) {
   const profiles = useSelector(selectValProfilesAll);
   const [onlyMetanodes, setOnlyMetanodes] = React.useState(false);
   const [onlyLowGrades, setOnlyLowGrades] = React.useState(false);
+  // low grades filter requested by the navigation (e.g. from the authorities box)
+  const location = useLocation();
+  React.useEffect(() => {
+    if (location.state?.onlyLowGrades) {
+      setOnlyLowGrades(true);
+    }
+  }, [location.state]);
 
   const rows = React.useMemo(
     () =>
