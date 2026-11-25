@@ -127,7 +127,7 @@ export const extendedApi = apiSlice.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           // sessions of a system chain have no relay chain subscriptions
-          if (["ah", "pp"].includes(params.chain_key)) {
+          if (["ah", "pp", "bu"].includes(params.chain_key)) {
             if (params.index === "current") {
               // Fetch previous sessions stats for the current era
               dispatch(
@@ -217,7 +217,7 @@ export const matchSessionsReceived = isAnyOf(
 
 // Sessions requested for a system chain are kept in their own slices
 export const isSystemChainSessionRequest = (action) =>
-  ["ah", "pp"].includes(action.meta?.arg?.originalArgs?.chain_key);
+  ["ah", "pp", "bu"].includes(action.meta?.arg?.originalArgs?.chain_key);
 
 const isParaGraded = (v) =>
   v.is_auth &&

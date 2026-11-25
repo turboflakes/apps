@@ -34,11 +34,10 @@ export const extendedApi = apiSlice.injectEndpoints({
           await queryFulfilled;
           // `onSuccess` subscribe for updates
           if (params.blockId === "finalized") {
-            // system chains (asset hub, people) are subscribed by chain key
+            // system chains (asset hub, people, bulletin) are subscribed by chain key
             // without the block from the previous session
             // relay chain: subscribe to finalized block and from previous session at the same index
-            const isSystemChain =
-              params.chain_key === "ah" || params.chain_key === "pp";
+            const isSystemChain = ["ah", "pp", "bu"].includes(params.chain_key);
             let msg = JSON.stringify({
               method: "subscribe_block",
               params: isSystemChain
@@ -47,8 +46,7 @@ export const extendedApi = apiSlice.injectEndpoints({
             });
             dispatch(socketActions.messageQueued(msg));
           } else if (params.blockId === "best") {
-            const isSystemChain =
-              params.chain_key === "ah" || params.chain_key === "pp";
+            const isSystemChain = ["ah", "pp", "bu"].includes(params.chain_key);
             let msg = JSON.stringify({
               method: "subscribe_block",
               params: isSystemChain

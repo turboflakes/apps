@@ -22,7 +22,7 @@ const initialState = {
   // system chain selected in the collators page, the others are hidden
   collatorsChain: 'ah',
   // collation details hidden by the user, by system chain
-  collationHidden: { ah: true, pp: true }
+  collationHidden: { ah: true, pp: true, bu: true }
 };
 
 const layoutSlice = createSlice({
@@ -52,7 +52,11 @@ const layoutSlice = createSlice({
     },
     // hides (true) or shows (false) the collation details of all system chains
     collationHiddenChanged: (state, action) => {
-      state.collationHidden = { ah: action.payload, pp: action.payload };
+      state.collationHidden = {
+        ah: action.payload,
+        pp: action.payload,
+        bu: action.payload,
+      };
     },
   },
 });

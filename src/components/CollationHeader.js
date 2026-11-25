@@ -8,11 +8,11 @@ import { selectCollationHidden } from "../features/layout/layoutSlice";
 import { isCollationAvailable } from "../constants";
 import SessionBoxHeader from "./SessionBoxHeader";
 import FinalizedBlockBoxHeader from "./FinalizedBlockBoxHeader";
-import BestBlockBoxHeader from "./BestBlockBoxHeader";
+import FinalityLagBoxHeader from "./FinalityLagBoxHeader";
 import AvgBlockTimeBoxHeader from "./AvgBlockTimeBoxHeader";
 import CollationGradesBoxHeader from "./CollationGradesBoxHeader";
 
-export default function CollationHeader({ chainKey, name }) {
+export default function CollationHeader({ chainKey, name, isCollatorsTab }) {
   const selectedChain = useSelector(selectChain);
   const isReady = isCollationAvailable(selectedChain);
   const hidden = useSelector((state) => selectCollationHidden(state, chainKey));
@@ -37,16 +37,17 @@ export default function CollationHeader({ chainKey, name }) {
         mb: 0,
       }}
     >
-      <Typography variant="h6" ml={3}>
+      <Typography variant="h6" ml={1}>
         {name}
       </Typography>
+      {hidden ? <CollationGradesBoxHeader chain_key={chainKey} /> : null}
       <Box sx={{ ml: 1, flexGrow: 1, display: "flex" }}></Box>
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        {hidden ? <CollationGradesBoxHeader chain_key={chainKey} /> : null}
-        <SessionBoxHeader chain_key={chainKey} />
+
+        {isCollatorsTab ? <SessionBoxHeader chain_key={chainKey} /> : null}
         <FinalizedBlockBoxHeader chain_key={chainKey} />
-        <BestBlockBoxHeader chain_key={chainKey} />
-        <AvgBlockTimeBoxHeader chain_key={chainKey} />
+        <FinalityLagBoxHeader chain_key={chainKey} />
+        {isCollatorsTab ? <AvgBlockTimeBoxHeader chain_key={chainKey} /> : null}
       </Box>
     </Box>
   );

@@ -21,6 +21,18 @@ export const nameDisplay = (name = "", len, prefix = "") => {
     : `${prefix}${name}`;
 };
 
+export const nameDisplayMiddle = (name = "", len, prefix = "") => {
+  if (!len) {
+    len = 24;
+  }
+  if (name.length <= len) {
+    return `${prefix}${name}`;
+  }
+  const head = Math.ceil(len / 2);
+  const tail = Math.floor(len / 2);
+  return `${prefix}${name.slice(0, head)}..${name.slice(name.length - tail)}`;
+};
+
 export const symbolDisplay = (networkDetails) => {
   if (!!networkDetails.tokenDecimals[0] && !!networkDetails.tokenSymbol[0]) {
     return networkDetails.tokenSymbol[0];

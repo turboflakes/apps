@@ -9,13 +9,21 @@ import {
   useGetBlockQuery,
   selectFinalizedBlock,
 } from "../features/api/blocksSlice";
-import { selectFinalizedBlockAH } from "../features/api/blocksAHSlice";
-import { selectFinalizedBlockPP } from "../features/api/blocksPPSlice";
+import {
+  selectFinalizedBlockAH,
+} from "../features/api/blocksAHSlice";
+import {
+  selectFinalizedBlockPP,
+} from "../features/api/blocksPPSlice";
+import {
+  selectFinalizedBlockBU,
+} from "../features/api/blocksBUSlice";
 
 const SELECTORS = {
   rc: selectFinalizedBlock,
   ah: selectFinalizedBlockAH,
   pp: selectFinalizedBlockPP,
+  bu: selectFinalizedBlockBU,
 };
 
 export default function FinalizedBlockBoxHeader({ dark, chain_key = "rc" }) {

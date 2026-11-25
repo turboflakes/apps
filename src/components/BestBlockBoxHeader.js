@@ -8,11 +8,13 @@ import { Typography } from "@mui/material";
 import { useGetBlockQuery, selectBestBlock } from "../features/api/blocksSlice";
 import { selectBestBlockAH } from "../features/api/blocksAHSlice";
 import { selectBestBlockPP } from "../features/api/blocksPPSlice";
+import { selectBestBlockBU } from "../features/api/blocksBUSlice";
 
 const SELECTORS = {
   rc: selectBestBlock,
   ah: selectBestBlockAH,
   pp: selectBestBlockPP,
+  bu: selectBestBlockBU,
 };
 
 export default function BestBlockBoxHeader({ dark, chain_key = "rc" }) {

@@ -10,7 +10,7 @@ import SessionPerformancePieChartHeader from "./SessionPerformancePieChartHeader
 import SessionPieChartHeader from "./SessionPieChartHeader";
 import EraBoxHeader from "./EraBoxHeader";
 import SessionBoxHeader from "./SessionBoxHeader";
-import BestBlockBoxHeader from "./BestBlockBoxHeader";
+import FinalityLagBoxHeader from "./FinalityLagBoxHeader";
 import FinalizedBlockBoxHeader from "./FinalizedBlockBoxHeader";
 import AvgBlockTimeBoxHeader from "./AvgBlockTimeBoxHeader";
 import { getNetworkIcon, getNetworkName } from "../constants";
@@ -153,7 +153,7 @@ export default function HeaderAppBar({
             <EraBoxHeader />
             <SessionBoxHeader />
             <FinalizedBlockBoxHeader />
-            <BestBlockBoxHeader />
+            <FinalityLagBoxHeader />
             <AvgBlockTimeBoxHeader />
           </Box>
           {/* mode switch live/history */}

@@ -18,6 +18,10 @@ import {
   selectSessionByIndexPP,
   selectSessionCurrentIndexPP,
 } from "../features/api/sessionsPPSlice";
+import {
+  selectSessionByIndexBU,
+  selectSessionCurrentIndexBU,
+} from "../features/api/sessionsBUSlice";
 
 // Selectors of the current session index and of a session by chain
 const SELECTORS = {
@@ -33,9 +37,13 @@ const SELECTORS = {
     current: selectSessionCurrentIndexPP,
     byIndex: selectSessionByIndexPP,
   },
+  bu: {
+    current: selectSessionCurrentIndexBU,
+    byIndex: selectSessionByIndexBU,
+  },
 };
 
-// Session of the relay chain (`rc`) or of a system chain (`ah` or `pp`)
+// Session of the relay chain (`rc`) or of a system chain (`ah`, `pp` or `bu`)
 export default function SessionBoxHeader({ dark, chain_key = "rc" }) {
   const theme = useTheme();
   const selectors = SELECTORS[chain_key];

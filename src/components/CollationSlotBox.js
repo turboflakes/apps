@@ -17,7 +17,7 @@ import {
   useGetValidatorProfileByAddressQuery,
 } from "../features/api/valProfilesSlice";
 import { isCollationAvailable, getNetworkSS58Format } from "../constants";
-import { nameDisplay, stashDisplay } from "../util/display";
+import { nameDisplay, nameDisplayMiddle, stashDisplay } from "../util/display";
 import { chainAddress } from "../util/crypto";
 import CollationEmptyBox from "./CollationEmptyBox";
 
@@ -129,9 +129,9 @@ export default function CollationSlotBox({ chainKey, name }) {
         {!isUndefined(nextOwner) && (
             <Typography variant="caption"
               sx={{ whiteSpace: "nowrap" }}>
-              {`next slot ${
+              {`next ${
                 nextProfile?.identity
-                  ? nameDisplay(nextProfile._identity, 32)
+                  ? nameDisplayMiddle(nextProfile._identity, 20)
                   : stashDisplay(
                       chainAddress(
                         nextOwner,

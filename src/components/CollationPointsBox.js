@@ -75,7 +75,7 @@ export default function CollationPointsBox({ chainKey, name }) {
           variant="subtitle2"
           sx={{ whiteSpace: "nowrap", lineHeight: 0.875 }}
         >
-          {`since session ${stats.six.format()} started`}
+          {`since session ${stats.six.format()}`}
         </Typography>
       </Box>
     </Paper>
