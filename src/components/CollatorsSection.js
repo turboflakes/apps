@@ -15,6 +15,8 @@ import {
 import { selectChain } from "../features/chain/chainSlice";
 import {
   selectCollatorsChain,
+  selectCollatorsHistoryRange,
+  selectIsHistoryMode,
   collatorsChainChanged,
 } from "../features/layout/layoutSlice";
 import { isCollationAvailable } from "../constants";
@@ -27,6 +29,12 @@ export default function CollatorsSection() {
   const dispatch = useDispatch();
   // shared with the overview, where the other chain is collapsed
   const chainKey = useSelector(selectCollatorsChain);
+
+  // range of sessions selected in history mode
+  const isHistoryMode = useSelector(selectIsHistoryMode);
+  const historyRange = useSelector((state) =>
+    selectCollatorsHistoryRange(state, chainKey),
+  );
 
   // latest session of the selected system chain
   const summary = useSelector((state) =>
@@ -52,7 +60,15 @@ export default function CollatorsSection() {
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Collators</Typography>
           <Typography variant="subtitle">
-            {`${CHAIN_NAMES[chainKey]} collators in the current session ${summary?.session?.format() ?? ""}`.trim()}
+            {isHistoryMode
+              ? `${CHAIN_NAMES[chainKey]} collators ${
+                  !historyRange
+                    ? ""
+                    : historyRange[0] === historyRange[1]
+                      ? `in session ${historyRange[0].format()}`
+                      : `accumulated in sessions ${historyRange[0].format()} to ${historyRange[1].format()}`
+                }`.trim()
+              : `${CHAIN_NAMES[chainKey]} collators in the current session ${summary?.session?.format() ?? ""}`.trim()}
           </Typography>
         </Box>
         <ToggleButtonGroup

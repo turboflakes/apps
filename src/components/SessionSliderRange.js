@@ -7,7 +7,7 @@ import Slider from '@mui/material/Slider';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
-import { 
+import {
   sessionHistoryRangeChanged,
   selectSessionHistoryRange,
   selectSessionHistoryIds,
@@ -34,11 +34,9 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
     },
   },
   '& .MuiSlider-valueLabel': {
-    fontSize: 12,
-    fontWeight: 'normal',
+    fontWeight: '600',
     top: -6,
     backgroundColor: 'unset',
-    // color: theme.palette.text.primary,
     '&:before': {
       display: 'none',
     },
@@ -65,10 +63,10 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
     },
   },
   '& .MuiSlider-markLabel': {
+    fontSize: 12,
     color: '#bfbfbf',
     '&.MuiSlider-markLabelActive': {
       color: theme.palette.text.primary,
-      fontWeight: '600'
     },
   },
 }));
@@ -81,46 +79,49 @@ function useSessionRange(range) {
   const [value, setValue] = React.useState(range);
 
   React.useEffect(() => {
-    if (!isEqual(value, range)) {
-      setValue(range);
-    }
+    setValue((current) => (isEqual(current, range) ? current : range));
   }, [range]);
 
   return [value, setValue];
 }
 
-export default function SessionSliderRange({showCaption, isFetching}) {
-  // const theme = useTheme();
+export default function SessionSliderRange({showCaption, isFetching, sessions, range, onRangeChange}) {
   const dispatch = useDispatch();
-  const historySessionIds = useSelector(selectSessionHistoryIds);
-  const historySessions = useSelector(state => selectSessionsByIds(state, historySessionIds));
-  const historySessionRange = useSelector(selectSessionHistoryRange);
+  const relaySessionIds = useSelector(selectSessionHistoryIds);
+  const relaySessions = useSelector(state => selectSessionsByIds(state, relaySessionIds));
+  const relayRange = useSelector(selectSessionHistoryRange);
+  const historySessions = sessions ?? relaySessions;
+  const historySessionIds = sessions ? sessions.map(s => s.six) : relaySessionIds;
+  const historySessionRange = range ?? relayRange;
   const [sessionRange, setSessionRange] = useSessionRange(historySessionRange);
 
   const handleChange = (event, range) => {
     setSessionRange(range);
   }
   const handleChangeCommitted = (event, range) => {
-    dispatch(sessionHistoryRangeChanged(range))
+    if (onRangeChange) {
+      onRangeChange(range)
+    } else {
+      dispatch(sessionHistoryRangeChanged(range))
+    }
   }
 
   let marks = historySessions.filter(s => !isUndefined(s)).map(session => {
-    
+
     if (session.esix === 1) {
       return {
         value: session.six,
-        // label: `${session.eix} // ${session.six}`
         label: session.eix.format()
       }
     }
-    
+
     return {
       value: session.six,
       label: ``
     }
-    
+
   });
-  
+
   return (
     <Box
       sx={{
@@ -128,7 +129,6 @@ export default function SessionSliderRange({showCaption, isFetching}) {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        
       }}
       >
       <Stack spacing={3} direction="row" sx={{ ml: 1, mr: 3 }} alignItems="center">

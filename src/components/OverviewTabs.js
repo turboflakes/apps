@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-// import { useTheme } from '@mui/material/styles';
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -12,15 +11,18 @@ import ParachainsGrid from "./ParachainsGrid";
 import ValWaitingSection from "./ValWaitingSection";
 import ValPredictionSection from "./ValPredictionSection";
 import CollatorsSection from "./CollatorsSection";
+import CollatorsHistoryTimeline from "./CollatorsHistoryTimeline";
 import { selectChain } from "../features/chain/chainSlice";
 import { isCollationAvailable } from "../constants";
 import ModeSwitch from "./ModeSwitch";
+import HistoryErasToggle from "./HistoryErasToggle";
 import SessionHistoryTimelineChart from "./SessionHistoryTimelineChart";
 import { useGetValidatorsQuery } from "../features/api/validatorsSlice";
 
 import {
   pageChanged,
   selectMode,
+  selectCollatorsChain,
   selectIsHistoryMode,
   selectMaxHistorySessions,
 } from "../features/layout/layoutSlice";
@@ -48,10 +50,11 @@ export default function OverviewTabs({ sessionIndex, tab }) {
   const dispatch = useDispatch();
   const selectedChain = useSelector(selectChain);
   const selectedMode = useSelector(selectMode);
+  const collatorsChain = useSelector(selectCollatorsChain);
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
 
-  const { isSuccess } = useGetValidatorsQuery(
+  const { isSuccess, isFetching } = useGetValidatorsQuery(
     {
       session: sessionIndex,
       role: "para_authority",
@@ -67,7 +70,14 @@ export default function OverviewTabs({ sessionIndex, tab }) {
     navigate(`/${tabPages[newValue]}`);
   };
 
-  if (!isSuccess) {
+  // NOTE: `isSuccess` is false for one render when `sessionIndex` changes (the
+  // new request is not started yet), the content is only hidden until the
+  // first success so that it is not unmounted (and its requests repeated)
+  const hasLoaded = React.useRef(false);
+  if (isSuccess) {
+    hasLoaded.current = true;
+  }
+  if (!hasLoaded.current) {
     return null;
   }
 
@@ -148,7 +158,12 @@ export default function OverviewTabs({ sessionIndex, tab }) {
           ) : null}
           {/* <Tab sx={{ my:1,  borderRadius: 3 }} label="Cores" {...a11yProps(3)} disableRipple disableFocusRipple /> */}
         </Tabs>
-        {tab !== 1 && tab !== 5 ? <ModeSwitch mode={selectedMode} /> : null}
+
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {isHistoryMode && tab >= 0 && tab <= 3 ? <HistoryErasToggle /> : null}
+          {tab !== 4 && tab !== 5 ? <ModeSwitch mode={selectedMode} /> : null}
+        </Box>
+
       </Box>
 
       {/* <Divider sx={{
@@ -160,9 +175,21 @@ export default function OverviewTabs({ sessionIndex, tab }) {
         backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
         }} /> */}
 
-      {isHistoryMode && (tab === 2 || tab === 3) ? (
+      {isHistoryMode && (tab === 0 || tab === 2 || tab === 3) ? (
         <Box sx={{ my: 2 }}>
-          <SessionHistoryTimelineChart maxSessions={maxHistorySessions} />
+          <SessionHistoryTimelineChart
+            maxSessions={maxHistorySessions}
+            selection={tab === 0 ? "range" : "session"}
+            isFetching={isFetching}
+          />
+        </Box>
+      ) : null}
+      {isHistoryMode && tab === 1 ? (
+        <Box sx={{ my: 2 }}>
+          <CollatorsHistoryTimeline
+            chainKey={collatorsChain}
+            maxSessions={maxHistorySessions}
+          />
         </Box>
       ) : null}
       {tab === 0 ? (

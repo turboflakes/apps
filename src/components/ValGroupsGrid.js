@@ -14,7 +14,8 @@ import { faArrowDownWideShort, faArrowUpWideShort } from '@fortawesome/free-soli
 import InputAdornment from '@mui/material/InputAdornment';
 import ValGroupCard from './ValGroupCard';
 import PaginationBox from './PaginationBox';
-import { 
+import { useGetValidatorsQuery } from '../features/api/validatorsSlice';
+import {
   selectValGroupIdsBySessionSortedBy
  } from '../features/api/sessionsSlice';
 import {
@@ -23,7 +24,14 @@ import {
 
 const PAGE_SIZE = 16;
 
-export default function ValGroupsGrid({sessionIndex}) {
+export default function ValGroupsGrid({sessionIndex: requestedSession}) {
+  const {isSuccess, isFetching} = useGetValidatorsQuery({session: requestedSession, role: 'para_authority', summary: true, profile: true, discovery: true});
+  // the groups of the previous session are shown while the new session is loading
+  const shownSession = React.useRef(requestedSession);
+  if (isSuccess && !isFetching) {
+    shownSession.current = requestedSession;
+  }
+  const sessionIndex = shownSession.current;
   const [sortBy, setSortBy] = React.useState('group_id');
   const [orderBy, setOrderBy] = React.useState(false); // true -> asc; false -> desc
   const [page, setPage] = React.useState(0);
@@ -55,7 +63,7 @@ export default function ValGroupsGrid({sessionIndex}) {
       <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Val. Groups</Typography>
-          {isLiveMode ? 
+          {isLiveMode ?
             <Typography variant="subtitle">
               Attestations of Validity by Val. Groups
             </Typography> :
@@ -70,21 +78,21 @@ export default function ValGroupsGrid({sessionIndex}) {
             onChange={handleSort}
             sx={{ display: 'flex', alignItems: 'center'	}}
           >
-          <ToggleButton value="backing_points" aria-label="Sort by Backing Points" 
+          <ToggleButton value="backing_points" aria-label="Sort by Backing Points"
             disableRipple
             disableFocusRipple
             sx={{ px: 2, mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
             <Box sx={{mr: 1}}>Sort by Backing Points</Box>
             {orderBy ? <FontAwesomeIcon icon={faArrowDownWideShort} /> : <FontAwesomeIcon icon={faArrowUpWideShort} />}
           </ToggleButton>
-          <ToggleButton value="mvr" aria-label="Sort by Missed Vote Ratio" 
+          <ToggleButton value="mvr" aria-label="Sort by Missed Vote Ratio"
             disableRipple
             disableFocusRipple
             sx={{ px: 2, mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
             <Box sx={{mr: 1}}>Sort by Missed Vote Ratio</Box>
             {orderBy ? <FontAwesomeIcon icon={faArrowDownWideShort} /> : <FontAwesomeIcon icon={faArrowUpWideShort} />}
           </ToggleButton>
-          <ToggleButton value="group_id" aria-label="Sort by Val. Group ID" 
+          <ToggleButton value="group_id" aria-label="Sort by Val. Group ID"
             disableRipple
             disableFocusRipple
             sx={{ px: 2, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
@@ -96,7 +104,6 @@ export default function ValGroupsGrid({sessionIndex}) {
       <Box sx={{ mx: 2, mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <TextField
           sx={{
-            // backgroundColor: theme.palette.neutrals[100],
             borderRadius: 30,
             width: 512
           }}
@@ -121,8 +128,6 @@ export default function ValGroupsGrid({sessionIndex}) {
               '> .MuiOutlinedInput-input': {
                 fontSize: "0.925rem",
                 height: "24px",
-                // fontSize: "0.825rem",
-                // lineHeight: "1rem",
               },
             }
           }}

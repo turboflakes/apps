@@ -22,7 +22,10 @@ const initialState = {
   // system chain selected in the collators page, the others are hidden
   collatorsChain: 'ah',
   // collation details hidden by the user, by system chain
-  collationHidden: { ah: true, pp: true, bu: true }
+  collationHidden: { ah: true, pp: true, bu: true },
+  // range [from, to] of system chain sessions selected in the collators page
+  // in history mode, by system chain (null until one is selected)
+  collatorsHistoryRange: { ah: null, pp: null, bu: null }
 };
 
 const layoutSlice = createSlice({
@@ -50,6 +53,10 @@ const layoutSlice = createSlice({
     collatorsChainChanged: (state, action) => {
       state.collatorsChain = action.payload;
     },
+    collatorsHistoryRangeChanged: (state, action) => {
+      const { chainKey, range } = action.payload;
+      state.collatorsHistoryRange[chainKey] = range;
+    },
     // hides (true) or shows (false) the collation details of all system chains
     collationHiddenChanged: (state, action) => {
       state.collationHidden = {
@@ -70,6 +77,8 @@ export const selectMaxHistorySessions = (state) => state.layout.maxHistoryEras *
 export const selectIdentityFilter = (state) => state.layout.identityFilter;
 export const selectSubsetFilter = (state) => state.layout.subsetFilter;
 export const selectCollatorsChain = (state) => state.layout.collatorsChain;
+export const selectCollatorsHistoryRange = (state, chainKey) =>
+  state.layout.collatorsHistoryRange[chainKey];
 export const selectCollationHidden = (state, chainKey) => state.layout.collationHidden[chainKey];
 export const selectInsightsColumnVisibilityModel = (state) =>
   state.layout.insightsColumnVisibilityModel;
@@ -82,6 +91,7 @@ export const {
   subsetFilterChanged,
   insightsColumnVisibilityModelChanged,
   collatorsChainChanged,
+  collatorsHistoryRangeChanged,
   collationHiddenChanged
  } = layoutSlice.actions;
 
