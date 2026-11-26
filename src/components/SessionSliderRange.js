@@ -34,11 +34,9 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
     },
   },
   '& .MuiSlider-valueLabel': {
-    fontSize: 12,
-    fontWeight: 'normal',
+    fontWeight: '600',
     top: -6,
     backgroundColor: 'unset',
-    // color: theme.palette.text.primary,
     '&:before': {
       display: 'none',
     },
@@ -65,10 +63,10 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
     },
   },
   '& .MuiSlider-markLabel': {
+    fontSize: 12,
     color: '#bfbfbf',
     '&.MuiSlider-markLabelActive': {
       color: theme.palette.text.primary,
-      fontWeight: '600'
     },
   },
 }));
@@ -131,7 +129,6 @@ export default function SessionSliderRange({showCaption, isFetching, sessions, r
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-
       }}
       >
       <Stack spacing={3} direction="row" sx={{ ml: 1, mr: 3 }} alignItems="center">

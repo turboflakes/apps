@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import isUndefined from "lodash/isUndefined";
 import { useTheme } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
@@ -12,6 +12,7 @@ import {
   XAxis,
   YAxis,
   Cell,
+  ReferenceArea,
   ReferenceLine,
   CartesianGrid,
   Tooltip,
@@ -20,17 +21,20 @@ import {
   Legend,
 } from "recharts";
 import { Typography } from "@mui/material";
-import SessionSlider from "./SessionSlider";
-import HistoryErasMenu from "./HistoryErasMenu";
+import ValidatorsHistorySessionBox from "./ValidatorsHistorySessionBox";
+import ValidatorsHistoryRangeBox from "./ValidatorsHistoryRangeBox";
 import {
   selectSessionCurrent,
   selectSessionHistory,
+  selectSessionHistoryRange,
+  selectSessionByIndex,
+  selectSessionsByIds,
+  useGetSessionsQuery,
   selectMVRBySessions,
   selectBARBySessions,
   selectBackingPointsBySessions,
   selectAuthoredBlocksBySessions,
   selectDisputesBySessions,
-  selectSessionByIndex,
   sessionHistoryChanged,
   buildSessionIdsArrayHelper,
 } from "../features/api/sessionsSlice";
@@ -56,7 +60,10 @@ const renderTooltip = (props, theme) => {
             <b>History</b>
           </Typography>
           <Typography component="div" variant="caption" color="inherit">
-            <i>Session // {data.session}</i>
+            <i>Session {data.session?.format() ?? "-"}</i>
+          </Typography>
+          <Typography component="div" variant="caption" color="inherit">
+            <i>Era {data.era?.format() ?? "-"}</i>
           </Typography>
         </Box>
         <Box sx={{ minWidth: "192px" }}>
@@ -131,6 +138,8 @@ const renderTooltip = (props, theme) => {
   return null;
 };
 
+const AXIS_WIDTH = 64;
+
 const renderLegend = (theme) => {
   return (
     <Box sx={{ mt: -1, mr: 9, display: "flex", justifyContent: "flex-end" }}>
@@ -182,11 +191,19 @@ const renderLegend = (theme) => {
   );
 };
 
-export default function SessionHistoryTimelineChart({ address, maxSessions }) {
+export default function SessionHistoryTimelineChart({
+  address,
+  maxSessions,
+  selection = "session",
+  isFetching,
+}) {
+  const isRange = selection === "range";
   const theme = useTheme();
   const dispatch = useDispatch();
   const currentSession = useSelector(selectSessionCurrent);
   const historySession = useSelector(selectSessionHistory);
+  // loads the stats of the sessions of the timeline
+  useGetSessionsQuery({ number_last_sessions: maxSessions, stats: true });
   const historySessionIds = buildSessionIdsArrayHelper(
     currentSession - 1,
     maxSessions,
@@ -206,12 +223,17 @@ export default function SessionHistoryTimelineChart({ address, maxSessions }) {
   const allDisputes = useSelector((state) =>
     selectDisputesBySessions(state, historySessionIds),
   );
-  const historySessionSelected = useSelector((state) =>
-    selectSessionByIndex(state, historySession),
+  const historyRange = useSelector(selectSessionHistoryRange);
+
+  // NOTE: shallowEqual, as the selector returns a new array on every call
+  const allSessions = useSelector(
+    (state) => selectSessionsByIds(state, historySessionIds),
+    shallowEqual,
   );
 
   const data = historySessionIds.map((sessionId, i) => ({
     session: sessionId,
+    era: allSessions[i]?.eix,
     gradeValue: gradeByRatios(allMvrs[i], 1 - allBars[i]),
     pvPoints: allBackingPoints[i],
     abPoints: allAuthoredBlocks[i] * 20,
@@ -220,27 +242,25 @@ export default function SessionHistoryTimelineChart({ address, maxSessions }) {
     bar: allBars[i],
   }));
 
-  // console.log("data", data);
-
-  const handleClick = (data) => {
-    if (historySession !== data.session) {
-      setTimeout(() => dispatch(sessionHistoryChanged(data.session)), 50);
+  const handleClick = (state) => {
+    const session = state?.activeLabel;
+    if (!isRange && !isUndefined(session) && historySession !== session) {
+      dispatch(sessionHistoryChanged(session));
     }
   };
+
+  const historySessionSelected = useSelector((state) =>
+    selectSessionByIndex(state, historySession),
+  );
 
   return (
     <Paper
       sx={{
         p: 2,
-        // mt: 2,
         display: "flex",
         flexDirection: "column",
-        // justifyContent: 'center',
-        // alignItems: 'center',
         width: "100%",
-        // height: 256,
         borderRadius: 3,
-        // bgcolor: theme.palette.neutrals[300],
         boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
       }}
     >
@@ -255,18 +275,18 @@ export default function SessionHistoryTimelineChart({ address, maxSessions }) {
           <Box>
             <Typography variant="h6">History Timeline</Typography>
             <Typography variant="subtitle2">
-              Session {historySessionSelected.six?.format()} at Era{" "}
-              {historySessionSelected.eix?.format()} selected
+              {!isRange
+                ? `Session ${historySessionSelected?.six?.format() ?? ""} at Era ${historySessionSelected?.eix?.format() ?? ""} selected`
+                : historyRange[0] === historyRange[1]
+                  ? `Session ${historyRange[0].format()} selected`
+                  : `Sessions ${historyRange[0].format()} to ${historyRange[1].format()} selected`}
             </Typography>
           </Box>
-          <HistoryErasMenu />
         </Box>
-        <SessionSlider maxSessions={maxSessions} showLegend={false} />
       </Box>
       <ResponsiveContainer width="100%" height={228}>
         <ComposedChart
-          // width={500}
-          // layout="vertical"
+          onClick={handleClick}
           height={292}
           data={data}
           margin={{
@@ -300,11 +320,20 @@ export default function SessionHistoryTimelineChart({ address, maxSessions }) {
             strokeWidth={0}
           />
 
-          <ReferenceLine
-            x={historySession}
-            stroke={theme.palette.neutrals[300]}
-            strokeWidth={2}
+          {/* background of the selected session (or range of sessions) */}
+          <ReferenceArea
+            x1={isRange ? historyRange[0] : historySession}
+            x2={isRange ? historyRange[1] : historySession}
+            fill={theme.palette.neutrals[200]}
+            fillOpacity={0.5}
           />
+          {!isRange ? (
+            <ReferenceLine
+              x={historySession}
+              stroke={theme.palette.neutrals[300]}
+              strokeWidth={2}
+            />
+          ) : null}
 
           {/* points */}
           <XAxis
@@ -317,7 +346,7 @@ export default function SessionHistoryTimelineChart({ address, maxSessions }) {
           />
           <YAxis
             type="number"
-            width={64}
+            width={AXIS_WIDTH}
             style={{ fontSize: "0.8rem", whiteSpace: "nowrap" }}
             axisLine={{ stroke: "#C8C9CC", strokeWidth: 1, width: 100 }}
           />
@@ -341,7 +370,7 @@ export default function SessionHistoryTimelineChart({ address, maxSessions }) {
           <YAxis
             yAxisId="rightMVR"
             orientation="right"
-            width={64}
+            width={AXIS_WIDTH}
             style={{ fontSize: "0.8rem", whiteSpace: "nowrap" }}
             axisLine={{
               stroke: theme.palette.semantics.amber,
@@ -364,7 +393,7 @@ export default function SessionHistoryTimelineChart({ address, maxSessions }) {
           <YAxis
             yAxisId="rightBAR"
             orientation="right"
-            width={64}
+            width={AXIS_WIDTH}
             domain={["auto", "auto"]}
             style={{ fontSize: "0.8rem", whiteSpace: "nowrap" }}
             axisLine={{
@@ -415,6 +444,20 @@ export default function SessionHistoryTimelineChart({ address, maxSessions }) {
           />
         </ComposedChart>
       </ResponsiveContainer>
+      {isRange ? (
+        <ValidatorsHistoryRangeBox
+          maxSessions={maxSessions}
+          insetLeft={AXIS_WIDTH}
+          insetRight={2 * AXIS_WIDTH}
+        />
+      ) : (
+        <ValidatorsHistorySessionBox
+          maxSessions={maxSessions}
+          insetLeft={AXIS_WIDTH}
+          insetRight={2 * AXIS_WIDTH}
+          isFetching={isFetching}
+        />
+      )}
     </Paper>
   );
 }

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useSelector, useDispatch, useStore } from "react-redux";
 import Box from "@mui/material/Box";
+import Spinner from "./Spinner";
 import SessionSliderRange from "./SessionSliderRange";
 import { useGetSessionsQuery } from "../features/api/sessionsSlice";
 import {
@@ -60,7 +61,7 @@ export default function CollatorsHistoryRangeBox({
 }) {
   const dispatch = useDispatch();
   const store = useStore();
-  useGetSessionsQuery({
+  const { isFetching: isFetchingSessions } = useGetSessionsQuery({
     chain_key: chainKey,
     number_last_sessions: maxSessions,
     stats: true,
@@ -128,25 +129,49 @@ export default function CollatorsHistoryRangeBox({
     return null;
   }
 
+  const isLoading = isFetching || isFetchingSessions;
+
   return (
     <Box
       sx={{
-        ml: `${Math.max(0, insetLeft - SLIDER_MARGIN_LEFT)}px`,
-        mr: `${Math.max(0, insetRight - SLIDER_MARGIN_RIGHT)}px`,
+        my: 1,
         display: "flex",
-        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "space-between",
       }}
     >
-      <SessionSliderRange
-        isFetching={isFetching}
-        sessions={sessions}
-        range={range}
-        onRangeChange={(newRange) =>
-          dispatch(
-            collatorsHistoryRangeChanged({ chainKey, range: newRange }),
-          )
-        }
-      />
+      {/* the slider has a margin of 8px on the left and 24px on the right */}
+      <Box
+        sx={{
+          flex: 1,
+          ml: `${Math.max(0, insetLeft - SLIDER_MARGIN_LEFT)}px`,
+          mr: `-${SLIDER_MARGIN_RIGHT}px`,
+        }}
+      >
+        <SessionSliderRange
+          isFetching={isLoading}
+          sessions={sessions}
+          range={range}
+          onRangeChange={(newRange) =>
+            dispatch(
+              collatorsHistoryRangeChanged({ chainKey, range: newRange }),
+            )
+          }
+        />
+      </Box>
+      {/* the spinner takes the space of the axes on the right, centered with
+          the slider track (the slider has a bottom margin of 20px because its
+          marks have labels) */}
+      <Box
+        sx={{
+          width: `${insetRight}px`,
+          display: "flex",
+          justifyContent: "center",
+          mb: "20px",
+        }}
+      >
+        {isLoading ? <Spinner size={24} /> : null}
+      </Box>
     </Box>
   );
 }

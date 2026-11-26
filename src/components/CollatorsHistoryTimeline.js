@@ -88,10 +88,10 @@ const renderTooltip = ({ active, payload }) => {
           <b>History</b>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          <i>Era {data.era?.format() ?? "-"}</i>
+          <i>Session {data.session.format()}</i>
         </Typography>
         <Typography component="div" variant="caption" color="inherit">
-          <i>Session {data.session.format()}</i>
+          <i>Era {data.era?.format() ?? "-"}</i>
         </Typography>
       </Box>
       <Typography component="div" variant="caption">

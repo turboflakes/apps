@@ -11,7 +11,6 @@ import OwnStakeBox from "./OwnStakeBox";
 import NodeVersionBox from "./NodeVersionBox";
 // import SubsetFilter from "./SubsetFilter";
 import GradesWithFilterBox from "./GradesWithFilterBox";
-import ValidatorsHistorySlideAndLoadBox from "./ValidatorsHistorySlideAndLoadBox";
 import {
   selectAddress,
   addressChanged,
@@ -66,7 +65,7 @@ export default function InsightsGrid() {
     if (stash && stash !== selectedAddress) {
       dispatch(addressChanged(stash));
     }
-  }, [stash, selectedAddress]);
+  }, [stash, selectedAddress, dispatch]);
 
   if (!isSocketConnected) {
     // TODO websocket/network disconnected page
@@ -93,7 +92,6 @@ export default function InsightsGrid() {
         {/* TODO: Review subset filter */}
         {/* <SubsetFilter />*/}
       </Box>
-      {isHistoryMode ? <ValidatorsHistorySlideAndLoadBox /> : null}
       <Grid container spacing={2}>
         {isLiveMode ? (
           <Grid item xs={hasBoxes ? 10 : 12}>

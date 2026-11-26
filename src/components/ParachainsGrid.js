@@ -14,37 +14,39 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowDownWideShort, faArrowUpWideShort } from '@fortawesome/free-solid-svg-icons'
 import ParachainCard from './ParachainCard';
 import PaginationBox from './PaginationBox';
-import { 
+import {
   useGetParachainsQuery,
  } from '../features/api/parachainsSlice';
 import {
   selectIsLiveMode,
 } from '../features/layout/layoutSlice';
-import { 
-  // selectTotalParachainIdsBySession,
+import {
   selectParachainIdsBySessionSortedBy,
-  // selectScheduledParachainsBySession
 } from '../features/api/sessionsSlice';
 
 const PAGE_SIZE = 16;
 
-export default function ParachainsGrid({sessionIndex}) {
+export default function ParachainsGrid({sessionIndex: requestedSession}) {
 	// const theme = useTheme();
   const [sortBy, setSortBy] = React.useState('para_id');
   const [orderBy, setOrderBy] = React.useState(false); // true -> asc; false -> desc
   const [page, setPage] = React.useState(0);
   const [identityFilter, setIdentityFilter] = React.useState('');
-  const {isSuccess} = useGetParachainsQuery({session: sessionIndex}, {refetchOnMountOrArgChange: true});
+  const {isSuccess, isFetching} = useGetParachainsQuery({session: requestedSession}, {refetchOnMountOrArgChange: true});
+  // the parachains of the previous session are shown while the new session is loading
+  const shownSession = React.useRef(requestedSession);
+  const hasLoaded = React.useRef(false);
+  if (isSuccess && !isFetching) {
+    shownSession.current = requestedSession;
+    hasLoaded.current = true;
+  }
+  const sessionIndex = shownSession.current;
   const paraIds = useSelector(state => selectParachainIdsBySessionSortedBy(state, sessionIndex, sortBy, orderBy, identityFilter));
-  // const nScheduled = useSelector(state => selectScheduledParachainsBySession(state, sessionIndex));
-  // const totalParaIds = useSelector(state => selectTotalParachainIdsBySession(state, sessionIndex));
   const isLiveMode = useSelector(selectIsLiveMode);
-  
-  if (!isSuccess) {
+
+  if (!hasLoaded.current) {
     return null
   }
-
-  // const pScheduled = Math.round(nScheduled * 100 / totalParaIds);
 
   const handleSort = (event, newSortBy) => {
     if (isNull(newSortBy)) {
@@ -64,13 +66,13 @@ export default function ParachainsGrid({sessionIndex}) {
   const handlePageChange = (page) => {
     setPage(page)
   }
-  
+
   return (
     <Box sx={{ m: 0 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Parachains</Typography>
-          {isLiveMode ? 
+          {isLiveMode ?
             <Typography variant="subtitle">
               Attestations of Validity by Parachain
             </Typography> :
@@ -85,21 +87,21 @@ export default function ParachainsGrid({sessionIndex}) {
             onChange={handleSort}
             sx={{ display: 'flex', alignItems: 'center'	}}
           >
-          <ToggleButton value="backing_points" aria-label="Sort by Backing Points" 
+          <ToggleButton value="backing_points" aria-label="Sort by Backing Points"
             disableRipple
             disableFocusRipple
             sx={{ px: 2, mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:last-of-type)': {borderRadius: 16}}}>
             <Box sx={{mr: 1}}>Sort by Backing Points</Box>
             {orderBy ? <FontAwesomeIcon icon={faArrowDownWideShort} /> : <FontAwesomeIcon icon={faArrowUpWideShort} />}
           </ToggleButton>
-          <ToggleButton value="mvr" aria-label="Sort by Missed Vote Ratio" 
+          <ToggleButton value="mvr" aria-label="Sort by Missed Vote Ratio"
             disableRipple
             disableFocusRipple
             sx={{ px: 2, mr: 1, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
             <Box sx={{mr: 1}}>Sort by Missed Vote Ratio</Box>
             {orderBy ? <FontAwesomeIcon icon={faArrowDownWideShort} /> : <FontAwesomeIcon icon={faArrowUpWideShort} />}
           </ToggleButton>
-          <ToggleButton value="para_id" aria-label="Sort by Para ID" 
+          <ToggleButton value="para_id" aria-label="Sort by Para ID"
             disableRipple
             disableFocusRipple
             sx={{ px: 2, border: 0, '&.Mui-selected' : {borderRadius: 16}, '&.MuiToggleButtonGroup-grouped:not(:first-of-type)': {borderRadius: 16}}}>
@@ -111,7 +113,6 @@ export default function ParachainsGrid({sessionIndex}) {
       <Box sx={{ mx: 2, mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <TextField
           sx={{
-            // backgroundColor: theme.palette.neutrals[100],
             borderRadius: 30,
             width: 512
           }}
@@ -136,8 +137,6 @@ export default function ParachainsGrid({sessionIndex}) {
               '> .MuiOutlinedInput-input': {
                 fontSize: "0.925rem",
                 height: "24px",
-                // fontSize: "0.825rem",
-                // lineHeight: "1rem",
               },
             }
           }}
@@ -151,9 +150,6 @@ export default function ParachainsGrid({sessionIndex}) {
           </Grid>
         ))}
       </Grid>
-      {/* <Box sx={{ m: 2, display: 'flex', justifyContent: 'flex-end', alignItems: 'center'}}>
-        <Typography variant="caption">Parachains scheduled: {nScheduled} ({pScheduled}%)</Typography>
-      </Box> */}
 		</Box>
   );
 }

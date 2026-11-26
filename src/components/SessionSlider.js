@@ -31,8 +31,7 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
     },
   },
   '& .MuiSlider-valueLabel': {
-    fontSize: 12,
-    fontWeight: 'normal',
+    fontWeight: '600',
     top: -6,
     backgroundColor: 'unset',
     // color: theme.palette.text.primary,
@@ -62,10 +61,10 @@ const CustomSlider = styled(Slider)(({ theme }) => ({
     },
   },
   '& .MuiSlider-markLabel': {
+    fontSize: 12,
     color: '#bfbfbf',
     '&.MuiSlider-markLabelActive': {
       color: theme.palette.text.primary,
-      fontWeight: '600'
     },
   },
 }));
@@ -78,9 +77,7 @@ function useSessionIndex(sessionIndex) {
   const [value, setValue] = React.useState(sessionIndex);
 
   React.useEffect(() => {
-    if (value !== sessionIndex) {
-      setValue(sessionIndex);
-    }
+    setValue((current) => (current !== sessionIndex ? sessionIndex : current));
   }, [sessionIndex]);
 
   return [value, setValue];
@@ -98,7 +95,6 @@ export default function SessionSlider({maxSessions, showLegend}) {
   }
 
   let currentSession = data[data.length - 1].six;
-  let defaultSession = !!historySession ? historySession : currentSession;
 
   const handleChange = (event, value) => {
     setSessionIndex(value);
@@ -127,31 +123,20 @@ export default function SessionSlider({maxSessions, showLegend}) {
   return (
     <Box
       sx={{
-        my: 2,
-        p: 2,
+        py: 2,
         display: 'flex',
-        // justifyContent: 'space-between',
         flexDirection: 'column',
-        // alignItems: 'center',
         width: '100%',
-        // height: 72,
-        // borderRadius: 3,
-        // borderTopLeftRadius: '24px',
-        // borderTopRightRadius: '24px',
-        // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
       }}
       >
-      {/* <Box sx={{ p:`16px 24px`, display: 'flex', justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end'}}>
-          <Typography variant="h6">History</Typography>
-        </Box>
-      </Box> */}
       <Stack spacing={3} direction="row"
         sx={{ mb: 1, ml: !showLegend ? 6 : 0, mr: !showLegend ? 6 : 0 }} alignItems="center">
         {showLegend ? <Typography variant="caption" sx={{ ml: 3 }}>past</Typography> : null}
         <CustomSlider
           // defaultValue={sessionIndex}
           value={sessionIndex}
+          // no filled track, only the selected session is highlighted
+          track={false}
           onChange={handleChange}
           onChangeCommitted={handleChangeCommitted}
           step={1}

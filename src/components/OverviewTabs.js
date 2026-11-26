@@ -54,7 +54,7 @@ export default function OverviewTabs({ sessionIndex, tab }) {
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
 
-  const { isSuccess } = useGetValidatorsQuery(
+  const { isSuccess, isFetching } = useGetValidatorsQuery(
     {
       session: sessionIndex,
       role: "para_authority",
@@ -70,7 +70,14 @@ export default function OverviewTabs({ sessionIndex, tab }) {
     navigate(`/${tabPages[newValue]}`);
   };
 
-  if (!isSuccess) {
+  // NOTE: `isSuccess` is false for one render when `sessionIndex` changes (the
+  // new request is not started yet), the content is only hidden until the
+  // first success so that it is not unmounted (and its requests repeated)
+  const hasLoaded = React.useRef(false);
+  if (isSuccess) {
+    hasLoaded.current = true;
+  }
+  if (!hasLoaded.current) {
     return null;
   }
 
@@ -153,8 +160,8 @@ export default function OverviewTabs({ sessionIndex, tab }) {
         </Tabs>
 
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          {isHistoryMode && tab === 1 ? <HistoryErasToggle /> : null}
-          {tab !== 5 ? <ModeSwitch mode={selectedMode} /> : null}
+          {isHistoryMode && tab >= 0 && tab <= 3 ? <HistoryErasToggle /> : null}
+          {tab !== 4 && tab !== 5 ? <ModeSwitch mode={selectedMode} /> : null}
         </Box>
 
       </Box>
@@ -168,9 +175,13 @@ export default function OverviewTabs({ sessionIndex, tab }) {
         backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
         }} /> */}
 
-      {isHistoryMode && (tab === 2 || tab === 3) ? (
+      {isHistoryMode && (tab === 0 || tab === 2 || tab === 3) ? (
         <Box sx={{ my: 2 }}>
-          <SessionHistoryTimelineChart maxSessions={maxHistorySessions} />
+          <SessionHistoryTimelineChart
+            maxSessions={maxHistorySessions}
+            selection={tab === 0 ? "range" : "session"}
+            isFetching={isFetching}
+          />
         </Box>
       ) : null}
       {isHistoryMode && tab === 1 ? (
