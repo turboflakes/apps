@@ -22,6 +22,7 @@ import chainBrainstorm from './chains/brainstorm.png';
 import chainBridgeHub from './chains/bridgehub.svg';
 import chainBridgeHubKusama from './chains/bridgeHubKusama.svg';
 import chainBridgeHubPolkadot from './chains/bridgeHubPolkadot.svg';
+import chainBulletin from './chains/bulletin.svg';
 import chainComposableFinance from './chains/composableFinance.png';
 import chainCollectives from './chains/collectives.png';
 import chainCoretimeKusama from './chains/coretimeKusama.svg';
@@ -273,6 +274,7 @@ export const chainLogos = Object.entries({
   'Bifrost Stage Testnet': nodeBifrost,
   Bitgreen: chainBitgreen,
   BitgreenRococo: chainBitgreen,
+  Bulletin: chainBulletin,
   'Calamari': nodeCalamari,
   'Calamari Parachain': nodeCalamari,
   'Calamari Parachain Development': nodeCalamari,
@@ -406,6 +408,7 @@ export const chainLogos = Object.entries({
   'Parami PC2': nodeParami,
   'Paseo Asset Hub': chainAssetHub,
   'Paseo Bridge Hub': chainBridgeHub,
+  'Paseo Bulletin': chainBulletin,
   'Paseo Coretime': chainCoretimePaseo,
   'Paseo People': chainPeoplePaseo,
   Peaq: chainPeaq,
@@ -421,6 +424,7 @@ export const chainLogos = Object.entries({
   'Polkadex Testnet': nodePolkadex,
   'Polkadot Asset Hub': chainAssetHub,
   'Polkadot Bridge Hub': chainBridgeHub,
+  'Polkadot Bulletin': chainBulletin,
   'Polkadot Coretime': chainCoretimePolkadot,
   'Polkadot People': chainPeoplePolkadot,
   'PolkaFoundry PC1': nodePolkaFoundry,
@@ -488,6 +492,7 @@ export const chainLogos = Object.entries({
   'Watr Network': chainWatr,
   'Web3Games Plum': nodeWeb3games,
   Westend: nodeWestend,
+  'Westend Bulletin': chainBulletin,
   Westmint: nodeStatemine,
   'Westmint Test': nodeStatemine,
   WILT: nodeKilt,
