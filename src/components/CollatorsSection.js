@@ -19,6 +19,8 @@ import {
 } from "../features/layout/layoutSlice";
 import { isCollationAvailable } from "../constants";
 
+const CHAIN_NAMES = { ah: "Asset Hub", pp: "People", bu: "Bulletin" };
+
 export default function CollatorsSection() {
   const selectedChain = useSelector(selectChain);
   const skip = !isCollationAvailable(selectedChain);
@@ -42,6 +44,7 @@ export default function CollatorsSection() {
   // subscribes to the updates of each chain)
   useGetCollatorsQuery({ chain_key: "ah", stats: true, slot: true }, { skip });
   useGetCollatorsQuery({ chain_key: "pp", stats: true, slot: true }, { skip });
+  useGetCollatorsQuery({ chain_key: "bu", stats: true, slot: true }, { skip });
 
   return (
     <Box sx={{ m: 0 }}>
@@ -49,7 +52,7 @@ export default function CollatorsSection() {
         <Box sx={{ p: 2 }}>
           <Typography variant="h4">Collators</Typography>
           <Typography variant="subtitle">
-            {`${chainKey === "ah" ? "Asset Hub" : "People"} collators in the current session ${summary?.session?.format() ?? ""}`.trim()}
+            {`${CHAIN_NAMES[chainKey]} collators in the current session ${summary?.session?.format() ?? ""}`.trim()}
           </Typography>
         </Box>
         <ToggleButtonGroup
@@ -84,6 +87,27 @@ export default function CollatorsSection() {
             disableFocusRipple
             sx={{
               px: 2,
+              mr: 1,
+              border: 0,
+              "&.Mui-selected": { borderRadius: 16 },
+              "&.MuiToggleButtonGroup-grouped:not(:first-of-type)": {
+                borderRadius: 16,
+              },
+              "&.MuiToggleButtonGroup-grouped:not(:last-of-type)": {
+                borderRadius: 16,
+              },
+            }}
+          >
+            People
+            <FontAwesomeIcon icon={faLink} style={{ marginLeft: 8 }} />
+          </ToggleButton>
+          <ToggleButton
+            value="bu"
+            aria-label="Bulletin"
+            disableRipple
+            disableFocusRipple
+            sx={{
+              px: 2,
               border: 0,
               "&.Mui-selected": { borderRadius: 16 },
               "&.MuiToggleButtonGroup-grouped:not(:first-of-type)": {
@@ -91,7 +115,7 @@ export default function CollatorsSection() {
               },
             }}
           >
-            People
+            Bulletin
             <FontAwesomeIcon icon={faLink} style={{ marginLeft: 8 }} />
           </ToggleButton>
         </ToggleButtonGroup>

@@ -66,8 +66,9 @@ export default function CollationGradesBoxHeader({ dark, chain_key }) {
         <Typography
           variant="caption1"
           color={dark ? theme.palette.text.secondary : "default"}
+          sx={{ whiteSpace: 'nowrap' }}
         >
-          grade majority
+          top grade
         </Typography>
         <Typography
           variant="h6"

@@ -32,7 +32,7 @@ const emptyBox = ({theme, dark, height = 96}) => {
 
 // NOTE: `grades` overrides the grades of the session (e.g. collators only)
 export default function GradesSmallBox({
-  sessionIndex, dark, grades: gradesProp, label = 'session grade majority',
+  sessionIndex, dark, grades: gradesProp, label = 'top grade',
   unit = 'para-authorities', variant = 'h5', height = 96, pieSize = 'sm' }) {
   const theme = useTheme();
   const sessionGrades = useSelector(state => selectGradesBySession(state, sessionIndex));

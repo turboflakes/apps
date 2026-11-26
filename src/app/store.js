@@ -9,11 +9,13 @@ import socketSlice from "../features/api/socketSlice";
 import blocksSlice from "../features/api/blocksSlice";
 import blocksAHSlice from "../features/api/blocksAHSlice";
 import blocksPPSlice from "../features/api/blocksPPSlice";
+import blocksBUSlice from "../features/api/blocksBUSlice";
 import sessionsSlice from "../features/api/sessionsSlice";
 import collationStatsSlice from "../features/api/collationStatsSlice";
 import collationSlotsSlice from "../features/api/collationSlotsSlice";
 import sessionsAHSlice from "../features/api/sessionsAHSlice";
 import sessionsPPSlice from "../features/api/sessionsPPSlice";
+import sessionsBUSlice from "../features/api/sessionsBUSlice";
 import collationKindSlice from "../features/api/collationKindSlice";
 import collatorsSlice from "../features/api/collatorsSlice";
 import predictionsSlice from "../features/api/predictionsSlice";
@@ -39,11 +41,13 @@ export const store = configureStore({
     blocks: blocksSlice.reducer,
     blocks_ah: blocksAHSlice.reducer,
     blocks_pp: blocksPPSlice.reducer,
+    blocks_bu: blocksBUSlice.reducer,
     sessions: sessionsSlice.reducer,
     collation_stats: collationStatsSlice.reducer,
     collation_slots: collationSlotsSlice.reducer,
     sessions_ah: sessionsAHSlice.reducer,
     sessions_pp: sessionsPPSlice.reducer,
+    sessions_bu: sessionsBUSlice.reducer,
     collation_kind: collationKindSlice.reducer,
     collators: collatorsSlice.reducer,
     predictions: predictionsSlice.reducer,

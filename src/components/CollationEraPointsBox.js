@@ -17,6 +17,11 @@ import {
   selectEraPreviousPointsBySessionPP,
   selectEraPreviousBlocksBySessionPP,
 } from "../features/api/sessionsPPSlice";
+import {
+  selectSessionByIndexBU,
+  selectEraPreviousPointsBySessionBU,
+  selectEraPreviousBlocksBySessionBU,
+} from "../features/api/sessionsBUSlice";
 import { selectSessionCurrent } from "../features/api/sessionsSlice";
 import { selectChain } from "../features/chain/chainSlice";
 import { isCollationAvailable } from "../constants";
@@ -25,16 +30,19 @@ import CollationEmptyBox from "./CollationEmptyBox";
 const selectSessionByIndex = {
   ah: selectSessionByIndexAH,
   pp: selectSessionByIndexPP,
+  bu: selectSessionByIndexBU,
 };
 
 const selectPreviousPoints = {
   ah: selectEraPreviousPointsBySessionAH,
   pp: selectEraPreviousPointsBySessionPP,
+  bu: selectEraPreviousPointsBySessionBU,
 };
 
 const selectPreviousBlocks = {
   ah: selectEraPreviousBlocksBySessionAH,
   pp: selectEraPreviousBlocksBySessionPP,
+  bu: selectEraPreviousBlocksBySessionBU,
 };
 
 // Collation points of the system chain (`chainKey`) since its era started: the

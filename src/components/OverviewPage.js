@@ -51,10 +51,11 @@ export default function OverviewPage({tab}) {
   const collationHidden = useSelector(state => ({
     ah: selectCollationHidden(state, 'ah'),
     pp: selectCollationHidden(state, 'pp'),
+    bu: selectCollationHidden(state, 'bu'),
   }), shallowEqual);
-  const isAllHidden = collationHidden.ah && collationHidden.pp;
+  const isAllHidden = collationHidden.ah && collationHidden.pp && collationHidden.bu;
   // the button that hides or shows the details lives in the row of the last visible header
-  const isButtonInAH = isCollatorsTab && collatorsChain === 'ah';
+  const buttonChain = isCollatorsTab ? collatorsChain : 'bu';
 
   const hiddenIfNotExpanded = (chainKey) => collationHidden[chainKey] ? { display: 'none' } : undefined;
   const historySession = useSelector(selectSessionHistory);
@@ -115,15 +116,15 @@ export default function OverviewPage({tab}) {
                 }} />
             </Grid>
             {/* Asset Hub */}
-            <Grid item xs={12} md={isNotSelected("pp") ? 12 : 6} sx={{ position: 'relative', ...hiddenIfNotSelected("ah") }}>
+            <Grid item xs={12} md={isCollatorsTab ? 12 : 4} sx={{ position: 'relative', ...hiddenIfNotSelected("ah") }}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   {/* the button lives in the row of the last visible header */}
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Box sx={{ flexGrow: 1 }}>
-                      <CollationHeader chainKey="ah" name="Asset Hub" />
+                      <CollationHeader chainKey="ah" name="Asset Hub" isCollatorsTab={isCollatorsTab} />
                     </Box>
-                    {isButtonInAH && hideButton}
+                    {buttonChain === "ah" && hideButton}
                   </Box>
                 </Grid>
                 <Grid item xs={12} md={isCollatorsTab ? 3 : 4} sx={hiddenIfNotExpanded("ah")}>
@@ -147,15 +148,15 @@ export default function OverviewPage({tab}) {
               </Grid>
             </Grid>
             {/* People */}
-            <Grid item xs={12} md={isNotSelected("ah") ? 12 : 6} sx={hiddenIfNotSelected("pp")}>
+            <Grid item xs={12} md={isCollatorsTab ? 12 : 4} sx={hiddenIfNotSelected("pp")}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   {/* the button lives in the row of the last visible header */}
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Box sx={{ flexGrow: 1 }}>
-                      <CollationHeader chainKey="pp" name="People" />
+                      <CollationHeader chainKey="pp" name="People" isCollatorsTab={isCollatorsTab} />
                     </Box>
-                    {!isButtonInAH && hideButton}
+                    {buttonChain === "pp" && hideButton}
                   </Box>
                 </Grid>
                 <Grid item xs={12} md={isCollatorsTab ? 3 : 4} sx={hiddenIfNotExpanded("pp")}>
@@ -175,6 +176,38 @@ export default function OverviewPage({tab}) {
                 </Grid>
                 <Grid item xs={12} md={isCollatorsTab ? 9 : 8} sx={hiddenIfNotExpanded("pp")}>
                   <CollationSlotBox chainKey="pp" />
+                </Grid>
+              </Grid>
+            </Grid>
+            {/* Bulletin */}
+            <Grid item xs={12} md={isCollatorsTab ? 12 : 4} sx={hiddenIfNotSelected("bu")}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  {/* the button lives in the row of the last visible header */}
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ flexGrow: 1 }}>
+                      <CollationHeader chainKey="bu" name="Bulletin" isCollatorsTab={isCollatorsTab} />
+                    </Box>
+                    {buttonChain === "bu" && hideButton}
+                  </Box>
+                </Grid>
+                <Grid item xs={12} md={isCollatorsTab ? 3 : 4} sx={hiddenIfNotExpanded("bu")}>
+                  <CollationAuthoritiesBox chainKey="bu" />
+                </Grid>
+                <Grid item xs={12} md={isCollatorsTab ? 3 : 4} sx={hiddenIfNotExpanded("bu")}>
+                  <CollationBlocksBox chainKey="bu" />
+                </Grid>
+                <Grid item xs={12} md={isCollatorsTab ? 3 : 4} sx={hiddenIfNotExpanded("bu")}>
+                  <CollationPointsBox chainKey="bu" />
+                </Grid>
+                {isCollatorsTab && (<Grid item xs={12} md={3} sx={hiddenIfNotExpanded("bu")}>
+                  <CollationEraPointsBox chainKey="bu" name="bulletin" />
+                </Grid>)}
+                <Grid item xs={12} md={isCollatorsTab ? 3 : 4} sx={hiddenIfNotExpanded("bu")}>
+                  <CollationGradesBox chainKey="bu" name="bulletin" />
+                </Grid>
+                <Grid item xs={12} md={isCollatorsTab ? 9 : 8} sx={hiddenIfNotExpanded("bu")}>
+                  <CollationSlotBox chainKey="bu" />
                 </Grid>
               </Grid>
             </Grid>

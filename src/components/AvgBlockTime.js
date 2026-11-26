@@ -7,6 +7,7 @@ import {
 } from "../features/api/blocksSlice";
 import { selectAll as selectAllBlocksAH } from "../features/api/blocksAHSlice";
 import { selectAllBlocksPP } from "../features/api/blocksPPSlice";
+import { selectAllBlocksBU } from "../features/api/blocksBUSlice";
 import { selectChain } from "../features/chain/chainSlice";
 import { isCollationAvailable } from "../constants";
 
@@ -14,6 +15,7 @@ const selectors = {
   rc: selectAllBlocksRC,
   ah: selectAllBlocksAH,
   pp: selectAllBlocksPP,
+  bu: selectAllBlocksBU,
 };
 
 // Number of the latest blocks considered for the average. NOTE: the relay

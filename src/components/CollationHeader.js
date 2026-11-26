@@ -1,18 +1,26 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useGetCollatorsQuery } from "../features/api/collatorsSlice";
 import { selectChain } from "../features/chain/chainSlice";
-import { selectCollationHidden } from "../features/layout/layoutSlice";
+import {
+  selectCollationHidden,
+  pageChanged,
+  collatorsChainChanged,
+  collationHiddenChanged,
+} from "../features/layout/layoutSlice";
 import { isCollationAvailable } from "../constants";
 import SessionBoxHeader from "./SessionBoxHeader";
 import FinalizedBlockBoxHeader from "./FinalizedBlockBoxHeader";
-import BestBlockBoxHeader from "./BestBlockBoxHeader";
+import FinalityLagBoxHeader from "./FinalityLagBoxHeader";
 import AvgBlockTimeBoxHeader from "./AvgBlockTimeBoxHeader";
 import CollationGradesBoxHeader from "./CollationGradesBoxHeader";
 
-export default function CollationHeader({ chainKey, name }) {
+export default function CollationHeader({ chainKey, name, isCollatorsTab }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const selectedChain = useSelector(selectChain);
   const isReady = isCollationAvailable(selectedChain);
   const hidden = useSelector((state) => selectCollationHidden(state, chainKey));
@@ -26,6 +34,13 @@ export default function CollationHeader({ chainKey, name }) {
     return null;
   }
 
+  const handleOnClick = () => {
+    dispatch(collatorsChainChanged(chainKey));
+    dispatch(collationHiddenChanged(false));
+    dispatch(pageChanged("collators"));
+    navigate("/collators");
+  };
+
   return (
     <Box
       sx={{
@@ -37,16 +52,32 @@ export default function CollationHeader({ chainKey, name }) {
         mb: 0,
       }}
     >
-      <Typography variant="h6" ml={3}>
+      <Typography
+        variant="h6"
+        ml={1}
+        onClick={isCollatorsTab ? undefined : handleOnClick}
+        sx={
+          isCollatorsTab
+            ? undefined
+            : { cursor: "pointer", "&:hover": { textDecoration: "underline" } }
+        }
+      >
         {name}
       </Typography>
+      {hidden && !isCollatorsTab ? (
+        <CollationGradesBoxHeader chain_key={chainKey} />
+      ) : null}
       <Box sx={{ ml: 1, flexGrow: 1, display: "flex" }}></Box>
+      {/* right aligned in the collators tab */}
+      {hidden && isCollatorsTab ? (
+        <CollationGradesBoxHeader chain_key={chainKey} />
+      ) : null}
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        {hidden ? <CollationGradesBoxHeader chain_key={chainKey} /> : null}
-        <SessionBoxHeader chain_key={chainKey} />
+
+        {isCollatorsTab ? <SessionBoxHeader chain_key={chainKey} /> : null}
         <FinalizedBlockBoxHeader chain_key={chainKey} />
-        <BestBlockBoxHeader chain_key={chainKey} />
-        <AvgBlockTimeBoxHeader chain_key={chainKey} />
+        <FinalityLagBoxHeader chain_key={chainKey} />
+        {isCollatorsTab ? <AvgBlockTimeBoxHeader chain_key={chainKey} /> : null}
       </Box>
     </Box>
   );
