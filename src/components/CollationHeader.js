@@ -9,6 +9,7 @@ import {
   selectCollationHidden,
   pageChanged,
   collatorsChainChanged,
+  collationHiddenChanged,
 } from "../features/layout/layoutSlice";
 import { isCollationAvailable } from "../constants";
 import SessionBoxHeader from "./SessionBoxHeader";
@@ -33,9 +34,9 @@ export default function CollationHeader({ chainKey, name, isCollatorsTab }) {
     return null;
   }
 
-  // opens the collators page of the chain
   const handleOnClick = () => {
     dispatch(collatorsChainChanged(chainKey));
+    dispatch(collationHiddenChanged(false));
     dispatch(pageChanged("collators"));
     navigate("/collators");
   };
