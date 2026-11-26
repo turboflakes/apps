@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-// import { useTheme } from '@mui/material/styles';
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -12,15 +11,18 @@ import ParachainsGrid from "./ParachainsGrid";
 import ValWaitingSection from "./ValWaitingSection";
 import ValPredictionSection from "./ValPredictionSection";
 import CollatorsSection from "./CollatorsSection";
+import CollatorsHistoryTimeline from "./CollatorsHistoryTimeline";
 import { selectChain } from "../features/chain/chainSlice";
 import { isCollationAvailable } from "../constants";
 import ModeSwitch from "./ModeSwitch";
+import HistoryErasToggle from "./HistoryErasToggle";
 import SessionHistoryTimelineChart from "./SessionHistoryTimelineChart";
 import { useGetValidatorsQuery } from "../features/api/validatorsSlice";
 
 import {
   pageChanged,
   selectMode,
+  selectCollatorsChain,
   selectIsHistoryMode,
   selectMaxHistorySessions,
 } from "../features/layout/layoutSlice";
@@ -48,6 +50,7 @@ export default function OverviewTabs({ sessionIndex, tab }) {
   const dispatch = useDispatch();
   const selectedChain = useSelector(selectChain);
   const selectedMode = useSelector(selectMode);
+  const collatorsChain = useSelector(selectCollatorsChain);
   const isHistoryMode = useSelector(selectIsHistoryMode);
   const maxHistorySessions = useSelector(selectMaxHistorySessions);
 
@@ -148,7 +151,12 @@ export default function OverviewTabs({ sessionIndex, tab }) {
           ) : null}
           {/* <Tab sx={{ my:1,  borderRadius: 3 }} label="Cores" {...a11yProps(3)} disableRipple disableFocusRipple /> */}
         </Tabs>
-        {tab !== 1 && tab !== 5 ? <ModeSwitch mode={selectedMode} /> : null}
+
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {isHistoryMode && tab === 1 ? <HistoryErasToggle /> : null}
+          {tab !== 5 ? <ModeSwitch mode={selectedMode} /> : null}
+        </Box>
+
       </Box>
 
       {/* <Divider sx={{
@@ -163,6 +171,14 @@ export default function OverviewTabs({ sessionIndex, tab }) {
       {isHistoryMode && (tab === 2 || tab === 3) ? (
         <Box sx={{ my: 2 }}>
           <SessionHistoryTimelineChart maxSessions={maxHistorySessions} />
+        </Box>
+      ) : null}
+      {isHistoryMode && tab === 1 ? (
+        <Box sx={{ my: 2 }}>
+          <CollatorsHistoryTimeline
+            chainKey={collatorsChain}
+            maxSessions={maxHistorySessions}
+          />
         </Box>
       ) : null}
       {tab === 0 ? (

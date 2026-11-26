@@ -12,13 +12,18 @@ import Identicon from "@polkadot/react-identicon";
 import GridIdentityLink from "./GridIdentityLink";
 import IdentityFilter from "./IdentityFilter";
 import {
+  selectCollatorsAll,
   selectCollatorsByChainAndSession,
   selectCollatorsSummaryLatest,
 } from "../features/api/collatorsSlice";
 import { selectCollationSlotBySessionAndPid } from "../features/api/collationSlotsSlice";
 import { selectSessionCurrent } from "../features/api/sessionsSlice";
 import { selectAll as selectValProfilesAll } from "../features/api/valProfilesSlice";
-import { selectIdentityFilter } from "../features/layout/layoutSlice";
+import {
+  selectIdentityFilter,
+  selectCollatorsHistoryRange,
+  selectIsHistoryMode,
+} from "../features/layout/layoutSlice";
 import { selectChainInfo, selectChain } from "../features/chain/chainSlice";
 import { gradeByRatios } from "../util/grade";
 import { calculateMCR } from "../util/math";
@@ -123,27 +128,81 @@ const defineColumns = (theme, chainInfo, selectedChain) => [
   })),
 ];
 
+// Sums the values of the collators of the sessions of a range
+// (`[from, to]`) of the system chain (`chainKey`). The kind is the one of the
+// latest session of the collator.
+const sumCollatorsByRange = (all, chainKey, range) => {
+  if (!range) {
+    return [];
+  }
+  const byAddress = {};
+  all
+    .filter(
+      (c) =>
+        c.chain_key === chainKey &&
+        c.session >= range[0] &&
+        c.session <= range[1],
+    )
+    .sort((a, b) => a.session - b.session)
+    .forEach((c) => {
+      const acc = byAddress[c.address] ?? {
+        chain_key: c.chain_key,
+        address: c.address,
+        os: 0,
+        eb: 0,
+        pb: 0,
+        pt: 0,
+        ms: 0,
+      };
+      byAddress[c.address] = {
+        ...acc,
+        kind: c.kind,
+        os: acc.os + (c.os ?? 0),
+        eb: acc.eb + (c.eb ?? 0),
+        pb: acc.pb + (c.pb ?? 0),
+        pt: acc.pt + (c.pt ?? 0),
+        ms: acc.ms + (c.ms ?? 0),
+      };
+    });
+  return Object.values(byAddress);
+};
+
 // Collators of the system chain (`chainKey`) in its latest session
 export default function CollatorsDataGrid({ chainKey }) {
   const theme = useTheme();
   const selectedChain = useSelector(selectChain);
   const chainInfo = useSelector(selectChainInfo);
+  const isHistoryMode = useSelector(selectIsHistoryMode);
+  const historyRange = useSelector((state) =>
+    selectCollatorsHistoryRange(state, chainKey),
+  );
   const summary = useSelector((state) =>
     selectCollatorsSummaryLatest(state, chainKey),
   );
-  const collators = useSelector((state) =>
+  const latestCollators = useSelector((state) =>
     selectCollatorsByChainAndSession(state, chainKey, summary?.session),
+  );
+  const allCollators = useSelector(selectCollatorsAll);
+  // in history mode the values of the sessions of the range are accumulated
+  const collators = React.useMemo(
+    () =>
+      isHistoryMode
+        ? sumCollatorsByRange(allCollators, chainKey, historyRange)
+        : latestCollators,
+    [isHistoryMode, allCollators, chainKey, historyRange, latestCollators],
   );
 
   // open slot of the chain, tied to the current relay session
   const currentSession = useSelector(selectSessionCurrent);
-  const slot = useSelector((state) =>
+  // (a closed session of the history has no open slot)
+  const liveSlot = useSelector((state) =>
     selectCollationSlotBySessionAndPid(
       state,
       currentSession,
       summary?.para_id,
     ),
   );
+  const slot = isHistoryMode ? undefined : liveSlot;
 
   const identityFilter = useSelector(selectIdentityFilter);
   const profiles = useSelector(selectValProfilesAll);
