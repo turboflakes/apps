@@ -24,6 +24,7 @@ import ValStateBox from './ValStateBox';
 import ValParaInclusionBox from './ValParaInclusionBox';
 import ValCollationBox from './ValCollationBox';
 import ValCollationSlotBox from './ValCollationSlotBox';
+import ValChainPointsChart from './ValChainPointsChart';
 import Spinner from './Spinner';
 import {
   selectSessionByIndex,
@@ -149,12 +150,11 @@ export default function ValHeaderBox({address, sessionIndex}) {
           </Box>
         </Grid>
 
-        <Grid item xs={12}>
-          <SectionDivider sx={{ mt: 1 }} />
-        </Grid>
-
         {validator.is_collator ? (
           <React.Fragment>
+            <Grid item xs={12}>
+              <SectionDivider sx={{ mt: 1 }} />
+            </Grid>
             <Grid item xs={12} md={5}>
               {isLiveMode ? (
                 <Grid container spacing={2}>
@@ -188,6 +188,12 @@ export default function ValHeaderBox({address, sessionIndex}) {
               </Grid>
             </Grid>
           </React.Fragment>
+        ) : null}
+
+        {validator.is_collator && isLiveMode ? (
+          <Grid item xs={12} md={5}>
+            <ValChainPointsChart address={address} />
+          </Grid>
         ) : null}
 
         <Grid item xs={12}>

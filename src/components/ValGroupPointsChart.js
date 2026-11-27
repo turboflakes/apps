@@ -25,7 +25,7 @@ const renderTooltip = (props, theme) => {
     const data = payload[0] && payload[0].payload;
     return (
       <Box
-        sx={{ 
+        sx={{
           bgcolor: '#fff',
           p: 2,
           m: 0,
@@ -38,7 +38,7 @@ const renderTooltip = (props, theme) => {
           <b>{data.name}</b>
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center'}}>
-            <Box sx={{ width: '8px', height: '8px', borderRadius: '50%', 
+            <Box sx={{ width: '8px', height: '8px', borderRadius: '50%',
                         bgcolor: theme.palette.grade[data.gradeValue] }}>
             </Box>
             <Typography variant="caption" sx={{ml: 1}}><b>{data.gradeValue}</b></Typography>
@@ -79,7 +79,7 @@ export default function ValGroupPointsChart({sessionIndex, groupId}) {
     gradeValue: gradeByRatios(calculateMVR(v.para_summary.ev, v.para_summary.iv, v.para_summary.mv), calculateBUR(v.para.bitfields?.ba, v.para.bitfields?.bu)),
     name: nameDisplay(v.profile?.identity ? v.profile._identity : stashDisplay(chainAddress(v.address, getNetworkSS58Format(selectedChain)), 4), 12, selectedAddress === v.address ? '★ ' : '')
   }))
-  
+
   return (
     <Paper sx={{ p: 2,
       display: 'flex',
@@ -111,7 +111,7 @@ export default function ValGroupPointsChart({sessionIndex, groupId}) {
           }}
         >
           <CartesianGrid strokeDasharray="1 4" vertical={true} horizontal={false} />
-          <XAxis style={{ fontSize: '0.8rem' }} axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} type="number" />         
+          <XAxis style={{ fontSize: '0.8rem' }} axisLine={{stroke: '#C8C9CC', strokeWidth: 1}} type="number" />
           <YAxis style={{ fontSize: '0.8rem', whiteSpace: 'nowrap' }} dataKey="name" type="category" width={128}
             axisLine={{stroke: '#C8C9CC', strokeWidth: 1, width: 100}} />
           <Bar dataKey="abPoints" stackId="points" barSize={12} fill={theme.palette.secondary.main}  />
@@ -121,10 +121,10 @@ export default function ValGroupPointsChart({sessionIndex, groupId}) {
               data.map((entry, index) => (<Cell key={`cell-${index}`}  fill={theme.palette.grade[entry.gradeValue]} />))
             }
           </Bar>
-          <Tooltip 
+          <Tooltip
                 cursor={{fill: theme.palette.divider}}
                 offset={24}
-                wrapperStyle={{ zIndex: 100 }} 
+                wrapperStyle={{ zIndex: 100 }}
                 content={props => renderTooltip(props, theme)} />
         </BarChart>
       </ResponsiveContainer>
