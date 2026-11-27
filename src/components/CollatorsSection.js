@@ -1,15 +1,10 @@
 import * as React from "react";
-import { useSearchParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import isUndefined from "lodash/isUndefined";
+import { useSelector } from "react-redux";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
 import CollatorsDataGrid from "./CollatorsDataGrid";
+import ChainToggle from "./ChainToggle";
 import {
   useGetCollatorsQuery,
   selectCollatorsSummaryLatest,
@@ -19,7 +14,6 @@ import {
   selectCollatorsChain,
   selectCollatorsHistoryRange,
   selectIsHistoryMode,
-  collatorsChainChanged,
 } from "../features/layout/layoutSlice";
 import { isCollationAvailable } from "../constants";
 
@@ -28,7 +22,6 @@ const CHAIN_NAMES = { ah: "Asset Hub", pp: "People", bu: "Bulletin" };
 export default function CollatorsSection() {
   const selectedChain = useSelector(selectChain);
   const skip = !isCollationAvailable(selectedChain);
-  const dispatch = useDispatch();
   // shared with the overview, where the other chain is collapsed
   const chainKey = useSelector(selectCollatorsChain);
 
@@ -42,38 +35,6 @@ export default function CollatorsSection() {
   const summary = useSelector((state) =>
     selectCollatorsSummaryLatest(state, chainKey),
   );
-
-  const paraIds = {
-    ah: useSelector((state) => selectCollatorsSummaryLatest(state, "ah"))
-      ?.para_id,
-    pp: useSelector((state) => selectCollatorsSummaryLatest(state, "pp"))
-      ?.para_id,
-    bu: useSelector((state) => selectCollatorsSummaryLatest(state, "bu"))
-      ?.para_id,
-  };
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const para = searchParams.get("para");
-  const appliedPara = React.useRef(null);
-  const paraChainKey = Object.keys(paraIds).find(
-    (k) => !isUndefined(paraIds[k]) && String(paraIds[k]) === para,
-  );
-  React.useEffect(() => {
-    if (!isUndefined(paraChainKey) && appliedPara.current !== para) {
-      appliedPara.current = para;
-      dispatch(collatorsChainChanged(paraChainKey));
-    }
-  }, [dispatch, para, paraChainKey]);
-
-  const handleChainChange = (event, value) => {
-    if (value !== null) {
-      dispatch(collatorsChainChanged(value));
-      if (!isUndefined(paraIds[value])) {
-        searchParams.set("para", paraIds[value]);
-        setSearchParams(searchParams);
-      }
-    }
-  };
 
   // the collators of the current session of each system chain (also
   // subscribes to the updates of each chain)
@@ -98,70 +59,7 @@ export default function CollatorsSection() {
               : `${CHAIN_NAMES[chainKey]} collators in the current session ${summary?.session?.format() ?? ""}`.trim()}
           </Typography>
         </Box>
-        <ToggleButtonGroup
-          value={chainKey}
-          size="small"
-          exclusive
-          onChange={handleChainChange}
-          sx={{ display: "flex", alignItems: "center" }}
-        >
-          <ToggleButton
-            value="ah"
-            aria-label="Asset Hub"
-            disableRipple
-            disableFocusRipple
-            sx={{
-              px: 2,
-              mr: 1,
-              border: 0,
-              "&.Mui-selected": { borderRadius: 16 },
-              "&.MuiToggleButtonGroup-grouped:not(:last-of-type)": {
-                borderRadius: 16,
-              },
-            }}
-          >
-            Asset Hub
-            <FontAwesomeIcon icon={faLink} style={{ marginLeft: 8 }} />
-          </ToggleButton>
-          <ToggleButton
-            value="pp"
-            aria-label="People"
-            disableRipple
-            disableFocusRipple
-            sx={{
-              px: 2,
-              mr: 1,
-              border: 0,
-              "&.Mui-selected": { borderRadius: 16 },
-              "&.MuiToggleButtonGroup-grouped:not(:first-of-type)": {
-                borderRadius: 16,
-              },
-              "&.MuiToggleButtonGroup-grouped:not(:last-of-type)": {
-                borderRadius: 16,
-              },
-            }}
-          >
-            People
-            <FontAwesomeIcon icon={faLink} style={{ marginLeft: 8 }} />
-          </ToggleButton>
-          <ToggleButton
-            value="bu"
-            aria-label="Bulletin"
-            disableRipple
-            disableFocusRipple
-            sx={{
-              px: 2,
-              border: 0,
-              "&.Mui-selected": { borderRadius: 16 },
-              "&.MuiToggleButtonGroup-grouped:not(:first-of-type)": {
-                borderRadius: 16,
-              },
-            }}
-          >
-            Bulletin
-            <FontAwesomeIcon icon={faLink} style={{ marginLeft: 8 }} />
-          </ToggleButton>
-        </ToggleButtonGroup>
+        <ChainToggle />
       </Box>
       <Paper
         sx={{

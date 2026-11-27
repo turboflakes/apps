@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import ChainToggle from "./ChainToggle";
 import Typography from "@mui/material/Typography";
 import ValidatorsInsights from "./ValidatorsInsights";
 import ValidatorsHistoryInsights from "./ValidatorsHistoryInsights";
@@ -89,6 +90,7 @@ export default function InsightsGrid() {
               : `Active validators between session ${historySessionRangeIds[0].format()} and ${historySessionRangeIds[historySessionRangeIds.length - 1].format()}`}
           </Typography>
         </Box>
+        <ChainToggle isRelay />
         {/* TODO: Review subset filter */}
         {/* <SubsetFilter />*/}
       </Box>
