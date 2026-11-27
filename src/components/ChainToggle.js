@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import isUndefined from "lodash/isUndefined";
 import ToggleButton from "@mui/material/ToggleButton";
@@ -10,6 +10,7 @@ import { selectCollatorsSummaryLatest } from "../features/api/collatorsSlice";
 import {
   selectCollatorsChain,
   collatorsChainChanged,
+  collationHiddenChanged,
   pageChanged,
 } from "../features/layout/layoutSlice";
 
@@ -18,6 +19,7 @@ import {
 export default function ChainToggle() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isInsights = useLocation().pathname === "/insights";
   // shared with the overview, where the other chain is collapsed
   const chainKey = useSelector(selectCollatorsChain);
 
@@ -52,7 +54,16 @@ export default function ChainToggle() {
       navigate(query ? `/insights?${query}` : "/insights");
     } else if (value !== null) {
       dispatch(collatorsChainChanged(value));
-      if (!isUndefined(paraIds[value])) {
+      if (isInsights) {
+        const params = new URLSearchParams(searchParams);
+        if (!isUndefined(paraIds[value])) {
+          params.set("para", paraIds[value]);
+        }
+        const query = params.toString();
+        dispatch(collationHiddenChanged(false));
+        dispatch(pageChanged("collators"));
+        navigate(query ? `/collators?${query}` : "/collators");
+      } else if (!isUndefined(paraIds[value])) {
         searchParams.set("para", paraIds[value]);
         setSearchParams(searchParams);
       }
@@ -61,7 +72,7 @@ export default function ChainToggle() {
 
   return (
     <ToggleButtonGroup
-      value={chainKey}
+      value={isInsights ? "rc" : chainKey}
       size="small"
       exclusive
       onChange={handleChainChange}

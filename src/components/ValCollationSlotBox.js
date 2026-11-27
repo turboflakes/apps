@@ -6,6 +6,8 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
+import AlertTooltip from "./Tooltip";
+import { useTheme } from "@mui/material/styles";
 import { selectSessionCurrent } from "../features/api/sessionsSlice";
 import { selectCollationSlotBySessionAndPid } from "../features/api/collationSlotsSlice";
 import {
@@ -20,6 +22,8 @@ import {
   collationHiddenChanged,
 } from "../features/layout/layoutSlice";
 import { isCollationAvailable, getCollationBlocksPerSlot } from "../constants";
+import { gradeByRatios } from "../util/grade";
+import { calculateMCR } from "../util/math";
 import { useAvgBlockTime } from "./AvgBlockTime";
 
 // Time as `N secs`, `N min(s)` or `Xh Ym`
@@ -36,6 +40,7 @@ const timeDisplay = (seconds) => {
 };
 
 export default function ValCollationSlotBox({ address, chainKey, name }) {
+  const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -79,6 +84,12 @@ export default function ValCollationSlotBox({ address, chainKey, name }) {
     params.set("para", summary.para_id);
     navigate(`/collators?${params.toString()}`);
   };
+
+  // the collator needs attention when its grade in the chain is F
+  const isLowGrade =
+    gradeByRatios(undefined, undefined, calculateMCR(collator.eb, collator.pb)) ===
+    "F";
+  const missedBlocks = collator.eb - collator.pb;
 
   const isOwner = !isUndefined(slot) && slot.cix === collator.cix;
 
@@ -164,6 +175,77 @@ export default function ValCollationSlotBox({ address, chainKey, name }) {
           </Box>
         </Tooltip>
       </Box>
+      {isLowGrade ? (
+        <Box
+          sx={{
+            px: 1,
+            flexShrink: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            justifyContent: "flex-start",
+          }}
+        >
+          <AlertTooltip
+            disableFocusListener
+            placement="bottom-start"
+            bgcolor={theme.palette.semantics.red}
+            title={
+              <Box sx={{ p: 1, minWidth: "144px" }}>
+                <Typography variant="h6" color="textSecondary" gutterBottom>
+                  <b>This collator needs attention!</b>
+                </Typography>
+                <Typography
+                  component="div"
+                  variant="caption"
+                  color="textSecondary"
+                >
+                  Low Grade F: <b>{missedBlocks.format()} missed blocks</b> of{" "}
+                  {collator.eb.format()} expected
+                </Typography>
+              </Box>
+            }
+          >
+            {/* NOTE: the tooltip passes its bgcolor to this child, so it is reset */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                bgcolor: "transparent",
+                cursor: "pointer",
+              }}
+            >
+              <Box sx={{ width: "16px", height: "16px", flexShrink: 0 }}>
+                <Box
+                  sx={{
+                    width: "16px",
+                    height: "16px",
+                    animation: "pulse 1s infinite ease-in-out alternate",
+                    borderRadius: "50%",
+                    boxShadow: "rgba(223, 35, 38, 0.8) 0px 0px 16px",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: "16px",
+                      height: "16px",
+                      bgcolor: theme.palette.semantics.red,
+                      borderRadius: "50%",
+                    }}
+                  ></Box>
+                </Box>
+              </Box>
+              <Typography
+                sx={{ ml: 1 }}
+                variant="h6"
+                color={theme.palette.semantics.red}
+              >
+                {missedBlocks.format()}
+              </Typography>
+            </Box>
+          </AlertTooltip>
+        </Box>
+      ) : null}
     </Paper>
   );
 }

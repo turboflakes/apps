@@ -28,6 +28,7 @@ import {
   selectInsightsColumnVisibilityModel,
 } from "../features/layout/layoutSlice";
 import { selectIsSocketConnected } from "../features/api/socketSlice";
+import { isCollationAvailable } from "../constants";
 
 export default function InsightsGrid() {
   // const theme = useTheme();
@@ -90,7 +91,7 @@ export default function InsightsGrid() {
               : `Active validators between session ${historySessionRangeIds[0].format()} and ${historySessionRangeIds[historySessionRangeIds.length - 1].format()}`}
           </Typography>
         </Box>
-        <ChainToggle isRelay />
+        {isCollationAvailable(selectedChain) ? <ChainToggle /> : null}
         {/* TODO: Review subset filter */}
         {/* <SubsetFilter />*/}
       </Box>
