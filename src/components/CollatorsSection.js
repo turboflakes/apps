@@ -1,5 +1,7 @@
 import * as React from "react";
+import { useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import isUndefined from "lodash/isUndefined";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
@@ -41,10 +43,35 @@ export default function CollatorsSection() {
     selectCollatorsSummaryLatest(state, chainKey),
   );
 
-  // one of the chains is always selected
+  const paraIds = {
+    ah: useSelector((state) => selectCollatorsSummaryLatest(state, "ah"))
+      ?.para_id,
+    pp: useSelector((state) => selectCollatorsSummaryLatest(state, "pp"))
+      ?.para_id,
+    bu: useSelector((state) => selectCollatorsSummaryLatest(state, "bu"))
+      ?.para_id,
+  };
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const para = searchParams.get("para");
+  const appliedPara = React.useRef(null);
+  const paraChainKey = Object.keys(paraIds).find(
+    (k) => !isUndefined(paraIds[k]) && String(paraIds[k]) === para,
+  );
+  React.useEffect(() => {
+    if (!isUndefined(paraChainKey) && appliedPara.current !== para) {
+      appliedPara.current = para;
+      dispatch(collatorsChainChanged(paraChainKey));
+    }
+  }, [dispatch, para, paraChainKey]);
+
   const handleChainChange = (event, value) => {
     if (value !== null) {
       dispatch(collatorsChainChanged(value));
+      if (!isUndefined(paraIds[value])) {
+        searchParams.set("para", paraIds[value]);
+        setSearchParams(searchParams);
+      }
     }
   };
 

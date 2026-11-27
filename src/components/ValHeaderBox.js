@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-// import { useTheme } from '@mui/material/styles';
 import isUndefined from 'lodash/isUndefined'
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
-import Divider from '@mui/material/Divider';
+import SectionDivider from './SectionDivider';
 import ValAddressProfile from './ValAddressProfile';
 import ValMvrBox from './ValMvrBox';
 import ValMvrHistoryBox from './ValMvrHistoryBox';
@@ -23,7 +22,8 @@ import ValDisputesBox from './ValDisputesBox';
 import ValDisputesHistoryBox from './ValDisputesHistoryBox';
 import ValStateBox from './ValStateBox';
 import ValParaInclusionBox from './ValParaInclusionBox';
-// import ValAttentionBox from './ValAttentionBox';
+import ValCollationBox from './ValCollationBox';
+import ValCollationSlotBox from './ValCollationSlotBox';
 import Spinner from './Spinner';
 import {
   selectSessionByIndex,
@@ -34,7 +34,7 @@ import {
   selectMaxHistorySessions,
   selectMaxHistoryEras
 } from '../features/layout/layoutSlice';
-import { 
+import {
   selectValidatorBySessionAndAddress,
 } from '../features/api/validatorsSlice';
 
@@ -63,7 +63,7 @@ export default function ValHeaderBox({address, sessionIndex}) {
   }
 
   return (
-		<Box sx={{ 
+		<Box sx={{
         m: 0,
         display: 'flex',
         flexDirection: 'column',
@@ -74,7 +74,7 @@ export default function ValHeaderBox({address, sessionIndex}) {
           <ValAddressProfile address={address} maxSessions={maxHistorySessions} showGrade showSubset />
         </Grid>
         <Grid item xs={12} md={7}>
-          <Box sx={{ 
+          <Box sx={{
             // pl: 2,
             display: 'flex',
             flexDirection: 'column',
@@ -88,75 +88,110 @@ export default function ValHeaderBox({address, sessionIndex}) {
             <Grid container spacing={2}>
               {/* first row */}
               <Grid item xs={12} md={3}>
-                {isLiveMode ? 
+                {isLiveMode ?
                   <ValStateBox address={address} sessionIndex={sessionIndex} /> :
-                  <Box sx={{ 
+                  <Box sx={{
                       p: 2,
                       display: 'flex',
                       flexDirection: 'column',
                       width: '100%',
                       height: 96,
-                    }}> 
+                    }}>
                     <Typography variant="h6">History Stats</Typography>
                     <Typography variant="subtitle2">{`From last ${maxHistorySessions} sessions (${maxHistoryEras} eras)`}</Typography>
                   </Box> }
               </Grid>
               <Grid item xs={12} md={isLiveMode ? 3 : 3}>
-                  {isLiveMode ? 
+                  {isLiveMode ?
                     <ValAuthoredBlocksBox address={address} /> :
                     <ValAuthoredBlocksHistoryBox address={address} maxSessions={maxHistorySessions} /> }
               </Grid>
               <Grid item xs={12} md={isLiveMode ? 3 : 3}>
-                  {isLiveMode ? 
+                  {isLiveMode ?
                     <ValSessionPointsBox address={address} /> :
                     <ValEraPointsHistoryBox address={address} maxSessions={maxHistorySessions} /> }
               </Grid>
               <Grid item xs={12} md={3}>
-                  {isLiveMode ? 
+                  {isLiveMode ?
                     <ValEraPointsBox address={address} /> :
                     <ValInclusionBox address={address} maxSessions={maxHistorySessions} /> }
               </Grid>
               {/* second row */}
               <Grid item xs={12} md={3}>
-                {isLiveMode ? 
-                      <ValBarBox address={address} /> : 
+                {isLiveMode ?
+                      <ValBarBox address={address} /> :
                       <ValBarHistoryBox address={address} maxSessions={maxHistorySessions} />
                       }
               </Grid>
               <Grid item xs={12} md={3}>
-                {isLiveMode ? 
-                    <ValMvrBox address={address} /> : 
+                {isLiveMode ?
+                    <ValMvrBox address={address} /> :
                     <ValMvrHistoryBox address={address} maxSessions={maxHistorySessions} /> }
               </Grid>
               <Grid item xs={12} md={3}>
-                {isLiveMode ? 
-                    <ValBackingPointsBox address={address} /> : 
+                {isLiveMode ?
+                    <ValBackingPointsBox address={address} /> :
                     <ValBackingPointsHistoryBox address={address} maxSessions={maxHistorySessions} /> }
               </Grid>
               <Grid item xs={12} md={3}>
                 { disputesTotal > 0 ? (
-                    isLiveMode ? 
+                    isLiveMode ?
                       <ValDisputesBox address={address} />  :
                       <ValDisputesHistoryBox address={address} maxSessions={maxHistorySessions}/>
                   ) : (
-                    !isLiveMode ? 
+                    !isLiveMode ?
                       <ValParaInclusionBox address={address} maxSessions={maxHistorySessions} /> :
                       null
                   ) }
               </Grid>
+
             </Grid>
           </Box>
         </Grid>
+
         <Grid item xs={12}>
-          <Divider sx={{ 
-            mt: 1,
-            opacity: 0.25,
-            height: '1px',
-            borderTop: '0px solid rgba(0, 0, 0, 0.08)',
-            borderBottom: 'none',
-            backgroundColor: 'transparent',
-            backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))'
-            }} />
+          <SectionDivider sx={{ mt: 1 }} />
+        </Grid>
+
+        {validator.is_collator ? (
+          <React.Fragment>
+            <Grid item xs={12} md={5}>
+              {isLiveMode ? (
+                <Grid container spacing={2}>
+                  {[
+                    ["ah", "Asset Hub"],
+                    ["pp", "People"],
+                    ["bu", "Bulletin"],
+                  ].map(([chainKey, name]) => (
+                    <Grid item xs={12} md={4} key={chainKey}>
+                      <ValCollationSlotBox
+                        address={address}
+                        chainKey={chainKey}
+                        name={name}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              ) : null}
+            </Grid>
+            <Grid item xs={12} md={7}>
+              <Grid container spacing={2}>
+                {["blocks", "points", "mcr"].map((metric) => (
+                  <Grid item xs={12} md={3} key={metric}>
+                    <ValCollationBox
+                      address={address}
+                      metric={metric}
+                      maxSessions={isLiveMode ? undefined : maxHistorySessions}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Grid>
+          </React.Fragment>
+        ) : null}
+
+        <Grid item xs={12}>
+          <SectionDivider sx={{ mt: 1 }} />
         </Grid>
       </Grid>
 		</Box>

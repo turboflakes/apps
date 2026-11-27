@@ -50,4 +50,10 @@ export const prodParasWestend = [
     providers: {},
     text: "Coretime",
   },
+  {
+    info: "bulletin",
+    paraId: 2487,
+    providers: {},
+    text: "Bulletin",
+  },
 ];

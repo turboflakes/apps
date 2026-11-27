@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import Link from '@mui/material/Link';
 import {
   addressChanged,
-  selectAddress,
   selectChain
 } from '../features/chain/chainSlice';
 import {
@@ -26,16 +25,15 @@ import {
 export default function GridIdentityLink({address}) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const selectedAddress = useSelector(selectAddress);
   const selectedChain = useSelector(selectChain);
   const valProfile = useSelector(state => selectValProfileByAddress(state, address));
 
+  // NOTE: always navigates, the address of the last profile visited is still
+  // the selected one when coming back from another page
   const handleOnClick = () => {
-    if (selectedAddress !== address) {
-      dispatch(addressChanged(address));
-      dispatch(pageChanged(`validator/${address}`));
-      navigate(`/validator/${address}`)
-    }
+    dispatch(addressChanged(address));
+    dispatch(pageChanged(`validator/${address}`));
+    navigate(`/validator/${address}`)
   };
 
   return (

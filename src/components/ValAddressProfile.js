@@ -4,15 +4,14 @@ import isUndefined from "lodash/isUndefined";
 import { useTheme } from "@mui/material/styles";
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
+import SectionDivider from "./SectionDivider";
 import Skeleton from "@mui/material/Skeleton";
 import Identicon from "@polkadot/react-identicon";
-// import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWallet } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faCheck } from "@fortawesome/free-solid-svg-icons";
 import GradeIcon from "./GradeIcon";
-// import tvpValid from "../assets/dn_valid.svg";
-// import tvpInvalid from '../assets/tvp_invalid.svg';
+import metanodeFile from "../assets/metanode.webp";
 import {
   selectSessionCurrent,
   selectSessionHistory,
@@ -21,6 +20,7 @@ import {
   selectValProfileByAddress,
   useGetValidatorProfileByAddressQuery,
 } from "../features/api/valProfilesSlice";
+import { selectValidatorBySessionAndAddress } from "../features/api/validatorsSlice";
 import { selectChain, selectChainInfo } from "../features/chain/chainSlice";
 import { selectIsLiveMode } from "../features/layout/layoutSlice";
 import { stakeDisplay, stashDisplay } from "../util/display";
@@ -49,6 +49,19 @@ export default function ValAddressProfile({
       ? historySession
       : currentSession;
   const chainInfo = useSelector(selectChainInfo);
+  const validator = useSelector((state) =>
+    selectValidatorBySessionAndAddress(state, sessionIndex, address),
+  );
+  const isMetanode = !!validator?.is_collator;
+  const [copied, setCopied] = React.useState(false);
+  const handleCopy = () => {
+    navigator.clipboard
+      .writeText(chainAddress(address, chainInfo.ss58Format))
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      });
+  };
 
   if (isFetching || isUndefined(valProfile) || isUndefined(chainInfo)) {
     return (
@@ -80,7 +93,9 @@ export default function ValAddressProfile({
         flexDirection: "column",
         width: "100%",
         maxWidth: 664,
-        height: 212,
+        // metanodes have an additional row with the collation
+        height: isMetanode ? "auto" : 212,
+        minHeight: 212,
         // borderRadius: 3,
         // boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
         // boxShadow: 'rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;'
@@ -134,34 +149,32 @@ export default function ValAddressProfile({
                       : theme.palette.neutrals[300]
                   }
                 >
-                  <FontAwesomeIcon style={{ marginRight: 8 }} icon={faWallet} />
                   {chainAddress(address, chainInfo.ss58Format)}
+                  <IconButton
+                    size="small"
+                    aria-label="copy address to clipboard"
+                    onClick={handleCopy}
+                    sx={{ ml: 0.5, p: 0.5, color: "inherit" }}
+                  >
+                    <FontAwesomeIcon
+                      style={{ fontSize: "0.75rem" }}
+                      icon={copied ? faCheck : faCopy}
+                    />
+                  </IconButton>
                 </Typography>
               </Box>
-
-              {/* {showSubset && valProfile.subset === "TVP" ?
-                <Box sx={{ }}>
-                  <Tooltip title={`Decentralized Node (Cohort 1)`} arrow>
-                    <img src={tvpValid} style={{
-                        width: 48,
-                        height: "auto" }} alt="Decentralized Node (Cohort 1)" />
-                  </Tooltip>
-                </Box>
-              : null}*/}
             </Box>
-            <Divider
-              sx={{
-                my: 2,
-                opacity: 0.25,
-                height: "1px",
-                borderTop: "0px solid rgba(0, 0, 0, 0.08)",
-                borderBottom: "none",
-                backgroundColor: "transparent",
-                backgroundImage:
-                  "linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))",
-              }}
-            />
+            <SectionDivider dark={showDark} sx={{ my: 2 }} />
             <Box sx={{ display: "flex", width: "100%" }}>
+              {isMetanode ? (
+                <Box sx={{ mr: theme.spacing(2), display: "flex", alignItems: "center" }}>
+                  <img
+                    src={metanodeFile}
+                    style={{ width: "auto", height: 64 }}
+                    alt="Metanode"
+                  />
+                </Box>
+              ) : null}
               <Box
                 sx={{
                   mr: theme.spacing(2),
@@ -202,7 +215,7 @@ export default function ValAddressProfile({
                   </Typography>
                   <Box>
                     <Typography
-                      variant="h5"
+                      variant="h6"
                       component="span"
                       color={
                         showDark
@@ -237,7 +250,7 @@ export default function ValAddressProfile({
                 </Typography>
                 <Box>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     component="span"
                     color={
                       showDark
@@ -279,7 +292,7 @@ export default function ValAddressProfile({
                 </Typography>
                 <Box>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     component="span"
                     color={
                       showDark
@@ -312,7 +325,7 @@ export default function ValAddressProfile({
                 </Typography>
                 <Box>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     component="span"
                     color={
                       showDark
@@ -332,15 +345,6 @@ export default function ValAddressProfile({
                   </Typography>
                 </Box>
               </Box>
-              {/* {showSubset && valProfile.subset === "TVP" ?
-                <Box sx={{ mr: 3, display: 'flex', flexDirection: 'column', alignItems: 'left'}}>
-                  <Tooltip title={`TVP Member`} arrow>
-                    <img src={tvpValid} style={{
-                        width: 64,
-                        height: "auto" }} alt="TVP Member" />
-                  </Tooltip>
-                </Box>
-              : null} */}
             </Box>
           </Box>
         </Box>

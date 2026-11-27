@@ -18,17 +18,20 @@ import {
   selectValProfileByAddress,
   useGetValidatorProfileByAddressQuery,
 } from "../features/api/valProfilesSlice";
-import { isCollationAvailable, getNetworkSS58Format } from "../constants";
+import {
+  isCollationAvailable,
+  getCollationBlocksPerSlot,
+  getNetworkSS58Format,
+} from "../constants";
 import { nameDisplay, nameDisplayMiddle, stashDisplay } from "../util/display";
 import { chainAddress } from "../util/crypto";
 import CollationEmptyBox from "./CollationEmptyBox";
-
-const BLOCKS_PER_SLOT = 12;
 
 export default function CollationSlotBox({ chainKey, name }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const selectedChain = useSelector(selectChain);
+  const blocksPerSlot = getCollationBlocksPerSlot(selectedChain, chainKey);
   const currentSession = useSelector(selectSessionCurrent);
   const isReady = isCollationAvailable(selectedChain) && !isNaN(currentSession);
 
@@ -132,11 +135,11 @@ export default function CollationSlotBox({ chainKey, name }) {
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Tooltip
-            title={`${slot.pb.format()} of ${BLOCKS_PER_SLOT} blocks produced · ${slot.pt.format()} points`}
+            title={`${slot.pb.format()} of ${blocksPerSlot} blocks produced · ${slot.pt.format()} points`}
             arrow
           >
             <Box sx={{ display: "flex", gap: "4px", alignItems: "center" }}>
-              {Array.from({ length: BLOCKS_PER_SLOT }, (_, i) => (
+              {Array.from({ length: blocksPerSlot }, (_, i) => (
                 <Box
                   key={i}
                   sx={{

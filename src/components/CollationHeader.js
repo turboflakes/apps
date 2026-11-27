@@ -1,9 +1,12 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { useGetCollatorsQuery } from "../features/api/collatorsSlice";
+import {
+  useGetCollatorsQuery,
+  selectCollatorsSummaryLatest,
+} from "../features/api/collatorsSlice";
 import { selectChain } from "../features/chain/chainSlice";
 import {
   selectCollationHidden,
@@ -21,9 +24,14 @@ import CollationGradesBoxHeader from "./CollationGradesBoxHeader";
 export default function CollationHeader({ chainKey, name, isCollatorsTab }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const selectedChain = useSelector(selectChain);
   const isReady = isCollationAvailable(selectedChain);
   const hidden = useSelector((state) => selectCollationHidden(state, chainKey));
+
+  const summary = useSelector((state) =>
+    selectCollatorsSummaryLatest(state, chainKey),
+  );
 
   useGetCollatorsQuery(
     { chain_key: chainKey, kind_counter: true, slot: true, stats: true },
@@ -38,7 +46,12 @@ export default function CollationHeader({ chainKey, name, isCollatorsTab }) {
     dispatch(collatorsChainChanged(chainKey));
     dispatch(collationHiddenChanged(false));
     dispatch(pageChanged("collators"));
-    navigate("/collators");
+    const params = new URLSearchParams(searchParams);
+    if (summary?.para_id) {
+      params.set("para", summary.para_id);
+    }
+    const query = params.toString();
+    navigate(query ? `/collators?${query}` : "/collators");
   };
 
   return (
