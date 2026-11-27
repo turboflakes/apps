@@ -85,10 +85,10 @@ export default function ValCollationSlotBox({ address, chainKey, name }) {
     navigate(`/collators?${params.toString()}`);
   };
 
+  const mcr = calculateMCR(collator.eb, collator.pb);
+  const grade = gradeByRatios(undefined, undefined, mcr);
   // the collator needs attention when its grade in the chain is F
-  const isLowGrade =
-    gradeByRatios(undefined, undefined, calculateMCR(collator.eb, collator.pb)) ===
-    "F";
+  const isLowGrade = grade === "F";
   const missedBlocks = collator.eb - collator.pb;
 
   const isOwner = !isUndefined(slot) && slot.cix === collator.cix;
@@ -128,18 +128,38 @@ export default function ValCollationSlotBox({ address, chainKey, name }) {
           alignItems: "left",
         }}
       >
-        <Typography
-          variant="caption"
-          onClick={handleOnClick}
-          sx={{
-            whiteSpace: "nowrap",
-            width: "fit-content",
-            cursor: "pointer",
-            "&:hover": { textDecoration: "underline" },
-          }}
-        >
-          {isOwner ? `${name} current slot` : `${name}`}
-        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {grade !== "-" ? (
+            <Tooltip
+              title={`Grade ${grade} · ${Math.round(mcr * 10000) / 100}% of expected blocks missed`}
+              placement="top-start"
+              arrow
+            >
+              <Box
+                sx={{
+                  mr: 1,
+                  width: "8px",
+                  height: "8px",
+                  flexShrink: 0,
+                  borderRadius: "50%",
+                  bgcolor: theme.palette.grade[grade],
+                }}
+              />
+            </Tooltip>
+          ) : null}
+          <Typography
+            variant="caption"
+            onClick={handleOnClick}
+            sx={{
+              whiteSpace: "nowrap",
+              width: "fit-content",
+              cursor: "pointer",
+              "&:hover": { textDecoration: "underline" },
+            }}
+          >
+            {isOwner ? `${name} current slot` : `${name}`}
+          </Typography>
+        </Box>
         <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
           {isOwner
             ? `${slot.pb.format()} of ${blocksPerSlot} blocks`
