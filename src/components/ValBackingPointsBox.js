@@ -75,12 +75,11 @@ export default function ValBackingPointsBox({address}) {
     }} />)
   }
 
-  if (!validator.is_para) {
+  if (!validator.is_auth || !validator.is_para) {
     return null
   }
 
-  // NOTE: this could happen if validator is p/v but has still not been assigned to a parachain
-  if (isUndefined(validator.para_summary)) {
+  if (isUndefined(validator.auth) || isUndefined(validator.para_summary)) {
     return (
       <Paper sx={{
           p: 2,
