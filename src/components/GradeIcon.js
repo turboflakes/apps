@@ -1,13 +1,10 @@
 import * as React from 'react';
-// import { useSelector } from 'react-redux';
-// import isUndefined from 'lodash/isUndefined'
-// import { useTheme } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
-import { 
+import {
   useGetValidatorGradeByAddressQuery,
  } from '../features/api/validatorsSlice'
-// import { grade } from '../util/grade'
-// import { calculateMVR } from '../util/mvr'
+import { gradeByRatios } from '../util/grade'
+import { calculateMVR, calculateBUR, calculateMCR } from '../util/math'
 import gradeAplus from '../assets/grades/grade_a_plus.webp';
 import gradeA from '../assets/grades/grade_a.webp';
 import gradeBplus from '../assets/grades/grade_b_plus.webp';
@@ -32,30 +29,41 @@ const GRADES = {
   "-" : emptyGrade
 }
 
+const gradeOf = (data) => {
+  const mcr = calculateMCR(
+    data.collation_produced_blocks_total + data.collation_missed_blocks_total,
+    data.collation_produced_blocks_total,
+  )
+  if (!Number.isFinite(mcr)) {
+    return data.grade
+  }
+  const grade = gradeByRatios(
+    calculateMVR(data.explicit_votes_total, data.implicit_votes_total, data.missed_votes_total),
+    calculateBUR(data.bitfields_availability_total, data.bitfields_unavailability_total),
+    mcr,
+  )
+  return grade !== '-' ? grade : data.grade
+}
+
 export default function GradeIcon({sessionIndex, address, size = 96, maxSessions}) {
-  // const theme = useTheme();
-  
+
   const {data, isFetching, isSuccess, isError} = useGetValidatorGradeByAddressQuery({address, number_last_sessions: maxSessions});
-  // const validator = useSelector(state => selectValidatorBySessionAndAddress(state, sessionIndex, address))
 
   if (isFetching || isError) {
     return (
       <Tooltip title={`Grade not available.`} arrow>
-        <img src={GRADES['-']} style={{ 
+        <img src={GRADES['-']} style={{
             width: "auto",
             height: size }} alt={`Grade not available.`}/>
-      </Tooltip>  
+      </Tooltip>
     );
   }
-  
-  // const gradeValue = !isUndefined(validator.para_summary) ? 
-  //   grade(1 - calculateMVR(validator.para_summary.ev, validator.para_summary.iv, validator.para_summary.mv)) : "-";
 
   return (
     <Tooltip title={`Validator grade for the last ${maxSessions} sessions.`} arrow>
-      <img src={GRADES[isSuccess ? data.grade : '-']} style={{ 
+      <img src={GRADES[isSuccess ? gradeOf(data) : '-']} style={{
           width: "auto",
-          height: size }} alt={isSuccess ? `Grade: ${data.grade}` : '-' }/>
-    </Tooltip>  
+          height: size }} alt={isSuccess ? `Grade: ${gradeOf(data)}` : '-' }/>
+    </Tooltip>
   );
 }

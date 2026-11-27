@@ -33,6 +33,12 @@ export const prodParasPaseo = [
     text: 'Paseo Coretime'
   },
   {
+    info: 'paseoBulletin',
+    paraId: 1010,
+    providers: {},
+    text: 'Paseo Bulletin',
+  },
+  {
     homepage: 'https://www.nodle.com/',
     info: 'NodleParadis',
     paraId: 2026,

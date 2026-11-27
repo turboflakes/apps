@@ -439,6 +439,12 @@ export const prodParasPolkadot = [
     text: 'Polkadot Coretime',
   },
   {
+    info: 'polkadotBulletin',
+    paraId: 1010,
+    providers: {},
+    text: 'Polkadot Bulletin',
+  },
+  {
     homepage: 'https://zeitgeist.pm',
     info: 'zeitgeist',
     paraId: 2092,
@@ -572,4 +578,3 @@ export const prodParasPolkadot = [
     }
   },
 ];
-

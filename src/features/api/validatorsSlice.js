@@ -305,6 +305,32 @@ export const selectValidatorsByAddressAndSessions = (
     })
     .filter((v) => !isUndefined(v));
 
+// Collation summary of a metanode accumulated over sessions (undefined if the
+// validator is not a collator in any of the sessions)
+export const selectCollationSummaryByAddressAndSessions = (
+  state,
+  address,
+  sessions = [],
+) => {
+  const validators = sessions
+    .map((sessionId) => selectValidatorById(state, `${sessionId}_${address}`))
+    .filter((v) => v?.is_collator && !isUndefined(v.collation_summary));
+  if (!validators.length) {
+    return undefined;
+  }
+  const sum = (key) =>
+    validators
+      .map((v) => v.collation_summary[key] ?? 0)
+      .reduce((a, b) => a + b, 0);
+  return {
+    os: sum("os"),
+    eb: sum("eb"),
+    pb: sum("pb"),
+    pt: sum("pt"),
+    ms: sum("ms"),
+  };
+};
+
 // NOTE: the collation is only taken into account if `withCollation` is true
 export const selectValidatorGradeBySessionAndAddress = (
   state,

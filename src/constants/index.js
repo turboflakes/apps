@@ -183,6 +183,7 @@ const networkSettings = {
     chains: prodParasWestend,
     validators: [],
     isCollationAvailable: true,
+    collationBlocksPerSlot: { ah: 12, pp: 12, bu: 4 },
     isDNAvailable: false,
     isTestNetwork: true,
     stepUnits: 10,
@@ -275,6 +276,9 @@ export const isDNAvailable = (network) =>
 
 export const isCollationAvailable = (network) =>
   networkSettings[network].isCollationAvailable;
+
+export const getCollationBlocksPerSlot = (network, chainKey) =>
+  networkSettings[network].collationBlocksPerSlot?.[chainKey];
 
 export const isTestNetwork = (network) =>
   networkSettings[network].isTestNetwork;
