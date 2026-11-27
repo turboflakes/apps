@@ -16,7 +16,7 @@ export default function ValAuthoredBlocksBox({address}) {
   // const theme = useTheme();
   const currentSession = useSelector(selectSessionCurrent);
   const validator = useSelector(state => selectValidatorBySessionAndAddress(state, currentSession, address));
-  
+
   if (isUndefined(validator)) {
     return null
   }
@@ -25,9 +25,10 @@ export default function ValAuthoredBlocksBox({address}) {
     return null
   }
 
-  const total = validator.auth.ab.length;
-  const description = total > 0 ? `Last # ${validator.auth.ab[total - 1].format()}` : '';
-  
+  const total = validator.auth.ab?.length;
+  const lab = validator.auth.lab ?? validator.auth.ab?.[total - 1];
+  const description = !isUndefined(lab) ? `Last # ${lab.format()}` : '';
+
   return (
     <Paper sx={{
         p: 2,
